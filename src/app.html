@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" style="background-color: hsl(220, 50%, 5%)">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover"
+    />
+    <!-- NOTE: iOS needs this for the splash screen -->
+    <!-- Thanks to https://whatpwacando.today/ for the explainatory comment above this line! -->
+    <!-- This broke the splash screen for hours... -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    %sveltekit.head%
+  </head>
+  <!-- TODO: find a way to set the initial body color based on the tailwind definition -->
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">%sveltekit.body%</div>
+  </body>
+</html>
