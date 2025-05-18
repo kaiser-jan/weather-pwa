@@ -14,7 +14,8 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
     "lint": "prettier --check . && eslint .",
-    "generate-pwa-assets": "pwa-assets-generator"
+    "generate-pwa-assets": "pwa-assets-generator",
+    "openapi:metno": "bunx @hey-api/openapi-ts -i https://api.met.no/weatherapi/locationforecast/2.0/swagger -o src/lib/types/metno -p '@hey-api/typescript'"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.9",

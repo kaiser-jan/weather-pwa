@@ -16,7 +16,7 @@ const config = {
 			register: false,
 		},
 		alias: {
-			"@/*": "./src/lib/*",
+			// "@/*": "./src/lib/*",
 		},
 		files: {
 			// you don't need to do this if you're using generateSW strategy in your app
