@@ -6,6 +6,7 @@
   import type { Forecast } from '$lib/types/data'
   import { toast } from 'svelte-sonner'
   import dummyData from '$lib/scripts/data/forecast/test-data.json'
+  import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
@@ -34,7 +35,8 @@
 
   $effect(() => {
     if (!useDummyData) return
-    data = dummyData
+    data = { ...dummyData }
+    console.log(dummyData)
   })
 
   $effect(() => {
@@ -51,6 +53,8 @@
 
   async function loadForecastData(coords: Coordinates) {
     data = await loadForecast(coords, 'metno')
+    // console.log(data)
+    // console.log(JSON.stringify(data))
   }
 </script>
 
@@ -65,12 +69,31 @@
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  {#each data?.hourly as hour}
-    {hour?.temperature}
-  {/each}
-  {#each data?.daily as day}
-    {day?.temperature.avg}
-  {/each}
+  <!-- {#each data?.hourly as hour} -->
+  <!--   {hour?.temperature} -->
+  <!-- {/each} -->
+  <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
+    {#each data?.daily ?? [] as day}
+      <div class="inline-flex flex-row items-center gap-2">
+        <span class="w-[3ch]">{new Date(day.datetime).toLocaleDateString?.(undefined, { weekday: 'short' })}</span>
+
+        <div class="grow"></div>
+
+        <div class="h-2 w-[10%]">
+          <NumberRangeBar total={data?.total.cloud_coverage} instance={day.cloud_coverage} color="clouds" />
+        </div>
+        <span class="text-blue-200">{Math.round(day.precipitation_amount.sum)}mm</span>
+
+        <div class="grow"></div>
+
+        <span class="w-[2ch]">{Math.round(day.temperature.min)}</span>
+        <div class="h-2 w-[30%]">
+          <NumberRangeBar total={data.total.temperature} instance={day.temperature} color="temperature" />
+        </div>
+        <span class="w-[2ch]">{Math.round(day.temperature.max)}</span>
+      </div>
+    {/each}
+  </div>
 
   <div class="flex flex-col gap-2">
     <div class="flex flex-row gap-2">

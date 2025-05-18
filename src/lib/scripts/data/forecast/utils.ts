@@ -1,33 +1,43 @@
 import type { ForecastDay, ForecastHour, StatisticalNumberSummary } from '$lib/types/data'
 
-export function aggregateHours(hours: ForecastHour[]): ForecastDay | null {
-  if (hours.length === 0) return null
-
-  let day: Partial<ForecastDay> = {}
-
-  const firstHour = hours[0]
-
-  for (const key of Object.keys(firstHour)) {
-    if (typeof firstHour[key as keyof typeof firstHour] !== 'number') continue
-
-    // @ts-expect-error
-    day[key as keyof typeof day] = calculateStatisticalNumberSummary(
-      hours.map((h) => h[key as keyof typeof h] as number),
-    )
+export function mapNumbersToStatisticalSummaries<KeyT extends string>(
+  items: Partial<Record<KeyT, any>>[],
+): Partial<Record<KeyT, StatisticalNumberSummary>> | null {
+  // @ts-expect-error
+  let valuesMap: Record<KeyT, number[]> = {}
+  for (const item of items) {
+    for (const [key, value] of Object.entries(item)) {
+      if (typeof value !== 'number') continue
+      if (!(key in valuesMap)) valuesMap[key as KeyT] = []
+      valuesMap[key as KeyT].push(value as number)
+    }
   }
 
-  return day as ForecastDay
+  // @ts-expect-error
+  let results: Record<KeyT, StatisticalNumberSummary> = {}
+
+  for (const [key, values] of Object.entries(valuesMap)) {
+    results[key as KeyT] = calculateStatisticalNumberSummary(values as number[])
+  }
+
+  return results
 }
 
 export function calculateStatisticalNumberSummary(values: number[]): StatisticalNumberSummary {
   if (values.length === 0) return { min: Infinity, max: -Infinity, sum: 0, avg: NaN }
 
-  const sum = values.reduce((acc, num) => acc + num, 0)
+  const _sum = sum(values)
 
   return {
     min: Math.min(...values),
     max: Math.max(...values),
-    sum,
-    avg: sum / values.length,
+    sum: _sum,
+    avg: _sum / values.length,
   }
+}
+
+export function sum(numbers: (number | undefined)[]): number {
+  return numbers
+    .filter((num): num is number => num !== undefined)
+    .reduce((accumulator, current) => accumulator + current, 0)
 }

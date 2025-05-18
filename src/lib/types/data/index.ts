@@ -8,6 +8,7 @@ export interface Forecast {
   current: ForecastHour
   hourly: ForecastHour[]
   daily: ForecastDay[]
+  total: ForecastDay
 }
 
 export type StatisticalNumberSummary = { min: number; avg: number; max: number; sum: number }
