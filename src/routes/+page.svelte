@@ -7,6 +7,7 @@
   import { toast } from 'svelte-sonner'
   import dummyData from '$lib/scripts/data/forecast/test-data.json'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
+  import DayColorBar from '$lib/components/DayColorBar.svelte'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
@@ -53,9 +54,21 @@
 
   async function loadForecastData(coords: Coordinates) {
     data = await loadForecast(coords, 'metno')
-    // console.log(data)
+    console.log(data)
     // console.log(JSON.stringify(data))
   }
+
+  let hourlyTomorrow = $derived.by(() => {
+    if (!data?.hourly) return []
+    const tomorrowMidnight = new Date()
+    tomorrowMidnight.setHours(0, 0, 0, 0)
+    tomorrowMidnight.setDate(tomorrowMidnight.getDate() + 1)
+    console.log(tomorrowMidnight)
+    data.hourly.forEach((h) => console.log(h.datetime))
+    const startIndex = data.hourly.findIndex((h) => new Date(h.datetime).getTime?.() > tomorrowMidnight.getTime())
+    console.log()
+    return data?.hourly.slice(startIndex, (startIndex ?? 0) + 23)
+  })
 </script>
 
 <div class="h-[30vh] w-full rounded-b-xl bg-blue-950">
@@ -72,6 +85,9 @@
   <!-- {#each data?.hourly as hour} -->
   <!--   {hour?.temperature} -->
   <!-- {/each} -->
+  <div class="h-2">
+    <DayColorBar hourly={hourlyTomorrow} />
+  </div>
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
       <div class="inline-flex flex-row items-center gap-2">

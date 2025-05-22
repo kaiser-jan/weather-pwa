@@ -10,6 +10,7 @@
   const { total, instance, color }: Props = $props()
 
   const temperatureColorStops: ColorStop[] = [
+    { value: -50, h: 0, s: 100, l: 50 },
     { value: 0, h: 0, s: 0, l: 100 },
     { value: 10, h: 174, s: 49, l: 64 },
     { value: 15, h: 134, s: 47, l: 70 },
