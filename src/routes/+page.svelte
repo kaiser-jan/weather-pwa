@@ -63,10 +63,8 @@
     const tomorrowMidnight = new Date()
     tomorrowMidnight.setHours(0, 0, 0, 0)
     tomorrowMidnight.setDate(tomorrowMidnight.getDate() + 1)
-    console.log(tomorrowMidnight)
     data.hourly.forEach((h) => console.log(h.datetime))
     const startIndex = data.hourly.findIndex((h) => new Date(h.datetime).getTime?.() > tomorrowMidnight.getTime())
-    console.log()
     return data?.hourly.slice(startIndex, (startIndex ?? 0) + 23)
   })
 </script>
@@ -104,7 +102,7 @@
 
         <span class="w-[2ch]">{Math.round(day.temperature.min)}</span>
         <div class="h-2 w-[30%]">
-          <NumberRangeBar total={data.total.temperature} instance={day.temperature} color="temperature" />
+          <NumberRangeBar total={data?.total.temperature} instance={day.temperature} color="temperature" />
         </div>
         <span class="w-[2ch]">{Math.round(day.temperature.max)}</span>
       </div>

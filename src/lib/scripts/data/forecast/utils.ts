@@ -2,7 +2,7 @@ import type { ForecastDay, ForecastHour, StatisticalNumberSummary } from '$lib/t
 
 export function mapNumbersToStatisticalSummaries<KeyT extends string>(
   items: Partial<Record<KeyT, any>>[],
-): Partial<Record<KeyT, StatisticalNumberSummary>> | null {
+): Record<KeyT, StatisticalNumberSummary> {
   // @ts-expect-error
   let valuesMap: Record<KeyT, number[]> = {}
   for (const item of items) {
@@ -18,6 +18,36 @@ export function mapNumbersToStatisticalSummaries<KeyT extends string>(
 
   for (const [key, values] of Object.entries(valuesMap)) {
     results[key as KeyT] = calculateStatisticalNumberSummary(values as number[])
+  }
+
+  return results
+}
+
+export function combineStatisticalNumberSummaries<KeyT extends string>(
+  items: Partial<Record<KeyT, Partial<StatisticalNumberSummary>>>[],
+): Record<KeyT, StatisticalNumberSummary> | null {
+  // @ts-expect-error
+  let valuesMap: Record<KeyT, Partial<StatisticalNumberSummary>[]> = {}
+  for (const item of items) {
+    for (const [key, value] of Object.entries(item)) {
+      if (typeof value !== 'object' || value === null) continue
+      if (!(key in valuesMap)) valuesMap[key as KeyT] = []
+      valuesMap[key as KeyT].push(value)
+    }
+  }
+
+  // @ts-expect-error
+  let results: Record<KeyT, StatisticalNumberSummary> = {}
+
+  for (const [key, _values] of Object.entries(valuesMap)) {
+    const values = _values as StatisticalNumberSummary[]
+
+    results[key as KeyT] = {
+      min: Math.min(...values.map((v) => v.min)),
+      max: Math.max(...values.map((v) => v.max)),
+      sum: sum(values.map((v) => v.sum)),
+      avg: sum(values.map((v) => v.avg)) / values.length,
+    }
   }
 
   return results

@@ -5,18 +5,23 @@ export interface Coordinates {
 }
 
 export interface Forecast {
-  current: ForecastHour
+  current: ForecastInstant
   hourly: ForecastHour[]
   daily: ForecastDay[]
-  total: ForecastDay
+  total: ForecastTimestep
 }
 
 export type StatisticalNumberSummary = { min: number; avg: number; max: number; sum: number }
-export type ForecastHour = ForecastInstant<number | undefined>
-export type ForecastDay = ForecastInstant<StatisticalNumberSummary>
 
-interface ForecastInstant<NumberT> {
-  datetime: Date
+type ForecastMeta = { datetime: Date }
+
+export type ForecastInstant = ForecastValues<number | undefined>
+export type ForecastTimestep = ForecastValues<Partial<StatisticalNumberSummary>>
+
+export type ForecastHour = ForecastMeta & Partial<ForecastInstant>
+export type ForecastDay = ForecastMeta & Partial<ForecastTimestep>
+
+interface ForecastValues<NumberT> {
   temperature: NumberT
   temperature_feel?: NumberT
   pressure: NumberT

@@ -1,11 +1,19 @@
-import type { Coordinates, Forecast, ForecastDay, ForecastHour, StatisticalNumberSummary } from '$lib/types/data'
+import type {
+  Coordinates,
+  Forecast,
+  ForecastDay,
+  ForecastHour,
+  ForecastInstant,
+  ForecastTimestep,
+  StatisticalNumberSummary,
+} from '$lib/types/data'
 import type {
   ForecastTimeInstant,
   ForecastTimePeriod,
   ForecastTimeStep,
   MetjsonForecast as MetnoResponse,
 } from '$lib/types/metno'
-import { calculateStatisticalNumberSummary, mapNumbersToStatisticalSummaries, sum } from '../utils'
+import { combineStatisticalNumberSummaries, mapNumbersToStatisticalSummaries, sum } from '../utils'
 
 export async function loadMetnoLocationforecast(coords: Coordinates) {
   const url = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete.json')
@@ -21,6 +29,7 @@ export async function loadMetnoLocationforecast(coords: Coordinates) {
 function transform(metnoResponse: MetnoResponse): Forecast {
   const hourly: ForecastHour[] = []
 
+  // create hourly forecasts from every timestep where instant and next_1_hours is available
   for (const timeStep of metnoResponse.properties.timeseries) {
     if (!timeStep.data.instant.details || !timeStep.data.next_1_hours) continue
 
@@ -31,94 +40,80 @@ function transform(metnoResponse: MetnoResponse): Forecast {
     } as ForecastHour)
   }
 
+  // aggregate the timesteps available for each day for further processing
   const timestepsPerDay = new Map<string, ForecastTimeStep[]>()
   for (const timestep of metnoResponse.properties.timeseries) {
     // TODO: configurable timezone
     const dayString = new Date(timestep.time).toLocaleDateString('en-US', { timeZone: 'Europe/Vienna' })
-    console.log(timestep.time)
-    console.log(dayString)
     if (!timestepsPerDay.get(dayString)) timestepsPerDay.set(dayString, [])
     timestepsPerDay.get(dayString)!.push(timestep)
   }
 
-  const daily: ForecastDay[] = []
-  for (const dayTimesteps of timestepsPerDay.values()) {
-    const resolutions = [1, 6, 12] as const
-    const highestFullDayResolution =
-      resolutions.find((res) => dayTimesteps.every((d) => d.data[`next_${res}_hours`])) || null
-    if (!highestFullDayResolution) continue
+  const daily: ForecastDay[] = timestepsPerDay
+    .values()
+    .map((dayTimesteps) => aggregateTimestepsForDay(dayTimesteps))
+    .toArray()
+    .filter((d) => d !== null)
 
-    daily.push(aggregateTimesteps(dayTimesteps, highestFullDayResolution))
-  }
+  const total = combineStatisticalNumberSummaries(
+    daily.map((d) => {
+      return { ...d, datetime: undefined }
+    }),
+  ) as ForecastTimestep
 
   return {
-    current: hourly[0],
+    current: hourly[0] as ForecastInstant,
     hourly,
     daily,
-    total: mapNumbersToStatisticalSummaries(hourly)!,
+    total,
   }
 }
 
-const defaultStatisticalNumberSummary: StatisticalNumberSummary = {
-  min: NaN,
-  max: NaN,
-  avg: NaN,
-  sum: NaN,
-}
-
-export function aggregateTimesteps(timesteps: ForecastTimeStep[], resolution: 1 | 6 | 12): ForecastDay {
+export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): ForecastDay | null {
   const transformedInstants = timesteps
     .filter((t) => t.data.instant.details !== undefined)
     .map((t) => transformTimeInstant(t.data.instant.details!))
 
   const instantBased = mapNumbersToStatisticalSummaries(transformedInstants)
-  const relevantTimesteps = timesteps.map((t) => t.data[`next_${resolution}_hours`]?.details!)
-  const timestepBased = mapNumbersToStatisticalSummaries(relevantTimesteps)
+  if (!instantBased) return null
 
-  if (!instantBased || !timestepBased) return null
+  // NOTE: collect all timesteps which do not overlap with the next day
+  const timeperiodsNext1Hours = timesteps.map((t) => t.data.next_1_hours?.details)
+  const timeperiodsNext6Hours = timesteps.map((t) =>
+    new Date(t.time).getHours() <= 24 - 6 ? t.data.next_6_hours?.details : undefined,
+  )
+  const timeperiodsNext12Hours = timesteps.map((t) =>
+    new Date(t.time).getHours() <= 24 - 12 ? t.data.next_12_hours?.details : undefined,
+  )
+  const timeperiods = [
+    ...timeperiodsNext1Hours, //
+    ...timeperiodsNext6Hours,
+    ...timeperiodsNext12Hours,
+  ].filter((v) => v !== undefined)
+
+  if (timeperiods.length === 0) return null
+
+  const timestepBased = mapNumbersToStatisticalSummaries(timeperiods)
 
   const datetime = new Date(timesteps[0].time)
   datetime.setHours(0, 0, 0, 0)
 
-  const result: ForecastDay = {
-    temperature: { ...defaultStatisticalNumberSummary },
-    precipitation_amount: { ...defaultStatisticalNumberSummary },
-    precipitation_probability: { ...defaultStatisticalNumberSummary },
-    thunder_probability: { ...defaultStatisticalNumberSummary },
-    uvi_clear_sky: { ...defaultStatisticalNumberSummary },
+  return {
+    // TODO: does it even make sense to use instant based data for timesteps?
+    // e.g. cloud coverage from an instant doesn't really tell a lot about the following hours
     ...instantBased,
-    datetime: datetime,
+    temperature: {
+      min: timestepBased.air_temperature_min?.min,
+      max: timestepBased.air_temperature_min?.max,
+    },
+    uvi_clear_sky: {
+      max: Math.max(timestepBased.ultraviolet_index_clear_sky_max?.max, instantBased.uvi_clear_sky?.max),
+    },
+    precipitation_amount: { sum: timestepBased.precipitation_amount?.sum },
+    precipitation_probability: { sum: timestepBased.probability_of_precipitation?.sum },
+    thunder_probability: { sum: timestepBased.probability_of_thunder?.sum },
+    datetime,
   }
-
-  applyStatisticalSummaryLimit(result.temperature!, timestepBased.air_temperature_min, 'min')
-  applyStatisticalSummaryLimit(result.temperature!, timestepBased.air_temperature_max, 'max')
-  if (timestepBased.precipitation_amount !== undefined) {
-    result.precipitation_amount!.sum = sum(relevantTimesteps.map((t) => t.precipitation_amount))
-  }
-  applyStatisticalSummaryLimit(result.precipitation_amount!, timestepBased.precipitation_amount_min, 'min')
-  applyStatisticalSummaryLimit(result.precipitation_amount!, timestepBased.precipitation_amount_max, 'max')
-  if (timestepBased.probability_of_precipitation !== undefined) {
-    result.precipitation_probability = calculateStatisticalNumberSummary(
-      relevantTimesteps.map((t) => t.probability_of_precipitation).filter((v) => v !== undefined),
-    )
-  }
-  if (timestepBased.probability_of_thunder !== undefined) {
-    result.thunder_probability = calculateStatisticalNumberSummary(
-      relevantTimesteps.map((t) => t.probability_of_thunder).filter((v) => v !== undefined),
-    )
-  }
-  applyStatisticalSummaryLimit(result.uvi_clear_sky!, timestepBased.ultraviolet_index_clear_sky_max, 'max')
-
-  return result
-}
-
-function applyStatisticalSummaryLimit(
-  value: StatisticalNumberSummary,
-  newValue: StatisticalNumberSummary | undefined,
-  limit: 'min' | 'max',
-) {
-  if (newValue === undefined) return
-  value[limit] = Math[limit](...[value.max, newValue.max].filter((v) => v !== undefined))
 }
 
 function transformTimeInstant(instant: ForecastTimeInstant): Partial<ForecastHour> {
