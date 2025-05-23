@@ -46,9 +46,9 @@
       return
 
     loadForecastData({
-      latitude: parseInt(env.PUBLIC_LATITUDE),
-      longitude: parseInt(env.PUBLIC_LONGITUDE),
-      altitude: parseInt(env.PUBLIC_ALTITUDE),
+      latitude: parseFloat(env.PUBLIC_LATITUDE),
+      longitude: parseFloat(env.PUBLIC_LONGITUDE),
+      altitude: parseFloat(env.PUBLIC_ALTITUDE),
     })
   })
 
