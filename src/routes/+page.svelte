@@ -8,6 +8,10 @@
   import dummyData from '$lib/scripts/data/forecast/test-data.json'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import DayColorBar from '$lib/components/DayColorBar.svelte'
+  import { CloudIcon, Navigation2Icon, SunIcon, WindIcon } from 'lucide-svelte'
+  import { DateTime } from 'luxon'
+  import { CONFIG } from '$lib/scripts/config'
+  import MathFraction from '$lib/components/MathFraction.svelte'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
@@ -67,16 +71,61 @@
     const startIndex = data.hourly.findIndex((h) => new Date(h.datetime).getTime?.() > tomorrowMidnight.getTime())
     return data?.hourly.slice(startIndex, (startIndex ?? 0) + 23)
   })
+
+  const precipitationAtDatetime = $derived(
+    data?.hourly.find((h) =>
+      h.precipitation_amount ? h.precipitation_amount > CONFIG.weather.precipitation.threshold : false,
+    )?.datetime,
+  )
+
+  function formatRelativeDatetime(datetimeISO: string) {
+    const datetime = DateTime.fromISO(datetimeISO)
+
+    const today = DateTime.now().startOf('day')
+    const inputDate = datetime.startOf('day')
+
+    if (inputDate.equals(today)) {
+      return datetime.toFormat('HH:mm')
+      // NOTE: this requires translation
+    } else if (inputDate.equals(today.plus({ days: 1 }))) {
+      return `Tomorrow, ${datetime.toFormat('HH:mm')}`
+    } else {
+      return datetime.toFormat('cccc, HH:mm')
+    }
+  }
 </script>
 
-<div class="h-[30vh] w-full rounded-b-xl bg-blue-950">
-  {Math.round(data?.current?.temperature)}°C
-  {Math.round(data?.current?.cloud_coverage)}%
-  {Math.round(data?.current?.uvi_clear_sky)}
-  {Math.round(data?.current?.wind_speed)}
-  {Math.round(data?.current?.wind_degrees)}
-  {data?.hourly.find((h) => h.precipitation_amount > 0)?.datetime}
-  <!-- {data.current.cloud_coverage} -->
+<div class="flex h-[30vh] w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem]">
+  {#if data?.current}
+    <div class="my-auto">
+      <span class="text-6xl">{Math.round(data.current.temperature)}°C</span>
+    </div>
+
+    <div class="bg-background flex w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
+      <span class="inline-flex items-center gap-2">
+        <CloudIcon class="size-[1em]" />
+        {Math.round(data?.current?.cloud_coverage)}%
+      </span>
+      <span class="inline-flex items-center gap-2">
+        <SunIcon class="size-[1em]" />
+        {Math.round(data?.current?.uvi_clear_sky)}
+      </span>
+      <span class="inline-flex items-center gap-2">
+        <WindIcon class="size-[1em]" />
+        <span class="inline-flex items-center gap-1">
+          {Math.round(data?.current?.wind_speed)}
+          <MathFraction numerator={'m'} denominator={'s'} />
+        </span>
+        <Navigation2Icon
+          class="text-text-muted size-[0.8em]"
+          style={`transform: rotate(${data?.current.wind_degrees - 180}deg)`}
+        />
+      </span>
+      <span class="inline-flex items-center gap-2">
+        {formatRelativeDatetime(precipitationAtDatetime)}
+      </span>
+    </div>
+  {/if}
 </div>
 
 <div class="flex flex-col gap-4 p-4">

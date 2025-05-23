@@ -1,6 +1,11 @@
 import type { ColorStop } from '$lib/ui'
 
 export const CONFIG = {
+  weather: {
+    precipitation: {
+      threshold: 0.1,
+    },
+  },
   appearance: {
     colors: {
       temperatureColorStops: [
