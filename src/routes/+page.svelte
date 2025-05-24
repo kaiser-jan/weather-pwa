@@ -9,9 +9,9 @@
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import DayColorBar from '$lib/components/DayColorBar.svelte'
   import { UmbrellaIcon } from 'lucide-svelte'
-  import { DateTime } from 'luxon'
   import { CONFIG } from '$lib/scripts/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
+  import { formatRelativeDatetime } from '$lib/utils'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
@@ -62,12 +62,11 @@
     // console.log(JSON.stringify(data))
   }
 
-  let hourlyTomorrow = $derived.by(() => {
+  let tomorrowHourly = $derived.by(() => {
     if (!data?.hourly) return []
     const tomorrowMidnight = new Date()
     tomorrowMidnight.setHours(0, 0, 0, 0)
     tomorrowMidnight.setDate(tomorrowMidnight.getDate() + 1)
-    data.hourly.forEach((h) => console.log(h.datetime))
     const startIndex = data.hourly.findIndex((h) => new Date(h.datetime).getTime?.() > tomorrowMidnight.getTime())
     return data?.hourly.slice(startIndex, (startIndex ?? 0) + 23)
   })
@@ -77,22 +76,6 @@
       h.precipitation_amount ? h.precipitation_amount > CONFIG.weather.precipitation.threshold : false,
     )?.datetime,
   )
-
-  function formatRelativeDatetime(datetimeISO: string) {
-    const datetime = DateTime.fromISO(datetimeISO)
-
-    const today = DateTime.now().startOf('day')
-    const inputDate = datetime.startOf('day')
-
-    if (inputDate.equals(today)) {
-      return datetime.toFormat('HH:mm')
-      // NOTE: this requires translation
-      // } else if (inputDate.equals(today.plus({ days: 1 }))) {
-      //   return `Tomorrow, ${datetime.toFormat('HH:mm')}`
-    } else {
-      return datetime.toFormat('ccc HH:mm')
-    }
-  }
 </script>
 
 <div class="flex h-[30vh] w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem]">
@@ -114,7 +97,7 @@
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  <DayColorBar hourly={hourlyTomorrow} className="h-2" />
+  <DayColorBar hourly={tomorrowHourly} className="h-2" />
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
       <div class="inline-flex flex-row items-center justify-between gap-2">
