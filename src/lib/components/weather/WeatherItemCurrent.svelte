@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Forecast, ForecastInstant } from '$lib/types/data'
-  import { CloudIcon, Navigation2Icon, SunIcon, UmbrellaIcon, WindIcon } from 'lucide-svelte'
+  import { CloudIcon, Navigation2Icon, SunIcon, WindIcon } from 'lucide-svelte'
   import MathFraction from '../MathFraction.svelte'
 
   type AvailableItemsCurrent = 'cloud_coverage' | 'uvi' | 'wind'
@@ -24,7 +24,7 @@
   const details = $derived(itemMap[item])
 </script>
 
-{#if data.current[details.datapoint]}
+{#if data.current[details.datapoint] !== undefined}
   <span class="inline-flex items-center gap-2">
     <!-- svelte-ignore element_invalid_self_closing_tag -->
     <details.icon class="size-[1em]" />

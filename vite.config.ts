@@ -18,7 +18,7 @@ export default defineConfig({
     SvelteKitPWA({
       registerType: 'prompt',
       srcDir: './src',
-      mode: 'development',
+      // mode: 'development',
       // you don't need to do this if you're using generateSW strategy in your app
       // strategies: generateSW ? 'generateSW' : 'injectManifest',
       // you don't need to do this if you're using generateSW strategy in your app
@@ -32,7 +32,7 @@ export default defineConfig({
       manifest: {
         short_name: 'Weather',
         name: 'Weather PWA',
-        id: 'weather',
+        id: 'weather-pwa',
         orientation: 'portrait',
         start_url: '/',
         scope: '/',

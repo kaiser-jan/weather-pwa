@@ -5,28 +5,32 @@ import type {
   ForecastHour,
   ForecastInstant,
   ForecastTimestep,
-  StatisticalNumberSummary,
 } from '$lib/types/data'
-import type {
-  ForecastTimeInstant,
-  ForecastTimePeriod,
-  ForecastTimeStep,
-  MetjsonForecast as MetnoResponse,
-} from '$lib/types/metno'
-import { combineStatisticalNumberSummaries, mapNumbersToStatisticalSummaries, sum } from '../utils'
+import type { ForecastTimeInstant, ForecastTimePeriod, ForecastTimeStep, MetjsonForecast } from '$lib/types/metno'
+import { combineStatisticalNumberSummaries, mapNumbersToStatisticalSummaries } from '$lib/scripts/data/forecast/utils'
+import { useCache } from '../../cache'
+import { DateTime } from 'luxon'
 
 export async function loadMetnoLocationforecast(coords: Coordinates) {
   const url = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete.json')
   url.searchParams.set('lat', coords.latitude?.toString())
   url.searchParams.set('lon', coords.longitude?.toString())
   url.searchParams.set('altitude', coords.altitude?.toString())
+  const urlString = url.toString()
 
-  const response = await fetch(url.toString())
-  const data = (await response.json()) as MetnoResponse
+  const data = await useCache(urlString, async () => {
+    const response = await fetch(urlString.toString())
+    const data = (await response.json()) as MetjsonForecast
+    // const referenceDatetime = DateTime.fromISO(data.properties.meta.updated_at as string)
+    const expiresHeader = response.headers.get('expires')
+    const expires = expiresHeader ? DateTime.fromISO(expiresHeader) : DateTime.now()
+    return { data, expires }
+  })
+
   return transform(data)
 }
 
-function transform(metnoResponse: MetnoResponse): Forecast {
+function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'hourly' | 'daily'> {
   const hourly: ForecastHour[] = []
 
   // create hourly forecasts from every timestep where instant and next_1_hours is available
@@ -55,17 +59,9 @@ function transform(metnoResponse: MetnoResponse): Forecast {
     .toArray()
     .filter((d) => d !== null)
 
-  const total = combineStatisticalNumberSummaries(
-    daily.map((d) => {
-      return { ...d, datetime: undefined }
-    }),
-  ) as ForecastTimestep
-
   return {
-    current: hourly[0] as ForecastInstant,
     hourly,
     daily,
-    total,
   }
 }
 

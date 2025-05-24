@@ -43,3 +43,12 @@ interface ForecastValues<NumberT> {
   // can be calculated
   // temperature_dew_point: number
 }
+
+export interface DataProvider {
+  load: (coordinates: Coordinates) => Promise<{
+    current?: ForecastInstant
+    hourly?: ForecastHour[]
+    daily?: ForecastDay[]
+    total?: ForecastTimestep
+  }>
+}

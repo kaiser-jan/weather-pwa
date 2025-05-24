@@ -1,22 +1,22 @@
 <script lang="ts">
   import { env } from '$env/dynamic/public'
   import { Switch } from '$lib/components/ui/switch'
-  import { loadForecast } from '$lib/scripts/data/forecast'
   import type { Coordinates } from '$lib/types/data'
   import type { Forecast } from '$lib/types/data'
   import { toast } from 'svelte-sonner'
-  import dummyData from '$lib/scripts/data/forecast/test-data.json'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import DayColorBar from '$lib/components/DayColorBar.svelte'
   import { UmbrellaIcon } from 'lucide-svelte'
   import { CONFIG } from '$lib/scripts/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { formatRelativeDatetime } from '$lib/utils'
+  import { DateTime } from 'luxon'
+  import { useDataProviderGeosphereAT } from '$lib/scripts/data/forecast/providers/geosphere.at'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
   let useDummyLocation = $state(true)
-  let useDummyData = $state(true)
+  const provider = useDataProviderGeosphereAT()
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(onCurrentPosition, onPositionError, {
@@ -39,13 +39,7 @@
   }
 
   $effect(() => {
-    if (!useDummyData) return
-    data = { ...dummyData }
-    console.log(dummyData)
-  })
-
-  $effect(() => {
-    if (!useDummyLocation || useDummyData) return
+    if (!useDummyLocation && useDummyLocation) return
     if (env.PUBLIC_LATITUDE === undefined || env.PUBLIC_LONGITUDE === undefined || env.PUBLIC_ALTITUDE === undefined)
       return
 
@@ -57,9 +51,8 @@
   })
 
   async function loadForecastData(coords: Coordinates) {
-    data = await loadForecast(coords, 'met.no')
+    data = await provider.load(coords)
     console.log(data)
-    // console.log(JSON.stringify(data))
   }
 
   let tomorrowHourly = $derived.by(() => {
@@ -90,7 +83,7 @@
       <WeatherItemCurrent item="wind" {data} />
       <span class="inline-flex items-center gap-2">
         <UmbrellaIcon class="size-[1em]" />
-        {formatRelativeDatetime(precipitationAtDatetime)}
+        {formatRelativeDatetime(DateTime.fromJSDate(precipitationAtDatetime))}
       </span>
     </div>
   {/if}
@@ -130,10 +123,6 @@
     <div class="flex flex-row gap-2">
       <Switch bind:checked={useDummyLocation} />
       Use dummy location
-    </div>
-    <div class="flex flex-row gap-2">
-      <Switch bind:checked={useDummyData} />
-      Use dummy data
     </div>
   </div>
 </div>

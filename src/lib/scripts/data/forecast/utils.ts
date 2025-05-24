@@ -1,4 +1,5 @@
-import type { ForecastDay, ForecastHour, StatisticalNumberSummary } from '$lib/types/data'
+import type { StatisticalNumberSummary } from '$lib/types/data'
+import type { ForecastDay, ForecastHour, ForecastTimestep } from '$lib/types/data'
 
 export function mapNumbersToStatisticalSummaries<KeyT extends string>(
   items: Partial<Record<KeyT, any>>[],
@@ -70,4 +71,33 @@ export function sum(numbers: (number | undefined)[]): number {
   return numbers
     .filter((num): num is number => num !== undefined)
     .reduce((accumulator, current) => accumulator + current, 0)
+}
+
+export function combineHourlyToDailyForecast(hourly: ForecastHour[]) {
+  // aggregate the timesteps available for each day for further processing
+  const hoursPerDay = new Map<string, ForecastHour[]>()
+  for (const hour of hourly) {
+    // TODO: configurable timezone
+    const dayString = new Date(hour.datetime).toLocaleDateString('en-US', { timeZone: 'Europe/Vienna' })
+    if (!hoursPerDay.get(dayString)) hoursPerDay.set(dayString, [])
+    hoursPerDay.get(dayString)!.push(hour)
+  }
+
+  const daily: ForecastDay[] = Array.from(hoursPerDay.entries())
+    .map(([datetime, dayTimesteps]) => {
+      return { ...mapNumbersToStatisticalSummaries(dayTimesteps), datetime: new Date(datetime) }
+    })
+    .filter((d) => d !== null)
+
+  return daily
+}
+
+export function forecastTotalFromDailyForecast(daily: ForecastDay[]) {
+  const total = combineStatisticalNumberSummaries(
+    daily.map((d) => {
+      return { ...d, datetime: undefined }
+    }),
+  ) as ForecastTimestep
+
+  return total
 }
