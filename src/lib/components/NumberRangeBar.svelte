@@ -2,14 +2,16 @@
   import { generateCssRangeGradient } from '$lib/scripts/ui'
   import type { StatisticalNumberSummary } from '$lib/types/data'
   import { CONFIG } from '$lib/scripts/config'
+  import { cn } from '$lib/utils'
 
   interface Props {
-    total: StatisticalNumberSummary
+    total: Pick<StatisticalNumberSummary, 'min' | 'max'>
     instance: StatisticalNumberSummary
     color: 'clouds' | 'temperature'
+    className: string
   }
 
-  const { total, instance, color }: Props = $props()
+  const { total, instance, color, className }: Props = $props()
 
   const left = $derived(scale(instance.min))
   const right = $derived(100 - scale(instance.max))
@@ -33,7 +35,7 @@
   })
 </script>
 
-<div class="bg-foreground relative h-full w-full rounded-full">
+<div class={cn('bg-foreground relative h-full w-full rounded-full', className)}>
   <span
     class={['absolute inset-0 h-full min-w-1 rounded-full', `left-[${left}%] right-[${right}%]`, backgroundColor]}
     style={[`left: ${left}%; right: ${right}%;`, color === 'temperature' && gradientCss]

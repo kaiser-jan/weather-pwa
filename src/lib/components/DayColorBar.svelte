@@ -2,12 +2,14 @@
   import { interpolateColor } from '$lib/scripts/ui'
   import type { ForecastHour, StatisticalNumberSummary } from '$lib/types/data'
   import { CONFIG } from '$lib/scripts/config'
+  import { cn } from '$lib/utils'
 
   interface Props {
     hourly: ForecastHour[]
+    className: string
   }
 
-  const { hourly }: Props = $props()
+  const { hourly, className }: Props = $props()
 
   function createHourlyTemperatureGradient(): string {
     if (hourly.length === 0) return ''
@@ -25,4 +27,7 @@
   }
 </script>
 
-<div class="bg-foreground relative h-full w-full rounded-full" style={createHourlyTemperatureGradient()}></div>
+<div
+  class={cn('bg-foreground relative h-full w-full rounded-full', className)}
+  style={createHourlyTemperatureGradient()}
+></div>

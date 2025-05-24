@@ -116,16 +116,21 @@ export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): Forecas
   }
 }
 
+function percentageToFraction(value: number | undefined) {
+  if (value === undefined) return undefined
+  return value / 100
+}
+
 function transformTimeInstant(instant: ForecastTimeInstant): Partial<ForecastHour> {
   return {
     temperature: instant.air_temperature,
     pressure: instant.air_pressure_at_sea_level,
     relative_humidity: instant.relative_humidity,
     uvi_clear_sky: (instant as any).ultraviolet_index_clear_sky,
-    cloud_coverage: instant.cloud_area_fraction,
-    cloud_coverage_low: instant.cloud_area_fraction_low,
-    cloud_coverage_medium: instant.cloud_area_fraction_medium,
-    cloud_coverage_high: instant.cloud_area_fraction_high,
+    cloud_coverage: percentageToFraction(instant.cloud_area_fraction),
+    cloud_coverage_low: percentageToFraction(instant.cloud_area_fraction_low),
+    cloud_coverage_medium: percentageToFraction(instant.cloud_area_fraction_medium),
+    cloud_coverage_high: percentageToFraction(instant.cloud_area_fraction_high),
     fog: instant.fog_area_fraction,
     wind_speed: instant.wind_speed,
     wind_speed_gust: instant.wind_speed_of_gust,

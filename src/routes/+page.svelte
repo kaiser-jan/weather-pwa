@@ -8,10 +8,10 @@
   import dummyData from '$lib/scripts/data/forecast/test-data.json'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import DayColorBar from '$lib/components/DayColorBar.svelte'
-  import { CloudIcon, Navigation2Icon, SunIcon, UmbrellaIcon, WindIcon } from 'lucide-svelte'
+  import { UmbrellaIcon } from 'lucide-svelte'
   import { DateTime } from 'luxon'
   import { CONFIG } from '$lib/scripts/config'
-  import MathFraction from '$lib/components/MathFraction.svelte'
+  import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
@@ -57,7 +57,7 @@
   })
 
   async function loadForecastData(coords: Coordinates) {
-    data = await loadForecast(coords, 'geosphere.at')
+    data = await loadForecast(coords, 'met.no')
     console.log(data)
     // console.log(JSON.stringify(data))
   }
@@ -87,10 +87,10 @@
     if (inputDate.equals(today)) {
       return datetime.toFormat('HH:mm')
       // NOTE: this requires translation
-    } else if (inputDate.equals(today.plus({ days: 1 }))) {
-      return `Tomorrow, ${datetime.toFormat('HH:mm')}`
+      // } else if (inputDate.equals(today.plus({ days: 1 }))) {
+      //   return `Tomorrow, ${datetime.toFormat('HH:mm')}`
     } else {
-      return datetime.toFormat('cccc, HH:mm')
+      return datetime.toFormat('ccc HH:mm')
     }
   }
 </script>
@@ -102,27 +102,9 @@
     </div>
 
     <div class="bg-background flex w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
-      <span class="inline-flex items-center gap-2">
-        <CloudIcon class="size-[1em]" />
-        {Math.round(data.current.cloud_coverage)}%
-      </span>
-      {#if data.current.uvi_clear_sky}
-        <span class="inline-flex items-center gap-2">
-          <SunIcon class="size-[1em]" />
-          {Math.round(data.current.uvi_clear_sky)}
-        </span>
-      {/if}
-      <span class="inline-flex items-center gap-2">
-        <WindIcon class="size-[1em]" />
-        <span class="inline-flex items-center gap-1">
-          {Math.round(data.current.wind_speed)}
-          <MathFraction numerator={'m'} denominator={'s'} />
-        </span>
-        <Navigation2Icon
-          class="text-text-muted size-[0.8em]"
-          style={`transform: rotate(${data?.current.wind_degrees - 180}deg)`}
-        />
-      </span>
+      <WeatherItemCurrent item="cloud_coverage" {data} />
+      <WeatherItemCurrent item="uvi" {data} />
+      <WeatherItemCurrent item="wind" {data} />
       <span class="inline-flex items-center gap-2">
         <UmbrellaIcon class="size-[1em]" />
         {formatRelativeDatetime(precipitationAtDatetime)}
@@ -132,32 +114,31 @@
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  <!-- {#each data?.hourly as hour} -->
-  <!--   {hour?.temperature} -->
-  <!-- {/each} -->
-  <div class="h-2">
-    <DayColorBar hourly={hourlyTomorrow} />
-  </div>
+  <DayColorBar hourly={hourlyTomorrow} className="h-2" />
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
-      <div class="inline-flex flex-row items-center gap-2">
+      <div class="inline-flex flex-row items-center justify-between gap-2">
         <span class="w-[3ch]">{new Date(day.datetime).toLocaleDateString?.(undefined, { weekday: 'short' })}</span>
 
-        <div class="grow"></div>
+        <NumberRangeBar
+          total={{ min: 0, max: 1 }}
+          instance={day.cloud_coverage}
+          color="clouds"
+          className="h-2 w-[10%]"
+        />
 
-        <div class="h-2 w-[10%]">
-          <!-- TODO: set min and max; enforce consistent value range 0-1 -->
-          <NumberRangeBar total={data?.total.cloud_coverage} instance={day.cloud_coverage} color="clouds" />
-        </div>
         <span class="text-blue-200">{Math.round(day.precipitation_amount.sum)}mm</span>
 
-        <div class="grow"></div>
-
-        <span class="w-[2ch]">{Math.round(day.temperature.min)}</span>
-        <div class="h-2 w-[30%]">
-          <NumberRangeBar total={data?.total.temperature} instance={day.temperature} color="temperature" />
+        <div class="flex w-[40%] items-center gap-2">
+          <span class="w-[2ch]">{Math.round(day.temperature.min)}</span>
+          <NumberRangeBar
+            total={data?.total.temperature}
+            instance={day.temperature}
+            color="temperature"
+            className="h-2 w-full"
+          />
+          <span class="w-[2ch]">{Math.round(day.temperature.max)}</span>
         </div>
-        <span class="w-[2ch]">{Math.round(day.temperature.max)}</span>
       </div>
     {/each}
   </div>
