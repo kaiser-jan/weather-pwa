@@ -1,13 +1,7 @@
-import type {
-  Coordinates,
-  Forecast,
-  ForecastDay,
-  ForecastHour,
-  ForecastInstant,
-  ForecastTimestep,
-} from '$lib/types/data'
+import { defu } from 'defu'
+import type { Coordinates, Forecast, ForecastDay, ForecastHour } from '$lib/types/data'
 import type { ForecastTimeInstant, ForecastTimePeriod, ForecastTimeStep, MetjsonForecast } from '$lib/types/metno'
-import { combineStatisticalNumberSummaries, mapNumbersToStatisticalSummaries } from '$lib/scripts/data/forecast/utils'
+import { mapNumbersToStatisticalSummaries } from '$lib/scripts/data/forecast/utils'
 import { useCache } from '../../cache'
 import { DateTime } from 'luxon'
 
@@ -26,6 +20,7 @@ export async function loadMetnoLocationforecast(coords: Coordinates) {
     const expires = expiresHeader ? DateTime.fromISO(expiresHeader) : DateTime.now()
     return { data, expires }
   })
+  console.log(data)
 
   return transform(data)
 }
@@ -94,21 +89,24 @@ export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): Forecas
   const datetime = new Date(timesteps[0].time)
   datetime.setHours(0, 0, 0, 0)
 
+  // NOTE: at the end of the current day we need instant based data
+  // -> timestepBased overlaps to the next day
   return {
     // TODO: does it even make sense to use instant based data for timesteps?
     // e.g. cloud coverage from an instant doesn't really tell a lot about the following hours
-    ...instantBased,
-    temperature: {
-      min: timestepBased.air_temperature_min?.min,
-      max: timestepBased.air_temperature_min?.max,
-    },
-    uvi_clear_sky: {
-      max: Math.max(timestepBased.ultraviolet_index_clear_sky_max?.max, instantBased.uvi_clear_sky?.max),
-    },
-    precipitation_amount: { sum: timestepBased.precipitation_amount?.sum },
-    precipitation_probability: { sum: timestepBased.probability_of_precipitation?.sum },
-    thunder_probability: { sum: timestepBased.probability_of_thunder?.sum },
-    datetime,
+    ...defu(instantBased, {
+      temperature: {
+        min: timestepBased.air_temperature_min?.min,
+        max: timestepBased.air_temperature_min?.max,
+      },
+      uvi_clear_sky: {
+        max: Math.max(timestepBased.ultraviolet_index_clear_sky_max?.max, instantBased.uvi_clear_sky?.max),
+      },
+      precipitation_amount: { sum: timestepBased.precipitation_amount?.sum },
+      precipitation_probability: { sum: timestepBased.probability_of_precipitation?.sum },
+      thunder_probability: { sum: timestepBased.probability_of_thunder?.sum },
+      datetime,
+    }),
   }
 }
 
