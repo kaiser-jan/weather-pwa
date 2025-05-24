@@ -8,7 +8,7 @@
   import dummyData from '$lib/scripts/data/forecast/test-data.json'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import DayColorBar from '$lib/components/DayColorBar.svelte'
-  import { CloudIcon, Navigation2Icon, SunIcon, WindIcon } from 'lucide-svelte'
+  import { CloudIcon, Navigation2Icon, SunIcon, UmbrellaIcon, WindIcon } from 'lucide-svelte'
   import { DateTime } from 'luxon'
   import { CONFIG } from '$lib/scripts/config'
   import MathFraction from '$lib/components/MathFraction.svelte'
@@ -57,7 +57,7 @@
   })
 
   async function loadForecastData(coords: Coordinates) {
-    data = await loadForecast(coords, 'metno')
+    data = await loadForecast(coords, 'geosphere.at')
     console.log(data)
     // console.log(JSON.stringify(data))
   }
@@ -104,16 +104,18 @@
     <div class="bg-background flex w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
       <span class="inline-flex items-center gap-2">
         <CloudIcon class="size-[1em]" />
-        {Math.round(data?.current?.cloud_coverage)}%
+        {Math.round(data.current.cloud_coverage)}%
       </span>
-      <span class="inline-flex items-center gap-2">
-        <SunIcon class="size-[1em]" />
-        {Math.round(data?.current?.uvi_clear_sky)}
-      </span>
+      {#if data.current.uvi_clear_sky}
+        <span class="inline-flex items-center gap-2">
+          <SunIcon class="size-[1em]" />
+          {Math.round(data.current.uvi_clear_sky)}
+        </span>
+      {/if}
       <span class="inline-flex items-center gap-2">
         <WindIcon class="size-[1em]" />
         <span class="inline-flex items-center gap-1">
-          {Math.round(data?.current?.wind_speed)}
+          {Math.round(data.current.wind_speed)}
           <MathFraction numerator={'m'} denominator={'s'} />
         </span>
         <Navigation2Icon
@@ -122,6 +124,7 @@
         />
       </span>
       <span class="inline-flex items-center gap-2">
+        <UmbrellaIcon class="size-[1em]" />
         {formatRelativeDatetime(precipitationAtDatetime)}
       </span>
     </div>
@@ -143,6 +146,7 @@
         <div class="grow"></div>
 
         <div class="h-2 w-[10%]">
+          <!-- TODO: set min and max; enforce consistent value range 0-1 -->
           <NumberRangeBar total={data?.total.cloud_coverage} instance={day.cloud_coverage} color="clouds" />
         </div>
         <span class="text-blue-200">{Math.round(day.precipitation_amount.sum)}mm</span>

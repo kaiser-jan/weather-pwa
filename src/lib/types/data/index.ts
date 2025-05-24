@@ -36,6 +36,7 @@ interface ForecastValues<NumberT> {
   wind_speed: NumberT
   wind_speed_gust: NumberT
   wind_degrees: NumberT
+  // TODO: rain vs. snow
   precipitation_amount: NumberT
   precipitation_probability: NumberT
   thunder_probability: NumberT
