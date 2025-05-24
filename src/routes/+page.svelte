@@ -12,11 +12,18 @@
   import { formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
   import { useDataProviderGeosphereAT } from '$lib/scripts/data/forecast/providers/geosphere.at'
+  import * as Select from '$lib/components/ui/select/index.js'
+  import { useDataProviderMetNO } from '$lib/scripts/data/forecast/providers/met.no'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
   let useDummyLocation = $state(true)
-  const provider = useDataProviderGeosphereAT()
+
+  const providers = {
+    'geosphere.at': useDataProviderGeosphereAT(),
+    'met.no': useDataProviderMetNO(),
+  }
+  let providerId = $state<keyof typeof providers>('geosphere.at')
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(onCurrentPosition, onPositionError, {
@@ -39,7 +46,7 @@
   }
 
   $effect(() => {
-    if (!useDummyLocation && useDummyLocation) return
+    if (!useDummyLocation && useDummyLocation && providerId === undefined) return
     if (env.PUBLIC_LATITUDE === undefined || env.PUBLIC_LONGITUDE === undefined || env.PUBLIC_ALTITUDE === undefined)
       return
 
@@ -51,7 +58,8 @@
   })
 
   async function loadForecastData(coords: Coordinates) {
-    data = await provider.load(coords)
+    console.log(providerId)
+    data = await providers[providerId].load(coords)
     console.log(data)
   }
 
@@ -125,4 +133,24 @@
       Use dummy location
     </div>
   </div>
+
+  <Select.Root
+    portal={null}
+    selected={{ value: providerId, label: providerId }}
+    onSelectedChange={(v) => {
+      if (v) providerId = v?.value
+    }}
+  >
+    <Select.Trigger class="w-[15rem]">
+      <Select.Value placeholder="Select provider" />
+    </Select.Trigger>
+    <Select.Content>
+      <Select.Group>
+        {#each Object.keys(providers) as provider}
+          <Select.Item value={provider} label={provider}>{provider}</Select.Item>
+        {/each}
+      </Select.Group>
+    </Select.Content>
+    <Select.Input name="favoriteFruit" />
+  </Select.Root>
 </div>
