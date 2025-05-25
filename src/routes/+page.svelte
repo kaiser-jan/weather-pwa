@@ -11,20 +11,14 @@
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
-  import { useDataProviderGeosphereAT } from '$lib/scripts/data/forecast/providers/geosphere.at'
-  import * as Select from '$lib/components/ui/select/index.js'
-  import { useDataProviderMetNO } from '$lib/scripts/data/forecast/providers/met.no'
   import PwaSettings from '$lib/components/pwa/PWASettings.svelte'
+  import { providers, type ProviderId } from '$lib/scripts/data/forecast/providers'
+  import SelectAutoString from '$lib/components/SelectAutoString.svelte'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
+  let providerId = $state<ProviderId>('geosphere.at')
   let useDummyLocation = $state(true)
-
-  const providers = {
-    'geosphere.at': useDataProviderGeosphereAT(),
-    'met.no': useDataProviderMetNO(),
-  }
-  let providerId = $state<keyof typeof providers>('geosphere.at')
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(onCurrentPosition, onPositionError, {
@@ -135,25 +129,7 @@
     </div>
   </div>
 
-  <Select.Root
-    portal={null}
-    selected={{ value: providerId, label: providerId }}
-    onSelectedChange={(v) => {
-      if (v) providerId = v?.value
-    }}
-  >
-    <Select.Trigger class="w-[15rem]">
-      <Select.Value placeholder="Select provider" />
-    </Select.Trigger>
-    <Select.Content>
-      <Select.Group>
-        {#each Object.keys(providers) as provider}
-          <Select.Item value={provider} label={provider}>{provider}</Select.Item>
-        {/each}
-      </Select.Group>
-    </Select.Content>
-    <Select.Input name="favoriteFruit" />
-  </Select.Root>
+  <SelectAutoString items={Object.keys(providers)} bind:selected={providerId} />
 
   <PwaSettings />
 </div>
