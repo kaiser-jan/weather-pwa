@@ -96,7 +96,8 @@
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  <DayColorBar hourly={tomorrowHourly} className="h-2" />
+  <DayColorBar hourly={tomorrowHourly} className="h-2" parameters={['temperature']} />
+  <DayColorBar hourly={tomorrowHourly} className="h-2" parameters={['cloud_coverage', 'precipitation_amount']} />
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
       <div class="inline-flex flex-row items-center justify-between gap-2">
