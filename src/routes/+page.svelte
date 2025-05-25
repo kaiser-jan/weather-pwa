@@ -69,11 +69,25 @@
     return data?.hourly.slice(startIndex, (startIndex ?? 0) + 23)
   })
 
-  const precipitationAtDatetime = $derived(
-    data?.hourly.find((h) =>
-      h.precipitation_amount ? h.precipitation_amount > CONFIG.weather.precipitation.threshold : false,
-    )?.datetime,
-  )
+  const precipitationStartDatetime = $derived.by(() => {
+    const hourWithPrecipitation = data?.hourly.find((h) => {
+      if (h.precipitation_amount === undefined) return false
+      return h.precipitation_amount > CONFIG.weather.precipitation.threshold
+    })
+
+    if (!hourWithPrecipitation) return undefined
+    return DateTime.fromJSDate(hourWithPrecipitation.datetime)
+  })
+
+  const precipitationEndDatetime = $derived.by(() => {
+    const hourWithoutPrecipitation = data?.hourly.find((h) => {
+      if (h.precipitation_amount === undefined) return false
+      return h.precipitation_amount <= CONFIG.weather.precipitation.threshold
+    })
+
+    if (!hourWithoutPrecipitation) return undefined
+    return DateTime.fromJSDate(hourWithoutPrecipitation.datetime)
+  })
 </script>
 
 <!-- TODO: add data-vaul-drawer-wrapper -->
@@ -87,10 +101,18 @@
       <WeatherItemCurrent item="cloud_coverage" {data} />
       <WeatherItemCurrent item="uvi" {data} />
       <WeatherItemCurrent item="wind" {data} />
-      <span class="inline-flex items-center gap-2">
-        <UmbrellaIcon />
-        {formatRelativeDatetime(DateTime.fromJSDate(precipitationAtDatetime))}
-      </span>
+      {#if precipitationStartDatetime}
+        <span class="inline-flex items-center gap-2">
+          <UmbrellaIcon />
+          {#if precipitationStartDatetime > DateTime.now()}
+            {formatRelativeDatetime(precipitationStartDatetime)}
+          {:else if precipitationEndDatetime}
+            - {formatRelativeDatetime(precipitationEndDatetime)}
+          {:else}
+            now
+          {/if}
+        </span>
+      {/if}
     </div>
   {/if}
 </div>
