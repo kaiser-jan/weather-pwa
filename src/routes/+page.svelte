@@ -69,6 +69,15 @@
     return data?.hourly.slice(startIndex, (startIndex ?? 0) + 23)
   })
 
+  let todayHourlyRemaining = $derived.by(() => {
+    if (!data?.hourly) return []
+    const tomorrowMidnight = new Date()
+    tomorrowMidnight.setHours(0, 0, 0, 0)
+    tomorrowMidnight.setDate(tomorrowMidnight.getDate() + 1)
+    const stopIndex = data.hourly.findIndex((h) => new Date(h.datetime).getTime?.() > tomorrowMidnight.getTime())
+    return data?.hourly.slice(0, stopIndex - 1)
+  })
+
   const precipitationStartDatetime = $derived.by(() => {
     const hourWithPrecipitation = data?.hourly.find((h) => {
       if (h.precipitation_amount === undefined) return false
@@ -107,7 +116,7 @@
           {#if precipitationStartDatetime > DateTime.now()}
             {formatRelativeDatetime(precipitationStartDatetime)}
           {:else if precipitationEndDatetime}
-            - {formatRelativeDatetime(precipitationEndDatetime)}
+            -{formatRelativeDatetime(precipitationEndDatetime)}
           {:else}
             now
           {/if}
@@ -118,8 +127,22 @@
 </div>
 
 <div class="flex flex-col gap-4 p-4">
+  <DayColorBar
+    hourly={todayHourlyRemaining}
+    className="h-2"
+    parameters={['temperature']}
+    offset={24 - todayHourlyRemaining.length}
+  />
+  <DayColorBar
+    hourly={todayHourlyRemaining}
+    className="h-2"
+    parameters={['cloud_coverage', 'precipitation_amount']}
+    offset={24 - todayHourlyRemaining.length}
+  />
+
   <DayColorBar hourly={tomorrowHourly} className="h-2" parameters={['temperature']} />
-  <DayColorBar hourly={tomorrowHourly} className="h-2" parameters={['cloud_coverage', 'precipitation_amount']} />
+  <DayColorBar hourly={tomorrowHourly} className="h-2" parameters={['sun', 'cloud_coverage', 'precipitation_amount']} />
+
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
       <div class="inline-flex flex-row items-center justify-between gap-2">
