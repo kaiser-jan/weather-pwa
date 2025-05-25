@@ -13,7 +13,7 @@ export const colors = {
 	},
 
 	disabled: {
-		DEFAULT: 'hsl(220, 15%, 35%)',
+		DEFAULT: 'hsl(220, 15%, 30%)',
 		foreground: 'hsl(220, 15%, 65%)',
 	},
 
@@ -48,7 +48,8 @@ const config = {
 					foreground: colors.text.DEFAULT
 				},
 				muted: {
-					foreground: colors.text.disabled
+					DEFAULT: colors.disabled.DEFAULT,
+					foreground: colors.text.disabled,
 				},
 				popover: {
 					DEFAULT: colors.background

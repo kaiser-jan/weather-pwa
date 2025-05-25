@@ -57,7 +57,7 @@
   }
 
   let SWStateIcon = $derived(
-    swStateIconMap[navigator.serviceWorker.controller?.state as ServiceWorkerState] ?? LucideCircleHelp,
+    swStateIconMap[navigator.serviceWorker?.controller?.state as ServiceWorkerState] ?? LucideCircleHelp,
   )
 </script>
 
@@ -83,6 +83,6 @@
   <div class="inline-flex items-center gap-2">
     <!-- svelte-ignore element_invalid_self_closing_tag -->
     <SWStateIcon />
-    {capitalizeFirstChar(navigator.serviceWorker.controller?.state) ?? 'Unknown'}
+    {capitalizeFirstChar(navigator.serviceWorker?.controller?.state) ?? 'Unknown'}
   </div>
 </div>

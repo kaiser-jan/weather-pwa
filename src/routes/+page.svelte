@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as Drawer from '$lib/components/ui/drawer/index.js'
   import * as env from '$env/static/public'
   import { Switch } from '$lib/components/ui/switch'
   import type { Coordinates } from '$lib/types/data'
@@ -6,7 +7,7 @@
   import { toast } from 'svelte-sonner'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import DayColorBar from '$lib/components/DayColorBar.svelte'
-  import { UmbrellaIcon } from 'lucide-svelte'
+  import { LucideSettings, UmbrellaIcon } from 'lucide-svelte'
   import { CONFIG } from '$lib/scripts/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { formatRelativeDatetime } from '$lib/utils'
@@ -14,6 +15,7 @@
   import PwaSettings from '$lib/components/pwa/PWASettings.svelte'
   import { providers, type ProviderId } from '$lib/scripts/data/forecast/providers'
   import SelectAutoString from '$lib/components/SelectAutoString.svelte'
+  import { Button } from '$lib/components/ui/button'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
@@ -37,7 +39,7 @@
   }
 
   function onPositionError(positionError: GeolocationPositionError) {
-    toast.error('Failed to get Geolocation!', { description: positionError.message })
+    // TODO: show position error indicator
   }
 
   $effect(() => {
@@ -74,6 +76,7 @@
   )
 </script>
 
+<!-- TODO: add data-vaul-drawer-wrapper -->
 <div class="flex h-[30vh] w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem]">
   {#if data?.current}
     <div class="my-auto">
@@ -122,14 +125,30 @@
     {/each}
   </div>
 
-  <div class="flex flex-col gap-2">
-    <div class="flex flex-row gap-2">
-      <Switch bind:checked={useDummyLocation} />
-      Use dummy location
-    </div>
-  </div>
-
-  <SelectAutoString items={Object.keys(providers)} bind:selected={providerId} />
-
-  <PwaSettings />
+  <Drawer.Root>
+    <Drawer.Trigger asChild let:builder>
+      <Button
+        builders={[builder]}
+        variant="default"
+        size="icon"
+        class="absolute right-8 bottom-8 size-16! grow-0 rounded-full"
+      >
+        <LucideSettings class="size-8!" />
+      </Button>
+    </Drawer.Trigger>
+    <Drawer.Content>
+      <div class="flex w-full flex-col gap-4 p-4">
+        <h2 class="text-xl font-bold">Weather Data</h2>
+        <SelectAutoString items={Object.keys(providers)} bind:selected={providerId} />
+        <div class="flex flex-col gap-2">
+          <div class="flex flex-row gap-2">
+            <Switch bind:checked={useDummyLocation} />
+            Use dummy location
+          </div>
+        </div>
+        <h2 class="text-xl font-bold">PWA Options</h2>
+        <PwaSettings />
+      </div>
+    </Drawer.Content>
+  </Drawer.Root>
 </div>
