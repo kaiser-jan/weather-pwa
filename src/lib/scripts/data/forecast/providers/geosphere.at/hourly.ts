@@ -25,9 +25,9 @@ export async function loadGeosphereForecastHourly(coordinates: Coordinates): Pro
   const hourly: ForecastHour[] = []
 
   for (const [index, timestamp] of (data.timestamps as string[]).entries()) {
-    const extractParameter = (p: RequestedWeatherParameter) => {
+    const extractParameter = (p: RequestedWeatherParameter, indexOffset = 0) => {
       // TODO: why is features an array?
-      return data.features[0].properties.parameters[p].data[index] ?? undefined
+      return data.features[0].properties.parameters[p].data[index + indexOffset] ?? undefined
     }
 
     const { value: wind_speed, angleDeg: wind_degrees } = calculateVector(
@@ -39,10 +39,13 @@ export async function loadGeosphereForecastHourly(coordinates: Coordinates): Pro
       extractParameter('vgust'),
     )
 
+    // NOTE: contrary to the description, _acc values seem to be accumulated over the forecast period
     hourly.push({
       datetime: new Date(timestamp),
       temperature: extractParameter('t2m'),
-      precipitation_amount: extractParameter('rr_acc'),
+      precipitation_amount: extractParameter('rr_acc')
+        ? Math.max(extractParameter('rr_acc')! - (extractParameter('rr_acc', -1) ?? 0), 0)
+        : undefined,
       relative_humidity: extractParameter('rh2m'),
       pressure: extractParameter('sp'),
       cloud_coverage: extractParameter('tcc'),
