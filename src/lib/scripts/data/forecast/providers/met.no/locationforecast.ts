@@ -48,10 +48,9 @@ function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'hourly' | 'd
     timestepsPerDay.get(dayString)!.push(timestep)
   }
 
-  const daily: ForecastDay[] = timestepsPerDay
-    .values()
+  // BUG: Safari claims timestepsPerDay.values() is a map, so you cannot call .map on it
+  const daily: ForecastDay[] = Array.from(timestepsPerDay.values())
     .map((dayTimesteps) => aggregateTimestepsForDay(dayTimesteps))
-    .toArray()
     .filter((d) => d !== null)
 
   return {
