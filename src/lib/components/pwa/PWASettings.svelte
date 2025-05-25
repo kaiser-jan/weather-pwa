@@ -44,6 +44,9 @@
         await _loadServiceWorkerUpdate(swUrl, registration)
         isCheckingUpdates = false
       }
+
+      // NOTE: unsure whether this is required?
+      updateServiceWorkerStateWatcher()
     },
   })
 
@@ -56,9 +59,18 @@
     redundant: LucideBan,
   }
 
-  let SWStateIcon = $derived(
-    swStateIconMap[navigator.serviceWorker?.controller?.state as ServiceWorkerState] ?? LucideCircleHelp,
-  )
+  let serviceWorkerState = $state<ServiceWorkerState | undefined>(undefined)
+  let SWStateIcon = $derived(swStateIconMap[serviceWorkerState as ServiceWorkerState] ?? LucideCircleHelp)
+
+  function updateServiceWorkerStateWatcher() {
+    const applySWState = () => (serviceWorkerState = navigator.serviceWorker.controller?.state)
+    navigator.serviceWorker.controller?.removeEventListener('statechange', applySWState)
+    navigator.serviceWorker.controller?.addEventListener('statechange', applySWState)
+    // apply the current state - required on startup as the event listener doesn't fire
+    applySWState()
+  }
+
+  updateServiceWorkerStateWatcher()
 </script>
 
 <div class="flex flex-row gap-2">
@@ -83,6 +95,6 @@
   <div class="inline-flex items-center gap-2">
     <!-- svelte-ignore element_invalid_self_closing_tag -->
     <SWStateIcon />
-    {capitalizeFirstChar(navigator.serviceWorker?.controller?.state) ?? 'Unknown'}
+    {capitalizeFirstChar(serviceWorkerState) ?? 'Unknown'}
   </div>
 </div>
