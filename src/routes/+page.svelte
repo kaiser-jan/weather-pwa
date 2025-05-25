@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { env } from '$env/dynamic/public'
+  import * as env from '$env/static/public'
   import { Switch } from '$lib/components/ui/switch'
   import type { Coordinates } from '$lib/types/data'
   import type { Forecast } from '$lib/types/data'
@@ -14,6 +14,7 @@
   import { useDataProviderGeosphereAT } from '$lib/scripts/data/forecast/providers/geosphere.at'
   import * as Select from '$lib/components/ui/select/index.js'
   import { useDataProviderMetNO } from '$lib/scripts/data/forecast/providers/met.no'
+  import PwaSettings from '$lib/components/pwa/PWASettings.svelte'
 
   // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
@@ -90,7 +91,7 @@
       <WeatherItemCurrent item="uvi" {data} />
       <WeatherItemCurrent item="wind" {data} />
       <span class="inline-flex items-center gap-2">
-        <UmbrellaIcon class="size-[1em]" />
+        <UmbrellaIcon />
         {formatRelativeDatetime(DateTime.fromJSDate(precipitationAtDatetime))}
       </span>
     </div>
@@ -153,4 +154,6 @@
     </Select.Content>
     <Select.Input name="favoriteFruit" />
   </Select.Root>
+
+  <PwaSettings />
 </div>

@@ -27,7 +27,7 @@
 {#if data.current[details.datapoint] !== undefined}
   <span class="inline-flex items-center gap-2">
     <!-- svelte-ignore element_invalid_self_closing_tag -->
-    <details.icon class="size-[1em]" />
+    <details.icon />
 
     <span class="inline-flex items-center gap-0.5">
       <span>{Math.round(data.current[details.datapoint]! * (details.multiplier ?? 1))}</span>
@@ -40,7 +40,7 @@
 
     {#if item === 'wind' && data.current.wind_degrees}
       <Navigation2Icon
-        class="text-text-muted size-[0.8em]"
+        class="text-text-muted size-[0.8em]!"
         style={`transform: rotate(${data.current.wind_degrees - 180}deg)`}
       />
     {/if}

@@ -42,3 +42,8 @@ body {
   user-select: none;
   -webkit-user-select: none;
 }
+
+.lucide-icon {
+  width: 1em;
+  height: 1em;
+}
