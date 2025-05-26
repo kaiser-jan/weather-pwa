@@ -4,9 +4,8 @@
   import { Switch } from '$lib/components/ui/switch'
   import type { Coordinates, ForecastHour } from '$lib/types/data'
   import type { Forecast } from '$lib/types/data'
-  import { toast } from 'svelte-sonner'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
-  import DayColorBar from '$lib/components/DayColorBar.svelte'
+  import TimelineBar from '$lib/components/TimelineBar.svelte'
   import { ArrowRightIcon, LucideSettings, UmbrellaIcon } from 'lucide-svelte'
   import { CONFIG } from '$lib/scripts/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
@@ -135,7 +134,7 @@
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  <DayColorBar
+  <TimelineBar
     hourly={getHourlyForDate(new Date())}
     className="h-2"
     parameters={['temperature']}
@@ -148,7 +147,7 @@
         <span class="w-[3ch]">{new Date(day.datetime).toLocaleDateString?.(undefined, { weekday: 'short' })}</span>
 
         {#if getHourlyForDate(day.datetime)}
-          <DayColorBar
+          <TimelineBar
             hourly={getHourlyForDate(day.datetime)}
             startDatetime={startOfDate(day.datetime)}
             endDatetime={endOfDate(day.datetime)}
