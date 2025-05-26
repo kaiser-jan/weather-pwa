@@ -152,7 +152,7 @@
             hourly={getHourlyForDate(day.datetime)}
             startDatetime={startOfDate(day.datetime)}
             endDatetime={endOfDate(day.datetime)}
-            parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
+            parameters={['sun', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
             className="h-2 w-[40%]!"
           />
         {/if}

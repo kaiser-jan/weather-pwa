@@ -5,7 +5,9 @@
   import { cn } from '$lib/utils'
   import { DateTime, Duration, Interval } from 'luxon'
 
-  type Parameter = keyof Pick<ForecastInstant, 'temperature' | 'cloud_coverage' | 'precipitation_amount'> | 'sun'
+  type Parameter =
+    | keyof Pick<ForecastInstant, 'temperature' | 'cloud_coverage' | 'precipitation_amount' | 'wind_speed'>
+    | 'sun'
 
   interface Props {
     hourly: ForecastHour[]
@@ -27,31 +29,41 @@
 
   let firstDatetime = $derived(hourly?.[0]?.datetime)
   let lastDatetime = $derived(hourly?.[hourly.length - 1]?.datetime)
+  let barHeight = $state<number>(0)
 
+  // TODO: make this configurable in the parameter list
+  // style: gradient | color | size
+  // color: fluent | steps | constant
+  // TODO: consider adding a threshold
   const parameterStyleMap: Record<Parameter, 'gradient' | 'blocks'> = {
     cloud_coverage: 'gradient',
     precipitation_amount: 'blocks',
     temperature: 'gradient',
     sun: 'gradient',
+    wind_speed: 'blocks',
   }
 
-  function getColorFor(parameter: Parameter, hour: ForecastHour) {
+  const COLOR_ERROR = 'hsl(0, 100%, 50%)'
+
+  function getDetailsForBlock(parameter: Parameter, hour: ForecastHour): { color: string; size?: string } {
     // TODO: sun and moon
-    if (parameter === 'sun') return 'hsl(55, 65%, 65%)'
+    if (parameter === 'sun') return { color: 'hsl(55, 65%, 65%)' }
 
     const value = hour[parameter]
-    if (value === undefined) return 'hsl(0, 100%, 50%)'
+    if (value === undefined) return { color: COLOR_ERROR }
 
     switch (parameter) {
       case 'temperature':
-        return interpolateColor(CONFIG.appearance.colors.temperatureColorStops, value)
+        return { color: interpolateColor(CONFIG.appearance.colors.temperatureColorStops, value) }
       case 'cloud_coverage':
-        return `hsla(0, 0%, 70%, ${value * 100}%)`
+        return { color: `hsla(0, 0%, 70%, ${value * 100}%)` }
       case 'precipitation_amount':
-        return rainCategories.findLast((c) => value > c.threshold)?.color
-
+        return { color: rainCategories.findLast((c) => value > c.threshold)?.color ?? COLOR_ERROR }
+      case 'wind_speed':
+        // TODO: beaufort wind scale
+        return { color: 'hsl(0, 0%, 100%)', size: `${Math.pow(value / 32, 0.75) * barHeight}px` }
       default:
-        return 'hsl(0, 100%, 50%)'
+        return { color: COLOR_ERROR }
     }
   }
 
@@ -69,7 +81,7 @@
     if (hourly.length === 0) return ''
 
     const gradientStops = hourly.map(
-      (hour) => `${getColorFor(parameter, hour)} ${distanceFromDatetime(hour.datetime)}%`,
+      (hour) => `${getDetailsForBlock(parameter, hour).color} ${distanceFromDatetime(hour.datetime)}%`,
     )
 
     if (startDatetime) {
@@ -80,13 +92,18 @@
     return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
   }
 
-  function createHourlyColorsFor(parameter: Parameter) {
+  function createHourlyBlocksFor(parameter: Parameter) {
     if (hourly.length === 0) return []
-
     return hourly.map((hour) => ({
-      color: getColorFor(parameter, hour),
       position: distanceFromDatetime(hour.datetime),
+      ...getDetailsForBlock(parameter, hour),
     }))
+  }
+
+  function getWidthForHour(i: number) {
+    const currentHourEndDatetime = DateTime.fromJSDate(hourly[i].datetime).plus(interval).toJSDate()
+    const percentage = distanceFromDatetime(hourly[i + 1]?.datetime ?? currentHourEndDatetime, hourly[i].datetime)
+    return percentage + '%'
   }
 
   // https://en.wikipedia.org/wiki/Precipitation_types#Intensity
@@ -108,7 +125,10 @@
   ]
 </script>
 
-<div class={cn('bg-midground relative h-full w-full overflow-hidden rounded-full', className)}>
+<div
+  class={cn('bg-midground relative h-full w-full overflow-hidden rounded-full', className)}
+  bind:clientHeight={barHeight}
+>
   {#if startDatetime}
     <div
       class="bg-foreground absolute top-0 bottom-0 left-0 z-10"
@@ -124,20 +144,20 @@
   {#each parameters as parameter}
     {#if parameterStyleMap[parameter] === 'gradient'}
       <div class="absolute inset-0" style={createHourlyGradientFor(parameter)}></div>
-    {:else}
+    {:else if parameterStyleMap[parameter] === 'blocks'}
       <div class="absolute inset-0 flex flex-row justify-end">
-        <!-- {#each rainCategories as c} -->
-        <!--   <div -->
-        <!--     class="w-full" -->
-        <!--     style={`background-color: ${c.color}; width: ${100 / (offset + hourly.length) + 0.01}%`} -->
-        <!--   ></div> -->
-        <!-- {/each} -->
         <div style={`width: ${distanceFromDatetime(startDatetime ?? firstDatetime, firstDatetime)}%`}></div>
-        {#each createHourlyColorsFor(parameter).entries() as [i, stop]}
-          <div
-            class={`h-full ${i}`}
-            style={`background-color: ${stop.color}; width: ${distanceFromDatetime(hourly[i + 1]?.datetime ?? DateTime.fromJSDate(hourly[i].datetime).plus(interval).toJSDate(), hourly[i].datetime)}%`}
-          ></div>
+        {#each createHourlyBlocksFor(parameter).entries() as [i, stop]}
+          <div class={`flex h-full items-end justify-center ${i}`} style={`width: ${getWidthForHour(i)};`}>
+            <div
+              style={`
+                background-color: ${stop.color};
+                width: ${stop.size ?? '100%'};
+                height: ${stop.size ?? '100%'};
+                border-radius: ${stop.size !== undefined ? '100%' : '0'};
+              `}
+            ></div>
+          </div>
         {/each}
         <div
           style={`width: ${distanceFromDatetime(endDatetime ? DateTime.fromJSDate(endDatetime).minus(interval).toJSDate() : lastDatetime, lastDatetime)}%`}
