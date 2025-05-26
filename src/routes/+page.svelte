@@ -2,12 +2,12 @@
   import * as Drawer from '$lib/components/ui/drawer/index.js'
   import * as env from '$env/static/public'
   import { Switch } from '$lib/components/ui/switch'
-  import type { Coordinates } from '$lib/types/data'
+  import type { Coordinates, ForecastHour } from '$lib/types/data'
   import type { Forecast } from '$lib/types/data'
   import { toast } from 'svelte-sonner'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import DayColorBar from '$lib/components/DayColorBar.svelte'
-  import { LucideSettings, UmbrellaIcon } from 'lucide-svelte'
+  import { ArrowRightIcon, LucideSettings, UmbrellaIcon } from 'lucide-svelte'
   import { CONFIG } from '$lib/scripts/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { formatRelativeDatetime } from '$lib/utils'
@@ -60,23 +60,28 @@
     console.log(data)
   }
 
-  let tomorrowHourly = $derived.by(() => {
-    if (!data?.hourly) return []
-    const tomorrowMidnight = new Date()
-    tomorrowMidnight.setHours(0, 0, 0, 0)
-    tomorrowMidnight.setDate(tomorrowMidnight.getDate() + 1)
-    const startIndex = data.hourly.findIndex((h) => new Date(h.datetime).getTime?.() > tomorrowMidnight.getTime())
-    return data?.hourly.slice(startIndex, (startIndex ?? 0) + 23)
-  })
+  function startOfDate(date: Date = new Date()) {
+    const copy = new Date(date)
+    copy.setHours(0, 0, 0, 0)
+    return copy
+  }
+  function endOfDate(date: Date = new Date()) {
+    const copy = new Date(date)
+    copy.setHours(24, 0, 0, 0)
+    return copy
+  }
 
-  let todayHourlyRemaining = $derived.by(() => {
-    if (!data?.hourly) return []
-    const tomorrowMidnight = new Date()
-    tomorrowMidnight.setHours(0, 0, 0, 0)
-    tomorrowMidnight.setDate(tomorrowMidnight.getDate() + 1)
-    const stopIndex = data.hourly.findIndex((h) => new Date(h.datetime).getTime?.() > tomorrowMidnight.getTime())
-    return data?.hourly.slice(0, stopIndex - 1)
-  })
+  function getHourlyForDate(targetDate: Date) {
+    if (!data) return []
+    return data.hourly.filter((hour) => {
+      const d = hour.datetime
+      return (
+        d.getFullYear() === targetDate.getFullYear() &&
+        d.getMonth() === targetDate.getMonth() &&
+        d.getDate() === targetDate.getDate()
+      )
+    })
+  }
 
   const precipitationStartDatetime = $derived.by(() => {
     const hourWithPrecipitation = data?.hourly.find((h) => {
@@ -116,7 +121,10 @@
           {#if precipitationStartDatetime > DateTime.now()}
             {formatRelativeDatetime(precipitationStartDatetime)}
           {:else if precipitationEndDatetime}
-            -{formatRelativeDatetime(precipitationEndDatetime)}
+            <span class="inline-flex flex-row items-center">
+              <ArrowRightIcon class="text-text-muted" />
+              {formatRelativeDatetime(precipitationEndDatetime)}
+            </span>
           {:else}
             now
           {/if}
@@ -128,34 +136,26 @@
 
 <div class="flex flex-col gap-4 p-4">
   <DayColorBar
-    hourly={todayHourlyRemaining}
+    hourly={getHourlyForDate(new Date())}
     className="h-2"
     parameters={['temperature']}
-    offset={24 - todayHourlyRemaining.length}
+    startDatetime={startOfDate()}
   />
-  <DayColorBar
-    hourly={todayHourlyRemaining}
-    className="h-2"
-    parameters={['cloud_coverage', 'precipitation_amount']}
-    offset={24 - todayHourlyRemaining.length}
-  />
-
-  <DayColorBar hourly={tomorrowHourly} className="h-2" parameters={['temperature']} />
-  <DayColorBar hourly={tomorrowHourly} className="h-2" parameters={['sun', 'cloud_coverage', 'precipitation_amount']} />
 
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
       <div class="inline-flex flex-row items-center justify-between gap-2">
         <span class="w-[3ch]">{new Date(day.datetime).toLocaleDateString?.(undefined, { weekday: 'short' })}</span>
 
-        <NumberRangeBar
-          total={{ min: 0, max: 1 }}
-          instance={day.cloud_coverage}
-          color="clouds"
-          className="h-2 w-[10%]"
-        />
-
-        <span class="text-blue-200">{Math.round(day.precipitation_amount.sum)}mm</span>
+        {#if getHourlyForDate(day.datetime)}
+          <DayColorBar
+            hourly={getHourlyForDate(day.datetime)}
+            startDatetime={startOfDate(day.datetime)}
+            endDatetime={endOfDate(day.datetime)}
+            parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
+            className="h-2 w-[40%]!"
+          />
+        {/if}
 
         <div class="flex w-[40%] items-center gap-2">
           <span class="w-[2ch]">{Math.round(day.temperature.min)}</span>
