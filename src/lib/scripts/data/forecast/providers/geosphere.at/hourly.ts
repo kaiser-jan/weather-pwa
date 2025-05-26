@@ -43,9 +43,10 @@ export async function loadGeosphereForecastHourly(coordinates: Coordinates): Pro
     hourly.push({
       datetime: new Date(timestamp),
       temperature: extractParameter('t2m'),
-      precipitation_amount: extractParameter('rr_acc')
-        ? Math.max(extractParameter('rr_acc')! - (extractParameter('rr_acc', -1) ?? 0), 0)
-        : undefined,
+      precipitation_amount:
+        extractParameter('rr_acc') !== undefined
+          ? Math.max(extractParameter('rr_acc')! - (extractParameter('rr_acc', -1) ?? 0), 0)
+          : undefined,
       relative_humidity: extractParameter('rh2m'),
       pressure: extractParameter('sp'),
       cloud_coverage: extractParameter('tcc'),
