@@ -2,11 +2,10 @@
   import * as Drawer from '$lib/components/ui/drawer/index.js'
   import * as env from '$env/static/public'
   import { Switch } from '$lib/components/ui/switch'
-  import type { Coordinates, ForecastHour } from '$lib/types/data'
   import type { Forecast } from '$lib/types/data'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
-  import { ArrowRightIcon, LucideSettings, UmbrellaIcon } from 'lucide-svelte'
+  import { ArrowRightIcon, LucideSettings, MapPinIcon, NavigationIcon, UmbrellaIcon } from 'lucide-svelte'
   import { CONFIG } from '$lib/scripts/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { formatRelativeDatetime } from '$lib/utils'
@@ -15,48 +14,59 @@
   import { providers, type ProviderId } from '$lib/scripts/data/forecast/providers'
   import SelectAutoString from '$lib/components/SelectAutoString.svelte'
   import { Button } from '$lib/components/ui/button'
+  import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/scripts/location'
+  import { createGeolocationStore } from '$lib/stores/geolocation'
 
-  // TODO: transform data to a provider-independent format
   let data = $state<Forecast>()
   let providerId = $state<ProviderId>('geosphere.at')
-  let useDummyLocation = $state(true)
+  let locationName = $state<string>()
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(onCurrentPosition, onPositionError, {
-      enableHighAccuracy: false,
-      timeout: 15000,
-      maximumAge: 0,
-    })
-  }
+  // TODO: extract the localstorage middleware
+  let useGeolocation = $state(localStorage.getItem('use-geolocation') !== 'false')
+  $effect(() => localStorage.setItem('use-geolocation', useGeolocation ? 'true' : 'false'))
 
-  async function onCurrentPosition(position: GeolocationPosition) {
-    await loadForecastData({
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-      altitude: position.coords.altitude ?? 0,
-    })
-  }
-
-  function onPositionError(positionError: GeolocationPositionError) {
-    // TODO: show position error indicator
-  }
-
-  $effect(() => {
-    if (!useDummyLocation && useDummyLocation && providerId === undefined) return
-    if (env.PUBLIC_LATITUDE === undefined || env.PUBLIC_LONGITUDE === undefined || env.PUBLIC_ALTITUDE === undefined)
-      return
-
-    loadForecastData({
-      latitude: parseFloat(env.PUBLIC_LATITUDE),
-      longitude: parseFloat(env.PUBLIC_LONGITUDE),
-      altitude: parseFloat(env.PUBLIC_ALTITUDE),
-    })
+  const { store: geolocation, refresh: updateGeolocation } = createGeolocationStore({
+    watch: false,
+    enableHighAccuracy: false,
+    timeout: 15000,
+    maximumAge: 0,
   })
 
-  async function loadForecastData(coords: Coordinates) {
+  // TODO: properly handle data when switching location
+  // TODO: add a placeholder page when geolocation is unavailable
+
+  geolocation.subscribe((g) => {
+    if (!useGeolocation || !g.position) return
+    loadForecastData()
+  })
+
+  $effect(() => {
+    if (!useGeolocation) loadForecastData()
+  })
+
+  const dummyCoordinates = {
+    latitude: parseFloat(env.PUBLIC_LATITUDE) ?? 0,
+    longitude: parseFloat(env.PUBLIC_LONGITUDE) ?? 0,
+    altitude: parseFloat(env.PUBLIC_ALTITUDE) ?? 0,
+  }
+
+  async function loadForecastData() {
+    // exit early if geolocation is still loading
+    // TODO: warn about location errors - should this be done by subscribing to the geolocation store?
+    if (useGeolocation && ['unstarted', 'requesting', 'loading'].includes($geolocation.status)) return
+
+    const coordinates = useGeolocation ? $geolocation.position?.coords : dummyCoordinates
+    if (!coordinates) {
+      console.warn(`Unable to load data for ${useGeolocation ? 'geolocation' : 'fixed location'}, no coordinates.`)
+      return
+    }
+
     console.log(providerId)
-    data = await providers[providerId].load(coords)
+    // TODO: make altitude nullable
+    data = await providers[providerId].load(coordinates)
     console.log(data)
+    const placeOutput = await reverseGeocoding(coordinates)
+    locationName = formatPlaceAsWeatherLocation(placeOutput)
   }
 
   function startOfDate(date: Date = new Date()) {
@@ -101,10 +111,21 @@
     if (!hourWithoutPrecipitation) return undefined
     return DateTime.fromJSDate(hourWithoutPrecipitation.datetime)
   })
+
+  loadForecastData()
 </script>
 
 <!-- TODO: add data-vaul-drawer-wrapper -->
 <div class="flex h-[30vh] w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem]">
+  <button class="text-text-muted mr-auto inline-flex items-center gap-1 text-xs" onclick={updateGeolocation}>
+    {#if useGeolocation}
+      <NavigationIcon />
+    {:else}
+      <MapPinIcon />
+    {/if}
+    <span>{locationName}</span>
+  </button>
+
   {#if data?.current}
     <div class="my-auto">
       <span class="text-6xl">{Math.round(data.current.temperature)}°C</span>
@@ -187,8 +208,8 @@
         <SelectAutoString items={Object.keys(providers)} bind:selected={providerId} />
         <div class="flex flex-col gap-2">
           <div class="flex flex-row gap-2">
-            <Switch bind:checked={useDummyLocation} />
-            Use dummy location
+            <Switch bind:checked={useGeolocation} />
+            Use geolocation
           </div>
         </div>
         <h2 class="text-xl font-bold">PWA Options</h2>
