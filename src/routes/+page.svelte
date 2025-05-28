@@ -5,7 +5,15 @@
   import type { Forecast } from '$lib/types/data'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
-  import { ArrowRightIcon, DropletsIcon, LucideSettings, MapPinIcon, NavigationIcon, UmbrellaIcon } from 'lucide-svelte'
+  import {
+    ArrowRightIcon,
+    DropletsIcon,
+    LucideSettings,
+    MapPinIcon,
+    NavigationIcon,
+    RefreshCwIcon,
+    UmbrellaIcon,
+  } from 'lucide-svelte'
   import { CONFIG } from '$lib/scripts/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { formatRelativeDatetime } from '$lib/utils'
@@ -17,10 +25,12 @@
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/scripts/location'
   import { createGeolocationStore } from '$lib/stores/geolocation'
   import { getWeatherIcon } from '$lib/scripts/data/forecast/providers/symbols'
+  import { get } from 'svelte/store'
 
   let data = $state<Forecast>()
   let providerId = $state<ProviderId>('geosphere.at')
   let locationName = $state<string>()
+  let isLoading = $state(false)
 
   // TODO: extract the localstorage middleware
   let useGeolocation = $state(localStorage.getItem('use-geolocation') !== 'false')
@@ -54,20 +64,22 @@
   async function loadForecastData() {
     // exit early if geolocation is still loading
     // TODO: warn about location errors - should this be done by subscribing to the geolocation store?
-    if (useGeolocation && ['unstarted', 'requesting', 'loading'].includes($geolocation.status)) return
+    if (useGeolocation && ['unstarted', 'requesting', 'loading'].includes(get(geolocation).status)) return
 
-    const coordinates = useGeolocation ? $geolocation.position?.coords : dummyCoordinates
+    const coordinates = useGeolocation ? get(geolocation).position?.coords : dummyCoordinates
     if (!coordinates) {
       console.warn(`Unable to load data for ${useGeolocation ? 'geolocation' : 'fixed location'}, no coordinates.`)
       return
     }
 
-    console.log(providerId)
+    isLoading = true
     // TODO: make altitude nullable
     data = await providers[providerId].load(coordinates)
+    console.log(providerId)
     console.log(data)
     const placeOutput = await reverseGeocoding(coordinates)
     locationName = formatPlaceAsWeatherLocation(placeOutput)
+    isLoading = false
   }
 
   function startOfDate(date: Date = new Date()) {
@@ -126,14 +138,20 @@
 
 <!-- TODO: add data-vaul-drawer-wrapper -->
 <div class="flex h-[30vh] w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem]">
-  <button class="text-text-muted mr-auto inline-flex items-center gap-1 text-xs" onclick={updateGeolocation}>
-    {#if useGeolocation}
-      <NavigationIcon />
-    {:else}
-      <MapPinIcon />
-    {/if}
-    <span>{locationName}</span>
-  </button>
+  <div class="text-text-muted inline-flex w-full items-center justify-between text-xs">
+    <button class="mr-auto inline-flex items-center gap-1" onclick={updateGeolocation}>
+      {#if useGeolocation}
+        <NavigationIcon />
+      {:else}
+        <MapPinIcon />
+      {/if}
+      <span>{locationName}</span>
+    </button>
+
+    <button onclick={loadForecastData} class={isLoading ? 'animate-spin' : ''}>
+      <RefreshCwIcon />
+    </button>
+  </div>
 
   {#if data?.current}
     <div class="my-auto flex flex-row items-center justify-center gap-4">
