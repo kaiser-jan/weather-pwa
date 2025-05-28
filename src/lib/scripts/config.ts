@@ -6,6 +6,11 @@ export const CONFIG = {
       threshold: 0.1,
     },
   },
+  dashboard: {
+    daily: {
+      showIncompleteTimelineBar: false,
+    },
+  },
   appearance: {
     colors: {
       temperatureColorStops: [

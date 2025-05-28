@@ -5,7 +5,7 @@
   import type { Forecast } from '$lib/types/data'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
-  import { ArrowRightIcon, LucideSettings, MapPinIcon, NavigationIcon, UmbrellaIcon } from 'lucide-svelte'
+  import { ArrowRightIcon, DropletsIcon, LucideSettings, MapPinIcon, NavigationIcon, UmbrellaIcon } from 'lucide-svelte'
   import { CONFIG } from '$lib/scripts/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { formatRelativeDatetime } from '$lib/utils'
@@ -80,16 +80,24 @@
     return copy
   }
 
+  function doesDateMatch(date1: Date, date2: Date) {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    )
+  }
+
   function getHourlyForDate(targetDate: Date) {
     if (!data) return []
-    return data.hourly.filter((hour) => {
-      const d = hour.datetime
-      return (
-        d.getFullYear() === targetDate.getFullYear() &&
-        d.getMonth() === targetDate.getMonth() &&
-        d.getDate() === targetDate.getDate()
-      )
-    })
+
+    const hourly = data.hourly.filter((hour) => doesDateMatch(hour.datetime, targetDate))
+    const isToday = doesDateMatch(new Date(), targetDate)
+
+    const shouldOmit = !CONFIG.dashboard.daily.showIncompleteTimelineBar && hourly.length !== 24 && !isToday
+    if (shouldOmit) return []
+
+    return hourly
   }
 
   const precipitationStartDatetime = $derived.by(() => {
@@ -170,7 +178,7 @@
       <div class="inline-flex flex-row items-center justify-between gap-2">
         <span class="w-[3ch]">{new Date(day.datetime).toLocaleDateString(undefined, { weekday: 'short' })}</span>
 
-        {#if getHourlyForDate(day.datetime)}
+        {#if getHourlyForDate(day.datetime)?.length > 0}
           <TimelineBar
             hourly={getHourlyForDate(day.datetime)}
             startDatetime={startOfDate(day.datetime)}
@@ -178,6 +186,14 @@
             parameters={['uvi_clear_sky', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
             className="h-2 w-[40%]!"
           />
+        {:else}
+          <!-- TODO: unify this with WeatherItemCurrent, add other values -->
+          {#if day.precipitation_amount?.sum && day.precipitation_amount.sum >= 1}
+            <span class="inline-flex items-center text-blue-200">
+              <DropletsIcon />
+              {Math.round(day.precipitation_amount.sum)}mm
+            </span>
+          {/if}
         {/if}
 
         <div class="flex w-[40%] items-center gap-2">
