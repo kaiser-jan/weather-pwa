@@ -32,6 +32,7 @@
 
   let firstDatetime = $derived(hourly?.[0]?.datetime)
   let lastDatetime = $derived(hourly?.[hourly.length - 1]?.datetime)
+  let lastDatetimeEnd = $derived(DateTime.fromJSDate(lastDatetime).plus(interval).toJSDate())
   let barHeight = $state<number>(0)
 
   // TODO: make this configurable in the parameter list
@@ -80,7 +81,7 @@
     d: Date,
     d1: Date = startDatetime ?? firstDatetime,
     start: Date = startDatetime ?? firstDatetime,
-    end = endDatetime ? DateTime.fromJSDate(endDatetime).minus(interval).toJSDate() : lastDatetime,
+    end = endDatetime ? endDatetime : lastDatetimeEnd,
   ) {
     if (!d || !d1 || !start || !end) return
     return ((d.getTime() - d1.getTime()) / (end.getTime() - start.getTime())) * 100
@@ -172,7 +173,7 @@
   {#if endDatetime}
     <div
       class="bg-foreground absolute top-0 right-0 bottom-0 z-10"
-      style={`width: ${100 - (distanceFromDatetime(lastDatetime) ?? 0)}%`}
+      style={`width: ${100 - (distanceFromDatetime(lastDatetimeEnd) ?? 0)}%`}
     ></div>
   {/if}
   {#each parameters as parameter}
@@ -194,7 +195,7 @@
           </div>
         {/each}
         <div
-          style={`width: ${distanceFromDatetime(endDatetime ? DateTime.fromJSDate(endDatetime).minus(interval).toJSDate() : lastDatetime, lastDatetime)}%`}
+          style={`width: ${distanceFromDatetime(endDatetime ? DateTime.fromJSDate(endDatetime).minus(interval).toJSDate() : lastDatetimeEnd, lastDatetime)}%`}
         ></div>
       </div>
     {/if}
