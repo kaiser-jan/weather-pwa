@@ -4,6 +4,7 @@ import { calculateVector } from '$lib/utils'
 import { REQUESTED_WEATHER_PARAMETERS, type RequestedWeatherParameter } from './meta'
 import { useCache } from '../../cache'
 import { DateTime, Duration } from 'luxon'
+import { symbolToWeatherSituationMap } from './symbols'
 
 const MODEL_REFTIME_DELTA = Duration.fromObject({ hours: 6 })
 
@@ -54,6 +55,7 @@ export async function loadGeosphereForecastHourly(coordinates: Coordinates): Pro
       wind_degrees,
       // TODO: different angle for gust
       wind_speed_gust,
+      symbol: extractParameter('sy') ? symbolToWeatherSituationMap[extractParameter('sy')!] : undefined,
     })
   }
 

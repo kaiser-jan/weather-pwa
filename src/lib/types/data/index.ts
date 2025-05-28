@@ -1,3 +1,5 @@
+import type { WeatherSituation } from '$lib/scripts/data/forecast/providers/symbols'
+
 export interface Coordinates {
   latitude: number
   longitude: number
@@ -42,6 +44,7 @@ interface ForecastValues<NumberT> {
   thunder_probability: NumberT
   // can be calculated
   // temperature_dew_point: number
+  symbol: WeatherSituation
 }
 
 export interface DataProvider {

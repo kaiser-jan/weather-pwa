@@ -16,7 +16,8 @@
     "lint": "prettier --check . && eslint .",
     "generate-pwa-assets": "pwa-assets-generator",
     "openapi:metno": "bunx @hey-api/openapi-ts -i https://api.met.no/weatherapi/locationforecast/2.0/swagger -o src/lib/types/metno -p '@hey-api/typescript'",
-    "openapi:geosphere-at": "bunx @hey-api/openapi-ts -i https://dataset.api.hub.geosphere.at/v1/openapi.json  -o src/lib/types/geosphere-at -p '@hey-api/typescript'"
+    "openapi:geosphere-at": "bunx @hey-api/openapi-ts -i https://dataset.api.hub.geosphere.at/v1/openapi.json  -o src/lib/types/geosphere-at -p '@hey-api/typescript'",
+    "install:meteocons": "git clone https://github.com/basmilius/weather-icons .local/meteocons && cp -r .local/meteocons/production/fill/svg-static static/meteocons-fill-static"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.9",

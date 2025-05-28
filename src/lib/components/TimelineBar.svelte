@@ -70,7 +70,6 @@
         // TODO: beaufort wind scale
         return { color: 'hsl(0, 0%, 100%)', size: `${Math.pow(value / 32, 0.75) * barHeight}px` }
       case 'uvi_clear_sky':
-        console.log(Math.round(value), UVI_COLORS[Math.round(value)])
         return { color: UVI_COLORS[Math.round(value)] }
       default:
         return { color: COLOR_ERROR }
@@ -98,8 +97,6 @@
       gradientStops.unshift(`#FF0000 0%`)
       gradientStops.unshift(`#FF0000 ${distanceFromDatetime(hourly[0].datetime)}%`)
     }
-
-    console.log(parameter, gradientStops)
 
     return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
   }

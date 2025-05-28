@@ -36,7 +36,7 @@ export const REQUESTED_WEATHER_PARAMETERS: WeatherParameter[] = [
   // 'snowlmt',
   'sp',
   // 'sundur_acc',
-  // 'sy',
+  'sy',
   't2m',
   'tcc',
   'ugust',

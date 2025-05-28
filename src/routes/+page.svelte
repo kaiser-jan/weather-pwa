@@ -16,6 +16,7 @@
   import { Button } from '$lib/components/ui/button'
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/scripts/location'
   import { createGeolocationStore } from '$lib/stores/geolocation'
+  import { getWeatherIcon } from '$lib/scripts/data/forecast/providers/symbols'
 
   let data = $state<Forecast>()
   let providerId = $state<ProviderId>('geosphere.at')
@@ -135,7 +136,8 @@
   </button>
 
   {#if data?.current}
-    <div class="my-auto">
+    <div class="my-auto flex flex-row items-center justify-center gap-4">
+      <img class="size-30" src={`/meteocons-fill-static/${getWeatherIcon(data.current.symbol)}.svg`} />
       <span class="text-6xl">{Math.round(data.current.temperature)}°C</span>
     </div>
 
@@ -183,7 +185,7 @@
             hourly={getHourlyForDate(day.datetime)}
             startDatetime={startOfDate(day.datetime)}
             endDatetime={endOfDate(day.datetime)}
-            parameters={['uvi_clear_sky', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
+            parameters={['sun', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
             className="h-2 w-[40%]!"
           />
         {:else}
