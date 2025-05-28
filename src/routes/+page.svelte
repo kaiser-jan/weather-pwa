@@ -150,6 +150,9 @@
           {/if}
         </span>
       {/if}
+      {#if data.current.precipitation_amount && data.current.precipitation_amount > 0}
+        <WeatherItemCurrent item="precipitation_amount" {data} />
+      {/if}
     </div>
   {/if}
 </div>
@@ -165,7 +168,7 @@
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
       <div class="inline-flex flex-row items-center justify-between gap-2">
-        <span class="w-[3ch]">{new Date(day.datetime).toLocaleDateString?.(undefined, { weekday: 'short' })}</span>
+        <span class="w-[3ch]">{new Date(day.datetime).toLocaleDateString(undefined, { weekday: 'short' })}</span>
 
         {#if getHourlyForDate(day.datetime)}
           <TimelineBar
