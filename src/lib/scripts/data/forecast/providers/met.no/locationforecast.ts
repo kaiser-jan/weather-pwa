@@ -17,7 +17,7 @@ export async function loadMetnoLocationforecast(coords: Coordinates) {
     const data = (await response.json()) as MetjsonForecast
     // const referenceDatetime = DateTime.fromISO(data.properties.meta.updated_at as string)
     const expiresHeader = response.headers.get('expires')
-    const expires = expiresHeader ? DateTime.fromISO(expiresHeader) : DateTime.now()
+    const expires = expiresHeader ? DateTime.fromHTTP(expiresHeader) : DateTime.now()
     return { data, expires }
   })
   console.log(data)
