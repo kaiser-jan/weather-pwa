@@ -2,6 +2,7 @@ import type { ColorStop } from '$lib/types/ui'
 
 export const CONFIG = {
   weather: {
+    preferDerivedSymbols: true,
     precipitation: {
       threshold: 0.1,
     },

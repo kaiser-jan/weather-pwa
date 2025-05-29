@@ -24,8 +24,13 @@
   import { Button } from '$lib/components/ui/button'
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/scripts/location'
   import { createGeolocationStore } from '$lib/stores/geolocation'
-  import { getWeatherIcon } from '$lib/scripts/data/forecast/providers/symbols'
+  import {
+    deriveWeatherSituationFromInstant,
+    deriveWeatherSituationFromPeriod,
+    getWeatherIcon,
+  } from '$lib/scripts/data/forecast/providers/symbols'
   import { get } from 'svelte/store'
+  import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
 
   let data = $state<Forecast>()
   let providerId = $state<ProviderId>('geosphere.at')
@@ -155,7 +160,11 @@
 
   {#if data?.current}
     <div class="my-auto flex flex-row items-center justify-center gap-4">
-      <img class="size-30" src={`/meteocons-fill-static/${getWeatherIcon(data.current.symbol)}.svg`} />
+      <WeatherSymbol
+        className="size-30"
+        derived={deriveWeatherSituationFromInstant(data.current)}
+        provided={data.current.symbol}
+      />
       <span class="text-6xl">{Math.round(data.current.temperature)}°C</span>
     </div>
 
@@ -207,6 +216,7 @@
             className="h-2 w-[40%]!"
           />
         {:else}
+          <WeatherSymbol className="size-6" derived={deriveWeatherSituationFromPeriod(day)} />
           <!-- TODO: unify this with WeatherItemCurrent, add other values -->
           {#if day.precipitation_amount?.sum && day.precipitation_amount.sum >= 1}
             <span class="inline-flex items-center text-blue-200">

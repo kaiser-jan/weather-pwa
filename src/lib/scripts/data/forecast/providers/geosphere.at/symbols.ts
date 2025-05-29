@@ -2,14 +2,14 @@ import type { WeatherSituation } from '../symbols.ts'
 
 // prettier-ignore
 export const symbolToWeatherSituationMap: Record<number, WeatherSituation> = {
-  1:  { cloudiness: 'clear', timeOfDay: 'day' },                        // Wolkenlos                        // –
+  1:  { cloudiness: 'clear', timeOfDay: 'day' },                       // Wolkenlos                        // –
   2:  { cloudiness: 'partly', timeOfDay: 'day' },                      // Heiter                           // –
   3:  { cloudiness: 'cloudy' },                                        // Wolkig                           // –
   4:  { cloudiness: 'overcast' },                                      // Stark bewölkt                    // –
   5:  { cloudiness: 'overcast' },                                      // Bedeckt                          // bedeckt === stark bewölkt?
   6:  { mist: true },                                                  // Bodennebel                       // unsure
   7:  { fog: true },                                                   // Hochnebel                        // unsure
-  8:  { precipitation: 'drizzle', intensity: 'light' },                // Leichter Regen                   // –
+  8:  { precipitation: 'rain', intensity: 'light' },                   // Leichter Regen                   // –
   9:  { precipitation: 'rain', intensity: 'moderate' },                // Mäßiger Regen                    // –
  10:  { precipitation: 'rain', intensity: 'heavy' },                   // Starker Regen                    // no strong rain icon
  11:  { precipitation: 'sleet' },                                      // Schneeregen                      // –

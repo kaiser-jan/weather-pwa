@@ -1,6 +1,8 @@
+import type { ForecastDay, ForecastInstant } from '$lib/types/data'
+
 export type WeatherSituation = {
-  precipitation?: 'drizzle' | 'rain' | 'sleet' | 'snow' | 'hail'
-  intensity?: 'light' | 'moderate' | 'heavy'
+  precipitation?: 'rain' | 'sleet' | 'snow' | 'hail'
+  intensity?: 'drizzle' | 'light' | 'moderate' | 'heavy'
   thunder?: boolean
   fog?: boolean
   mist?: boolean
@@ -30,18 +32,67 @@ export function getWeatherIcon(situation: WeatherSituation): string {
 
   if (situation.fog) {
     if (situation.cloudiness === 'partly') return `partly-cloudy${tF}-fog`
-    return `fog-${t}`
+    return `fog${t}`
   }
 
   if (situation.mist) return 'mist'
   if (situation.haze) {
     if (situation.cloudiness === 'partly') return `partly-cloudy${tF}-haze`
-    return `haze-${t}`
+    return `haze${t}`
   }
 
   if (situation.cloudiness === 'partly') return `partly-cloudy${tF}`
   if (situation.cloudiness === 'cloudy') return 'cloudy'
   if (situation.cloudiness === 'overcast') return `overcast${t}`
 
-  return `clear-${tF}`
+  return `clear${tF}`
+}
+
+export function deriveWeatherSituationFromInstant(
+  data: Partial<ForecastInstant>,
+  useSymbolData = true,
+): WeatherSituation {
+  const situation: WeatherSituation = {}
+
+  if (data.thunder_probability ? data.thunder_probability > 20 : data.symbol?.thunder && useSymbolData)
+    situation.thunder = true
+
+  if (data.precipitation_amount) {
+    // TODO: rain vs. snow
+    situation.precipitation = 'rain'
+
+    // TODO: unite with rain categories
+    if (data.precipitation_amount > 5) situation.intensity = 'heavy'
+    else if (data.precipitation_amount > 2.5) situation.intensity = 'moderate'
+    else if (data.precipitation_amount > 0.2) situation.intensity = 'light'
+    else situation.intensity = 'drizzle'
+  }
+  if (data.fog && data.fog > 20) situation.fog = true
+
+  if (data.cloud_coverage) {
+    if (data.cloud_coverage > 0.75) situation.cloudiness = 'overcast'
+    else if (data.cloud_coverage > 0.5) situation.cloudiness = 'cloudy'
+    else if (data.cloud_coverage > 0.25) situation.cloudiness = 'partly'
+    else situation.cloudiness = 'clear'
+  }
+
+  return situation
+}
+
+// TODO: derive data from symbols
+export function deriveWeatherSituationFromPeriod(data: ForecastDay): WeatherSituation {
+  return deriveWeatherSituationFromInstant({
+    temperature: data.temperature?.max,
+    pressure: data.pressure?.avg,
+    relative_humidity: data.relative_humidity?.avg,
+    uvi_clear_sky: data.uvi_clear_sky?.max,
+    cloud_coverage: data.cloud_coverage?.avg,
+    fog: data.fog?.avg,
+    wind_speed: data.wind_speed?.max,
+    wind_speed_gust: data.wind_speed_gust?.max,
+    // TODO: rain vs. snow
+    precipitation_amount: data.precipitation_amount?.max,
+    precipitation_probability: data.precipitation_amount?.max,
+    thunder_probability: data.thunder_probability?.max,
+  })
 }

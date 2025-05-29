@@ -18,8 +18,10 @@ export type StatisticalNumberSummary = { min: number; avg: number; max: number; 
 type ForecastMeta = { datetime: Date }
 
 export type ForecastInstant = ForecastValues<number | undefined>
+// TODO: rename to ForecastTimePeriod
 export type ForecastTimestep = ForecastValues<Partial<StatisticalNumberSummary>>
 
+// TODO: move partial to the instant and timestep
 export type ForecastHour = ForecastMeta & Partial<ForecastInstant>
 export type ForecastDay = ForecastMeta & Partial<ForecastTimestep>
 
