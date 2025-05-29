@@ -207,24 +207,26 @@
       <div class="inline-flex flex-row items-center justify-between gap-2">
         <span class="w-[3ch]">{new Date(day.datetime).toLocaleDateString(undefined, { weekday: 'short' })}</span>
 
-        {#if getHourlyForDate(day.datetime)?.length > 0}
-          <TimelineBar
-            hourly={getHourlyForDate(day.datetime)}
-            startDatetime={startOfDate(day.datetime)}
-            endDatetime={endOfDate(day.datetime)}
-            parameters={['sun', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
-            className="h-2 w-[40%]!"
-          />
-        {:else}
-          <WeatherSymbol className="size-6" derived={deriveWeatherSituationFromPeriod(day)} />
-          <!-- TODO: unify this with WeatherItemCurrent, add other values -->
-          {#if day.precipitation_amount?.sum && day.precipitation_amount.sum >= 1}
-            <span class="inline-flex items-center text-blue-200">
-              <DropletsIcon />
-              {Math.round(day.precipitation_amount.sum)}mm
-            </span>
+        <div class="flex w-[40%] gap-2">
+          {#if getHourlyForDate(day.datetime)?.length > 0}
+            <TimelineBar
+              hourly={getHourlyForDate(day.datetime)}
+              startDatetime={startOfDate(day.datetime)}
+              endDatetime={endOfDate(day.datetime)}
+              parameters={['sun', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
+              className="h-2"
+            />
+          {:else}
+            <WeatherSymbol className="size-6" derived={deriveWeatherSituationFromPeriod(day)} />
+            <!-- TODO: unify this with WeatherItemCurrent, add other values -->
+            {#if day.precipitation_amount?.sum && day.precipitation_amount.sum >= 1}
+              <span class="inline-flex items-center gap-1 text-blue-200">
+                <DropletsIcon />
+                {Math.round(day.precipitation_amount.sum)}mm
+              </span>
+            {/if}
           {/if}
-        {/if}
+        </div>
 
         <div class="flex w-[40%] items-center gap-2">
           <span class="w-[2ch]">{Math.round(day.temperature.min)}</span>

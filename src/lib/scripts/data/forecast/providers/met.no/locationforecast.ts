@@ -101,7 +101,10 @@ export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): Forecas
       uvi_clear_sky: {
         max: Math.max(timestepBased.ultraviolet_index_clear_sky_max?.max, instantBased.uvi_clear_sky?.max),
       },
-      precipitation_amount: { sum: timestepBased.precipitation_amount?.sum },
+      precipitation_amount: {
+        sum: timestepBased.precipitation_amount?.sum,
+        max: timestepBased.precipitation_amount_max?.max ?? timestepBased.precipitation_amount.max,
+      },
       precipitation_probability: { sum: timestepBased.probability_of_precipitation?.sum },
       thunder_probability: { sum: timestepBased.probability_of_thunder?.sum },
       datetime,

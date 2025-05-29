@@ -67,6 +67,7 @@ export function deriveWeatherSituationFromInstant(
     else if (data.precipitation_amount > 0.2) situation.intensity = 'light'
     else situation.intensity = 'drizzle'
   }
+
   if (data.fog && data.fog > 20) situation.fog = true
 
   if (data.cloud_coverage) {
