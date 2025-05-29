@@ -31,15 +31,14 @@
   } from '$lib/scripts/data/forecast/providers/symbols'
   import { get } from 'svelte/store'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
+  import { persistantState } from '$lib/scripts/state.svelte'
 
   let data = $state<Forecast>()
-  let providerId = $state<ProviderId>('geosphere.at')
+
+  let providerId = persistantState<ProviderId>('provider-id', 'geosphere.at')
   let locationName = $state<string>()
   let isLoading = $state(false)
-
-  // TODO: extract the localstorage middleware
-  let useGeolocation = $state(localStorage.getItem('use-geolocation') !== 'false')
-  $effect(() => localStorage.setItem('use-geolocation', useGeolocation ? 'true' : 'false'))
+  let useGeolocation = persistantState('use-geolocation', true)
 
   const { store: geolocation, refresh: updateGeolocation } = createGeolocationStore({
     watch: false,
@@ -52,12 +51,12 @@
   // TODO: add a placeholder page when geolocation is unavailable
 
   geolocation.subscribe((g) => {
-    if (!useGeolocation || !g.position) return
+    if (!useGeolocation.value || !g.position) return
     loadForecastData()
   })
 
   $effect(() => {
-    if (!useGeolocation) loadForecastData()
+    if (!useGeolocation.value) loadForecastData()
   })
 
   const dummyCoordinates = {
@@ -69,18 +68,20 @@
   async function loadForecastData() {
     // exit early if geolocation is still loading
     // TODO: warn about location errors - should this be done by subscribing to the geolocation store?
-    if (useGeolocation && ['unstarted', 'requesting', 'loading'].includes(get(geolocation).status)) return
+    if (useGeolocation.value && ['unstarted', 'requesting', 'loading'].includes(get(geolocation).status)) return
 
-    const coordinates = useGeolocation ? get(geolocation).position?.coords : dummyCoordinates
+    const coordinates = useGeolocation.value ? get(geolocation).position?.coords : dummyCoordinates
     if (!coordinates) {
-      console.warn(`Unable to load data for ${useGeolocation ? 'geolocation' : 'fixed location'}, no coordinates.`)
+      console.warn(
+        `Unable to load data for ${useGeolocation.value ? 'geolocation' : 'fixed location'}, no coordinates.`,
+      )
       return
     }
 
     isLoading = true
     // TODO: make altitude nullable
-    data = await providers[providerId].load(coordinates)
-    console.log(providerId)
+    data = await providers[providerId.value].load(coordinates)
+    console.log(providerId.value)
     console.log(data)
     const placeOutput = await reverseGeocoding(coordinates)
     locationName = formatPlaceAsWeatherLocation(placeOutput)
@@ -145,7 +146,7 @@
 <div class="flex h-[30vh] w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem]">
   <div class="text-text-muted inline-flex w-full items-center justify-between text-xs">
     <button class="mr-auto inline-flex items-center gap-1" onclick={updateGeolocation}>
-      {#if useGeolocation}
+      {#if useGeolocation.value}
         <NavigationIcon />
       {:else}
         <MapPinIcon />
@@ -256,10 +257,10 @@
     <Drawer.Content>
       <div class="flex w-full flex-col gap-4 p-4">
         <h2 class="text-xl font-bold">Weather Data</h2>
-        <SelectAutoString items={Object.keys(providers)} bind:selected={providerId} />
+        <SelectAutoString items={Object.keys(providers)} bind:selected={providerId.value} />
         <div class="flex flex-col gap-2">
           <div class="flex flex-row gap-2">
-            <Switch bind:checked={useGeolocation} />
+            <Switch bind:checked={useGeolocation.value} />
             Use geolocation
           </div>
         </div>
