@@ -11,6 +11,7 @@
     LucideSettings,
     MapPinIcon,
     NavigationIcon,
+    NavigationOffIcon,
     RefreshCwIcon,
     UmbrellaIcon,
   } from 'lucide-svelte'
@@ -32,6 +33,7 @@
   import { get } from 'svelte/store'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
   import { persistantState } from '$lib/scripts/state.svelte'
+  import LoaderPulsatingRing from '$lib/components/LoaderPulsatingRing.svelte'
 
   let data = $state<Forecast>()
 
@@ -64,10 +66,8 @@
     longitude: parseFloat(env.PUBLIC_LONGITUDE) ?? 0,
     altitude: parseFloat(env.PUBLIC_ALTITUDE) ?? 0,
   }
-
   async function loadForecastData() {
     // exit early if geolocation is still loading
-    // TODO: warn about location errors - should this be done by subscribing to the geolocation store?
     if (useGeolocation.value && ['unstarted', 'requesting', 'loading'].includes(get(geolocation).status)) return
 
     const coordinates = useGeolocation.value ? get(geolocation).position?.coords : dummyCoordinates
@@ -139,6 +139,28 @@
     return DateTime.fromJSDate(hourWithoutPrecipitation.datetime)
   })
 
+  let geolocationStateDetails = $derived.by((): { icon: typeof NavigationIcon | null; label: string | undefined } => {
+    const ERROR_LABELS: Record<number, string> = {
+      [GeolocationPositionError.TIMEOUT]: 'Timed Out',
+      [GeolocationPositionError.PERMISSION_DENIED]: 'Denied',
+      [GeolocationPositionError.POSITION_UNAVAILABLE]: 'Unavailable',
+    } as const
+
+    switch ($geolocation.status) {
+      case 'unstarted':
+      case 'requesting':
+      case 'loading':
+        return { icon: null, label: 'Loading...' }
+      case 'unsupported':
+      case 'unpermitted':
+      case 'error':
+        const error = $geolocation.error?.code as keyof typeof ERROR_LABELS | null
+        return { icon: NavigationOffIcon, label: error ? ERROR_LABELS[error] : 'Error' }
+      case 'active':
+        return { icon: NavigationIcon, label: locationName }
+    }
+  })
+
   loadForecastData()
 </script>
 
@@ -147,11 +169,15 @@
   <div class="text-text-muted inline-flex w-full items-center justify-between text-xs">
     <button class="mr-auto inline-flex items-center gap-1" onclick={updateGeolocation}>
       {#if useGeolocation.value}
-        <NavigationIcon />
+        {#if geolocationStateDetails.icon}
+          <geolocationStateDetails.icon />
+        {:else}
+          <LoaderPulsatingRing className="size-4" />
+        {/if}
       {:else}
         <MapPinIcon />
       {/if}
-      <span>{locationName}</span>
+      <span>{(useGeolocation ? geolocationStateDetails.label : locationName) ?? 'Unknown'}</span>
     </button>
 
     <button onclick={loadForecastData} class={isLoading ? 'animate-spin' : ''}>

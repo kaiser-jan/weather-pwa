@@ -1,7 +1,7 @@
 <script lang="ts">
   import { cn } from '$lib/utils'
 
-  let { className }: { className: string } = $props()
+  let { className }: { className?: string } = $props()
 </script>
 
 <span class={cn('loader shrink-0', className)}></span>
