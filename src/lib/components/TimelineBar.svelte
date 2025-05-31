@@ -231,7 +231,9 @@
             ></div>
           </div>
         {/each}
-        <div style={`width: ${distanceFromDatetime(endDatetime ? endDatetime : lastDatetimeEnd, lastDatetime)}%`}></div>
+        <div
+          style={`width: ${distanceFromDatetime(endDatetime ? endDatetime : lastDatetimeEnd, lastDatetimeEnd)}%`}
+        ></div>
       </div>
     {/if}
   {/each}
