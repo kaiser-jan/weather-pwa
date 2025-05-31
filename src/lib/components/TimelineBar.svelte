@@ -4,6 +4,7 @@
   import { CONFIG } from '$lib/scripts/config'
   import { cn } from '$lib/utils'
   import { DateTime, Duration, Interval } from 'luxon'
+  import { onDestroy } from 'svelte'
 
   type Parameter =
     | keyof Pick<
@@ -125,8 +126,8 @@
     description: string
   }[] = [
     { threshold: -1, color: 'hsla(0, 0%, 0%, 0)', description: 'No Rain' },
-    { threshold: 0.01, color: 'hsla(210, 50%, 55%, 0.6)', description: 'Drizzle' },
-    { threshold: 0.2, color: 'hsla(210, 50%, 55%, 0.8)', description: 'Light Rain' },
+    { threshold: 0.01, color: 'hsla(210, 50%, 55%, 0.4)', description: 'Drizzle' },
+    { threshold: 0.2, color: 'hsla(210, 50%, 55%, 0.7)', description: 'Light Rain' },
     { threshold: 2.5, color: 'hsla(215, 50%, 55%, 1)', description: 'Moderate Rain' },
     { threshold: 5, color: 'hsla(225, 50%, 40%, 1)', description: 'Heavy Rain' },
     { threshold: 10, color: 'hsla(230, 65%, 32%, 1)', description: 'Very Heavy Rain' },
@@ -158,6 +159,13 @@
     '#FFEDFF',
     '#FFFFFF',
   ] as const
+
+  let now = $state(new Date())
+  const intervalUpdateCurrentDate = setInterval(() => {
+    now = new Date()
+  }, 60000)
+
+  onDestroy(() => clearInterval(intervalUpdateCurrentDate))
 </script>
 
 <div
@@ -168,6 +176,12 @@
     <div
       class="bg-foreground absolute top-0 bottom-0 left-0 z-10"
       style={`width: ${distanceFromDatetime(firstDatetime)}%`}
+    ></div>
+  {/if}
+  {#if startDatetime && Date.now() > firstDatetime?.getTime() && Date.now() < lastDatetimeEnd?.getTime()}
+    <div
+      class="stripe-pattern absolute top-0 bottom-0 z-100"
+      style={`width: ${distanceFromDatetime(now, firstDatetime)}%; left: ${distanceFromDatetime(firstDatetime, startDatetime)}%;`}
     ></div>
   {/if}
   {#if endDatetime}
@@ -207,10 +221,10 @@
     background-color: var(--color-blue-500);
     background: repeating-linear-gradient(
       45deg,
-      hsl(220, 20%, 20%),
-      hsl(220, 20%, 20%) 5px,
-      hsl(220, 25%, 12%) 5px,
-      hsl(220, 25%, 12%) 10px
+      hsla(220, 20%, 20%, 45%),
+      hsla(220, 20%, 20%, 45%) 4px,
+      hsla(220, 25%, 12%, 70%) 4px,
+      hsla(220, 25%, 12%, 70%) 8px
     );
   }
 </style>
