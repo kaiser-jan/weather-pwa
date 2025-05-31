@@ -28,6 +28,7 @@
     "@tailwindcss/postcss": "^4.1.7",
     "@tailwindcss/vite": "^4.1.7",
     "@types/luxon": "^3.6.2",
+    "@types/suncalc": "^1.9.2",
     "@types/uuid": "^10.0.0",
     "@vite-pwa/assets-generator": "^1.0.0",
     "@vite-pwa/sveltekit": "^1.0.0",
@@ -56,6 +57,7 @@
     "idb": "^8.0.3",
     "lucide-svelte": "^0.511.0",
     "luxon": "^3.6.1",
+    "suncalc": "^1.9.0",
     "tailwind-merge": "^3.3.0",
     "tailwind-variants": "^1.0.0"
   }

@@ -67,11 +67,13 @@
     latitude: parseFloat(env.PUBLIC_LATITUDE) ?? 0,
     altitude: parseFloat(env.PUBLIC_ALTITUDE) ?? 0,
   }
+
+  let coordinates = $derived(useGeolocation.value ? get(geolocation).position?.coords : dummyCoordinates)
+
   async function loadForecastData() {
     // exit early if geolocation is still loading
     if (useGeolocation.value && ['unstarted', 'requesting', 'loading'].includes(get(geolocation).status)) return
 
-    const coordinates = useGeolocation.value ? get(geolocation).position?.coords : dummyCoordinates
     if (!coordinates) {
       console.warn(
         `Unable to load data for ${useGeolocation.value ? 'geolocation' : 'fixed location'}, no coordinates.`,
@@ -209,6 +211,7 @@
     parameters={['temperature']}
     startDatetime={startOfDate()}
     marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m).toJSDate())}
+    {coordinates}
     className="h-2"
   />
 
@@ -223,8 +226,9 @@
               hourly={getHourlyForDate(day.datetime)}
               startDatetime={startOfDate(day.datetime)}
               endDatetime={endOfDate(day.datetime)}
-              parameters={['sun', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
+              parameters={['moon', 'sun', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
               marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.fromJSDate(day.datetime).set(m).toJSDate())}
+              {coordinates}
               className="h-2"
             />
           {:else}

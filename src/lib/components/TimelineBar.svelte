@@ -1,6 +1,6 @@
 <script lang="ts">
   import { interpolateColor } from '$lib/scripts/ui'
-  import type { ForecastHour, ForecastInstant, StatisticalNumberSummary } from '$lib/types/data'
+  import type { Coordinates, ForecastHour, ForecastInstant, StatisticalNumberSummary } from '$lib/types/data'
   import { CONFIG } from '$lib/scripts/config'
   import { cn } from '$lib/utils'
   import { DateTime, Duration, Interval } from 'luxon'
@@ -12,6 +12,7 @@
         'temperature' | 'cloud_coverage' | 'precipitation_amount' | 'wind_speed' | 'uvi_clear_sky'
       >
     | 'sun'
+    | 'moon'
 
   interface Props {
     hourly: ForecastHour[]
@@ -20,6 +21,7 @@
     endDatetime?: Date
     interval?: Duration
     marks?: Date[]
+    coordinates?: Coordinates
     className: string
   }
 
@@ -30,6 +32,7 @@
     endDatetime,
     interval = Duration.fromObject({ hour: 1 }),
     marks = [],
+    coordinates,
     className,
   }: Props = $props()
 
@@ -47,6 +50,7 @@
     precipitation_amount: 'blocks',
     temperature: 'gradient',
     sun: 'gradient',
+    moon: 'gradient',
     wind_speed: 'blocks',
     uvi_clear_sky: 'gradient',
   }
@@ -55,7 +59,8 @@
 
   function getDetailsForBlock(parameter: Parameter, hour: ForecastHour): { color: string; size?: string } {
     // TODO: sun and moon
-    if (parameter === 'sun') return { color: 'hsl(55, 65%, 65%)' }
+    if (parameter === 'sun') return { color: getSunlightColor(hour.datetime, coordinates) }
+    if (parameter === 'moon') return { color: getMoonlightColor(hour.datetime, coordinates) }
 
     const value = hour[parameter]
     if (value === undefined) {
@@ -161,6 +166,24 @@
     '#FFEDFF',
     '#FFFFFF',
   ] as const
+
+  import SunCalc from 'suncalc'
+
+  export function getSunlightColor(date: Date, coordinates?: Coordinates): string {
+    if (!coordinates) return 'hsl(55, 65%, 65%)'
+    const position = SunCalc.getPosition(date, coordinates.latitude, coordinates.longitude)
+    const value = Math.max(0, Math.sin(position.altitude)) // altitude is in radians
+    return `hsla(55, 65%, 65%, ${value * 100}%)`
+  }
+  export function getMoonlightColor(date: Date, coordinates?: Coordinates): string {
+    if (!coordinates) return 'hsl(55, 65%, 65%)'
+    const position = SunCalc.getMoonPosition(date, coordinates.latitude, coordinates.longitude)
+    const illumination = SunCalc.getMoonIllumination(date)
+    const positionFactor = Math.max(0, Math.sin(position.altitude)) // altitude is in radians
+    const illuminationFactor = illumination.fraction / 2 + 0.5
+    const value = positionFactor * illuminationFactor
+    return `hsla(262, 48%, 92%, ${value * 100}%)`
+  }
 
   let now = $state(new Date())
   const intervalUpdateCurrentDate = setInterval(() => {
