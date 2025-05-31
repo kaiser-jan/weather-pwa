@@ -5,6 +5,7 @@ import { REQUESTED_WEATHER_PARAMETERS, type RequestedWeatherParameter } from './
 import { useCache } from '../../cache'
 import { DateTime, Duration } from 'luxon'
 import { symbolToWeatherSituationMap } from './symbols'
+import { startOfDate } from '$lib/scripts/datetime'
 
 const MODEL_REFTIME_DELTA = Duration.fromObject({ hours: 6 })
 
@@ -12,6 +13,7 @@ export async function loadGeosphereForecastHourly(coordinates: Coordinates): Pro
   const url = new URL('https://dataset.api.hub.geosphere.at/v1/timeseries/forecast/nwp-v1-1h-2500m')
   url.searchParams.set('lat_lon', coordinates.latitude?.toString() + ',' + coordinates.longitude?.toString())
   REQUESTED_WEATHER_PARAMETERS.forEach((p) => url.searchParams.append('parameters', p))
+  url.searchParams.set('start', startOfDate().toISOString())
   const urlString = url.toString()
 
   // TODO: this will fill up local storage with data from different locations
@@ -44,10 +46,9 @@ export async function loadGeosphereForecastHourly(coordinates: Coordinates): Pro
     hourly.push({
       datetime: new Date(timestamp),
       temperature: extractParameter('t2m'),
-      precipitation_amount:
-        extractParameter('rr_acc') !== undefined
-          ? Math.max(extractParameter('rr_acc')! - (extractParameter('rr_acc', -1) ?? 0), 0)
-          : undefined,
+      // TODO: rr_acc is null for the first hour - why?
+      // Is this an internal error or does rr_acc represent accumulated precipitation until this timestamp?
+      precipitation_amount: Math.max(extractParameter('rr_acc') ?? 0 - (extractParameter('rr_acc', -1) ?? 0), 0),
       relative_humidity: extractParameter('rh2m'),
       pressure: extractParameter('sp'),
       cloud_coverage: extractParameter('tcc'),
