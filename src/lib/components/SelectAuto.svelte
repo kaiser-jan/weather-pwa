@@ -5,12 +5,13 @@
   interface Props {
     items: Selected<T>[]
     selected: Selected<T>
+    onselect: (selected: Selected<T> | undefined) => void
   }
 
-  let { items, selected = $bindable() }: Props = $props()
+  let { items, selected = $bindable(), onselect }: Props = $props()
 </script>
 
-<Select.Root portal={null} bind:selected>
+<Select.Root portal={null} bind:selected onSelectedChange={onselect}>
   <Select.Trigger>
     <Select.Value placeholder="Select provider" />
   </Select.Trigger>

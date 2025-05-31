@@ -34,6 +34,7 @@
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
   import { persistantState } from '$lib/scripts/state.svelte'
   import LoaderPulsatingRing from '$lib/components/LoaderPulsatingRing.svelte'
+  import { tick } from 'svelte'
 
   let data = $state<Forecast>()
 
@@ -55,10 +56,6 @@
   geolocation.subscribe((g) => {
     if (!useGeolocation.value || !g.position) return
     loadForecastData()
-  })
-
-  $effect(() => {
-    if (!useGeolocation.value) loadForecastData()
   })
 
   const dummyCoordinates = {
@@ -277,10 +274,14 @@
     <Drawer.Content>
       <div class="flex w-full flex-col gap-4 p-4">
         <h2 class="text-xl font-bold">Weather Data</h2>
-        <SelectAutoString items={Object.keys(providers)} bind:selected={providerId.value} />
+        <SelectAutoString
+          items={Object.keys(providers)}
+          bind:selected={providerId.value}
+          onselect={() => tick().then(loadForecastData)}
+        />
         <div class="flex flex-col gap-2">
           <div class="flex flex-row gap-2">
-            <Switch bind:checked={useGeolocation.value} />
+            <Switch bind:checked={useGeolocation.value} onchange={loadForecastData} />
             Use geolocation
           </div>
         </div>
