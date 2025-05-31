@@ -55,7 +55,7 @@
     uvi_clear_sky: 'gradient',
   }
 
-  const COLOR_ERROR = 'hsl(0, 100%, 50%)'
+  const COLOR_ERROR = 'hsla(0, 100%, 50%, 0%)'
 
   function getDetailsForBlock(parameter: Parameter, hour: ForecastHour): { color: string; size?: string } {
     // TODO: sun and moon
@@ -103,8 +103,8 @@
     )
 
     if (startDatetime) {
-      gradientStops.unshift(`#FF0000 0%`)
-      gradientStops.unshift(`#FF0000 ${distanceFromDatetime(hourly[0].datetime)}%`)
+      gradientStops.unshift(`${COLOR_ERROR} 0%`)
+      gradientStops.unshift(`${COLOR_ERROR} ${distanceFromDatetime(hourly[0].datetime)}%`)
     }
 
     return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
@@ -169,20 +169,24 @@
 
   import SunCalc from 'suncalc'
 
+  const sunColor = (factor: number) => `hsla(55, 65%, 65%, ${factor * 100}%)`
+  const moonColor = (factor: number) => `hsla(260, 85%, 85%, ${factor * 100}%)`
+
   export function getSunlightColor(date: Date, coordinates?: Coordinates): string {
-    if (!coordinates) return 'hsl(55, 65%, 65%)'
+    if (!coordinates) return sunColor(1)
     const position = SunCalc.getPosition(date, coordinates.latitude, coordinates.longitude)
     const value = Math.max(0, Math.sin(position.altitude)) // altitude is in radians
-    return `hsla(55, 65%, 65%, ${value * 100}%)`
+    return sunColor(value)
   }
+
   export function getMoonlightColor(date: Date, coordinates?: Coordinates): string {
-    if (!coordinates) return 'hsl(55, 65%, 65%)'
+    if (!coordinates) return moonColor(1)
     const position = SunCalc.getMoonPosition(date, coordinates.latitude, coordinates.longitude)
     const illumination = SunCalc.getMoonIllumination(date)
     const positionFactor = Math.max(0, Math.sin(position.altitude)) // altitude is in radians
     const illuminationFactor = illumination.fraction / 2 + 0.5
     const value = positionFactor * illuminationFactor
-    return `hsla(262, 48%, 92%, ${value * 100}%)`
+    return moonColor(value)
   }
 
   let now = $state(new Date())
@@ -194,25 +198,13 @@
 </script>
 
 <div
-  class={cn('bg-midground relative h-full w-full overflow-hidden rounded-full', className)}
+  class={cn('bg-foreground relative h-full w-full overflow-hidden rounded-full', className)}
   bind:clientHeight={barHeight}
 >
-  {#if startDatetime}
-    <div
-      class="bg-foreground absolute top-0 bottom-0 left-0 z-10"
-      style={`width: ${distanceFromDatetime(firstDatetime)}%`}
-    ></div>
-  {/if}
   {#if startDatetime && Date.now() > firstDatetime?.getTime() && Date.now() < lastDatetimeEnd?.getTime()}
     <div
       class="stripe-pattern absolute top-0 bottom-0 z-100"
       style={`width: ${distanceFromDatetime(now, firstDatetime)}%; left: ${distanceFromDatetime(firstDatetime, startDatetime)}%;`}
-    ></div>
-  {/if}
-  {#if endDatetime}
-    <div
-      class="bg-foreground absolute top-0 right-0 bottom-0 z-10"
-      style={`width: ${100 - (distanceFromDatetime(lastDatetimeEnd) ?? 0)}%`}
     ></div>
   {/if}
   {#each marks as mark}
