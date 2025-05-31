@@ -87,7 +87,8 @@
     console.log(data)
     const placeOutput = await reverseGeocoding(coordinates)
     locationName = formatPlaceAsWeatherLocation(placeOutput)
-    isLoading = false
+    // HACK: show the spinning even when using cache
+    setTimeout(() => (isLoading = false), 500)
   }
 
   function getHourlyForDate(targetDate: DateTime) {
@@ -152,7 +153,7 @@
 <div class="flex h-[30vh] w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem] pt-0">
   <div class="h-[env(safe-area-inset-top)] min-h-2 shrink-0"></div>
   <div class="text-text-muted inline-flex w-full items-center justify-between text-xs">
-    <button class="mr-auto inline-flex items-center gap-1" onclick={updateGeolocation}>
+    <button class="mr-auto inline-flex items-center gap-1 p-2" onclick={updateGeolocation}>
       {#if useGeolocation.value}
         {#if geolocationStateDetails.icon}
           <geolocationStateDetails.icon />
@@ -165,7 +166,7 @@
       <span>{(useGeolocation.value ? geolocationStateDetails.label : locationName) ?? 'Unknown'}</span>
     </button>
 
-    <button onclick={loadForecastData} class={isLoading ? 'animate-spin' : ''}>
+    <button onclick={loadForecastData} class={['p-2', isLoading ? 'animate-spin' : '']}>
       <RefreshCwIcon />
     </button>
   </div>
