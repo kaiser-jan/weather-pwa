@@ -4,6 +4,8 @@
   import type { Coordinates } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { DateTime } from 'luxon'
+  import SunCalc from 'suncalc'
+  import { onMount } from 'svelte'
 
   interface Props {
     derived: WeatherSituation
@@ -17,20 +19,16 @@
   let icon = $derived.by(() => {
     let weatherSitutation =
       (CONFIG.weather.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
-    let iconName = getWeatherIcon({ ...weatherSitutation, timeOfDay: isDay ? 'day' : 'night' })
-    let iconPath = `/weather-symbols/${CONFIG.appearance.symbols}/${iconName}.svg`
-    return { name: iconName, path: iconPath }
-  })
 
-  import SunCalc from 'suncalc'
-  import { onMount } from 'svelte'
-
-  let isDay = true
-
-  onMount(() => {
     const now = DateTime.now()
     const times = SunCalc.getTimes(now.toJSDate(), coordinates.latitude, coordinates.longitude)
-    isDay = now >= DateTime.fromJSDate(times.sunrise) && now <= DateTime.fromJSDate(times.sunset)
+    const isDay = now >= DateTime.fromJSDate(times.sunrise) && now <= DateTime.fromJSDate(times.sunset)
+
+    let iconName = getWeatherIcon({ ...weatherSitutation, timeOfDay: isDay ? 'day' : 'night' })
+
+    let iconPath = `/weather-symbols/${CONFIG.appearance.symbols}/${iconName}.svg`
+
+    return { name: iconName, path: iconPath }
   })
 </script>
 
