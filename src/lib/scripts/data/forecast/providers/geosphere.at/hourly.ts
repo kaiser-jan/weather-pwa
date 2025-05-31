@@ -6,7 +6,8 @@ import { useCache } from '../../cache'
 import { DateTime, Duration } from 'luxon'
 import { symbolToWeatherSituationMap } from './symbols'
 
-const MODEL_REFTIME_DELTA = Duration.fromObject({ hours: 6 })
+// NOTE: every 3 hours a new forecast is available, with a reftime 4 hours before the release
+const MODEL_REFTIME_DELTA = Duration.fromObject({ hours: 7 })
 
 export async function loadGeosphereForecastHourly(coordinates: Coordinates): Promise<ForecastHour[]> {
   const url = new URL('https://dataset.api.hub.geosphere.at/v1/timeseries/forecast/nwp-v1-1h-2500m')
