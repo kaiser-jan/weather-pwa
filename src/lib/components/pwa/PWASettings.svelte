@@ -16,6 +16,7 @@
   import { useRegisterSW } from 'virtual:pwa-register/svelte'
   import LoaderPulsatingRing from '$lib/components/LoaderPulsatingRing.svelte'
   import { capitalizeFirstChar } from '$lib/utils'
+  import { toast } from 'svelte-sonner'
 
   let checkServiceWorkerUpdates: () => void
   let isCheckingUpdates = $state(false)
@@ -47,6 +48,25 @@
 
       // NOTE: unsure whether this is required?
       updateServiceWorkerStateWatcher()
+      // TODO: auto check for updates when starting
+      // downside: this already loads the service worker, meaning the update is applied on restart?
+      // checkServiceWorkerUpdates()
+    },
+    // onNeedRefresh() {
+    //   toast.info('Update available!', {
+    //     duration: Number.POSITIVE_INFINITY,
+    //     action: {
+    //       label: 'Update',
+    //       onClick: () => applyServiceWorkerUpdate(true),
+    //     },
+    //     description: __DATE__,
+    //   })
+    // },
+    onOfflineReady() {
+      toast.info('PWA is ready to work offline!')
+    },
+    onRegisterError(error) {
+      toast.error('Failed to register Service Worker!', { description: error })
     },
   })
 
