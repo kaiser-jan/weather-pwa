@@ -34,6 +34,7 @@
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
   import { persistantState } from '$lib/scripts/state.svelte'
   import LoaderPulsatingRing from '$lib/components/LoaderPulsatingRing.svelte'
+  import { doDatesMatch, startOfDate, endOfDate } from '$lib/scripts/datetime'
 
   let data = $state<Forecast>()
 
@@ -62,8 +63,8 @@
   })
 
   const dummyCoordinates = {
-    latitude: parseFloat(env.PUBLIC_LATITUDE) ?? 0,
     longitude: parseFloat(env.PUBLIC_LONGITUDE) ?? 0,
+    latitude: parseFloat(env.PUBLIC_LATITUDE) ?? 0,
     altitude: parseFloat(env.PUBLIC_ALTITUDE) ?? 0,
   }
   async function loadForecastData() {
@@ -88,30 +89,11 @@
     isLoading = false
   }
 
-  function startOfDate(date: Date = new Date()) {
-    const copy = new Date(date)
-    copy.setHours(0, 0, 0, 0)
-    return copy
-  }
-  function endOfDate(date: Date = new Date()) {
-    const copy = new Date(date)
-    copy.setHours(24, 0, 0, 0)
-    return copy
-  }
-
-  function doesDateMatch(date1: Date, date2: Date) {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    )
-  }
-
   function getHourlyForDate(targetDate: Date) {
     if (!data) return []
 
-    const hourly = data.hourly.filter((hour) => doesDateMatch(hour.datetime, targetDate))
-    const isToday = doesDateMatch(new Date(), targetDate)
+    const hourly = data.hourly.filter((hour) => doDatesMatch(hour.datetime, targetDate))
+    const isToday = doDatesMatch(new Date(), targetDate)
 
     const shouldOmit = !CONFIG.dashboard.daily.showIncompleteTimelineBar && hourly.length !== 24 && !isToday
     if (shouldOmit) return []
@@ -177,7 +159,7 @@
       {:else}
         <MapPinIcon />
       {/if}
-      <span>{(useGeolocation ? geolocationStateDetails.label : locationName) ?? 'Unknown'}</span>
+      <span>{(useGeolocation.value ? geolocationStateDetails.label : locationName) ?? 'Unknown'}</span>
     </button>
 
     <button onclick={loadForecastData} class={isLoading ? 'animate-spin' : ''}>

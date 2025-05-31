@@ -7,9 +7,9 @@ import { DateTime } from 'luxon'
 
 export async function loadMetnoLocationforecast(coords: Coordinates) {
   const url = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete.json')
-  url.searchParams.set('lat', coords.latitude?.toString())
-  url.searchParams.set('lon', coords.longitude?.toString())
-  url.searchParams.set('altitude', coords.altitude?.toString())
+  url.searchParams.set('lat', coords.latitude.toString())
+  url.searchParams.set('lon', coords.longitude.toString())
+  url.searchParams.set('altitude', coords.altitude.toFixed(0))
   const urlString = url.toString()
 
   const data = await useCache(urlString, async () => {

@@ -30,7 +30,7 @@
 {#if data.current[details.datapoint] !== undefined}
   <span class="inline-flex items-center gap-[0.375rem]">
     <!-- svelte-ignore element_invalid_self_closing_tag -->
-    <details.icon class="mt-[-0.1em]" />
+    <details.icon />
 
     <span class="inline-flex items-center gap-0.5">
       <span>{Math.round(data.current[details.datapoint]! * (details.multiplier ?? 1))}</span>

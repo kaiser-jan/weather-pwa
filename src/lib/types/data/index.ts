@@ -1,8 +1,8 @@
 import type { WeatherSituation } from '$lib/scripts/data/forecast/providers/symbols'
 
 export interface Coordinates {
-  latitude: number
   longitude: number
+  latitude: number
   altitude: number
 }
 
