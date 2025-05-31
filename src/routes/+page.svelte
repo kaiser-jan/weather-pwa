@@ -206,9 +206,10 @@
 <div class="flex flex-col gap-4 p-4">
   <TimelineBar
     hourly={getHourlyForDate(new Date())}
-    className="h-2"
     parameters={['temperature']}
     startDatetime={startOfDate()}
+    marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m).toJSDate())}
+    className="h-2"
   />
 
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
@@ -223,6 +224,7 @@
               startDatetime={startOfDate(day.datetime)}
               endDatetime={endOfDate(day.datetime)}
               parameters={['sun', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
+              marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.fromJSDate(day.datetime).set(m).toJSDate())}
               className="h-2"
             />
           {:else}

@@ -1,4 +1,5 @@
 import type { ColorStop } from '$lib/types/ui'
+import type { DateObjectUnits } from 'luxon'
 
 export const CONFIG = {
   weather: {
@@ -8,6 +9,9 @@ export const CONFIG = {
     },
   },
   dashboard: {
+    timelineBar: {
+      marks: [{ hour: 6 }, { hour: 12 }, { hour: 18 }] as DateObjectUnits[],
+    },
     daily: {
       showIncompleteTimelineBar: false,
       showIncompleteLastDay: false,

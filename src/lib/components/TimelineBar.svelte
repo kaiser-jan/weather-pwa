@@ -19,6 +19,7 @@
     startDatetime?: Date
     endDatetime?: Date
     interval?: Duration
+    marks?: Date[]
     className: string
   }
 
@@ -28,6 +29,7 @@
     startDatetime,
     endDatetime,
     interval = Duration.fromObject({ hour: 1 }),
+    marks = [],
     className,
   }: Props = $props()
 
@@ -190,6 +192,12 @@
       style={`width: ${100 - (distanceFromDatetime(lastDatetimeEnd) ?? 0)}%`}
     ></div>
   {/if}
+  {#each marks as mark}
+    <div
+      class="bg-foreground absolute -top-1 -bottom-1 z-100 w-[0.05rem] opacity-40"
+      style={`left: ${distanceFromDatetime(mark, startDatetime)}%;`}
+    ></div>
+  {/each}
   {#each parameters as parameter}
     {#if parameterStyleMap[parameter] === 'gradient'}
       <div class={[parameter, 'absolute inset-0']} style={createHourlyGradientFor(parameter)}></div>
