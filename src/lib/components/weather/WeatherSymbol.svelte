@@ -15,7 +15,7 @@
     let weatherSitutation =
       (CONFIG.weather.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
     let iconName = getWeatherIcon(weatherSitutation)
-    let iconPath = `/meteocons-fill-static/${iconName}.svg`
+    let iconPath = `/weather-symbols/${CONFIG.appearance.symbols}/${iconName}.svg`
     return { name: iconName, path: iconPath }
   })
 </script>

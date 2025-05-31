@@ -13,6 +13,7 @@ export const CONFIG = {
     },
   },
   appearance: {
+    symbols: 'meteocons-fill-animated' as 'meteocons-fill-animated' | 'meteocons-fill-static',
     colors: {
       temperatureColorStops: [
         { value: -50, h: 0, s: 100, l: 50 },
