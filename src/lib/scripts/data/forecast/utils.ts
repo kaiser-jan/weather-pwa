@@ -1,6 +1,7 @@
 import { CONFIG } from '$lib/scripts/config'
 import type { ForecastInstant, StatisticalNumberSummary } from '$lib/types/data'
 import type { ForecastDay, ForecastHour, ForecastTimestep } from '$lib/types/data'
+import { DateTime } from 'luxon'
 
 export function mapNumbersToStatisticalSummaries<KeyT extends string>(
   items: Partial<Record<KeyT, any>>[],
@@ -79,7 +80,7 @@ export function combineHourlyToDailyForecast(hourly: ForecastHour[]) {
   const hoursPerDayMap = new Map<string, ForecastHour[]>()
   for (const hour of hourly) {
     // TODO: configurable timezone
-    const dayString = new Date(hour.datetime).toLocaleDateString('en-US', { timeZone: 'Europe/Vienna' })
+    const dayString = hour.datetime.toISODate()
     if (!hoursPerDayMap.get(dayString)) hoursPerDayMap.set(dayString, [])
     hoursPerDayMap.get(dayString)!.push(hour)
   }
@@ -94,7 +95,7 @@ export function combineHourlyToDailyForecast(hourly: ForecastHour[]) {
   const daily: ForecastDay[] = hoursPerDay
     .map(([datetime, dayTimesteps]) => ({
       ...mapNumbersToStatisticalSummaries(dayTimesteps),
-      datetime: new Date(datetime),
+      datetime: dayTimesteps[0].datetime.startOf('day'),
       symbol: undefined,
     }))
     .filter((d) => d !== null)
@@ -111,7 +112,7 @@ export function forecastTotalFromDailyForecast(daily: ForecastDay[]) {
 }
 
 export function currentFromHourly(hourly: ForecastHour[]) {
-  const firstFutureHourlyIndex = hourly.findIndex((h) => h.datetime > new Date())
+  const firstFutureHourlyIndex = hourly.findIndex((h) => h.datetime > DateTime.now())
   const current = hourly[Math.max(0, firstFutureHourlyIndex - 1)] as ForecastInstant
   return current
 }

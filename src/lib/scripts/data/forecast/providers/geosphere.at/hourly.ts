@@ -5,7 +5,6 @@ import { REQUESTED_WEATHER_PARAMETERS, type RequestedWeatherParameter } from './
 import { useCache } from '../../cache'
 import { DateTime, Duration } from 'luxon'
 import { symbolToWeatherSituationMap } from './symbols'
-import { startOfDate } from '$lib/scripts/datetime'
 
 const MODEL_REFTIME_DELTA = Duration.fromObject({ hours: 6 })
 
@@ -13,7 +12,7 @@ export async function loadGeosphereForecastHourly(coordinates: Coordinates): Pro
   const url = new URL('https://dataset.api.hub.geosphere.at/v1/timeseries/forecast/nwp-v1-1h-2500m')
   url.searchParams.set('lat_lon', coordinates.latitude?.toString() + ',' + coordinates.longitude?.toString())
   REQUESTED_WEATHER_PARAMETERS.forEach((p) => url.searchParams.append('parameters', p))
-  url.searchParams.set('start', startOfDate().toISOString())
+  url.searchParams.set('start', DateTime.now().startOf('day').toISO())
   const urlString = url.toString()
 
   // TODO: this will fill up local storage with data from different locations
@@ -44,7 +43,7 @@ export async function loadGeosphereForecastHourly(coordinates: Coordinates): Pro
 
     // NOTE: contrary to the description, _acc values seem to be accumulated over the forecast period
     hourly.push({
-      datetime: new Date(timestamp),
+      datetime: DateTime.fromISO(timestamp),
       temperature: extractParameter('t2m'),
       // TODO: rr_acc is null for the first hour - why?
       // Is this an internal error or does rr_acc represent accumulated precipitation until this timestamp?

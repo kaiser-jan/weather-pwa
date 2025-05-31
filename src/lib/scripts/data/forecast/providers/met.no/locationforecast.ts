@@ -33,7 +33,7 @@ function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'hourly' | 'd
     if (!timeStep.data.instant.details || !timeStep.data.next_1_hours) continue
 
     hourly.push({
-      datetime: new Date(timeStep.time),
+      datetime: DateTime.fromISO(timeStep.time),
       ...transformTimePeriod(timeStep.data.next_1_hours.details),
       ...transformTimeInstant(timeStep.data.instant.details),
     } as ForecastHour)
@@ -43,7 +43,7 @@ function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'hourly' | 'd
   const timestepsPerDay = new Map<string, ForecastTimeStep[]>()
   for (const timestep of metnoResponse.properties.timeseries) {
     // TODO: configurable timezone
-    const dayString = new Date(timestep.time).toLocaleDateString('en-US', { timeZone: 'Europe/Vienna' })
+    const dayString = DateTime.fromISO(timestep.time).toLocaleString(DateTime.DATE_SHORT)
     if (!timestepsPerDay.get(dayString)) timestepsPerDay.set(dayString, [])
     timestepsPerDay.get(dayString)!.push(timestep)
   }
@@ -70,10 +70,10 @@ export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): Forecas
   // NOTE: collect all timesteps which do not overlap with the next day
   const timeperiodsNext1Hours = timesteps.map((t) => t.data.next_1_hours?.details)
   const timeperiodsNext6Hours = timesteps.map((t) =>
-    new Date(t.time).getHours() <= 24 - 6 ? t.data.next_6_hours?.details : undefined,
+    DateTime.fromISO(t.time).hour <= 24 - 6 ? t.data.next_6_hours?.details : undefined,
   )
   const timeperiodsNext12Hours = timesteps.map((t) =>
-    new Date(t.time).getHours() <= 24 - 12 ? t.data.next_12_hours?.details : undefined,
+    DateTime.fromISO(t.time).hour <= 24 - 12 ? t.data.next_12_hours?.details : undefined,
   )
   const timeperiods = [
     ...timeperiodsNext1Hours, //
@@ -85,8 +85,8 @@ export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): Forecas
 
   const timestepBased = mapNumbersToStatisticalSummaries(timeperiods)
 
-  const datetime = new Date(timesteps[0].time)
-  datetime.setHours(0, 0, 0, 0)
+  const datetime = DateTime.fromISO(timesteps[0].time)
+  datetime.set({ hour: 0 })
 
   // NOTE: at the end of the current day we need instant based data
   // -> timestepBased overlaps to the next day
@@ -108,6 +108,7 @@ export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): Forecas
       precipitation_probability: { sum: timestepBased.probability_of_precipitation?.sum },
       thunder_probability: { sum: timestepBased.probability_of_thunder?.sum },
       datetime,
+      symbol: undefined,
     }),
   }
 }

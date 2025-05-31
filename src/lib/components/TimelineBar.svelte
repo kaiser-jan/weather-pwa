@@ -17,10 +17,10 @@
   interface Props {
     hourly: ForecastHour[]
     parameters: Parameter[]
-    startDatetime?: Date
-    endDatetime?: Date
+    startDatetime?: DateTime
+    endDatetime?: DateTime
     interval?: Duration
-    marks?: Date[]
+    marks?: DateTime[]
     coordinates?: Coordinates
     className: string
   }
@@ -38,7 +38,7 @@
 
   let firstDatetime = $derived(hourly?.[0]?.datetime)
   let lastDatetime = $derived(hourly?.[hourly.length - 1]?.datetime)
-  let lastDatetimeEnd = $derived(DateTime.fromJSDate(lastDatetime).plus(interval).toJSDate())
+  let lastDatetimeEnd = $derived(lastDatetime?.plus(interval))
   let barHeight = $state<number>(0)
 
   // TODO: make this configurable in the parameter list
@@ -86,13 +86,13 @@
   }
 
   function distanceFromDatetime(
-    d: Date,
-    d1: Date = startDatetime ?? firstDatetime,
-    start: Date = startDatetime ?? firstDatetime,
+    d: DateTime,
+    d1: DateTime = startDatetime ?? firstDatetime,
+    start: DateTime = startDatetime ?? firstDatetime,
     end = endDatetime ? endDatetime : lastDatetimeEnd,
   ) {
     if (!d || !d1 || !start || !end) return
-    return ((d.getTime() - d1.getTime()) / (end.getTime() - start.getTime())) * 100
+    return ((d.toUnixInteger() - d1.toUnixInteger()) / (end.toUnixInteger() - start.toUnixInteger())) * 100
   }
 
   function createHourlyGradientFor(parameter: Parameter): string {
@@ -119,7 +119,7 @@
   }
 
   function getWidthForHour(i: number) {
-    const currentHourEndDatetime = DateTime.fromJSDate(hourly[i].datetime).plus(interval).toJSDate()
+    const currentHourEndDatetime = hourly[i].datetime.plus(interval)
     const percentage = distanceFromDatetime(hourly[i + 1]?.datetime ?? currentHourEndDatetime, hourly[i].datetime)
     return percentage + '%'
   }
@@ -172,26 +172,26 @@
   const sunColor = (factor: number) => `hsla(55, 65%, 65%, ${factor * 100}%)`
   const moonColor = (factor: number) => `hsla(260, 85%, 85%, ${factor * 100}%)`
 
-  export function getSunlightColor(date: Date, coordinates?: Coordinates): string {
+  export function getSunlightColor(date: DateTime, coordinates?: Coordinates): string {
     if (!coordinates) return sunColor(1)
-    const position = SunCalc.getPosition(date, coordinates.latitude, coordinates.longitude)
+    const position = SunCalc.getPosition(date.toJSDate(), coordinates.latitude, coordinates.longitude)
     const value = Math.max(0, Math.sin(position.altitude)) // altitude is in radians
     return sunColor(value)
   }
 
-  export function getMoonlightColor(date: Date, coordinates?: Coordinates): string {
+  export function getMoonlightColor(date: DateTime, coordinates?: Coordinates): string {
     if (!coordinates) return moonColor(1)
-    const position = SunCalc.getMoonPosition(date, coordinates.latitude, coordinates.longitude)
-    const illumination = SunCalc.getMoonIllumination(date)
+    const position = SunCalc.getMoonPosition(date.toJSDate(), coordinates.latitude, coordinates.longitude)
+    const illumination = SunCalc.getMoonIllumination(date.toJSDate())
     const positionFactor = Math.max(0, Math.sin(position.altitude)) // altitude is in radians
     const illuminationFactor = illumination.fraction / 2 + 0.5
     const value = positionFactor * illuminationFactor
     return moonColor(value)
   }
 
-  let now = $state(new Date())
+  let now = $state(DateTime.now())
   const intervalUpdateCurrentDate = setInterval(() => {
-    now = new Date()
+    now = DateTime.now()
   }, 60000)
 
   onDestroy(() => clearInterval(intervalUpdateCurrentDate))
@@ -201,7 +201,7 @@
   class={cn('bg-foreground relative h-full w-full overflow-hidden rounded-full', className)}
   bind:clientHeight={barHeight}
 >
-  {#if startDatetime && Date.now() > firstDatetime?.getTime() && Date.now() < lastDatetimeEnd?.getTime()}
+  {#if startDatetime && DateTime.now() > firstDatetime && DateTime.now() < lastDatetimeEnd}
     <div
       class="stripe-pattern absolute top-0 bottom-0 z-100"
       style={`width: ${distanceFromDatetime(now, firstDatetime)}%; left: ${distanceFromDatetime(firstDatetime, startDatetime)}%;`}
@@ -231,9 +231,7 @@
             ></div>
           </div>
         {/each}
-        <div
-          style={`width: ${distanceFromDatetime(endDatetime ? DateTime.fromJSDate(endDatetime).minus(interval).toJSDate() : lastDatetimeEnd, lastDatetime)}%`}
-        ></div>
+        <div style={`width: ${distanceFromDatetime(endDatetime ? endDatetime : lastDatetimeEnd, lastDatetime)}%`}></div>
       </div>
     {/if}
   {/each}

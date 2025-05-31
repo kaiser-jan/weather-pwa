@@ -34,7 +34,6 @@
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
   import { persistantState } from '$lib/scripts/state.svelte'
   import LoaderPulsatingRing from '$lib/components/LoaderPulsatingRing.svelte'
-  import { doDatesMatch, startOfDate, endOfDate } from '$lib/scripts/datetime'
 
   let data = $state<Forecast>()
 
@@ -91,11 +90,12 @@
     isLoading = false
   }
 
-  function getHourlyForDate(targetDate: Date) {
+  function getHourlyForDate(targetDate: DateTime) {
     if (!data) return []
 
-    const hourly = data.hourly.filter((hour) => doDatesMatch(hour.datetime, targetDate))
-    const isToday = doDatesMatch(new Date(), targetDate)
+    const hourly = data.hourly.filter((hour) => hour.datetime.hasSame(targetDate, 'day'))
+
+    const isToday = DateTime.now().hasSame(targetDate, 'day')
 
     const shouldOmit = !CONFIG.dashboard.daily.showIncompleteTimelineBar && hourly.length !== 24 && !isToday
     if (shouldOmit) return []
@@ -110,7 +110,7 @@
     })
 
     if (!hourWithPrecipitation) return undefined
-    return DateTime.fromJSDate(hourWithPrecipitation.datetime)
+    return hourWithPrecipitation.datetime
   })
 
   const precipitationEndDatetime = $derived.by(() => {
@@ -120,7 +120,7 @@
     })
 
     if (!hourWithoutPrecipitation) return undefined
-    return DateTime.fromJSDate(hourWithoutPrecipitation.datetime)
+    return hourWithoutPrecipitation.datetime
   })
 
   let geolocationStateDetails = $derived.by((): { icon: typeof NavigationIcon | null; label: string | undefined } => {
@@ -208,10 +208,10 @@
 
 <div class="flex flex-col gap-4 p-4">
   <TimelineBar
-    hourly={getHourlyForDate(new Date())}
+    hourly={getHourlyForDate(DateTime.now())}
     parameters={['temperature']}
-    startDatetime={startOfDate()}
-    marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m).toJSDate())}
+    startDatetime={DateTime.now().startOf('day')}
+    marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m))}
     {coordinates}
     className="h-2"
   />
@@ -219,16 +219,16 @@
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
       <div class="inline-flex flex-row items-center justify-between gap-2">
-        <span class="w-[3ch]">{new Date(day.datetime).toLocaleDateString(undefined, { weekday: 'short' })}</span>
+        <span class="w-[3ch]">{day.datetime.toFormat('ccc')}</span>
 
         <div class="flex w-[40%] gap-2">
           {#if getHourlyForDate(day.datetime)?.length > 0}
             <TimelineBar
               hourly={getHourlyForDate(day.datetime)}
-              startDatetime={startOfDate(day.datetime)}
-              endDatetime={endOfDate(day.datetime)}
+              startDatetime={day.datetime.startOf('day')}
+              endDatetime={day.datetime.endOf('day')}
               parameters={['moon', 'sun', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}
-              marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.fromJSDate(day.datetime).set(m).toJSDate())}
+              marks={CONFIG.dashboard.timelineBar.marks.map((m) => day.datetime.set(m))}
               {coordinates}
               className="h-2"
             />

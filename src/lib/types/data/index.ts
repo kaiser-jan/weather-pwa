@@ -1,4 +1,5 @@
 import type { WeatherSituation } from '$lib/scripts/data/forecast/providers/symbols'
+import type { DateTime } from 'luxon'
 
 export interface Coordinates {
   longitude: number
@@ -15,7 +16,7 @@ export interface Forecast {
 
 export type StatisticalNumberSummary = { min: number; avg: number; max: number; sum: number }
 
-type ForecastMeta = { datetime: Date }
+type ForecastMeta = { datetime: DateTime }
 
 export type ForecastInstant = ForecastValues<number | undefined>
 // TODO: rename to ForecastTimePeriod
