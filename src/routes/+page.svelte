@@ -150,8 +150,11 @@
 </script>
 
 <!-- TODO: add data-vaul-drawer-wrapper -->
-<div class="flex h-[30vh] w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem] pt-0">
-  <div class="h-[env(safe-area-inset-top)] min-h-2 shrink-0"></div>
+<div
+  class="flex w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem] pt-0"
+  style="height: calc(30vh + max(0.5rem, env(safe-area-inset-top)))"
+>
+  <div class="shrink-0" style="height: max(0.5rem, env(safe-area-inset-top))"></div>
   <div class="text-text-muted inline-flex w-full items-center justify-between text-xs">
     <button class="mr-auto inline-flex items-center gap-1 p-2" onclick={updateGeolocation}>
       {#if useGeolocation.value}

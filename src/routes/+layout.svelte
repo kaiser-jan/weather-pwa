@@ -34,7 +34,9 @@
   {@html webManifestLink}
 </svelte:head>
 
-<div class="bg-background relative flex h-dvh w-dvw flex-col overflow-hidden">
+<div
+  class="bg-background relative flex h-dvh w-dvw flex-col overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]"
+>
   <!-- TODO: how to handle the default page requiring full height? -->
   <!-- <div class="h-[env(safe-area-inset-top)] shrink-0"></div> -->
   <main class="w-full grow overflow-x-hidden overflow-y-auto scroll-smooth">
