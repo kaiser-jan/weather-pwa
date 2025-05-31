@@ -177,6 +177,7 @@
         className="size-30"
         derived={deriveWeatherSituationFromInstant(data.current)}
         provided={data.current.symbol}
+        {coordinates}
       />
       <span class="text-6xl">{Math.round(data.current.temperature)}°C</span>
     </div>
@@ -234,7 +235,7 @@
               className="h-2"
             />
           {:else}
-            <WeatherSymbol className="size-6" derived={deriveWeatherSituationFromPeriod(day)} />
+            <WeatherSymbol className="size-6" derived={deriveWeatherSituationFromPeriod(day)} {coordinates} />
             <!-- TODO: unify this with WeatherItemCurrent, add other values -->
             {#if day.precipitation_amount?.sum && day.precipitation_amount.sum >= 1}
               <span class="inline-flex items-center gap-1 text-blue-200">
