@@ -10,6 +10,7 @@ export const CONFIG = {
   dashboard: {
     daily: {
       showIncompleteTimelineBar: false,
+      showIncompleteLastDay: false,
     },
   },
   appearance: {

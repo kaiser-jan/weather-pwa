@@ -1,4 +1,5 @@
-import type { StatisticalNumberSummary } from '$lib/types/data'
+import { CONFIG } from '$lib/scripts/config'
+import type { ForecastInstant, StatisticalNumberSummary } from '$lib/types/data'
 import type { ForecastDay, ForecastHour, ForecastTimestep } from '$lib/types/data'
 
 export function mapNumbersToStatisticalSummaries<KeyT extends string>(
@@ -75,18 +76,27 @@ export function sum(numbers: (number | undefined)[]): number {
 
 export function combineHourlyToDailyForecast(hourly: ForecastHour[]) {
   // aggregate the timesteps available for each day for further processing
-  const hoursPerDay = new Map<string, ForecastHour[]>()
+  const hoursPerDayMap = new Map<string, ForecastHour[]>()
   for (const hour of hourly) {
     // TODO: configurable timezone
     const dayString = new Date(hour.datetime).toLocaleDateString('en-US', { timeZone: 'Europe/Vienna' })
-    if (!hoursPerDay.get(dayString)) hoursPerDay.set(dayString, [])
-    hoursPerDay.get(dayString)!.push(hour)
+    if (!hoursPerDayMap.get(dayString)) hoursPerDayMap.set(dayString, [])
+    hoursPerDayMap.get(dayString)!.push(hour)
   }
 
-  const daily: ForecastDay[] = Array.from(hoursPerDay.entries())
-    .map(([datetime, dayTimesteps]) => {
-      return { ...mapNumbersToStatisticalSummaries(dayTimesteps), datetime: new Date(datetime) }
-    })
+  const hoursPerDay = Array.from(hoursPerDayMap.entries())
+
+  // remove the last day if it is missing hours
+  if (!CONFIG.dashboard.daily.showIncompleteLastDay && hoursPerDay[hoursPerDay.length - 1].length < 24) {
+    delete hoursPerDay[hoursPerDay.length - 1]
+  }
+
+  const daily: ForecastDay[] = hoursPerDay
+    .map(([datetime, dayTimesteps]) => ({
+      ...mapNumbersToStatisticalSummaries(dayTimesteps),
+      datetime: new Date(datetime),
+      symbol: undefined,
+    }))
     .filter((d) => d !== null)
 
   return daily
@@ -94,9 +104,7 @@ export function combineHourlyToDailyForecast(hourly: ForecastHour[]) {
 
 export function forecastTotalFromDailyForecast(daily: ForecastDay[]) {
   const total = combineStatisticalNumberSummaries(
-    daily.map((d) => {
-      return { ...d, datetime: undefined }
-    }),
+    daily.map((d) => ({ ...d, datetime: undefined, symbol: undefined })),
   ) as ForecastTimestep
 
   return total
