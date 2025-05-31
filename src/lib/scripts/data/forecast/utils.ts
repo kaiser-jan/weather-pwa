@@ -101,3 +101,9 @@ export function forecastTotalFromDailyForecast(daily: ForecastDay[]) {
 
   return total
 }
+
+export function currentFromHourly(hourly: ForecastHour[]) {
+  const firstFutureHourlyIndex = hourly.findIndex((h) => h.datetime > new Date())
+  const current = hourly[Math.max(0, firstFutureHourlyIndex - 1)] as ForecastInstant
+  return current
+}

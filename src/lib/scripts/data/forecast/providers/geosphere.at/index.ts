@@ -1,5 +1,9 @@
 import type { DataProvider, ForecastInstant } from '$lib/types/data'
-import { combineHourlyToDailyForecast, forecastTotalFromDailyForecast } from '$lib/scripts/data/forecast/utils'
+import {
+  combineHourlyToDailyForecast,
+  currentFromHourly,
+  forecastTotalFromDailyForecast,
+} from '$lib/scripts/data/forecast/utils'
 import { loadGeosphereForecastHourly } from './hourly'
 
 export function useDataProviderGeosphereAT(): DataProvider {
@@ -7,9 +11,10 @@ export function useDataProviderGeosphereAT(): DataProvider {
     const hourly = await loadGeosphereForecastHourly(coordinates)
     const daily = combineHourlyToDailyForecast(hourly)
     const total = forecastTotalFromDailyForecast(daily)
+    const current = currentFromHourly(hourly)
 
     return {
-      current: hourly[0] as ForecastInstant,
+      current,
       hourly,
       daily,
       total,
