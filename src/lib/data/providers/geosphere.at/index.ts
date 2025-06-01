@@ -1,7 +1,7 @@
-import type { DataProvider, ForecastInstant } from '$lib/types/data'
+import type { DataProvider, ForecastValues } from '$lib/types/data'
 import {
-  combineHourlyToDailyForecast,
-  currentFromHourly,
+  combineTimePeriodsToDailyForecast,
+  currentFromTimePeriods,
   forecastTotalFromDailyForecast,
 } from '$lib/data/providers/utils'
 import { DateTime } from 'luxon'
@@ -16,13 +16,13 @@ export function useDataProviderGeosphereAT(): DataProvider {
     const hourlyPastOverlapIndex = hourlyPast.findIndex((h) => h.datetime >= hourlyFuture[0].datetime)
     let hourly = [...hourlyPast.slice(0, hourlyPastOverlapIndex), ...hourlyFuture]
 
-    const daily = combineHourlyToDailyForecast(hourly)
+    const daily = combineTimePeriodsToDailyForecast(hourly)
     const total = forecastTotalFromDailyForecast(daily)
-    const current = currentFromHourly(hourly)
+    const current = currentFromTimePeriods(hourly)
 
     return {
       current,
-      hourly,
+      timePeriods: hourly,
       daily,
       total,
     }

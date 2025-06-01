@@ -1,5 +1,5 @@
 import type { WeatherSituation } from '$lib/data/providers/symbols'
-import type { DateTime } from 'luxon'
+import type { DateTime, Duration } from 'luxon'
 
 export interface Coordinates {
   longitude: number
@@ -8,25 +8,23 @@ export interface Coordinates {
 }
 
 export interface Forecast {
-  current: ForecastInstant
-  hourly: ForecastHour[]
-  daily: ForecastDay[]
-  total: ForecastTimestep
+  current: ForecastValues
+  timePeriods: ForecastTimePeriod[]
+  daily: ForecastTimePeriodSummary[]
+  total: ForecastValuesSummary
 }
 
 export type StatisticalNumberSummary = { min: number; avg: number; max: number; sum: number }
 
-type ForecastMeta = { datetime: DateTime }
+type ForecastMeta = { datetime: DateTime; duration: Duration }
 
-export type ForecastInstant = ForecastValues<number | undefined>
-// TODO: rename to ForecastTimePeriod
-export type ForecastTimestep = ForecastValues<Partial<StatisticalNumberSummary>>
+export type ForecastValues = Partial<ForecastValuesOf<number | undefined>>
+export type ForecastValuesSummary = Partial<ForecastValuesOf<Partial<StatisticalNumberSummary>>>
 
-// TODO: move partial to the instant and timestep
-export type ForecastHour = ForecastMeta & Partial<ForecastInstant>
-export type ForecastDay = ForecastMeta & Partial<ForecastTimestep>
+export type ForecastTimePeriod = ForecastMeta & ForecastValues
+export type ForecastTimePeriodSummary = ForecastMeta & ForecastValuesSummary
 
-interface ForecastValues<NumberT> {
+interface ForecastValuesOf<NumberT> {
   temperature: NumberT
   temperature_feel?: NumberT
   pressure: NumberT
@@ -47,14 +45,9 @@ interface ForecastValues<NumberT> {
   thunder_probability: NumberT
   // can be calculated
   // temperature_dew_point: number
-  symbol: WeatherSituation
+  symbol?: WeatherSituation
 }
 
 export interface DataProvider {
-  load: (coordinates: Coordinates) => Promise<{
-    current?: ForecastInstant
-    hourly?: ForecastHour[]
-    daily?: ForecastDay[]
-    total?: ForecastTimestep
-  }>
+  load: (coordinates: Coordinates) => Promise<Partial<Forecast>>
 }

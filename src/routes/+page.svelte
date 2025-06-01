@@ -88,37 +88,34 @@
     setTimeout(() => (isLoading = false), 500)
   }
 
-  function getHourlyForDate(targetDate: DateTime) {
+  function getTimePeriodsForDate(targetDate: DateTime) {
     if (!data) return []
 
-    const hourly = data.hourly.filter((hour) => hour.datetime.hasSame(targetDate, 'day'))
-
-    const isToday = DateTime.now().hasSame(targetDate, 'day')
-
-    const shouldOmit = !CONFIG.dashboard.daily.showIncompleteTimelineBar && hourly.length !== 24 && !isToday
+    const timePeriods = data.timePeriods.filter((timePeriod) => timePeriod.datetime.hasSame(targetDate, 'day'))
+    const lastTimePeriod = timePeriods[timePeriods.length - 1]
+    const hasDataUntilMidnight = lastTimePeriod.datetime.plus(lastTimePeriod.duration) >= targetDate.endOf('day')
+    const shouldOmit = !CONFIG.dashboard.daily.showIncompleteTimelineBar && !hasDataUntilMidnight
     if (shouldOmit) return []
 
-    return hourly
+    return timePeriods
   }
 
   const precipitationStartDatetime = $derived.by(() => {
-    const hourWithPrecipitation = data?.hourly.find((h) => {
-      if (h.precipitation_amount === undefined) return false
-      return h.precipitation_amount > CONFIG.weather.precipitation.threshold
+    const timePeriodWithPrecipitation = data?.timePeriods.find((tp) => {
+      if (tp.precipitation_amount === undefined) return false
+      return tp.precipitation_amount > CONFIG.weather.precipitation.threshold
     })
 
-    if (!hourWithPrecipitation) return undefined
-    return hourWithPrecipitation.datetime
+    return timePeriodWithPrecipitation?.datetime
   })
 
   const precipitationEndDatetime = $derived.by(() => {
-    const hourWithoutPrecipitation = data?.hourly.find((h) => {
-      if (h.precipitation_amount === undefined) return false
-      return h.precipitation_amount <= CONFIG.weather.precipitation.threshold
+    const timePeriodWithoutPrecipitation = data?.timePeriods.find((tp) => {
+      if (tp.precipitation_amount === undefined) return false
+      return tp.precipitation_amount <= CONFIG.weather.precipitation.threshold
     })
 
-    if (!hourWithoutPrecipitation) return undefined
-    return hourWithoutPrecipitation.datetime
+    return timePeriodWithoutPrecipitation?.datetime
   })
 
   let geolocationStateDetails = $derived.by((): { icon: typeof NavigationIcon | null; label: string | undefined } => {
@@ -210,7 +207,7 @@
 
 <div class="flex flex-col gap-4 p-4">
   <TimelineBar
-    hourly={getHourlyForDate(DateTime.now())}
+    timePeriods={getTimePeriodsForDate(DateTime.now())}
     parameters={['temperature']}
     startDatetime={DateTime.now().startOf('day')}
     marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m))}
@@ -224,9 +221,9 @@
         <span class="w-[3ch]">{day.datetime.toFormat('ccc')}</span>
 
         <div class="flex w-[40%] gap-2">
-          {#if getHourlyForDate(day.datetime)?.length > 0}
+          {#if getTimePeriodsForDate(day.datetime)?.length > 0}
             <TimelineBar
-              hourly={getHourlyForDate(day.datetime)}
+              timePeriods={getTimePeriodsForDate(day.datetime)}
               startDatetime={day.datetime.startOf('day')}
               endDatetime={day.datetime.endOf('day')}
               parameters={['moon', 'sun', 'cloud_coverage', 'precipitation_amount', 'wind_speed']}

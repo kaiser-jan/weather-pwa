@@ -3,6 +3,7 @@ import type { Duration } from 'luxon'
 
 export type GeosphereModelMeta<Parameters> = {
   reftimeOffset: Duration
+  // TODO: clarify that this is the interval between re-runs of the model, not between the returned timestamps
   interval: Duration
   availableParameters: readonly Parameters[]
   maxOffset: number

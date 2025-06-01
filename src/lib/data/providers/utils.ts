@@ -1,7 +1,7 @@
 import { CONFIG } from '$lib/config'
-import type { ForecastInstant, StatisticalNumberSummary } from '$lib/types/data'
-import type { ForecastDay, ForecastHour, ForecastTimestep } from '$lib/types/data'
-import { DateTime } from 'luxon'
+import type { ForecastValues, StatisticalNumberSummary } from '$lib/types/data'
+import type { ForecastTimePeriodSummary, ForecastTimePeriod, ForecastValuesSummary } from '$lib/types/data'
+import { DateTime, Duration } from 'luxon'
 
 export function mapNumbersToStatisticalSummaries<KeyT extends string>(
   items: Partial<Record<KeyT, any>>[],
@@ -75,27 +75,32 @@ export function sum(numbers: (number | undefined)[]): number {
     .reduce((accumulator, current) => accumulator + current, 0)
 }
 
-export function combineHourlyToDailyForecast(hourly: ForecastHour[]) {
+export function combineTimePeriodsToDailyForecast(timePeriods: ForecastTimePeriod[]) {
   // aggregate the timesteps available for each day for further processing
-  const hoursPerDayMap = new Map<string, ForecastHour[]>()
-  for (const hour of hourly) {
+  const timePeriodsPerDayMap = new Map<string, ForecastTimePeriod[]>()
+  for (const timePeriod of timePeriods) {
     // TODO: configurable timezone
-    const dayString = hour.datetime.toISODate()
-    if (!hoursPerDayMap.get(dayString)) hoursPerDayMap.set(dayString, [])
-    hoursPerDayMap.get(dayString)!.push(hour)
+    const dayString = timePeriod.datetime.toISODate()
+    if (!timePeriodsPerDayMap.get(dayString)) timePeriodsPerDayMap.set(dayString, [])
+    timePeriodsPerDayMap.get(dayString)!.push(timePeriod)
   }
 
-  const hoursPerDay = Array.from(hoursPerDayMap.entries())
+  const timePeriodsPerDay = Array.from(timePeriodsPerDayMap.entries())
 
-  // remove the last day if it is missing hours
-  if (!CONFIG.dashboard.daily.showIncompleteLastDay && hoursPerDay[hoursPerDay.length - 1].length < 24) {
-    delete hoursPerDay[hoursPerDay.length - 1]
+  // remove the last day if it is not complete
+  const lastDay = timePeriodsPerDay[timePeriodsPerDay.length - 1]
+  const lastTimePeriod = lastDay[1][lastDay.length - 1]
+  const hasDataUntilMidnight =
+    lastTimePeriod.datetime.plus(lastTimePeriod.duration) >= lastTimePeriod.datetime.endOf('day')
+  if (!CONFIG.dashboard.daily.showIncompleteLastDay && !hasDataUntilMidnight) {
+    delete timePeriodsPerDay[timePeriodsPerDay.length - 1]
   }
 
-  const daily: ForecastDay[] = hoursPerDay
-    .map(([datetime, dayTimesteps]) => ({
+  const daily: ForecastTimePeriodSummary[] = timePeriodsPerDay
+    .map(([_, dayTimesteps]) => ({
       ...mapNumbersToStatisticalSummaries(dayTimesteps),
       datetime: dayTimesteps[0].datetime.startOf('day'),
+      duration: Duration.fromObject({ day: 1 }),
       symbol: undefined,
     }))
     .filter((d) => d !== null)
@@ -103,16 +108,16 @@ export function combineHourlyToDailyForecast(hourly: ForecastHour[]) {
   return daily
 }
 
-export function forecastTotalFromDailyForecast(daily: ForecastDay[]) {
+export function forecastTotalFromDailyForecast(daily: ForecastTimePeriodSummary[]) {
   const total = combineStatisticalNumberSummaries(
-    daily.map((d) => ({ ...d, datetime: undefined, symbol: undefined })),
-  ) as ForecastTimestep
+    daily.map((d) => ({ ...d, datetime: undefined, symbol: undefined, duration: undefined })),
+  ) as ForecastValuesSummary
 
   return total
 }
 
-export function currentFromHourly(hourly: ForecastHour[]) {
-  const firstFutureHourlyIndex = hourly.findIndex((h) => h.datetime > DateTime.now())
-  const current = hourly[Math.max(0, firstFutureHourlyIndex - 1)] as ForecastInstant
+export function currentFromTimePeriods(timePeriods: ForecastTimePeriod[]) {
+  const firstFutureTimePeriodIndex = timePeriods.findIndex((h) => h.datetime > DateTime.now())
+  const current = timePeriods[Math.max(0, firstFutureTimePeriodIndex - 1)] as ForecastValues
   return current
 }

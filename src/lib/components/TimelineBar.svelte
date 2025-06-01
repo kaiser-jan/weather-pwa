@@ -1,6 +1,6 @@
 <script lang="ts">
   import { interpolateColor } from '$lib/utils/ui'
-  import type { Coordinates, ForecastHour, ForecastInstant, StatisticalNumberSummary } from '$lib/types/data'
+  import type { Coordinates, ForecastTimePeriod, StatisticalNumberSummary } from '$lib/types/data'
   import { CONFIG } from '$lib/config'
   import { cn } from '$lib/utils'
   import { DateTime, Duration, Interval } from 'luxon'
@@ -8,37 +8,27 @@
 
   type Parameter =
     | keyof Pick<
-        ForecastInstant,
+        ForecastTimePeriod,
         'temperature' | 'cloud_coverage' | 'precipitation_amount' | 'wind_speed' | 'uvi_clear_sky'
       >
     | 'sun'
     | 'moon'
 
   interface Props {
-    hourly: ForecastHour[]
+    timePeriods: ForecastTimePeriod[]
     parameters: Parameter[]
     startDatetime?: DateTime
     endDatetime?: DateTime
-    interval?: Duration
     marks?: DateTime[]
     coordinates?: Coordinates
     className: string
   }
 
-  let {
-    hourly,
-    parameters,
-    startDatetime,
-    endDatetime,
-    interval = Duration.fromObject({ hour: 1 }),
-    marks = [],
-    coordinates,
-    className,
-  }: Props = $props()
+  let { timePeriods, parameters, startDatetime, endDatetime, marks = [], coordinates, className }: Props = $props()
 
-  let firstDatetime = $derived(hourly?.[0]?.datetime)
-  let lastDatetime = $derived(hourly?.[hourly.length - 1]?.datetime)
-  let lastDatetimeEnd = $derived(lastDatetime?.plus(interval))
+  let firstDatetime = $derived(timePeriods?.[0]?.datetime)
+  let lastDatetime = $derived(timePeriods?.[timePeriods.length - 1]?.datetime)
+  let lastDatetimeEnd = $derived(lastDatetime?.plus(timePeriods[timePeriods.length - 1].duration))
   let barHeight = $state<number>(0)
 
   // TODO: make this configurable in the parameter list
@@ -57,12 +47,12 @@
 
   const COLOR_ERROR = 'hsla(0, 100%, 50%, 0%)'
 
-  function getDetailsForBlock(parameter: Parameter, hour: ForecastHour): { color: string; size?: string } {
+  function getDetailsForBlock(parameter: Parameter, timePeriod: ForecastTimePeriod): { color: string; size?: string } {
     // TODO: sun and moon
-    if (parameter === 'sun') return { color: getSunlightColor(hour.datetime, coordinates) }
-    if (parameter === 'moon') return { color: getMoonlightColor(hour.datetime, coordinates) }
+    if (parameter === 'sun') return { color: getSunlightColor(timePeriod.datetime, coordinates) }
+    if (parameter === 'moon') return { color: getMoonlightColor(timePeriod.datetime, coordinates) }
 
-    const value = hour[parameter]
+    const value = timePeriod[parameter]
     if (value === undefined) {
       if (parameter === 'uvi_clear_sky') return { color: 'hsl(55, 65%, 65%)' }
       return { color: COLOR_ERROR }
@@ -95,32 +85,33 @@
     return ((d.toUnixInteger() - d1.toUnixInteger()) / (end.toUnixInteger() - start.toUnixInteger())) * 100
   }
 
-  function createHourlyGradientFor(parameter: Parameter): string {
-    if (hourly.length === 0) return ''
+  function createTimelineGradientFor(parameter: Parameter): string {
+    if (timePeriods.length === 0) return ''
 
-    const gradientStops = hourly.map(
-      (hour) => `${getDetailsForBlock(parameter, hour).color} ${distanceFromDatetime(hour.datetime)}%`,
+    const gradientStops = timePeriods.map(
+      (timePeriod) =>
+        `${getDetailsForBlock(parameter, timePeriod).color} ${distanceFromDatetime(timePeriod.datetime)}%`,
     )
 
     if (startDatetime) {
       gradientStops.unshift(`${COLOR_ERROR} 0%`)
-      gradientStops.unshift(`${COLOR_ERROR} ${distanceFromDatetime(hourly[0].datetime)}%`)
+      gradientStops.unshift(`${COLOR_ERROR} ${distanceFromDatetime(timePeriods[0].datetime)}%`)
     }
 
     return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
   }
 
-  function createHourlyBlocksFor(parameter: Parameter) {
-    if (hourly.length === 0) return []
-    return hourly.map((hour) => ({
-      position: distanceFromDatetime(hour.datetime),
-      ...getDetailsForBlock(parameter, hour),
+  function createTimePeriodBlocksFor(parameter: Parameter) {
+    if (timePeriods.length === 0) return []
+    return timePeriods.map((timePeriod) => ({
+      position: distanceFromDatetime(timePeriod.datetime),
+      ...getDetailsForBlock(parameter, timePeriod),
     }))
   }
 
-  function getWidthForHour(i: number) {
-    const currentHourEndDatetime = hourly[i].datetime.plus(interval)
-    const percentage = distanceFromDatetime(hourly[i + 1]?.datetime ?? currentHourEndDatetime, hourly[i].datetime)
+  function getWidthForTimePeriod(i: number) {
+    const timePeriodEndDatetime = timePeriods[i].datetime.plus(timePeriods[i].duration)
+    const percentage = distanceFromDatetime(timePeriodEndDatetime, timePeriods[i].datetime)
     return percentage + '%'
   }
 
@@ -215,12 +206,12 @@
   {/each}
   {#each parameters as parameter}
     {#if parameterStyleMap[parameter] === 'gradient'}
-      <div class={[parameter, 'absolute inset-0']} style={createHourlyGradientFor(parameter)}></div>
+      <div class={[parameter, 'absolute inset-0']} style={createTimelineGradientFor(parameter)}></div>
     {:else if parameterStyleMap[parameter] === 'blocks'}
       <div class={[parameter, 'absolute inset-0 flex flex-row justify-end']}>
         <div style={`width: ${distanceFromDatetime(startDatetime ?? firstDatetime, firstDatetime)}%`}></div>
-        {#each createHourlyBlocksFor(parameter).entries() as [i, stop]}
-          <div class={`flex h-full items-end justify-center ${i}`} style={`width: ${getWidthForHour(i)};`}>
+        {#each createTimePeriodBlocksFor(parameter).entries() as [i, stop]}
+          <div class={`flex h-full items-end justify-center ${i}`} style={`width: ${getWidthForTimePeriod(i)};`}>
             <div
               style={`
                 background-color: ${stop.color};

@@ -1,9 +1,14 @@
 import { defu } from 'defu'
-import type { Coordinates, Forecast, ForecastDay, ForecastHour } from '$lib/types/data'
-import type { ForecastTimeInstant, ForecastTimePeriod, ForecastTimeStep, MetjsonForecast } from '$lib/types/metno'
+import type { Coordinates, Forecast, ForecastTimePeriodSummary, ForecastTimePeriod } from '$lib/types/data'
+import type {
+  ForecastTimeInstant as MetnoForecastTimeInstant,
+  ForecastTimePeriod as MetnoForecastTimePeriod,
+  ForecastTimeStep as MetnoForecastTimeStep,
+  MetjsonForecast,
+} from '$lib/types/metno'
 import { mapNumbersToStatisticalSummaries } from '$lib/data/providers/utils'
 import { useCache } from '$lib/data/cache'
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 
 export async function loadMetnoLocationforecast(coords: Coordinates) {
   const url = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete.json')
@@ -25,22 +30,23 @@ export async function loadMetnoLocationforecast(coords: Coordinates) {
   return transform(data)
 }
 
-function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'hourly' | 'daily'> {
-  const hourly: ForecastHour[] = []
+function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'timePeriods' | 'daily'> {
+  const timePeriods: ForecastTimePeriod[] = []
 
   // create hourly forecasts from every timestep where instant and next_1_hours is available
   for (const timeStep of metnoResponse.properties.timeseries) {
     if (!timeStep.data.instant.details || !timeStep.data.next_1_hours) continue
 
-    hourly.push({
+    timePeriods.push({
       datetime: DateTime.fromISO(timeStep.time),
+      duration: Duration.fromObject({ hour: 1 }),
       ...transformTimePeriod(timeStep.data.next_1_hours.details),
       ...transformTimeInstant(timeStep.data.instant.details),
-    } as ForecastHour)
+    } as ForecastTimePeriod)
   }
 
   // aggregate the timesteps available for each day for further processing
-  const timestepsPerDay = new Map<string, ForecastTimeStep[]>()
+  const timestepsPerDay = new Map<string, MetnoForecastTimeStep[]>()
   for (const timestep of metnoResponse.properties.timeseries) {
     // TODO: configurable timezone
     const dayString = DateTime.fromISO(timestep.time).toLocaleString(DateTime.DATE_SHORT)
@@ -49,17 +55,17 @@ function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'hourly' | 'd
   }
 
   // BUG: Safari claims timestepsPerDay.values() is a map, so you cannot call .map on it
-  const daily: ForecastDay[] = Array.from(timestepsPerDay.values())
+  const daily: ForecastTimePeriodSummary[] = Array.from(timestepsPerDay.values())
     .map((dayTimesteps) => aggregateTimestepsForDay(dayTimesteps))
     .filter((d) => d !== null)
 
   return {
-    hourly,
+    timePeriods,
     daily,
   }
 }
 
-export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): ForecastDay | null {
+export function aggregateTimestepsForDay(timesteps: MetnoForecastTimeStep[]): ForecastTimePeriodSummary | null {
   const transformedInstants = timesteps
     .filter((t) => t.data.instant.details !== undefined)
     .map((t) => transformTimeInstant(t.data.instant.details!))
@@ -90,9 +96,9 @@ export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): Forecas
 
   // NOTE: at the end of the current day we need instant based data
   // -> timestepBased overlaps to the next day
+  // TODO: does it even make sense to use instant based data for timesteps?
+  // e.g. cloud coverage from an instant doesn't really tell a lot about the following hours
   return {
-    // TODO: does it even make sense to use instant based data for timesteps?
-    // e.g. cloud coverage from an instant doesn't really tell a lot about the following hours
     ...defu(instantBased, {
       temperature: {
         min: timestepBased.air_temperature_min?.min,
@@ -107,9 +113,10 @@ export function aggregateTimestepsForDay(timesteps: ForecastTimeStep[]): Forecas
       },
       precipitation_probability: { sum: timestepBased.probability_of_precipitation?.sum },
       thunder_probability: { sum: timestepBased.probability_of_thunder?.sum },
-      datetime,
-      symbol: undefined,
     }),
+    datetime,
+    duration: Duration.fromObject({ day: 1 }),
+    symbol: undefined,
   }
 }
 
@@ -118,7 +125,7 @@ function percentageToFraction(value: number | undefined) {
   return value / 100
 }
 
-function transformTimeInstant(instant: ForecastTimeInstant): Partial<ForecastHour> {
+function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<ForecastTimePeriod> {
   return {
     temperature: instant.air_temperature,
     pressure: instant.air_pressure_at_sea_level,
@@ -135,7 +142,7 @@ function transformTimeInstant(instant: ForecastTimeInstant): Partial<ForecastHou
   }
 }
 
-function transformTimePeriod(period: ForecastTimePeriod): Partial<ForecastHour> {
+function transformTimePeriod(period: MetnoForecastTimePeriod): Partial<ForecastTimePeriod> {
   return {
     uvi_clear_sky: period.ultraviolet_index_clear_sky_max,
     precipitation_amount: period.precipitation_amount,

@@ -1,4 +1,4 @@
-import type { ForecastDay, ForecastInstant } from '$lib/types/data'
+import type { ForecastTimePeriodSummary, ForecastValues } from '$lib/types/data'
 
 export type WeatherSituation = {
   precipitation?: 'rain' | 'sleet' | 'snow' | 'hail'
@@ -49,7 +49,7 @@ export function getWeatherIcon(situation: WeatherSituation): string {
 }
 
 export function deriveWeatherSituationFromInstant(
-  data: Partial<ForecastInstant>,
+  data: Partial<ForecastValues>,
   useSymbolData = true,
 ): WeatherSituation {
   const situation: WeatherSituation = {}
@@ -81,7 +81,7 @@ export function deriveWeatherSituationFromInstant(
 }
 
 // TODO: derive data from symbols
-export function deriveWeatherSituationFromPeriod(data: ForecastDay): WeatherSituation {
+export function deriveWeatherSituationFromPeriod(data: ForecastTimePeriodSummary): WeatherSituation {
   return deriveWeatherSituationFromInstant({
     temperature: data.temperature?.max,
     pressure: data.pressure?.avg,

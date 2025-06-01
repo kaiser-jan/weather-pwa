@@ -1,4 +1,4 @@
-import type { Coordinates, ForecastHour } from '$lib/types/data'
+import type { Coordinates, ForecastTimePeriod } from '$lib/types/data'
 import type { TimeseriesForecastGeoJsonSerializer } from '$lib/types/geosphere-at'
 import { calculateVector } from '$lib/utils'
 import { useCache } from '$lib/data/cache'
@@ -31,7 +31,7 @@ export const REQUESTED_WEATHER_PARAMETERS: (typeof meta.availableParameters)[num
 export async function loadGeosphereNwpTimeseriesForecast(
   coordinates: Coordinates,
   offset = 0,
-): Promise<ForecastHour[]> {
+): Promise<ForecastTimePeriod[]> {
   const url = new URL('https://dataset.api.hub.geosphere.at/v1/timeseries/forecast/nwp-v1-1h-2500m')
   url.searchParams.set('lat_lon', coordinates.latitude?.toString() + ',' + coordinates.longitude?.toString())
   REQUESTED_WEATHER_PARAMETERS.forEach((p) => url.searchParams.append('parameters', p))
@@ -47,7 +47,7 @@ export async function loadGeosphereNwpTimeseriesForecast(
     return { data, expires }
   })
 
-  const hourly: ForecastHour[] = []
+  const hourly: ForecastTimePeriod[] = []
 
   for (const [index, timestamp] of (data.timestamps as string[]).entries()) {
     const extractParameter = (p: (typeof REQUESTED_WEATHER_PARAMETERS)[number], indexOffset = 0) => {
@@ -67,6 +67,7 @@ export async function loadGeosphereNwpTimeseriesForecast(
     // NOTE: contrary to the description, _acc values seem to be accumulated over the forecast period
     hourly.push({
       datetime: DateTime.fromISO(timestamp),
+      duration: Duration.fromObject({ hour: 1 }),
       temperature: extractParameter('t2m'),
       // TODO: rr_acc is null for the first hour - why?
       // Is this an internal error or does rr_acc represent accumulated precipitation until this timestamp?
