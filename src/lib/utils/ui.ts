@@ -1,4 +1,4 @@
-import type { ColorStop } from '$lib/ui'
+import type { ColorStop } from '$lib/types/ui'
 
 export function generateCssRangeGradient(rangeMin: number, rangeMax: number, stops: ColorStop[]): string {
   const includedStops = stops.filter((s) => s.value >= rangeMin && s.value <= rangeMax)

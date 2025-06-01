@@ -3,7 +3,7 @@ import {
   combineHourlyToDailyForecast,
   currentFromHourly,
   forecastTotalFromDailyForecast,
-} from '$lib/scripts/data/forecast/utils'
+} from '$lib/data/providers/utils'
 import { loadGeosphereForecastHourly } from './hourly'
 import { DateTime } from 'luxon'
 import { MODEL_INTERVAL } from './meta'

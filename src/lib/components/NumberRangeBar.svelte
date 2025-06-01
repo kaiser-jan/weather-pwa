@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { generateCssRangeGradient } from '$lib/scripts/ui'
+  import { generateCssRangeGradient } from '$lib/utils/ui'
   import type { StatisticalNumberSummary } from '$lib/types/data'
-  import { CONFIG } from '$lib/scripts/config'
+  import { CONFIG } from '$lib/config'
   import { cn } from '$lib/utils'
 
   interface Props {

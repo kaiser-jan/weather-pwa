@@ -7,7 +7,7 @@ import {
   REQUESTED_WEATHER_PARAMETERS,
   type RequestedWeatherParameter,
 } from './meta'
-import { useCache } from '../../cache'
+import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
 import { symbolToWeatherSituationMap } from './symbols'
 

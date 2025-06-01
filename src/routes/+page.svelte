@@ -15,24 +15,24 @@
     RefreshCwIcon,
     UmbrellaIcon,
   } from 'lucide-svelte'
-  import { CONFIG } from '$lib/scripts/config'
+  import { CONFIG } from '$lib/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
   import PwaSettings from '$lib/components/pwa/PWASettings.svelte'
-  import { providers, type ProviderId } from '$lib/scripts/data/forecast/providers'
+  import { providers, type ProviderId } from '$lib/data/providers'
   import SelectAutoString from '$lib/components/SelectAutoString.svelte'
   import { Button } from '$lib/components/ui/button'
-  import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/scripts/location'
+  import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/data/location'
   import { createGeolocationStore } from '$lib/stores/geolocation'
   import {
     deriveWeatherSituationFromInstant,
     deriveWeatherSituationFromPeriod,
     getWeatherIcon,
-  } from '$lib/scripts/data/forecast/providers/symbols'
+  } from '$lib/data/providers/symbols'
   import { get } from 'svelte/store'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
-  import { persistantState } from '$lib/scripts/state.svelte'
+  import { persistantState } from '$lib/utils/state.svelte'
   import LoaderPulsatingRing from '$lib/components/LoaderPulsatingRing.svelte'
   import { tick } from 'svelte'
 

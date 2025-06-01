@@ -1,8 +1,8 @@
 import { defu } from 'defu'
 import type { Coordinates, Forecast, ForecastDay, ForecastHour } from '$lib/types/data'
 import type { ForecastTimeInstant, ForecastTimePeriod, ForecastTimeStep, MetjsonForecast } from '$lib/types/metno'
-import { mapNumbersToStatisticalSummaries } from '$lib/scripts/data/forecast/utils'
-import { useCache } from '../../cache'
+import { mapNumbersToStatisticalSummaries } from '$lib/data/providers/utils'
+import { useCache } from '$lib/data/cache'
 import { DateTime } from 'luxon'
 
 export async function loadMetnoLocationforecast(coords: Coordinates) {

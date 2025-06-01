@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Forecast, ForecastInstant } from '$lib/types/data'
   import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from 'lucide-svelte'
-  import MathFraction from '../MathFraction.svelte'
+  import MathFraction from '$lib/components/MathFraction.svelte'
 
   type AvailableItemsCurrent = 'cloud_coverage' | 'uvi' | 'wind' | 'precipitation_amount' | 'pressure' | 'humidity'
 

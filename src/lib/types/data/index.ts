@@ -1,4 +1,4 @@
-import type { WeatherSituation } from '$lib/scripts/data/forecast/providers/symbols'
+import type { WeatherSituation } from '$lib/data/providers/symbols'
 import type { DateTime } from 'luxon'
 
 export interface Coordinates {

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { interpolateColor } from '$lib/scripts/ui'
+  import { interpolateColor } from '$lib/utils/ui'
   import type { Coordinates, ForecastHour, ForecastInstant, StatisticalNumberSummary } from '$lib/types/data'
-  import { CONFIG } from '$lib/scripts/config'
+  import { CONFIG } from '$lib/config'
   import { cn } from '$lib/utils'
   import { DateTime, Duration, Interval } from 'luxon'
   import { onDestroy } from 'svelte'
@@ -209,7 +209,7 @@
   {/if}
   {#each marks as mark}
     <div
-      class="bg-foreground absolute -top-1 -bottom-1 z-100 w-[0.05rem] opacity-40"
+      class="bg-foreground absolute -top-1 -bottom-1 z-100 w-[0.05rem] mix-blend-difference"
       style={`left: ${distanceFromDatetime(mark, startDatetime)}%;`}
     ></div>
   {/each}

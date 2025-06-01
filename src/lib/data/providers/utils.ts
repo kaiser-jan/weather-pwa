@@ -1,4 +1,4 @@
-import { CONFIG } from '$lib/scripts/config'
+import { CONFIG } from '$lib/config'
 import type { ForecastInstant, StatisticalNumberSummary } from '$lib/types/data'
 import type { ForecastDay, ForecastHour, ForecastTimestep } from '$lib/types/data'
 import { DateTime } from 'luxon'

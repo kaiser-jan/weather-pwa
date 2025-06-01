@@ -1,5 +1,5 @@
 import type { DataProvider, ForecastInstant } from '$lib/types/data'
-import { currentFromHourly, forecastTotalFromDailyForecast } from '$lib/scripts/data/forecast/utils'
+import { currentFromHourly, forecastTotalFromDailyForecast } from '$lib/data/providers/utils'
 import { loadMetnoLocationforecast } from './locationforecast'
 
 export function useDataProviderMetNO(): DataProvider {
