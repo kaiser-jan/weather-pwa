@@ -14,7 +14,8 @@ export function useDataProviderGeosphereAT(): DataProvider {
   const load: DataProvider['load'] = async (coordinates) => {
     const hourlyFuture = await loadGeosphereNwpTimeseriesForecast(coordinates)
     const requiredOffset = DateTime.now().startOf('day').diffNow().as('minutes') / nwpMeta.interval.as('minutes')
-    const hourlyPast = await loadGeosphereNwpTimeseriesForecast(coordinates, Math.floor(-requiredOffset))
+    const offset = Math.min(nwpMeta.maxOffset, Math.floor(-requiredOffset))
+    const hourlyPast = await loadGeosphereNwpTimeseriesForecast(coordinates, offset)
     const hourlyPastOverlapIndex = hourlyPast.findIndex((h) => h.datetime >= hourlyFuture[0].datetime)
     let hourly = [...hourlyPast.slice(0, hourlyPastOverlapIndex), ...hourlyFuture]
 
