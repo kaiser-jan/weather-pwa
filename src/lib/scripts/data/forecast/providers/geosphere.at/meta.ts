@@ -1,3 +1,9 @@
+import { Duration } from 'luxon'
+
+// NOTE: every 3 hours a new forecast is available, with a reftime 4 hours before the release
+export const MODEL_REFTIME_OFFSET = Duration.fromObject({ hours: 4 })
+export const MODEL_INTERVAL = Duration.fromObject({ hours: 3 })
+
 // https://dataset.api.hub.geosphere.at/v1/timeseries/forecast/nwp-v1-1h-2500m/metadata
 const WEATHER_PARAMETERS = [
   'cape', // Convective available potential energy

@@ -1,19 +1,22 @@
 import type { Coordinates, ForecastHour } from '$lib/types/data'
 import type { TimeseriesForecastGeoJsonSerializer } from '$lib/types/geosphere-at'
 import { calculateVector } from '$lib/utils'
-import { REQUESTED_WEATHER_PARAMETERS, type RequestedWeatherParameter } from './meta'
+import {
+  MODEL_REFTIME_OFFSET,
+  MODEL_INTERVAL,
+  REQUESTED_WEATHER_PARAMETERS,
+  type RequestedWeatherParameter,
+} from './meta'
 import { useCache } from '../../cache'
 import { DateTime, Duration } from 'luxon'
 import { symbolToWeatherSituationMap } from './symbols'
 
-// NOTE: every 3 hours a new forecast is available, with a reftime 4 hours before the release
-const MODEL_REFTIME_DELTA = Duration.fromObject({ hours: 7 })
-
-export async function loadGeosphereForecastHourly(coordinates: Coordinates): Promise<ForecastHour[]> {
+export async function loadGeosphereForecastHourly(coordinates: Coordinates, offset = 0): Promise<ForecastHour[]> {
   const url = new URL('https://dataset.api.hub.geosphere.at/v1/timeseries/forecast/nwp-v1-1h-2500m')
   url.searchParams.set('lat_lon', coordinates.latitude?.toString() + ',' + coordinates.longitude?.toString())
   REQUESTED_WEATHER_PARAMETERS.forEach((p) => url.searchParams.append('parameters', p))
   url.searchParams.set('start', DateTime.now().startOf('day').toISO())
+  url.searchParams.set('forecast_offset', offset.toString())
   const urlString = url.toString()
 
   // TODO: this will fill up local storage with data from different locations
@@ -21,7 +24,9 @@ export async function loadGeosphereForecastHourly(coordinates: Coordinates): Pro
     const response = await fetch(urlString.toString())
     const data = (await response.json()) as TimeseriesForecastGeoJsonSerializer
     const referenceDatetime = DateTime.fromISO(data.reference_time as string)
-    const expires = referenceDatetime.plus(MODEL_REFTIME_DELTA)
+    const expires = referenceDatetime
+      .plus(MODEL_REFTIME_OFFSET)
+      .plus(MODEL_INTERVAL.mapUnits((x, _) => x * (1 + offset)))
     return { data, expires }
   })
 
