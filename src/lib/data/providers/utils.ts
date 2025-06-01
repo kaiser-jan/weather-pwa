@@ -133,13 +133,14 @@ export function unifyTimePeriods(timePeriods: ForecastTimePeriod[]) {
     if (a.duration.equals(b.duration)) return a.datetime.toMillis() - b.datetime.toMillis()
     return a.duration.as('milliseconds') - b.duration.as('milliseconds')
   })
+  // console.log(timePeriods.map((tp) => tp.datetime.toISO() + ' ' + tp.duration.toISOTime()).join('\n'))
 
   let result: ForecastTimePeriod[] = []
   for (const timePeriod of timePeriods) {
     const overlap = result.filter(
       (tp) =>
-        tp.datetime <= timePeriod.datetime.plus(timePeriod.duration) &&
-        tp.datetime.plus(tp.duration) >= timePeriod.datetime &&
+        tp.datetime < timePeriod.datetime.plus(timePeriod.duration) &&
+        tp.datetime.plus(tp.duration) > timePeriod.datetime &&
         tp.duration < timePeriod.duration,
     )
 
@@ -152,12 +153,15 @@ export function unifyTimePeriods(timePeriods: ForecastTimePeriod[]) {
       continue
     }
 
+    // add in a filler before the first overlapping item
     if (firstOverlap && firstOverlap.datetime > timePeriod.datetime) {
       result.push({
         ...timePeriod,
         duration: firstOverlap.datetime.diff(timePeriod.datetime),
       })
     }
+
+    // add in a filler after the last overlapping item
     if (
       lastOverlap &&
       lastOverlap.datetime.plus(lastOverlap.duration) < timePeriod.datetime.plus(timePeriod.duration)
@@ -168,7 +172,16 @@ export function unifyTimePeriods(timePeriods: ForecastTimePeriod[]) {
         duration: timePeriod.datetime.plus(timePeriod.duration).diff(lastOverlap.datetime.plus(lastOverlap.duration)),
       })
     }
+
+    // add missing values
+    for (let overlapIndex = 0; overlapIndex < overlap.length; overlapIndex++) {
+      const overlapItem = overlap[overlapIndex]
+      const resultsOverlapIndex = overlap.findIndex((o) => o.datetime.equals(overlapItem.datetime))
+      result[resultsOverlapIndex] = { ...timePeriod, ...result[overlapIndex] }
+    }
   }
 
+  result = result.sort((a, b) => a.datetime.toMillis() - b.datetime.toMillis())
+  // console.log(result.map((tp) => tp.datetime.toISO() + ' ' + tp.duration.toISOTime()).join('\n'))
   return result
 }

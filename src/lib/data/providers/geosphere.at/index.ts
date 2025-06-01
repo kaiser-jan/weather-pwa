@@ -3,10 +3,12 @@ import {
   combineTimePeriodsToDailyForecast,
   currentFromTimePeriods,
   forecastTotalFromDailyForecast,
+  unifyTimePeriods,
 } from '$lib/data/providers/utils'
 import { DateTime } from 'luxon'
 import { loadGeosphereNwpTimeseriesForecast } from './nwp/timeseries-forecast'
 import nwpMeta from './nwp/meta'
+import { loadGeosphereNowcastTimeseriesForecast } from './nowcast/timeseries-forecast'
 
 export function useDataProviderGeosphereAT(): DataProvider {
   const load: DataProvider['load'] = async (coordinates) => {
@@ -17,12 +19,18 @@ export function useDataProviderGeosphereAT(): DataProvider {
     let hourly = [...hourlyPast.slice(0, hourlyPastOverlapIndex), ...hourlyFuture]
 
     const daily = combineTimePeriodsToDailyForecast(hourly)
+
+    const nowcast = await loadGeosphereNowcastTimeseriesForecast(coordinates)
+
     const total = forecastTotalFromDailyForecast(daily)
-    const current = currentFromTimePeriods(hourly)
+
+    const timePeriods = unifyTimePeriods([...nowcast, ...hourly])
+
+    const current = currentFromTimePeriods(timePeriods)
 
     return {
       current,
-      timePeriods: hourly,
+      timePeriods,
       daily,
       total,
     }
