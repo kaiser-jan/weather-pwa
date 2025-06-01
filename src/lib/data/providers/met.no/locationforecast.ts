@@ -11,6 +11,8 @@ import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
 
 export async function loadMetnoLocationforecast(coords: Coordinates) {
+  if (coords.altitude === null) throw new Error('Locationforecast from met.no requires an altitude!')
+
   const url = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete.json')
   url.searchParams.set('lat', coords.latitude.toString())
   url.searchParams.set('lon', coords.longitude.toString())

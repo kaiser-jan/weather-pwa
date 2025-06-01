@@ -5,12 +5,11 @@
   import { cn } from '$lib/utils'
   import { DateTime } from 'luxon'
   import SunCalc from 'suncalc'
-  import { onMount } from 'svelte'
 
   interface Props {
     derived: WeatherSituation
     provided?: WeatherSituation
-    coordinates: Coordinates
+    coordinates: Coordinates | undefined
     className: string
   }
 
@@ -21,8 +20,12 @@
       (CONFIG.weather.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
 
     const now = DateTime.now()
-    const times = SunCalc.getTimes(now.toJSDate(), coordinates.latitude, coordinates.longitude)
-    const isDay = now >= DateTime.fromJSDate(times.sunrise) && now <= DateTime.fromJSDate(times.sunset)
+    let isDay = now > DateTime.fromObject({ hour: 6 }) && now < DateTime.fromObject({ hour: 20 })
+
+    if (coordinates) {
+      const times = SunCalc.getTimes(now.toJSDate(), coordinates.latitude, coordinates.longitude)
+      isDay = now >= DateTime.fromJSDate(times.sunrise) && now <= DateTime.fromJSDate(times.sunset)
+    }
 
     let iconName = getWeatherIcon({ ...weatherSitutation, timeOfDay: isDay ? 'day' : 'night' })
 

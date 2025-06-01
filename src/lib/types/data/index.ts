@@ -4,14 +4,14 @@ import type { DateTime, Duration } from 'luxon'
 export interface Coordinates {
   longitude: number
   latitude: number
-  altitude: number
+  altitude: number | null
 }
 
 export interface Forecast {
-  current: ForecastValues
-  timePeriods: ForecastTimePeriod[]
-  daily: ForecastTimePeriodSummary[]
-  total: ForecastValuesSummary
+  current?: ForecastValues
+  timePeriods?: ForecastTimePeriod[]
+  daily?: ForecastTimePeriodSummary[]
+  total?: ForecastValuesSummary
 }
 
 export type StatisticalNumberSummary = { min: number; avg: number; max: number; sum: number }

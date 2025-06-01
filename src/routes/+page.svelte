@@ -25,11 +25,7 @@
   import { Button } from '$lib/components/ui/button'
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/data/location'
   import { createGeolocationStore } from '$lib/stores/geolocation'
-  import {
-    deriveWeatherSituationFromInstant,
-    deriveWeatherSituationFromPeriod,
-    getWeatherIcon,
-  } from '$lib/data/providers/symbols'
+  import { deriveWeatherSituationFromInstant, deriveWeatherSituationFromPeriod } from '$lib/data/providers/symbols'
   import { get } from 'svelte/store'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
   import { persistantState } from '$lib/utils/state.svelte'
@@ -78,7 +74,6 @@
     }
 
     isLoading = true
-    // TODO: make altitude nullable
     data = await providers[providerId.value].load(coordinates)
     console.log(providerId.value)
     console.log(data)
@@ -89,7 +84,7 @@
   }
 
   function getTimePeriodsForDate(targetDate: DateTime) {
-    if (!data) return []
+    if (!data || !data.timePeriods) return []
 
     const timePeriods = data.timePeriods.filter((timePeriod) => timePeriod.datetime.hasSame(targetDate, 'day'))
     const lastTimePeriod = timePeriods[timePeriods.length - 1]
@@ -101,7 +96,9 @@
   }
 
   const precipitationStartDatetime = $derived.by(() => {
-    const timePeriodWithPrecipitation = data?.timePeriods.find((tp) => {
+    if (!data || !data.timePeriods) return undefined
+
+    const timePeriodWithPrecipitation = data.timePeriods.find((tp) => {
       if (tp.precipitation_amount === undefined) return false
       return tp.precipitation_amount > CONFIG.weather.precipitation.threshold
     })
@@ -110,7 +107,9 @@
   })
 
   const precipitationEndDatetime = $derived.by(() => {
-    const timePeriodWithoutPrecipitation = data?.timePeriods.find((tp) => {
+    if (!data || !data.timePeriods) return undefined
+
+    const timePeriodWithoutPrecipitation = data.timePeriods.find((tp) => {
       if (tp.precipitation_amount === undefined) return false
       return tp.precipitation_amount <= CONFIG.weather.precipitation.threshold
     })
@@ -246,7 +245,7 @@
         <div class="flex w-[40%] items-center gap-2">
           <span class="w-[2ch]">{Math.round(day.temperature.min)}</span>
           <NumberRangeBar
-            total={data?.total.temperature}
+            total={data?.total?.temperature}
             instance={day.temperature}
             color="temperature"
             className="h-2 w-full"
