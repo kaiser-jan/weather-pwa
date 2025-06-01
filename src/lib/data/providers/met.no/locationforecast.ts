@@ -6,7 +6,7 @@ import type {
   ForecastTimeStep as MetnoForecastTimeStep,
   MetjsonForecast,
 } from '$lib/types/metno'
-import { mapNumbersToStatisticalSummaries } from '$lib/data/providers/utils'
+import { mapNumbersToStatisticalSummaries, unifyTimePeriods } from '$lib/data/providers/utils'
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
 
@@ -27,7 +27,6 @@ export async function loadMetnoLocationforecast(coords: Coordinates) {
     const expires = expiresHeader ? DateTime.fromHTTP(expiresHeader) : DateTime.now()
     return { data, expires }
   })
-  console.log(data)
 
   return transform(data)
 }
@@ -35,16 +34,41 @@ export async function loadMetnoLocationforecast(coords: Coordinates) {
 function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'timePeriods' | 'daily'> {
   const timePeriods: ForecastTimePeriod[] = []
 
-  // create hourly forecasts from every timestep where instant and next_1_hours is available
+  // const last1HourTimeperiodIndex = metnoResponse.properties.timeseries.findLastIndex(v => v.data.next_1_hours)
+  // const use6HourTimeperiodsFromIndex =
   for (const timeStep of metnoResponse.properties.timeseries) {
-    if (!timeStep.data.instant.details || !timeStep.data.next_1_hours) continue
+    if (!timeStep.data.instant.details) continue
 
-    timePeriods.push({
-      datetime: DateTime.fromISO(timeStep.time),
-      duration: Duration.fromObject({ hour: 1 }),
-      ...transformTimePeriod(timeStep.data.next_1_hours.details),
-      ...transformTimeInstant(timeStep.data.instant.details),
-    } as ForecastTimePeriod)
+    if (timeStep.data.next_1_hours) {
+      timePeriods.push(
+        combineInstantWithTimestep(
+          timeStep.time,
+          timeStep.data.instant.details,
+          timeStep.data.next_1_hours.details,
+          Duration.fromObject({ hour: 1 }),
+        ),
+      )
+    }
+    if (timeStep.data.next_6_hours) {
+      timePeriods.push(
+        combineInstantWithTimestep(
+          timeStep.time,
+          timeStep.data.instant.details,
+          timeStep.data.next_6_hours.details,
+          Duration.fromObject({ hours: 6 }),
+        ),
+      )
+    }
+    if (timeStep.data.next_12_hours) {
+      timePeriods.push(
+        combineInstantWithTimestep(
+          timeStep.time,
+          timeStep.data.instant.details,
+          timeStep.data.next_12_hours.details,
+          Duration.fromObject({ hours: 12 }),
+        ),
+      )
+    }
   }
 
   // aggregate the timesteps available for each day for further processing
@@ -62,8 +86,22 @@ function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'timePeriods'
     .filter((d) => d !== null)
 
   return {
-    timePeriods,
+    timePeriods: unifyTimePeriods(timePeriods),
     daily,
+  }
+}
+
+function combineInstantWithTimestep(
+  time: string,
+  instant: MetnoForecastTimeInstant,
+  timePeriod: MetnoForecastTimePeriod,
+  duration: Duration,
+): ForecastTimePeriod {
+  return {
+    datetime: DateTime.fromISO(time),
+    duration,
+    ...transformTimePeriod(timePeriod),
+    ...transformTimeInstant(instant),
   }
 }
 

@@ -121,3 +121,54 @@ export function currentFromTimePeriods(timePeriods: ForecastTimePeriod[]) {
   const current = timePeriods[Math.max(0, firstFutureTimePeriodIndex - 1)] as ForecastValues
   return current
 }
+
+/**
+ * Given a list of time periods, this ensures that there is no overlap between time periods.
+ * Uses the smallest possible time periods, filling in gaps with the larger time periods.
+ * NOTE: Cannot fill in gaps in time periods of equal duration, is meant to be used with continous time periods of equal length.
+ */
+export function unifyTimePeriods(timePeriods: ForecastTimePeriod[]) {
+  // sort by duration ascending, then by datetime
+  timePeriods.sort((a, b) => {
+    if (a.duration.equals(b.duration)) return a.datetime.toMillis() - b.datetime.toMillis()
+    return a.duration.as('milliseconds') - b.duration.as('milliseconds')
+  })
+
+  let result: ForecastTimePeriod[] = []
+  for (const timePeriod of timePeriods) {
+    const overlap = result.filter(
+      (tp) =>
+        tp.datetime <= timePeriod.datetime.plus(timePeriod.duration) &&
+        tp.datetime.plus(tp.duration) >= timePeriod.datetime &&
+        tp.duration < timePeriod.duration,
+    )
+
+    const firstOverlap = overlap.length ? overlap[0] : undefined
+    const lastOverlap = overlap.length ? overlap[overlap.length - 1] : undefined
+
+    // add the item directly if it has no overlap
+    if (!firstOverlap && !lastOverlap) {
+      result.push(timePeriod)
+      continue
+    }
+
+    if (firstOverlap && firstOverlap.datetime > timePeriod.datetime) {
+      result.push({
+        ...timePeriod,
+        duration: firstOverlap.datetime.diff(timePeriod.datetime),
+      })
+    }
+    if (
+      lastOverlap &&
+      lastOverlap.datetime.plus(lastOverlap.duration) < timePeriod.datetime.plus(timePeriod.duration)
+    ) {
+      result.push({
+        ...timePeriod,
+        datetime: lastOverlap.datetime.plus(lastOverlap.duration),
+        duration: timePeriod.datetime.plus(timePeriod.duration).diff(lastOverlap.datetime.plus(lastOverlap.duration)),
+      })
+    }
+  }
+
+  return result
+}

@@ -9,9 +9,9 @@ export interface Coordinates {
 
 export interface Forecast {
   current?: ForecastValues
-  timePeriods?: ForecastTimePeriod[]
-  daily?: ForecastTimePeriodSummary[]
-  total?: ForecastValuesSummary
+  timePeriods: ForecastTimePeriod[]
+  daily: ForecastTimePeriodSummary[]
+  total: ForecastValuesSummary
 }
 
 export type StatisticalNumberSummary = { min: number; avg: number; max: number; sum: number }
