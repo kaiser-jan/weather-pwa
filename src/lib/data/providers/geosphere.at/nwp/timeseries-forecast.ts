@@ -71,7 +71,7 @@ export async function loadGeosphereNwpTimeseriesForecast(
       temperature: extractParameter('t2m'),
       // TODO: rr_acc is null for the first hour - why?
       // Is this an internal error or does rr_acc represent accumulated precipitation until this timestamp?
-      precipitation_amount: Math.max(extractParameter('rr_acc') ?? 0 - (extractParameter('rr_acc', -1) ?? 0), 0),
+      precipitation_amount: Math.max((extractParameter('rr_acc') ?? 0) - (extractParameter('rr_acc', -1) ?? 0), 0),
       relative_humidity: extractParameter('rh2m'),
       pressure: extractParameter('sp'),
       cloud_coverage: extractParameter('tcc'),
