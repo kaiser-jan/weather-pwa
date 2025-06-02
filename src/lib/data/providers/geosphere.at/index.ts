@@ -1,4 +1,4 @@
-import type { DataProvider, ForecastValues } from '$lib/types/data'
+import type { DataProvider, ForecastTimePeriod, ForecastValues } from '$lib/types/data'
 import {
   combineTimePeriodsToDailyForecast,
   currentFromTimePeriods,
@@ -13,11 +13,19 @@ import { loadGeosphereNowcastTimeseriesForecast } from './nowcast/timeseries-for
 export function useDataProviderGeosphereAT(): DataProvider {
   const load: DataProvider['load'] = async (coordinates) => {
     const hourlyFuture = await loadGeosphereNwpTimeseriesForecast(coordinates)
-    const requiredOffset = DateTime.now().startOf('day').diffNow().as('minutes') / nwpMeta.interval.as('minutes')
-    const offset = Math.min(nwpMeta.maxOffset, Math.floor(-requiredOffset))
-    const hourlyPast = await loadGeosphereNwpTimeseriesForecast(coordinates, offset)
-    const hourlyPastOverlapIndex = hourlyPast.findIndex((h) => h.datetime >= hourlyFuture[0].datetime)
-    let hourly = [...hourlyPast.slice(0, hourlyPastOverlapIndex), ...hourlyFuture]
+
+    let hourly: ForecastTimePeriod[] = []
+    try {
+      const requiredOffset = DateTime.now().startOf('day').diffNow().as('minutes') / nwpMeta.interval.as('minutes')
+      const offset = Math.min(nwpMeta.maxOffset, Math.floor(-requiredOffset))
+
+      const hourlyPast = await loadGeosphereNwpTimeseriesForecast(coordinates, offset)
+      const hourlyPastOverlapIndex = hourlyPast.findIndex((h) => h.datetime >= hourlyFuture[0].datetime)
+
+      hourly = [...hourlyPast.slice(0, hourlyPastOverlapIndex), ...hourlyFuture]
+    } catch (error) {
+      hourly = hourlyFuture
+    }
 
     const daily = combineTimePeriodsToDailyForecast(hourly)
 
