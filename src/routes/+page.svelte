@@ -95,11 +95,13 @@
     return timePeriods
   }
 
+  // TODO: reactivity
   const precipitationStartDatetime = $derived.by(() => {
     if (!data || !data.timePeriods) return undefined
 
+    // the first time period with precipitation from now on
     const timePeriodWithPrecipitation = data.timePeriods.find((tp) => {
-      if (tp.precipitation_amount === undefined) return false
+      if (tp.precipitation_amount === undefined || tp.datetime < DateTime.now()) return false
       return tp.precipitation_amount > CONFIG.weather.precipitation.threshold
     })
 
@@ -107,10 +109,11 @@
   })
 
   const precipitationEndDatetime = $derived.by(() => {
-    if (!data || !data.timePeriods) return undefined
+    if (!data || !data.timePeriods || !precipitationStartDatetime) return undefined
 
+    // the first time period without precipitation after the precipitationStartDatetime
     const timePeriodWithoutPrecipitation = data.timePeriods.find((tp) => {
-      if (tp.precipitation_amount === undefined) return false
+      if (tp.precipitation_amount === undefined || tp.datetime < precipitationStartDatetime) return false
       return tp.precipitation_amount <= CONFIG.weather.precipitation.threshold
     })
 
