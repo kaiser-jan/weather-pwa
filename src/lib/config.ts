@@ -1,6 +1,14 @@
 import type { ColorStop } from '$lib/types/ui'
 import type { DateObjectUnits } from 'luxon'
 
+type Location = {
+  name: string
+  icon: typeof HomeIcon
+  longitude: number
+  latitude: number
+  altitude: number
+}
+
 export const CONFIG = {
   weather: {
     preferDerivedSymbols: true,
@@ -32,4 +40,7 @@ export const CONFIG = {
       ] as ColorStop[],
     },
   },
+  locations: [
+   
+  ] as Location[],
 }
