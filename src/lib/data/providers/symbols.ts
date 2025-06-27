@@ -13,37 +13,40 @@ export type WeatherSituation = {
   timeOfDay?: 'day' | 'night'
 }
 
-export function getWeatherIcon(situation: WeatherSituation): string {
+export function getWeatherIcon(s: WeatherSituation): string {
   /* time of day specifier */
-  const t = situation.timeOfDay ? '-' + situation.timeOfDay : ''
+  const t = s.timeOfDay ? '-' + s.timeOfDay : ''
   /* time of day specifier with fallback */
-  const tF = '-' + (situation.timeOfDay ?? 'day')
+  const tF = '-' + (s.timeOfDay ?? 'day')
 
-  if (situation.thunder) {
-    if (situation.precipitation === 'snow') return `thunderstorms${t}-snow`
-    if (situation.precipitation) return `thunderstorms${t}-rain`
+  if (s.thunder) {
+    if (s.precipitation === 'snow') return `thunderstorms${t}-snow`
+    if (s.precipitation) return `thunderstorms${t}-rain`
     return `thunderstorms${t}`
   }
 
-  if (situation.precipitation) {
-    if (situation.cloudiness === 'partly') return `partly-cloudy${tF}-${situation.precipitation}`
-    return situation.precipitation
+  if (s.precipitation) {
+    const isDrizzle = s.intensity === 'drizzle' && s.precipitation === 'rain'
+    let precipitationString = isDrizzle ? ('drizzle' as 'rain') : s.precipitation
+    if (s.cloudiness === 'partly') return `partly-cloudy${tF}-${precipitationString}`
+    return precipitationString
   }
 
-  if (situation.fog) {
-    if (situation.cloudiness === 'partly') return `partly-cloudy${tF}-fog`
+  if (s.fog) {
+    if (s.cloudiness === 'partly') return `partly-cloudy${tF}-fog`
     return `fog${t}`
   }
 
-  if (situation.mist) return 'mist'
-  if (situation.haze) {
-    if (situation.cloudiness === 'partly') return `partly-cloudy${tF}-haze`
+  if (s.mist) return 'mist'
+  if (s.haze) {
+    if (s.cloudiness === 'partly') return `partly-cloudy${tF}-haze`
     return `haze${t}`
   }
 
-  if (situation.cloudiness === 'partly') return `partly-cloudy${tF}`
-  if (situation.cloudiness === 'cloudy') return 'cloudy'
-  if (situation.cloudiness === 'overcast') return `overcast${t}`
+  if (s.cloudiness === 'partly') return `partly-cloudy${tF}`
+  // NOTE: overcast-day looks less cloudy than 'cloudy'
+  if (s.cloudiness === 'cloudy') return `overcast${tF}`
+  if (s.cloudiness === 'overcast') return `overcast`
 
   return `clear${tF}`
 }
