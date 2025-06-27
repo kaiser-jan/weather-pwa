@@ -195,7 +195,7 @@
     {/each}
   </div>
 
-  <div class="absolute right-8 bottom-8 left-8 flex flex-row gap-2">
+  <div class="absolute right-6 bottom-6 left-6 flex flex-row gap-2">
     <LocationSelector bind:coordinates />
 
     <Drawer.Root>

@@ -86,23 +86,25 @@
       {/if}
     </button>
   </div>
-  <div class="bg-midground relative flex w-1 grow flex-row gap-2 overflow-x-auto p-2">
-    {#each CONFIG.locations as location, locationId}
-      <button
-        class={[
-          'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
-          selectedItemId.value === locationId ? 'bg-primary' : 'bg-foreground text-text-muted',
-        ]}
-        onclick={() => (selectedItemId.value = locationId)}
-      >
-        {#if location.icon}
-          <location.icon />
-        {:else}
-          {location.name}
-        {/if}
-      </button>
-    {/each}
-    <div class="to-midground absolute right-0 h-full w-6 bg-gradient-to-r from-transparent"></div>
+  <div class="bg-midground relative w-1 grow">
+    <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
+      {#each CONFIG.locations as location, locationId}
+        <button
+          class={[
+            'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
+            selectedItemId.value === locationId ? 'bg-primary' : 'bg-foreground text-text-muted',
+          ]}
+          onclick={() => (selectedItemId.value = locationId)}
+        >
+          {#if location.icon}
+            <location.icon />
+          {:else}
+            {location.name}
+          {/if}
+        </button>
+      {/each}
+    </div>
+    <div class="to-midground absolute top-0 right-0 h-full w-6 bg-gradient-to-r from-transparent"></div>
   </div>
   <div class="bg-midground flex flex-row gap-2 rounded-r-full p-2">
     <Button disabled variant="midground" size="icon" class="size-10 rounded-full text-xl">
