@@ -13,26 +13,19 @@ import { mergeMultivariateTimeSeries } from '$lib/utils/data'
 // TODO: perform api calls in parallel
 export function useDataProviderGeosphereAT(): DataProvider {
   const load: DataProvider['load'] = async (coordinates) => {
-    const hourlyFuture = await loadGeosphereNwpTimeseriesForecast(coordinates)
+    const requiredOffset = DateTime.now().startOf('day').diffNow().as('minutes') / nwpMeta.interval.as('minutes')
+    const offset = Math.min(nwpMeta.maxOffset, Math.floor(-requiredOffset))
 
-    let hourly = hourlyFuture
-    try {
-      const requiredOffset = DateTime.now().startOf('day').diffNow().as('minutes') / nwpMeta.interval.as('minutes')
-      const offset = Math.min(nwpMeta.maxOffset, Math.floor(-requiredOffset))
+    const [hourlyFuture, hourlyPast, nowcast] = await Promise.all([
+      loadGeosphereNwpTimeseriesForecast(coordinates),
+      graceful(loadGeosphereNwpTimeseriesForecast(coordinates, offset)),
+      loadGeosphereNowcastTimeseriesForecast(coordinates),
+    ])
+    console.log(offset)
+    console.log(hourlyPast)
 
-      const hourlyPast = await loadGeosphereNwpTimeseriesForecast(coordinates, offset)
-
-      for (const [parameter, pastValues] of Object.entries(hourlyPast)) {
-        const parameterTyped = parameter as keyof typeof hourlyFuture
-        const hourlyPastOverlapIndex = pastValues.findIndex(
-          (h) => h.datetime >= hourlyFuture[parameterTyped]![0].datetime,
-        )
-        hourly[parameterTyped]?.unshift(...pastValues.slice(0, hourlyPastOverlapIndex))
-      }
-    } catch (error) {}
-
-    const nowcast = await loadGeosphereNowcastTimeseriesForecast(coordinates)
-
+    const hourly = hourlyPast ? addOlderMultiseries(hourlyFuture, hourlyPast) : hourlyFuture
+    console.log(hourly)
     const multiseries = mergeMultivariateTimeSeries(nowcast, hourly)
 
     const daily = combineMultiseriesToDailyForecast(multiseries)
@@ -52,4 +45,26 @@ export function useDataProviderGeosphereAT(): DataProvider {
   return {
     load,
   }
+}
+
+// NOTE: workaround to allow parallel api calls and ignoring failure of one call
+// TODO: this should be redundant when implementing proper error handling like with the ts-result Result type
+async function graceful<T>(promise: Promise<T>): Promise<T | null> {
+  try {
+    return await promise
+  } catch {}
+  return null
+}
+
+function addOlderMultiseries(a: MultivariateTimeSeries, b: MultivariateTimeSeries) {
+  for (const parameter of Object.keys(b)) {
+    const parameterTyped = parameter as keyof typeof a
+    const aValues = a[parameterTyped]
+    const bValues = b[parameterTyped]!
+
+    const hourlyPastOverlapIndex = bValues.findIndex((h) => h.datetime >= aValues![0].datetime)
+    a[parameterTyped]?.unshift(...bValues.slice(0, hourlyPastOverlapIndex))
+  }
+
+  return a
 }
