@@ -1,4 +1,5 @@
 import type { ColorStop } from '$lib/types/ui'
+import { BriefcaseIcon, HomeIcon } from 'lucide-svelte'
 import type { DateObjectUnits } from 'luxon'
 
 type Location = {
@@ -41,6 +42,26 @@ export const CONFIG = {
     },
   },
   locations: [
-   
+    {
+      name: 'Home',
+      icon: HomeIcon,
+
+      latitude: 48.208481,
+      longitude: 16.373097,
+      altitude: 330,
+    },
+    {
+      name: 'Work',
+      icon: BriefcaseIcon,
+      latitude: 47.076157,
+      longitude: 15.436853,
+      altitude: 330,
+    },
+    // {
+    //   name: 'Vienna',
+    //   latitude: 48.208815,
+    //   longitude: 16.372547,
+    //   altitude: 330,
+    // },
   ] as Location[],
 }

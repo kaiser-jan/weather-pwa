@@ -1,4 +1,4 @@
-import type { ForecastTimePeriodSummary, ForecastValues } from '$lib/types/data'
+import type { TimeBucketSummary, WeatherInstant } from '$lib/types/data'
 
 export type WeatherSituation = {
   precipitation?: 'rain' | 'sleet' | 'snow' | 'hail'
@@ -52,7 +52,7 @@ export function getWeatherIcon(s: WeatherSituation): string {
 }
 
 export function deriveWeatherSituationFromInstant(
-  data: Partial<ForecastValues>,
+  data: Partial<WeatherInstant>,
   useSymbolData = true,
 ): WeatherSituation {
   const situation: WeatherSituation = {}
@@ -84,19 +84,21 @@ export function deriveWeatherSituationFromInstant(
 }
 
 // TODO: derive data from symbols
-export function deriveWeatherSituationFromPeriod(data: ForecastTimePeriodSummary): WeatherSituation {
+export function deriveWeatherSituationFromPeriod(data: TimeBucketSummary): WeatherSituation {
+  const { summary } = data
+
   return deriveWeatherSituationFromInstant({
-    temperature: data.temperature?.max,
-    pressure: data.pressure?.avg,
-    relative_humidity: data.relative_humidity?.avg,
-    uvi_clear_sky: data.uvi_clear_sky?.max,
-    cloud_coverage: data.cloud_coverage?.avg,
-    fog: data.fog?.avg,
-    wind_speed: data.wind_speed?.max,
-    wind_speed_gust: data.wind_speed_gust?.max,
+    temperature: summary.temperature?.max,
+    pressure: summary.pressure?.avg,
+    relative_humidity: summary.relative_humidity?.avg,
+    uvi_clear_sky: summary.uvi_clear_sky?.max,
+    cloud_coverage: summary.cloud_coverage?.avg,
+    fog: summary.fog?.avg,
+    wind_speed: summary.wind_speed?.max,
+    wind_speed_gust: summary.wind_speed_gust?.max,
     // TODO: rain vs. snow
-    precipitation_amount: data.precipitation_amount?.max,
-    precipitation_probability: data.precipitation_amount?.max,
-    thunder_probability: data.thunder_probability?.max,
+    precipitation_amount: summary.precipitation_amount?.max,
+    precipitation_probability: summary.precipitation_amount?.max,
+    thunder_probability: summary.thunder_probability?.max,
   })
 }

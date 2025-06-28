@@ -1,11 +1,10 @@
-import { CONFIG } from '$lib/config'
-import type { ForecastValues, StatisticalNumberSummary } from '$lib/types/data'
-import type { ForecastTimePeriodSummary, ForecastTimePeriod, ForecastValuesSummary } from '$lib/types/data'
+import type { Forecast, MultivariateTimeSeries, MultivariateTimeSeriesTimeBucket, NumberSummary } from '$lib/types/data'
+import type { TimeBucketSummary } from '$lib/types/data'
 import { DateTime, Duration } from 'luxon'
 
 export function mapNumbersToStatisticalSummaries<KeyT extends string>(
   items: Partial<Record<KeyT, any>>[],
-): Record<KeyT, StatisticalNumberSummary> {
+): Record<KeyT, NumberSummary> {
   // @ts-expect-error
   let valuesMap: Record<KeyT, number[]> = {}
   for (const item of items) {
@@ -17,7 +16,7 @@ export function mapNumbersToStatisticalSummaries<KeyT extends string>(
   }
 
   // @ts-expect-error
-  let results: Record<KeyT, StatisticalNumberSummary> = {}
+  let results: Record<KeyT, NumberSummary> = {}
 
   for (const [key, values] of Object.entries(valuesMap)) {
     results[key as KeyT] = calculateStatisticalNumberSummary(values as number[])
@@ -27,10 +26,10 @@ export function mapNumbersToStatisticalSummaries<KeyT extends string>(
 }
 
 export function combineStatisticalNumberSummaries<KeyT extends string>(
-  items: Partial<Record<KeyT, Partial<StatisticalNumberSummary>>>[],
-): Record<KeyT, StatisticalNumberSummary> | null {
+  items: Partial<Record<KeyT, Partial<NumberSummary>>>[],
+): Record<KeyT, NumberSummary> {
   // @ts-expect-error
-  let valuesMap: Record<KeyT, Partial<StatisticalNumberSummary>[]> = {}
+  let valuesMap: Record<KeyT, Partial<NumberSummary>[]> = {}
   for (const item of items) {
     for (const [key, value] of Object.entries(item)) {
       if (typeof value !== 'object' || value === null) continue
@@ -40,10 +39,10 @@ export function combineStatisticalNumberSummaries<KeyT extends string>(
   }
 
   // @ts-expect-error
-  let results: Record<KeyT, StatisticalNumberSummary> = {}
+  let results: Record<KeyT, NumberSummary> = {}
 
   for (const [key, _values] of Object.entries(valuesMap)) {
-    const values = _values as StatisticalNumberSummary[]
+    const values = _values as NumberSummary[]
 
     results[key as KeyT] = {
       min: Math.min(...values.map((v) => v.min)),
@@ -56,7 +55,7 @@ export function combineStatisticalNumberSummaries<KeyT extends string>(
   return results
 }
 
-export function calculateStatisticalNumberSummary(values: number[]): StatisticalNumberSummary {
+export function calculateStatisticalNumberSummary(values: number[]): NumberSummary {
   if (values.length === 0) return { min: Infinity, max: -Infinity, sum: 0, avg: NaN }
 
   const _sum = sum(values)
@@ -75,113 +74,85 @@ export function sum(numbers: (number | undefined)[]): number {
     .reduce((accumulator, current) => accumulator + current, 0)
 }
 
-export function combineTimePeriodsToDailyForecast(timePeriods: ForecastTimePeriod[]) {
-  // aggregate the timesteps available for each day for further processing
-  const timePeriodsPerDayMap = new Map<string, ForecastTimePeriod[]>()
-  for (const timePeriod of timePeriods) {
-    // TODO: configurable timezone
-    const dayString = timePeriod.datetime.toISODate()
-    if (!timePeriodsPerDayMap.get(dayString)) timePeriodsPerDayMap.set(dayString, [])
-    timePeriodsPerDayMap.get(dayString)!.push(timePeriod)
+// TODO: consider completely omitting incomplete days
+export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): MultivariateTimeSeriesTimeBucket[] {
+  const groupedMap: Record<string, MultivariateTimeSeriesTimeBucket> = {}
+
+  for (const [seriesKey, series] of Object.entries(multiseries)) {
+    for (const item of series) {
+      const day = item.datetime.toISODate()!
+      if (!groupedMap[day])
+        groupedMap[day] = {
+          datetime: item.datetime.startOf('day'),
+          duration: Duration.fromObject({ hours: 24 }),
+          series: {},
+        }
+
+      const seriesKeyTyped = seriesKey as keyof MultivariateTimeSeries
+      if (!groupedMap[day].series[seriesKeyTyped]) groupedMap[day].series[seriesKeyTyped] = [] as any[]
+      groupedMap[day].series[seriesKeyTyped]!.push(item)
+    }
   }
 
-  const timePeriodsPerDay = Array.from(timePeriodsPerDayMap.entries())
+  const grouped = Object.values(groupedMap)
 
-  // remove the last day if it is not complete
-  const lastDay = timePeriodsPerDay[timePeriodsPerDay.length - 1]
-  const lastTimePeriod = lastDay[1][lastDay.length - 1]
-  const hasDataUntilMidnight =
-    lastTimePeriod.datetime.plus(lastTimePeriod.duration) >= lastTimePeriod.datetime.endOf('day')
-  if (!CONFIG.dashboard.daily.showIncompleteLastDay && !hasDataUntilMidnight) {
-    delete timePeriodsPerDay[timePeriodsPerDay.length - 1]
-  }
+  const groupedCompleteOnly = grouped.filter((g) => {
+    if (!g.series.temperature?.length) return true
 
-  const daily: ForecastTimePeriodSummary[] = timePeriodsPerDay
-    .map(([_, dayTimesteps]) => ({
-      ...mapNumbersToStatisticalSummaries(dayTimesteps),
-      datetime: dayTimesteps[0].datetime.startOf('day'),
-      duration: Duration.fromObject({ day: 1 }),
-      symbol: undefined,
-    }))
-    .filter((d) => d !== null)
-
-  return daily
-}
-
-export function forecastTotalFromDailyForecast(daily: ForecastTimePeriodSummary[]) {
-  const total = combineStatisticalNumberSummaries(
-    daily.map((d) => ({ ...d, datetime: undefined, symbol: undefined, duration: undefined })),
-  ) as ForecastValuesSummary
-
-  return total
-}
-
-export function currentFromTimePeriods(timePeriods: ForecastTimePeriod[]) {
-  const firstFutureTimePeriodIndex = timePeriods.findIndex((h) => h.datetime > DateTime.now())
-  const current = timePeriods[Math.max(0, firstFutureTimePeriodIndex - 1)] as ForecastValues
-  return current
-}
-
-/**
- * Given a list of time periods, this ensures that there is no overlap between time periods.
- * Uses the smallest possible time periods, filling in gaps with the larger time periods.
- * NOTE: Cannot fill in gaps in time periods of equal duration, is meant to be used with continous time periods of equal length.
- */
-export function unifyTimePeriods(timePeriods: ForecastTimePeriod[]) {
-  // sort by duration ascending, then by datetime
-  timePeriods.sort((a, b) => {
-    if (a.duration.equals(b.duration)) return a.datetime.toMillis() - b.datetime.toMillis()
-    return a.duration.as('milliseconds') - b.duration.as('milliseconds')
+    // HACK: how to determine whether a day is complete?
+    const lastTemperatureItem = g.series.temperature[g.series.temperature.length - 1]
+    const temperatureEndDateTime = lastTemperatureItem.datetime.plus(lastTemperatureItem.duration)
+    const isIncomplete = temperatureEndDateTime.startOf('day').equals(g.series.temperature[0].datetime.startOf('day'))
+    if (isIncomplete) return false
+    return true
   })
-  // console.log(timePeriods.map((tp) => tp.datetime.toISO() + ' ' + tp.duration.toISOTime()).join('\n'))
 
-  let result: ForecastTimePeriod[] = []
-  for (const timePeriod of timePeriods) {
-    const overlap = result.filter(
-      (tp) =>
-        tp.datetime < timePeriod.datetime.plus(timePeriod.duration) &&
-        tp.datetime.plus(tp.duration) > timePeriod.datetime &&
-        tp.duration < timePeriod.duration,
-    )
+  console.log(groupedCompleteOnly)
 
-    const firstOverlap = overlap.length ? overlap[0] : undefined
-    const lastOverlap = overlap.length ? overlap[overlap.length - 1] : undefined
+  return groupedCompleteOnly
+}
 
-    // add the item directly if it has no overlap
-    if (!firstOverlap && !lastOverlap) {
-      result.push(timePeriod)
-      continue
-    }
+export function combineMultiseriesToDailyForecast(multiserIes: MultivariateTimeSeries): Forecast['daily'] {
+  const grouped = groupMultiseriesByDay(multiserIes)
 
-    // add in a filler before the first overlapping item
-    if (firstOverlap && firstOverlap.datetime > timePeriod.datetime) {
-      result.push({
-        ...timePeriod,
-        duration: firstOverlap.datetime.diff(timePeriod.datetime),
-      })
-    }
+  return grouped.map((day) => ({
+    datetime: day.datetime,
+    duration: day.duration,
+    summary: mapRecord(day.series, (s) => calculateStatisticalNumberSummary(s.map((tp) => tp.value))),
+  }))
+}
 
-    // add in a filler after the last overlapping item
-    if (
-      lastOverlap &&
-      lastOverlap.datetime.plus(lastOverlap.duration) < timePeriod.datetime.plus(timePeriod.duration)
-    ) {
-      result.push({
-        ...timePeriod,
-        datetime: lastOverlap.datetime.plus(lastOverlap.duration),
-        duration: timePeriod.datetime.plus(timePeriod.duration).diff(lastOverlap.datetime.plus(lastOverlap.duration)),
-      })
-    }
-
-    // add missing values
-    for (let overlapIndex = 0; overlapIndex < overlap.length; overlapIndex++) {
-      const overlapItem = overlap[overlapIndex]
-      const resultsOverlapIndex = overlap.findIndex((o) => o.datetime.equals(overlapItem.datetime))
-      result[resultsOverlapIndex] = { ...timePeriod, ...result[overlapIndex] }
+function mapRecord<KeyT extends string, ItemT, TargetT>(
+  input: Partial<Record<KeyT, ItemT[]>>,
+  fn: (arr: ItemT[]) => TargetT,
+): Record<KeyT, TargetT> {
+  const result = {} as Record<KeyT, TargetT>
+  for (const key in input) {
+    if (Object.prototype.hasOwnProperty.call(input, key)) {
+      result[key as KeyT] = fn(input[key]!)
     }
   }
-
-  result = result.sort((a, b) => a.datetime.toMillis() - b.datetime.toMillis())
-  // console.log(result.map((tp) => tp.datetime.toISO() + ' ' + tp.duration.toISOTime()).join('\n'))
   return result
+}
+
+export function forecastTotalFromDailyForecast(daily: TimeBucketSummary[]): TimeBucketSummary {
+  const total = combineStatisticalNumberSummaries(daily.map((d) => d.summary))
+
+  const first = daily[0]
+  const last = daily[daily.length - 1]
+
+  return {
+    datetime: daily[0].datetime,
+    duration: last.datetime.plus(last.duration).diff(first.datetime),
+    summary: total,
+  }
+}
+
+export function currentFromMultiseries(multiseries: MultivariateTimeSeries) {
+  // retrieves the last value before DateTime.now() for each series
+  const current: Forecast['current'] = {}
+  Object.entries(multiseries).forEach(([key, series]) => {
+    current[key as keyof typeof current] = series.findLast((tp) => tp.datetime < DateTime.now())?.value
+  })
+  return current
 }

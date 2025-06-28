@@ -12,7 +12,7 @@
   let selectedItemId = persistantState('selected-location-id', -1)
 
   interface Props {
-    coordinates: Coordinates
+    coordinates: Coordinates | undefined
   }
 
   let { coordinates = $bindable() }: Props = $props()

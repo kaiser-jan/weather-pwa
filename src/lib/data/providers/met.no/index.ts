@@ -1,16 +1,22 @@
-import type { DataProvider, ForecastValues } from '$lib/types/data'
-import { currentFromTimePeriods, forecastTotalFromDailyForecast } from '$lib/data/providers/utils'
+import type { DataProvider } from '$lib/types/data'
+import {
+  combineMultiseriesToDailyForecast,
+  currentFromMultiseries,
+  forecastTotalFromDailyForecast,
+} from '$lib/data/providers/utils'
 import { loadMetnoLocationforecast } from './locationforecast'
 
 export function useDataProviderMetNO(): DataProvider {
   const load: DataProvider['load'] = async (coordinates) => {
-    const { timePeriods, daily } = await loadMetnoLocationforecast(coordinates)
+    const { multiseries } = await loadMetnoLocationforecast(coordinates)
+    // TODO: consider using min/max temperature etc.
+    const daily = combineMultiseriesToDailyForecast(multiseries)
     const total = forecastTotalFromDailyForecast(daily)
-    const current = currentFromTimePeriods(timePeriods)
+    const current = currentFromMultiseries(multiseries)
 
     return {
       current,
-      timePeriods,
+      multiseries,
       daily,
       total,
     }

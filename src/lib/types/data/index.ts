@@ -7,46 +7,47 @@ export interface Coordinates {
   altitude: number | null
 }
 
+export type NumberSummary = { min: number; avg: number; max: number; sum: number }
+
 export interface Forecast {
-  current?: ForecastValues
-  timePeriods: ForecastTimePeriod[]
-  daily: ForecastTimePeriodSummary[]
-  total: ForecastValuesSummary
+  current: WeatherInstant & { symbol?: WeatherSituation }
+  multiseries: MultivariateTimeSeries
+  daily: TimeBucketSummary[]
+  total: TimeBucketSummary
 }
 
-export type StatisticalNumberSummary = { min: number; avg: number; max: number; sum: number }
-
-type ForecastMeta = { datetime: DateTime; duration: Duration }
-
-export type ForecastValues = Partial<ForecastValuesOf<number | undefined>>
-export type ForecastValuesSummary = Partial<ForecastValuesOf<Partial<StatisticalNumberSummary>>>
-
-export type ForecastTimePeriod = ForecastMeta & ForecastValues
-export type ForecastTimePeriodSummary = ForecastMeta & ForecastValuesSummary
-
-interface ForecastValuesOf<NumberT> {
-  temperature: NumberT
-  temperature_feel?: NumberT
-  pressure: NumberT
-  relative_humidity: NumberT
-  uvi_clear_sky: NumberT
-  cloud_coverage: NumberT
-  cloud_coverage_low: NumberT
-  cloud_coverage_medium: NumberT
-  cloud_coverage_high: NumberT
-  fog?: NumberT
-  visibility?: NumberT
-  wind_speed: NumberT
-  wind_speed_gust: NumberT
-  wind_degrees: NumberT
-  // TODO: rain vs. snow
-  precipitation_amount: NumberT
-  precipitation_probability: NumberT
-  thunder_probability: NumberT
-  // can be calculated
-  // temperature_dew_point: number
-  symbol?: WeatherSituation
+export interface TimePeriod {
+  datetime: DateTime
+  duration: Duration
 }
+
+export type WeatherInstant = Partial<Record<WeatherMetricKey, number>>
+
+export type MultivariateTimeSeries = Partial<Record<WeatherMetricKey, TimeSeries<number>>>
+export type MultivariateTimeSeriesTimeBucket = TimePeriod & { series: MultivariateTimeSeries }
+
+export type TimeSeries<T> = (TimePeriod & { value: T })[]
+
+export type TimeBucketSummary = TimePeriod & { summary: Record<WeatherMetricKey, NumberSummary> }
+
+export type WeatherMetricKey =
+  | 'temperature'
+  | 'temperature_feel'
+  | 'pressure'
+  | 'relative_humidity'
+  | 'uvi_clear_sky'
+  | 'cloud_coverage'
+  | 'cloud_coverage_low'
+  | 'cloud_coverage_medium'
+  | 'cloud_coverage_high'
+  | 'fog'
+  | 'visibility'
+  | 'wind_speed'
+  | 'wind_speed_gust'
+  | 'wind_degrees'
+  | 'precipitation_amount'
+  | 'precipitation_probability'
+  | 'thunder_probability'
 
 export interface DataProvider {
   load: (coordinates: Coordinates) => Promise<Partial<Forecast>>

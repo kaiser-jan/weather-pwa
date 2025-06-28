@@ -1,12 +1,12 @@
 import { defu } from 'defu'
-import type { Coordinates, Forecast, ForecastTimePeriodSummary, ForecastTimePeriod } from '$lib/types/data'
+import type { Coordinates, Forecast, MultivariateTimeSeries, WeatherInstant } from '$lib/types/data'
 import type {
   ForecastTimeInstant as MetnoForecastTimeInstant,
   ForecastTimePeriod as MetnoForecastTimePeriod,
   ForecastTimeStep as MetnoForecastTimeStep,
   MetjsonForecast,
 } from '$lib/types/metno'
-import { mapNumbersToStatisticalSummaries, unifyTimePeriods } from '$lib/data/providers/utils'
+import { mapNumbersToStatisticalSummaries } from '$lib/data/providers/utils'
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
 
@@ -31,132 +31,55 @@ export async function loadMetnoLocationforecast(coords: Coordinates) {
   return transform(data)
 }
 
-function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'timePeriods' | 'daily'> {
-  const timePeriods: ForecastTimePeriod[] = []
+function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'multiseries'> {
+  const multiseries: MultivariateTimeSeries = {}
 
-  // const last1HourTimeperiodIndex = metnoResponse.properties.timeseries.findLastIndex(v => v.data.next_1_hours)
-  // const use6HourTimeperiodsFromIndex =
-  for (const timeStep of metnoResponse.properties.timeseries) {
-    if (!timeStep.data.instant.details) continue
+  function addData(data: Partial<WeatherInstant>, datetime: DateTime, duration: Duration) {
+    for (const key of Object.keys(data)) {
+      const keyTyped = key as keyof typeof multiseries
 
-    if (timeStep.data.next_1_hours) {
-      timePeriods.push(
-        combineInstantWithTimestep(
-          timeStep.time,
-          timeStep.data.instant.details,
-          timeStep.data.next_1_hours.details,
-          Duration.fromObject({ hour: 1 }),
-        ),
-      )
-    }
-    if (timeStep.data.next_6_hours) {
-      timePeriods.push(
-        combineInstantWithTimestep(
-          timeStep.time,
-          timeStep.data.instant.details,
-          timeStep.data.next_6_hours.details,
-          Duration.fromObject({ hours: 6 }),
-        ),
-      )
-    }
-    if (timeStep.data.next_12_hours) {
-      timePeriods.push(
-        combineInstantWithTimestep(
-          timeStep.time,
-          timeStep.data.instant.details,
-          timeStep.data.next_12_hours.details,
-          Duration.fromObject({ hours: 12 }),
-        ),
-      )
+      if (data[keyTyped] === undefined) continue
+      if (!multiseries[keyTyped]) multiseries[keyTyped] = []
+
+      multiseries[keyTyped].push({
+        datetime,
+        duration,
+        value: data[keyTyped],
+      })
     }
   }
 
-  // aggregate the timesteps available for each day for further processing
-  const timestepsPerDay = new Map<string, MetnoForecastTimeStep[]>()
-  for (const timestep of metnoResponse.properties.timeseries) {
-    // TODO: configurable timezone
-    const dayString = DateTime.fromISO(timestep.time).toLocaleString(DateTime.DATE_SHORT)
-    if (!timestepsPerDay.get(dayString)) timestepsPerDay.set(dayString, [])
-    timestepsPerDay.get(dayString)!.push(timestep)
+  const timeseries = metnoResponse.properties.timeseries
+
+  for (let timeStepIndex = 0; timeStepIndex < timeseries.length; timeStepIndex++) {
+    const lastTimeStep = timeseries[timeStepIndex - 1]
+    const timeStep = timeseries[timeStepIndex]
+    const nextTimeStep = timeseries[timeStepIndex + 1]
+
+    const datetime = DateTime.fromISO(timeStep.time)
+    if (timeStep.data.instant.details) {
+      const duration = nextTimeStep
+        ? DateTime.fromISO(nextTimeStep.time).diff(datetime)
+        : lastTimeStep
+          ? datetime.diff(DateTime.fromISO(lastTimeStep?.time))
+          : Duration.fromObject({ hour: 1 })
+
+      addData(transformTimeInstant(timeStep.data.instant.details), datetime, duration)
+    }
+
+    if (timeStep.data.next_1_hours?.details) {
+      addData(transformTimePeriod(timeStep.data.next_1_hours.details), datetime, Duration.fromObject({ hour: 1 }))
+    }
+    if (timeStep.data.next_6_hours?.details) {
+      addData(transformTimePeriod(timeStep.data.next_6_hours.details), datetime, Duration.fromObject({ hour: 6 }))
+    }
+    if (timeStep.data.next_12_hours?.details) {
+      addData(transformTimePeriod(timeStep.data.next_12_hours.details), datetime, Duration.fromObject({ hour: 12 }))
+    }
   }
 
-  // BUG: Safari claims timestepsPerDay.values() is a map, so you cannot call .map on it
-  const daily: ForecastTimePeriodSummary[] = Array.from(timestepsPerDay.values())
-    .map((dayTimesteps) => aggregateTimestepsForDay(dayTimesteps))
-    .filter((d) => d !== null)
-
   return {
-    timePeriods: unifyTimePeriods(timePeriods),
-    daily,
-  }
-}
-
-function combineInstantWithTimestep(
-  time: string,
-  instant: MetnoForecastTimeInstant,
-  timePeriod: MetnoForecastTimePeriod,
-  duration: Duration,
-): ForecastTimePeriod {
-  return {
-    datetime: DateTime.fromISO(time),
-    duration,
-    ...transformTimePeriod(timePeriod),
-    ...transformTimeInstant(instant),
-  }
-}
-
-export function aggregateTimestepsForDay(timesteps: MetnoForecastTimeStep[]): ForecastTimePeriodSummary | null {
-  const transformedInstants = timesteps
-    .filter((t) => t.data.instant.details !== undefined)
-    .map((t) => transformTimeInstant(t.data.instant.details!))
-
-  const instantBased = mapNumbersToStatisticalSummaries(transformedInstants)
-  if (!instantBased) return null
-
-  // NOTE: collect all timesteps which do not overlap with the next day
-  const timeperiodsNext1Hours = timesteps.map((t) => t.data.next_1_hours?.details)
-  const timeperiodsNext6Hours = timesteps.map((t) =>
-    DateTime.fromISO(t.time).hour <= 24 - 6 ? t.data.next_6_hours?.details : undefined,
-  )
-  const timeperiodsNext12Hours = timesteps.map((t) =>
-    DateTime.fromISO(t.time).hour <= 24 - 12 ? t.data.next_12_hours?.details : undefined,
-  )
-  const timeperiods = [
-    ...timeperiodsNext1Hours, //
-    ...timeperiodsNext6Hours,
-    ...timeperiodsNext12Hours,
-  ].filter((v) => v !== undefined)
-
-  if (timeperiods.length === 0) return null
-
-  const timestepBased = mapNumbersToStatisticalSummaries(timeperiods)
-
-  const datetime = DateTime.fromISO(timesteps[0].time)
-  datetime.set({ hour: 0 })
-
-  // NOTE: at the end of the current day we need instant based data
-  // -> timestepBased overlaps to the next day
-  // TODO: does it even make sense to use instant based data for timesteps?
-  // e.g. cloud coverage from an instant doesn't really tell a lot about the following hours
-  return {
-    ...defu(instantBased, {
-      temperature: {
-        min: timestepBased.air_temperature_min?.min,
-        max: timestepBased.air_temperature_min?.max,
-      },
-      uvi_clear_sky: {
-        max: Math.max(timestepBased.ultraviolet_index_clear_sky_max?.max, instantBased.uvi_clear_sky?.max),
-      },
-      precipitation_amount: {
-        sum: timestepBased.precipitation_amount?.sum,
-        max: timestepBased.precipitation_amount_max?.max ?? timestepBased.precipitation_amount.max,
-      },
-      precipitation_probability: { sum: timestepBased.probability_of_precipitation?.sum },
-      thunder_probability: { sum: timestepBased.probability_of_thunder?.sum },
-    }),
-    datetime,
-    duration: Duration.fromObject({ day: 1 }),
-    symbol: undefined,
+    multiseries,
   }
 }
 
@@ -165,7 +88,7 @@ function percentageToFraction(value: number | undefined) {
   return value / 100
 }
 
-function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<ForecastTimePeriod> {
+function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<WeatherInstant> {
   return {
     temperature: instant.air_temperature,
     pressure: instant.air_pressure_at_sea_level,
@@ -182,7 +105,7 @@ function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<Foreca
   }
 }
 
-function transformTimePeriod(period: MetnoForecastTimePeriod): Partial<ForecastTimePeriod> {
+function transformTimePeriod(period: MetnoForecastTimePeriod): Partial<WeatherInstant> {
   return {
     uvi_clear_sky: period.ultraviolet_index_clear_sky_max,
     precipitation_amount: period.precipitation_amount,

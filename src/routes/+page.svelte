@@ -18,8 +18,9 @@
   import { persistantState } from '$lib/utils/state.svelte'
   import { tick } from 'svelte'
   import LocationSelector from '$lib/components/LocationSelector.svelte'
+  import { groupMultiseriesByDay } from '$lib/data/providers/utils'
 
-  let data = $state<Forecast>()
+  let data = $state<Partial<Forecast>>()
 
   let providerId = persistantState<ProviderId>('provider-id', 'geosphere.at')
   let locationName = $state<string>()
@@ -53,38 +54,35 @@
     setTimeout(() => (isLoading = false), 500)
   }
 
-  function getTimePeriodsForDate(targetDate: DateTime) {
-    if (!data || !data.timePeriods) return []
+  const multiseriesByDay = $derived(data?.multiseries ? groupMultiseriesByDay(data?.multiseries) : undefined)
 
-    const timePeriods = data.timePeriods.filter((timePeriod) => timePeriod.datetime.hasSame(targetDate, 'day'))
-    const lastTimePeriod = timePeriods[timePeriods.length - 1]
-    const hasDataUntilMidnight = lastTimePeriod.datetime.plus(lastTimePeriod.duration) >= targetDate.endOf('day')
-    const shouldOmit = !CONFIG.dashboard.daily.showIncompleteTimelineBar && !hasDataUntilMidnight
-    if (shouldOmit) return []
-
-    return timePeriods
+  function getMultiseriesForDate(targetDate: DateTime) {
+    if (!multiseriesByDay) return undefined
+    const result = multiseriesByDay.findLast((tp) => tp.datetime <= targetDate)
+    const series = result?.series ?? multiseriesByDay[0].series
+    return series
   }
 
   // TODO: reactivity
   const precipitationStartDatetime = $derived.by(() => {
-    if (!data || !data.timePeriods) return undefined
+    if (!data?.multiseries?.precipitation_amount) return undefined
 
     // the first time period with precipitation from now on
-    const timePeriodWithPrecipitation = data.timePeriods.find((tp) => {
-      if (tp.precipitation_amount === undefined || tp.datetime < DateTime.now()) return false
-      return tp.precipitation_amount > CONFIG.weather.precipitation.threshold
+    const timePeriodWithPrecipitation = data.multiseries.precipitation_amount.find((tp) => {
+      if (tp.value === undefined || tp.datetime < DateTime.now()) return false
+      return tp.value > CONFIG.weather.precipitation.threshold
     })
 
     return timePeriodWithPrecipitation?.datetime
   })
 
   const precipitationEndDatetime = $derived.by(() => {
-    if (!data || !data.timePeriods || !precipitationStartDatetime) return undefined
+    if (!data?.multiseries?.precipitation_amount || !precipitationStartDatetime) return undefined
 
     // the first time period without precipitation after the precipitationStartDatetime
-    const timePeriodWithoutPrecipitation = data.timePeriods.find((tp) => {
-      if (tp.precipitation_amount === undefined || tp.datetime < precipitationStartDatetime) return false
-      return tp.precipitation_amount <= CONFIG.weather.precipitation.threshold
+    const timePeriodWithoutPrecipitation = data.multiseries.precipitation_amount.find((tp) => {
+      if (tp.value === undefined || tp.datetime < precipitationStartDatetime) return false
+      return tp.value <= CONFIG.weather.precipitation.threshold
     })
 
     return timePeriodWithoutPrecipitation?.datetime
@@ -118,9 +116,9 @@
     </div>
 
     <div class="bg-background flex w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
-      <WeatherItemCurrent item="cloud_coverage" {data} />
-      <WeatherItemCurrent item="uvi" {data} />
-      <WeatherItemCurrent item="wind" {data} />
+      <WeatherItemCurrent item="cloud_coverage" current={data.current} />
+      <WeatherItemCurrent item="uvi" current={data.current} />
+      <WeatherItemCurrent item="wind" current={data.current} />
       {#if precipitationStartDatetime}
         <span class="inline-flex items-center gap-2">
           <UmbrellaIcon />
@@ -137,21 +135,24 @@
         </span>
       {/if}
       {#if data.current.precipitation_amount && data.current.precipitation_amount > 0}
-        <WeatherItemCurrent item="precipitation_amount" {data} />
+        <WeatherItemCurrent item="precipitation_amount" current={data.current} />
       {/if}
     </div>
   {/if}
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  <TimelineBar
-    timePeriods={getTimePeriodsForDate(DateTime.now())}
-    parameters={['temperature']}
-    startDatetime={DateTime.now().startOf('day')}
-    marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m))}
-    {coordinates}
-    className="h-2"
-  />
+  {#if getMultiseriesForDate(DateTime.now())}
+    <TimelineBar
+      multiseries={getMultiseriesForDate(DateTime.now())!}
+      parameters={['temperature']}
+      startDatetime={DateTime.now().startOf('day')}
+      endDatetime={DateTime.now().startOf('day').plus({ days: 1 })}
+      marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m))}
+      {coordinates}
+      className="h-2"
+    />
+  {/if}
 
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
@@ -159,9 +160,9 @@
         <span class="w-[3ch]">{day.datetime.toFormat('ccc')}</span>
 
         <div class="flex w-[40%] gap-2">
-          {#if getTimePeriodsForDate(day.datetime)?.length > 0}
+          {#if getMultiseriesForDate(day.datetime)}
             <TimelineBar
-              timePeriods={getTimePeriodsForDate(day.datetime)}
+              multiseries={getMultiseriesForDate(day.datetime)}
               startDatetime={day.datetime.startOf('day')}
               endDatetime={day.datetime.endOf('day')}
               parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
@@ -172,24 +173,24 @@
           {:else}
             <WeatherSymbol className="size-6" derived={deriveWeatherSituationFromPeriod(day)} {coordinates} />
             <!-- TODO: unify this with WeatherItemCurrent, add other values -->
-            {#if day.precipitation_amount?.sum && day.precipitation_amount.sum >= 1}
+            {#if day.summary.precipitation_amount?.sum && day.summary.precipitation_amount.sum >= 1}
               <span class="inline-flex items-center gap-1 text-blue-200">
                 <DropletsIcon />
-                {Math.round(day.precipitation_amount.sum)}mm
+                {Math.round(day.summary.precipitation_amount.sum)}mm
               </span>
             {/if}
           {/if}
         </div>
 
         <div class="flex w-[40%] items-center gap-2">
-          <span class="w-[2ch]">{Math.round(day.temperature.min)}</span>
+          <span class="w-[2ch]">{Math.round(day.summary.temperature.min)}</span>
           <NumberRangeBar
-            total={data?.total?.temperature}
-            instance={day.temperature}
+            total={data?.total?.summary.temperature}
+            instance={day.summary.temperature}
             color="temperature"
             className="h-2 w-full"
           />
-          <span class="w-[2ch]">{Math.round(day.temperature.max)}</span>
+          <span class="w-[2ch]">{Math.round(day.summary.temperature.max)}</span>
         </div>
       </div>
     {/each}
