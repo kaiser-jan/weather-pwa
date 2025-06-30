@@ -28,6 +28,7 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tailwindcss/postcss": "^4.1.7",
     "@tailwindcss/vite": "^4.1.7",
+    "@types/d3": "^7.4.3",
     "@types/luxon": "^3.6.2",
     "@types/suncalc": "^1.9.2",
     "@types/uuid": "^10.0.0",
@@ -55,6 +56,7 @@
   "dependencies": {
     "bits-ui": "0.22.0",
     "clsx": "^2.1.1",
+    "d3": "^7.9.0",
     "idb": "^8.0.3",
     "lucide-svelte": "^0.511.0",
     "luxon": "^3.6.1",

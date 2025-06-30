@@ -8,7 +8,7 @@ import { loadMetnoLocationforecast } from './locationforecast'
 
 export function useDataProviderMetNO(): DataProvider {
   const load: DataProvider['load'] = async (coordinates) => {
-    const { multiseries } = await loadMetnoLocationforecast(coordinates)
+    const multiseries = await loadMetnoLocationforecast(coordinates)
     // TODO: consider using min/max temperature etc.
     const daily = combineMultiseriesToDailyForecast(multiseries)
     const total = forecastTotalFromDailyForecast(daily)

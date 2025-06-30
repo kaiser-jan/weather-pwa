@@ -19,6 +19,7 @@
   import { tick } from 'svelte'
   import LocationSelector from '$lib/components/LocationSelector.svelte'
   import { groupMultiseriesByDay } from '$lib/data/providers/utils'
+  import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
 
   let data = $state<Partial<Forecast>>()
 
@@ -154,6 +155,8 @@
     />
   {/if}
 
+  <WeatherChart {data} />
+
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}
       <div class="inline-flex flex-row items-center justify-between gap-2">
@@ -196,6 +199,12 @@
     {/each}
   </div>
 
+  <!-- NOTE: bottom navbar overlap padding -->
+  <div class="h-16"></div>
+
+  <div
+    class="from-background via-background/80 absolute right-0 bottom-0 left-0 flex h-30 flex-row gap-2 bg-gradient-to-t to-transparent"
+  ></div>
   <div class="absolute right-6 bottom-6 left-6 flex flex-row gap-2">
     <LocationSelector bind:coordinates />
 

@@ -5,6 +5,7 @@ export const colors = {
 	background: 'hsl(220, 50%, 5%)',
 	midground: 'hsl(220, 25%, 12%)',
 	foreground: 'hsl(220, 20%, 20%)',
+	overlay: 'hsl(220, 20%, 30%)',
 
 	text: {
 		DEFAULT: 'hsl(220, 8%, 98%)',

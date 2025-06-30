@@ -27,6 +27,7 @@ export type MultivariateTimeSeries = Partial<Record<WeatherMetricKey, TimeSeries
 export type MultivariateTimeSeriesTimeBucket = TimePeriod & { series: MultivariateTimeSeries }
 
 export type TimeSeries<T> = (TimePeriod & { value: T })[]
+export type TimeSeriesNumberEntry = TimeSeries<number>[number]
 
 export type TimeBucketSummary = TimePeriod & { summary: Record<WeatherMetricKey, NumberSummary> }
 

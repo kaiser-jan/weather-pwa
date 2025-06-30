@@ -9,6 +9,7 @@ import { loadGeosphereNwpTimeseriesForecast } from './nwp/timeseries-forecast'
 import nwpMeta from './nwp/meta'
 import { loadGeosphereNowcastTimeseriesForecast } from './nowcast/timeseries-forecast'
 import { mergeMultivariateTimeSeries } from '$lib/utils/data'
+import { loadMetnoLocationforecast } from '../met.no/locationforecast'
 
 // TODO: perform api calls in parallel
 export function useDataProviderGeosphereAT(): DataProvider {
@@ -16,17 +17,16 @@ export function useDataProviderGeosphereAT(): DataProvider {
     const requiredOffset = DateTime.now().startOf('day').diffNow().as('minutes') / nwpMeta.interval.as('minutes')
     const offset = Math.min(nwpMeta.maxOffset, Math.floor(-requiredOffset))
 
-    const [hourlyFuture, hourlyPast, nowcast] = await Promise.all([
+    // TODO: load according to config, combine in order
+    const [hourlyFuture, hourlyPast, nowcast, metno] = await Promise.all([
       loadGeosphereNwpTimeseriesForecast(coordinates),
       graceful(loadGeosphereNwpTimeseriesForecast(coordinates, offset)),
       loadGeosphereNowcastTimeseriesForecast(coordinates),
+      loadMetnoLocationforecast(coordinates),
     ])
-    console.log(offset)
-    console.log(hourlyPast)
 
     const hourly = hourlyPast ? addOlderMultiseries(hourlyFuture, hourlyPast) : hourlyFuture
-    console.log(hourly)
-    const multiseries = mergeMultivariateTimeSeries(nowcast, hourly)
+    const multiseries = mergeMultivariateTimeSeries(metno, mergeMultivariateTimeSeries(hourly, nowcast))
 
     const daily = combineMultiseriesToDailyForecast(multiseries)
 

@@ -28,10 +28,6 @@ export async function loadMetnoLocationforecast(coords: Coordinates) {
     return { data, expires }
   })
 
-  return transform(data)
-}
-
-function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'multiseries'> {
   const multiseries: MultivariateTimeSeries = {}
 
   function addData(data: Partial<WeatherInstant>, datetime: DateTime, duration: Duration) {
@@ -49,7 +45,7 @@ function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'multiseries'
     }
   }
 
-  const timeseries = metnoResponse.properties.timeseries
+  const timeseries = data.properties.timeseries
 
   for (let timeStepIndex = 0; timeStepIndex < timeseries.length; timeStepIndex++) {
     const lastTimeStep = timeseries[timeStepIndex - 1]
@@ -78,9 +74,7 @@ function transform(metnoResponse: MetjsonForecast): Pick<Forecast, 'multiseries'
     }
   }
 
-  return {
-    multiseries,
-  }
+  return multiseries
 }
 
 function percentageToFraction(value: number | undefined) {
