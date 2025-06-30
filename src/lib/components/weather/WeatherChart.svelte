@@ -151,26 +151,43 @@
       .attr('width', x(now) - margin.left - margin.right)
       .attr('height', height - margin.bottom - margin.top)
       .classed('fill-midground', true)
-      .attr('opacity', 0.5)
+      .attr('opacity', 0.7)
 
-    const temperature = data.multiseries.temperature
-    const closest = temperature.reduce((a, b) =>
-      Math.abs(b.datetime.toMillis() - now.getTime()) < Math.abs(a.datetime.toMillis() - now.getTime()) ? b : a,
-    )
-    const currentY = y(closest.value)
+    function getNearestPointAtDateTime(datetime: DateTime) {
+      const x0 = datetime.toMillis()
+      const i = bisect(data.multiseries!.temperature!, x0)
+      const d0 = data.multiseries.temperature[i - 1]
+      const d1 = data.multiseries.temperature[i]
+      const d = !d0 || x0 - d0.datetime.toMillis() > d1.datetime.toMillis() - x0 ? d1 : d0
 
-    svg
+      return {
+        x: x(d.datetime.toMillis()),
+        y: y(d.value),
+        d,
+      }
+    }
+
+    function updateXAxisPointer(datetime: DateTime) {
+      const p = getNearestPointAtDateTime(datetime)
+      xAxisPointer.attr('transform', `translate(${p.x},0)`)
+      xAxisPointer.select('circle').attr('cy', p.y)
+      xAxisPointer.select('line').attr('y1', p.y)
+    }
+
+    const xAxisPointer = svg.append('g')
+
+    xAxisPointer
       .append('line')
-      .attr('x1', x(now))
-      .attr('x2', x(now))
-      .attr('y1', currentY)
+      .attr('x1', 0)
+      .attr('x2', 0)
+      .attr('y1', 123)
       .attr('y2', height - margin.top + 5)
       .classed('stroke-text-disabled stroke-2', true)
 
-    svg
+    xAxisPointer
       .append('circle')
-      .attr('cx', x(now))
-      .attr('cy', currentY)
+      .attr('cx', 0)
+      .attr('cy', 123)
       .attr('r', 4)
       .classed('stroke-midground fill-text stroke-4', true)
 
@@ -183,6 +200,40 @@
       .attr('y', 0)
       .attr('width', width)
       .attr('height', height)
+
+    const bisect = d3.bisector<TimeSeriesNumberEntry, number>((d) => d.datetime.toMillis()).left
+    svg.on('pointermove', (event) => {
+      const [px] = d3.pointer(event)
+      const x0 = DateTime.fromJSDate(x.invert(px))
+      updateXAxisPointer(x0)
+      updateTooltip(x0)
+    })
+
+    svg.on('pointerleave', () => {
+      updateXAxisPointer(DateTime.now())
+      fo.style('display', 'none')
+    })
+
+    const fo = svg
+      .append('foreignObject')
+      .attr('width', 100)
+      .attr('height', 40)
+      .style('pointer-events', 'none')
+      .style('display', 'none')
+    const tooltip = fo
+      .append('xhtml:div')
+      .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow')
+      .style('position', 'absolute')
+
+    function updateTooltip(datetime: DateTime) {
+      const p = getNearestPointAtDateTime(datetime)
+      fo.attr('x', p.x + 8)
+        .attr('y', p.y - 20)
+        .style('display', null)
+      tooltip.html(`${p.d.datetime.toFormat('HH:mm')}<br>${p.d.value.toFixed(1)}°`)
+    }
+
+    updateXAxisPointer(DateTime.now())
 
     container.replaceChildren(svg.node())
   }
