@@ -202,11 +202,13 @@
       .attr('height', height)
 
     const bisect = d3.bisector<TimeSeriesNumberEntry, number>((d) => d.datetime.toMillis()).left
-    svg.on('pointermove', (event) => {
+
+    svg.on('pointerdown', (event) => {
       const [px] = d3.pointer(event)
       const x0 = DateTime.fromJSDate(x.invert(px))
       updateXAxisPointer(x0)
       updateTooltip(x0)
+      fo.style('display', null)
     })
 
     svg.on('pointerleave', () => {
@@ -222,18 +224,57 @@
       .style('display', 'none')
     const tooltip = fo
       .append('xhtml:div')
-      .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow')
-      .style('position', 'absolute')
+      .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow w-fit')
+    // .style('position', 'absolute')
 
     function updateTooltip(datetime: DateTime) {
       const p = getNearestPointAtDateTime(datetime)
       fo.attr('x', p.x + 8)
         .attr('y', p.y - 20)
         .style('display', null)
+        .attr('transform', `translate(0,0)`) // forces update on iOS
       tooltip.html(`${p.d.datetime.toFormat('HH:mm')}<br>${p.d.value.toFixed(1)}°`)
     }
 
     updateXAxisPointer(DateTime.now())
+
+    let dragMode: 'x' | 'scroll' | null = null
+    let startX: number, startY: number
+
+    svg.on(
+      'pointerdown',
+      (event) => {
+        dragMode = null
+        ;[startX, startY] = [event.clientX, event.clientY]
+      },
+      { passive: false },
+    )
+
+    svg.on('touchmove', (event) => {
+      if (dragMode === 'x') event.preventDefault()
+    })
+
+    svg.on('pointermove', (event) => {
+      const dx = Math.abs(event.clientX - startX)
+      const dy = Math.abs(event.clientY - startY)
+
+      if (!dragMode) {
+        dragMode = dx > dy ? 'x' : 'scroll'
+      }
+
+      if (dragMode === 'x') {
+        event.preventDefault()
+
+        const [px] = d3.pointer(event)
+        const datetime = DateTime.fromMillis(x.invert(px).getTime())
+        updateXAxisPointer(datetime)
+        updateTooltip(datetime)
+      }
+    })
+
+    svg.on('pointerup', () => {
+      dragMode = null
+    })
 
     container.replaceChildren(svg.node())
   }
@@ -253,5 +294,6 @@
       <RotateCwIcon />
     </Button>
   </div>
-  <div bind:this={container} class="h-fit"></div>
+  <!-- NOTE: relative is required on iOS -->
+  <div bind:this={container} class="relative h-fit"></div>
 </div>
