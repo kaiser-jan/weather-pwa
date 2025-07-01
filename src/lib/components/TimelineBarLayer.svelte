@@ -98,9 +98,10 @@
     }))
   }
 
-  function getWidthForSeries(i: number) {
+  function getWidthForSeriesItem(i: number) {
     const seriesEndDatetime = series[i].datetime.plus(series[i].duration)
-    const percentage = distanceFromDatetimes(seriesEndDatetime, series[i].datetime)
+    const limitedSeriesEndDatetime = seriesEndDatetime > endDatetime ? endDatetime : seriesEndDatetime
+    const percentage = distanceFromDatetimes(limitedSeriesEndDatetime, series[i].datetime)
     return percentage + '%'
   }
 
@@ -176,7 +177,7 @@
   <div class={[parameter, 'absolute inset-0 flex flex-row justify-end']}>
     <div style={`width: ${distanceFromDatetimes(firstDatetime, startDatetime)}%;`}></div>
     {#each getBlocksForSeries().entries() as [i, stop]}
-      <div class={`flex h-full items-end justify-center ${i}`} style={`width: ${getWidthForSeries(i)};`}>
+      <div class={`flex h-full items-end justify-center ${i}`} style={`width: ${getWidthForSeriesItem(i)};`}>
         <div
           style={`
                 background-color: ${stop.color};
@@ -187,6 +188,6 @@
         ></div>
       </div>
     {/each}
-    <div style={`width: ${distanceFromDatetimes(lastDatetimeEnd, endDatetime)}%`}></div>
+    <div style={`width: ${distanceFromDatetimes(endDatetime, lastDatetimeEnd)}%`}></div>
   </div>
 {/if}
