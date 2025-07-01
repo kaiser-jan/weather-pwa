@@ -83,9 +83,9 @@
   let SWStateIcon = $derived(swStateIconMap[serviceWorkerState as ServiceWorkerState] ?? LucideCircleHelp)
 
   function updateServiceWorkerStateWatcher() {
-    const applySWState = () => (serviceWorkerState = navigator.serviceWorker.controller?.state)
-    navigator.serviceWorker.controller?.removeEventListener('statechange', applySWState)
-    navigator.serviceWorker.controller?.addEventListener('statechange', applySWState)
+    const applySWState = () => (serviceWorkerState = navigator.serviceWorker?.controller?.state)
+    navigator.serviceWorker?.controller?.removeEventListener('statechange', applySWState)
+    navigator.serviceWorker?.controller?.addEventListener('statechange', applySWState)
     // apply the current state - required on startup as the event listener doesn't fire
     applySWState()
   }
