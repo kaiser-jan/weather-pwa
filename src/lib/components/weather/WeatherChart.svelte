@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Forecast, TimePeriod, TimeSeries, TimeSeriesNumberEntry } from '$lib/types/data'
+  import type { Forecast, TimePeriod, TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { onMount } from 'svelte'
   import { Button } from '../ui/button'
   import { RotateCwIcon } from 'lucide-svelte'
@@ -18,7 +18,7 @@
   let visibleSeries: string[] = ['temperature'] // names of series to display
 
   function updateChart() {
-    if (!data.multiseries?.temperature) return
+    if (!data.multiseries?.temperature || !data.multiseries.precipitation_amount) return
 
     const margin = { top: 10, right: 0, bottom: 10, left: 30 }
     // const width = container.clientWidth - margin.left - margin.right
@@ -36,7 +36,10 @@
     // Declare the x (horizontal position) scale.
     // const minTime = d3.min(data.multiseries.temperature, (d) => d.datetime.toMillis())!
     const x = d3.scaleUtc(
-      [DateTime.now().startOf('day').toMillis(), DateTime.now().endOf('day').toMillis()],
+      [
+        DateTime.now().plus({ days: 0 }).startOf('day').toMillis(),
+        DateTime.now().plus({ days: 0 }).endOf('day').toMillis(),
+      ],
       [margin.left, width - margin.right],
     )
 
@@ -45,12 +48,22 @@
       [0, d3.max(data.multiseries.temperature, (d) => d.value)!],
       [height - margin.bottom, margin.top],
     )
+    const y2 = d3.scaleLinear(
+      [0, d3.max(data.multiseries.precipitation_amount, (d) => d.value)!],
+      [height - margin.bottom, margin.top],
+    )
 
     // Declare the line generator.
     const line = d3
       .line<TimeSeriesNumberEntry>()
       .x((d) => x(d.datetime.toMillis()))
       .y((d) => y(d.value))
+      .curve(d3.curveBasis)
+
+    const line2 = d3
+      .line<TimeSeriesNumberEntry>()
+      .x((d) => x(d.datetime.toMillis()))
+      .y((d) => y2(d.value))
       .curve(d3.curveBasis)
 
     // Add the x-axis.
@@ -92,7 +105,6 @@
       .call(d3.axisLeft(y).tickFormat((d) => `${d}°`))
       .classed('text-overlay', true)
       .call((g) => g.selectAll('.tick text').classed('text-text-muted', true))
-
       .call((g) =>
         g
           .selectAll('.tick line')
@@ -101,6 +113,41 @@
           .attr('x2', width - margin.left - margin.right)
           .classed('stroke-overlay', true),
       )
+
+    svg
+      .append('g')
+      .attr('transform', `translate(${width},0)`)
+      .call(d3.axisRight(y2).tickFormat((d) => `${d}mm`))
+      .classed('text-overlay', true)
+      .call((g) => g.selectAll('.tick text').classed('text-text-muted', true))
+
+    // svg
+    //   .append('path')
+    //   .attr('stroke-width', 4)
+    //   .attr('d', line2(data.multiseries.precipitation_amount))
+    //   .attr('stroke', 'royalblue') // skyblue
+    //   .attr('fill', 'none')
+    //   .attr('clip-path', 'url(#clip)')
+
+    const padding = 2
+    svg
+      .append('g')
+      .selectAll('rect')
+      .data(data.multiseries.precipitation_amount)
+      .join('rect')
+      .attr('x', (d) => {
+        const center = d.datetime.toMillis()
+        const half = d.duration.toMillis() / 2
+        return x(center - half) + padding
+      })
+      .attr('width', (d) => {
+        const start = d.datetime.toMillis()
+        const end = start + d.duration.toMillis()
+        return x(end) - x(start) - 2 * padding
+      })
+      .attr('y', (d) => y2(d.value))
+      .attr('height', (d) => height - margin.top - y2(d.value))
+      .classed('fill-blue-300 opacity-50', true)
 
     // Append a path for the line.
     svg
@@ -153,11 +200,16 @@
       .classed('fill-midground', true)
       .attr('opacity', 0.7)
 
-    function getNearestPointAtDateTime(datetime: DateTime) {
+    function getNearestPointAtDateTime(
+      datetime: DateTime,
+      parameter: WeatherMetricKey,
+      y: d3.ScaleLinear<number, number>,
+    ) {
+      if (!data.multiseries?.[parameter]) return null
       const x0 = datetime.toMillis()
       const i = bisect(data.multiseries!.temperature!, x0)
-      const d0 = data.multiseries.temperature[i - 1]
-      const d1 = data.multiseries.temperature[i]
+      const d0 = data.multiseries[parameter][i - 1]
+      const d1 = data.multiseries[parameter][i]
       const d = !d0 || x0 - d0.datetime.toMillis() > d1.datetime.toMillis() - x0 ? d1 : d0
 
       return {
@@ -167,11 +219,26 @@
       }
     }
 
-    function updateXAxisPointer(datetime: DateTime) {
-      const p = getNearestPointAtDateTime(datetime)
-      xAxisPointer.attr('transform', `translate(${p.x},0)`)
-      xAxisPointer.select('circle').attr('cy', p.y)
-      xAxisPointer.select('line').attr('y1', p.y)
+    function updateXAxisPointer(datetime: DateTime, showTooltip = true) {
+      const p = getNearestPointAtDateTime(datetime, 'temperature', y)
+      const p2 = getNearestPointAtDateTime(datetime, 'precipitation_amount', y2)
+      const points = [p, p2].filter((p) => p !== null)
+      const nearest = points.reduce((a, b) => (b.d.datetime.diffNow() < a.d.datetime.diffNow() ? b : a))
+      const highest = points.reduce((a, b) => (b.y < a.y ? b : a))
+      xAxisPointer.attr('transform', `translate(${nearest.x},0)`)
+      xAxisPointer.select('line').attr('y1', highest.y)
+      xAxisPointerCircle.attr('cy', p.y)
+      xAxisPointerCircle2.attr('cy', p2.y)
+
+      if (!showTooltip) {
+        fo.style('display', 'none')
+        return
+      }
+
+      fo.attr('x', nearest.x + 8)
+        .attr('y', p.y - 20)
+        .style('display', null)
+      tooltip.html(`${p.d.datetime.toFormat('HH:mm')}<br>${p.d.value.toFixed(1)}°<br>${p2.d.value.toFixed(1)}mm`)
     }
 
     const xAxisPointer = svg.append('g')
@@ -184,7 +251,14 @@
       .attr('y2', height - margin.top + 5)
       .classed('stroke-text-disabled stroke-2', true)
 
-    xAxisPointer
+    const xAxisPointerCircle = xAxisPointer
+      .append('circle')
+      .attr('cx', 0)
+      .attr('cy', 123)
+      .attr('r', 4)
+      .classed('stroke-midground fill-text stroke-4', true)
+
+    const xAxisPointerCircle2 = xAxisPointer
       .append('circle')
       .attr('cx', 0)
       .attr('cy', 123)
@@ -206,26 +280,12 @@
     const fo = svg
       .append('foreignObject')
       .attr('width', 100)
-      .attr('height', 40)
+      .attr('height', 100)
       .style('pointer-events', 'none')
       .style('display', 'none')
     const tooltip = fo
       .append('xhtml:div')
       .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow w-fit')
-
-    function updateTooltip(datetime: DateTime | null) {
-      if (!datetime) {
-        fo.style('display', 'none')
-        return
-      }
-
-      const p = getNearestPointAtDateTime(datetime)
-      fo.attr('x', p.x + 8)
-        .attr('y', p.y - 20)
-        .style('display', null)
-        .attr('transform', `translate(0,0)`) // forces update on iOS
-      tooltip.html(`${p.d.datetime.toFormat('HH:mm')}<br>${p.d.value.toFixed(1)}°`)
-    }
 
     let dragMode: 'x' | 'scroll' | null = null
     let startX: number | null = null
@@ -244,7 +304,6 @@
 
         const datetime = DateTime.fromMillis(x.invert(startX).getTime())
         updateXAxisPointer(datetime)
-        updateTooltip(datetime)
       }, 100)
     })
 
@@ -270,13 +329,11 @@
         const [px] = d3.pointer(event)
         const datetime = DateTime.fromMillis(x.invert(px).getTime())
         updateXAxisPointer(datetime)
-        updateTooltip(datetime)
       }
     })
 
     svg.on('pointerleave', () => {
-      updateXAxisPointer(DateTime.now())
-      updateTooltip(null)
+      updateXAxisPointer(DateTime.now(), false)
       dragMode = null
       startX = null
       startY = null
