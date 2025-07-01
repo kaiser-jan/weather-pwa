@@ -203,19 +203,6 @@
 
     const bisect = d3.bisector<TimeSeriesNumberEntry, number>((d) => d.datetime.toMillis()).left
 
-    svg.on('pointerdown', (event) => {
-      const [px] = d3.pointer(event)
-      const x0 = DateTime.fromJSDate(x.invert(px))
-      updateXAxisPointer(x0)
-      updateTooltip(x0)
-      fo.style('display', null)
-    })
-
-    svg.on('pointerleave', () => {
-      updateXAxisPointer(DateTime.now())
-      fo.style('display', 'none')
-    })
-
     const fo = svg
       .append('foreignObject')
       .attr('width', 100)
@@ -225,9 +212,13 @@
     const tooltip = fo
       .append('xhtml:div')
       .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow w-fit')
-    // .style('position', 'absolute')
 
-    function updateTooltip(datetime: DateTime) {
+    function updateTooltip(datetime: DateTime | null) {
+      if (!datetime) {
+        fo.style('display', 'none')
+        return
+      }
+
       const p = getNearestPointAtDateTime(datetime)
       fo.attr('x', p.x + 8)
         .attr('y', p.y - 20)
@@ -236,29 +227,40 @@
       tooltip.html(`${p.d.datetime.toFormat('HH:mm')}<br>${p.d.value.toFixed(1)}°`)
     }
 
-    updateXAxisPointer(DateTime.now())
-
     let dragMode: 'x' | 'scroll' | null = null
-    let startX: number, startY: number
+    let startX: number | null = null
+    let startY: number | null = null
+    let pointerDownTimeout: number | undefined = undefined
 
-    svg.on(
-      'pointerdown',
-      (event) => {
-        dragMode = null
-        ;[startX, startY] = [event.clientX, event.clientY]
-      },
-      { passive: false },
-    )
+    svg.on('pointerdown', (event: PointerEvent) => {
+      dragMode = null
+      startX = event.clientX
+      startY = event.clientY
+
+      pointerDownTimeout = setTimeout(() => {
+        if (!startX) return
+
+        dragMode = 'x'
+
+        const datetime = DateTime.fromMillis(x.invert(startX).getTime())
+        updateXAxisPointer(datetime)
+        updateTooltip(datetime)
+      }, 100)
+    })
 
     svg.on('touchmove', (event) => {
       if (dragMode === 'x') event.preventDefault()
     })
 
-    svg.on('pointermove', (event) => {
-      const dx = Math.abs(event.clientX - startX)
-      const dy = Math.abs(event.clientY - startY)
+    svg.on('pointermove', (event: PointerEvent) => {
+      clearTimeout(pointerDownTimeout)
 
-      if (!dragMode) {
+      // HACK: allow hover interaction, no pointerdown has occurred
+      if (startX === null || startY === null) {
+        dragMode = 'x'
+      } else if (!dragMode) {
+        const dx = Math.abs(event.clientX - startX)
+        const dy = Math.abs(event.clientY - startY)
         dragMode = dx > dy ? 'x' : 'scroll'
       }
 
@@ -272,10 +274,16 @@
       }
     })
 
-    svg.on('pointerup', () => {
+    svg.on('pointerleave', () => {
+      updateXAxisPointer(DateTime.now())
+      updateTooltip(null)
       dragMode = null
+      startX = null
+      startY = null
+      clearTimeout(pointerDownTimeout)
     })
 
+    updateXAxisPointer(DateTime.now())
     container.replaceChildren(svg.node())
   }
 
