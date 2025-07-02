@@ -20,6 +20,7 @@
   import LocationSelector from '$lib/components/LocationSelector.svelte'
   import { groupMultiseriesByDay } from '$lib/data/providers/utils'
   import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
+  import DailyWeatherCharts from '$lib/components/weather/DailyWeatherCharts.svelte'
 
   let data = $state<Partial<Forecast>>()
 
@@ -155,7 +156,9 @@
     />
   {/if}
 
-  <WeatherChart {data} />
+  {#if multiseriesByDay}
+    <DailyWeatherCharts dailyMultiseries={multiseriesByDay} />
+  {/if}
 
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
     {#each data?.daily ?? [] as day}

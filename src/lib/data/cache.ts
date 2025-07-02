@@ -33,6 +33,7 @@ export async function useCache<T>(key: string, fetchFn: () => Promise<{ data: T;
   if (cached) return cached.data
 
   const { data, expires } = await fetchFn()
+
   const entry = {
     data,
     expires: expires.toISO() ?? DateTime.now().toISO(),

@@ -29,6 +29,7 @@ export async function loadGeosphereNowcastTimeseriesForecast(
   // TODO: this will fill up local storage with data from different locations
   const data = await useCache(url.toString(), async () => {
     const response = await fetch(url.toString())
+    // TODO: handle api errors and do not store those
     const data = (await response.json()) as TimeseriesForecastGeoJsonSerializer
     const referenceDatetime = DateTime.fromISO(data.reference_time as string)
     const expires = referenceDatetime.plus(meta.reftimeOffset).plus(meta.interval.mapUnits((x, _) => x * (1 + offset)))

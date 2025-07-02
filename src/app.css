@@ -29,6 +29,17 @@
     overflow: hidden;
   }
 }
+
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 /*
 HACK: viewport-fit=cover causes trouble on iOS: 
 the site either does not fill the full screen or is scrollable

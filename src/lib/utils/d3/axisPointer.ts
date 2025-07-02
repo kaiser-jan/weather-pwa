@@ -90,20 +90,20 @@ export function createAxisPointer(options: {
     .append('xhtml:div')
     .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow w-fit')
 
-  let dragMode: 'x' | 'scroll' | null = null
+  let pointerMode: 'x' | 'y' | 'swipe-x' | null = null
   let startX: number | null = null
   let startY: number | null = null
   let pointerDownTimeout: number | undefined = undefined
 
   svg.on('pointerdown', (event: PointerEvent) => {
-    dragMode = null
+    pointerMode = null
     startX = event.clientX
     startY = event.clientY
 
     pointerDownTimeout = setTimeout(() => {
       if (!startX) return
 
-      dragMode = 'x'
+      pointerMode = 'x'
 
       const datetime = DateTime.fromMillis(scaleX.invert(startX).getTime())
       updateXAxisPointer(datetime)
@@ -111,7 +111,7 @@ export function createAxisPointer(options: {
   })
 
   svg.on('touchmove', (event) => {
-    if (dragMode === 'x') event.preventDefault()
+    if (pointerMode === 'x') event.preventDefault()
   })
 
   svg.on('pointermove', (event: PointerEvent) => {
@@ -119,14 +119,18 @@ export function createAxisPointer(options: {
 
     // HACK: allow hover interaction, no pointerdown has occurred
     if (startX === null || startY === null) {
-      dragMode = 'x'
-    } else if (!dragMode) {
+      pointerMode = 'x'
+    } else if (!pointerMode) {
       const dx = Math.abs(event.clientX - startX)
       const dy = Math.abs(event.clientY - startY)
-      dragMode = dx > dy ? 'x' : 'scroll'
+      pointerMode = dx > dy ? 'x' : 'y'
+
+      if (dx > 3) {
+        pointerMode = 'swipe-x'
+      }
     }
 
-    if (dragMode === 'x') {
+    if (pointerMode === 'x') {
       event.preventDefault()
 
       const [px] = d3.pointer(event)
@@ -137,11 +141,11 @@ export function createAxisPointer(options: {
 
   svg.on('pointerleave', () => {
     updateXAxisPointer(DateTime.now(), false)
-    dragMode = null
+    pointerMode = null
     startX = null
     startY = null
     clearTimeout(pointerDownTimeout)
   })
 
-  updateXAxisPointer(DateTime.now())
+  updateXAxisPointer(DateTime.now(), false)
 }
