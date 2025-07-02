@@ -2,28 +2,23 @@ import * as d3 from 'd3'
 import type { TimeSeries, TimeSeriesNumberEntry } from '$lib/types/data'
 import type { Dimensions } from './types'
 import { DateTime } from 'luxon'
-
-interface SeriesDetails {
-  name: string
-  scale: d3.ScaleLinear<number, number, never>
-  data: TimeSeries<number>
-  formatter: (d: number) => string
-}
+import type { CreatedSeriesDetails } from '$lib/types/ui'
+import { mount } from 'svelte'
 
 export function createAxisPointer(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
   dimensions: Dimensions
   scaleX: d3.ScaleTime<number, number, never>
-  seriesList: SeriesDetails[]
+  seriesList: CreatedSeriesDetails[]
 }) {
   const { svg, dimensions, scaleX, seriesList } = options
 
-  function getNearestPointAtDateTime(datetime: DateTime, series: SeriesDetails) {
+  function getNearestPointAtDateTime(datetime: DateTime, series: CreatedSeriesDetails) {
     const x0 = datetime.toMillis()
     const i = bisect(series.data, x0)
     const d0 = series.data[i - 1]
     const d1 = series.data[i]
-    const d = !d0 || x0 - d0.datetime.toMillis() > d1.datetime.toMillis() - x0 ? d1 : d0
+    const d = !d0 || x0 - d0.datetime.toMillis() > d1?.datetime?.toMillis() - x0 ? d1 : d0
 
     return {
       x: scaleX(d.datetime.toMillis()),
@@ -31,6 +26,7 @@ export function createAxisPointer(options: {
       d,
       name: series.name,
       formatter: series.formatter,
+      icon: series.icon,
     }
   }
 
@@ -52,8 +48,15 @@ export function createAxisPointer(options: {
     fo.attr('x', nearest.x + 8)
       .attr('y', points[0].y - 20)
       .style('display', null)
+
     tooltip.html(
-      `${points[0].d.datetime.toFormat('HH:mm')}<br>${points.map((p) => p.formatter(p.d.value)).join('<br>')}`,
+      `${points[0].d.datetime.toFormat('HH:mm')}<br>${points
+        .map((p) => {
+          const svg = renderIcon(p.icon)
+          const text = p.formatter(p.d.value)
+          return `<div class="flex items-center gap-2">${svg}${text}</div>`
+        })
+        .join('')}`,
     )
   }
 
@@ -148,4 +151,10 @@ export function createAxisPointer(options: {
   })
 
   updateXAxisPointer(DateTime.now(), false)
+}
+
+function renderIcon(icon: any, size = 16): string {
+  const container = document.createElement('div')
+  mount(icon, { target: container, props: { size } })
+  return container.innerHTML
 }

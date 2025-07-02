@@ -2,7 +2,7 @@
   import type { MultivariateTimeSeries, TimeSeries, WeatherMetricKey } from '$lib/types/data'
   import { onMount } from 'svelte'
   import { Button } from '../ui/button'
-  import { RotateCwIcon } from 'lucide-svelte'
+  import { CloudyIcon, RotateCwIcon, ThermometerIcon, UmbrellaIcon } from 'lucide-svelte'
   import * as d3 from 'd3'
   import { DateTime } from 'luxon'
   import { CONFIG } from '$lib/config'
@@ -12,7 +12,7 @@
   import { createLine } from '$lib/utils/d3/line'
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
-  import type { ColorStop } from '$lib/types/ui'
+  import type { ColorStop, SeriesDetails } from '$lib/types/ui'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -26,23 +26,13 @@
 
   let container: HTMLDivElement
 
-  interface SeriesDetails {
-    domain: [number, number]
-    style: 'line' | 'bars'
-    class: string
-    formatter: (d: number) => string
-    hideScale?: boolean
-    scaleOnRight?: boolean
-    gradientColorStops?: ColorStop[]
-    invert?: boolean
-  }
-
   let visibleSeries: WeatherMetricKey[] = ['cloud_coverage', 'precipitation_amount', 'temperature']
 
   let seriesDetails: Partial<Record<WeatherMetricKey, SeriesDetails>> = {
     temperature: {
       domain: [0, 40],
       style: 'line',
+      icon: ThermometerIcon,
       class: '',
       formatter: (d) => `${d}°`,
       gradientColorStops: CONFIG.appearance.colors.temperatureColorStops,
@@ -50,6 +40,7 @@
     cloud_coverage: {
       domain: [0, 1],
       style: 'bars',
+      icon: CloudyIcon,
       class: 'fill-blue-200 opacity-15',
       formatter: (d) => `${d * 100}%`,
       hideScale: true,
@@ -59,6 +50,7 @@
     precipitation_amount: {
       domain: [0, 50],
       style: 'bars',
+      icon: UmbrellaIcon,
       class: 'fill-blue-300 opacity-80',
       formatter: (d) => `${d}mm`,
       scaleOnRight: true,
@@ -96,11 +88,7 @@
     createXAxis({ svg, dimensions, scale: scaleX, addLines: true }) //
       .attr('transform', `translate(0,${dimensions.margin.top + dimensions.height})`)
 
-    const createdSeriesDetails: (SeriesDetails & {
-      name: string
-      scale: d3.ScaleLinear<number, number, never>
-      data: TimeSeries<number>
-    })[] = []
+    const createdSeriesDetails: [] = []
 
     for (const seriesKey of [...visibleSeries].reverse()) {
       const series = data[seriesKey]
@@ -141,7 +129,6 @@
       if (details.gradientColorStops) {
         createGradientDefinition({
           svg,
-          dimensions,
           scaleY,
           stops: details.gradientColorStops,
           id: gradientId,
