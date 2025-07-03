@@ -85,7 +85,7 @@ function percentageToFraction(value: number | undefined) {
 function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<WeatherInstant> {
   return {
     temperature: instant.air_temperature,
-    pressure: instant.air_pressure_at_sea_level,
+    pressure: (instant.air_pressure_at_sea_level ?? 0) * 100, // convert from hPa to Pa
     relative_humidity: instant.relative_humidity,
     uvi_clear_sky: (instant as any).ultraviolet_index_clear_sky,
     cloud_coverage: percentageToFraction(instant.cloud_area_fraction),
