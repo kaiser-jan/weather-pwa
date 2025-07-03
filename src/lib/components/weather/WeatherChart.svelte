@@ -50,7 +50,7 @@
 
     // Declare the x (horizontal position) scale.
     // const minTime = d3.min(data.multiseries.temperature, (d) => d.datetime.toMillis())!
-    const scaleX = d3.scaleUtc([startDateTime, endDateTime], [dimensions.margin.left, dimensions.width + margin.right])
+    const scaleX = d3.scaleUtc([startDateTime, endDateTime], [dimensions.margin.left, dimensions.width + margin.left])
 
     createXAxis({ svg, dimensions, scale: scaleX, addLines: true }) //
       .attr('transform', `translate(0,${dimensions.margin.top + dimensions.height})`)
