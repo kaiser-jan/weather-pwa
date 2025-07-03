@@ -43,7 +43,7 @@
       case 'temperature':
         return { color: interpolateColor(CONFIG.appearance.colors.temperatureColorStops, value) }
       case 'cloud_coverage':
-        return { color: `hsla(0, 0%, 70%, ${value * 100}%)` }
+        return { color: `hsla(0, 0%, 70%, ${value}%)` }
       case 'precipitation_amount':
         return { color: RAIN_CATEGORIES.findLast((c) => value > c.threshold)?.color ?? COLOR_ERROR }
       case 'wind_speed':

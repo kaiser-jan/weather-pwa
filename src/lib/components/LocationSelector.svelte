@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MapPinIcon, NavigationIcon, NavigationOffIcon, SearchIcon } from 'lucide-svelte'
+  import { MapPinIcon, NavigationIcon, NavigationOffIcon, SearchIcon } from '@lucide/svelte'
   import { CONFIG } from '$lib/config'
   import { Button } from './ui/button'
   import type { Coordinates } from '$lib/types/data'

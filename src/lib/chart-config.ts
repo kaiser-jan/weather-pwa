@@ -8,7 +8,7 @@ import {
   UmbrellaIcon,
   UmbrellaOffIcon,
   WindIcon,
-} from 'lucide-svelte'
+} from '@lucide/svelte'
 import type { WeatherMetricKey } from './types/data'
 import type { SeriesDetails } from './types/ui'
 import { CONFIG } from './config'

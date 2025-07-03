@@ -62,6 +62,9 @@ export default defineConfig({
     allowedHosts: ['weather.kjan.dev'],
   },
   optimizeDeps: {
-    include: ['svelte-sonner'],
+        exclude: ['bits-ui'],include: ['svelte-sonner', 'style-to-object'],
+  },
+  ssr: {
+    noExternal: ['bits-ui', 'svelte-toolbelt', 'style-to-object'],
   },
 })

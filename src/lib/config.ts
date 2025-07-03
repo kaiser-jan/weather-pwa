@@ -1,5 +1,5 @@
 import type { ColorStop } from '$lib/types/ui'
-import { BriefcaseIcon, HomeIcon } from 'lucide-svelte'
+import { BriefcaseIcon, HomeIcon } from '@lucide/svelte'
 import type { DateObjectUnits } from 'luxon'
 
 type Location = {

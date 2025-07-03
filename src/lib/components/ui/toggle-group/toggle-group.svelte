@@ -20,7 +20,6 @@
     class: className,
     size = 'default',
     variant = 'default',
-    children,
     ...restProps
   }: ToggleGroupPrimitive.RootProps & ToggleVariants = $props()
 
@@ -42,6 +41,4 @@ get along, so we shut typescript up by casting `value` to `never`.
   data-size={size}
   class={cn('group/toggle-group flex w-fit items-center rounded-md data-[variant=outline]:shadow-xs', className)}
   {...restProps}
->
-  {@render children()}
-</ToggleGroupPrimitive.Root>
+/>

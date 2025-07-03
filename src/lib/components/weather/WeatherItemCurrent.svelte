@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Forecast, WeatherMetricKey } from '$lib/types/data'
-  import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from 'lucide-svelte'
+  import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
   import MathFraction from '$lib/components/MathFraction.svelte'
 
   type AvailableItemsCurrent = 'cloud_coverage' | 'uvi' | 'wind' | 'precipitation_amount' | 'pressure' | 'humidity'
@@ -16,7 +16,7 @@
     AvailableItemsCurrent,
     { icon: typeof CloudIcon; datapoint: WeatherMetricKey; unit?: string; multiplier?: number }
   > = {
-    cloud_coverage: { icon: CloudIcon, datapoint: 'cloud_coverage', unit: '%', multiplier: 100 },
+    cloud_coverage: { icon: CloudIcon, datapoint: 'cloud_coverage', unit: '%', multiplier: 1 },
     uvi: { icon: SunIcon, datapoint: 'uvi_clear_sky' },
     wind: { icon: WindIcon, datapoint: 'wind_speed', unit: 'm/s' },
     precipitation_amount: { icon: DropletsIcon, datapoint: 'precipitation_amount', unit: 'mm' },

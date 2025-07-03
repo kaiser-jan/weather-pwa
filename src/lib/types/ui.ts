@@ -1,4 +1,4 @@
-import type { ThermometerIcon } from 'lucide-svelte'
+import type { ThermometerIcon } from '@lucide/svelte'
 import type { TimeSeries } from './data'
 
 export type ColorStop = { value: number; h: number; s: number; l: number }

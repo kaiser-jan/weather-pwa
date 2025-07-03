@@ -3,20 +3,20 @@
   import type { Coordinates, Forecast } from '$lib/types/data'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
-  import { ArrowRightIcon, DropletsIcon, LucideSettings, RefreshCwIcon, UmbrellaIcon } from 'lucide-svelte'
+  import { ArrowRightIcon, DropletsIcon, LucideSettings, RefreshCwIcon, UmbrellaIcon } from '@lucide/svelte'
   import { CONFIG } from '$lib/config'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
-  import { formatRelativeDatetime } from '$lib/utils'
+  import { cn, formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
   import PwaSettings from '$lib/components/pwa/PWASettings.svelte'
   import { providers, type ProviderId } from '$lib/data/providers'
   import SelectAutoString from '$lib/components/SelectAutoString.svelte'
-  import { Button } from '$lib/components/ui/button'
+  import { Button, buttonVariants } from '$lib/components/ui/button'
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/data/location'
   import { deriveWeatherSituationFromInstant, deriveWeatherSituationFromPeriod } from '$lib/data/providers/symbols'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
   import { persistantState } from '$lib/utils/state.svelte'
-  import { tick } from 'svelte'
+  import { onMount, tick } from 'svelte'
   import LocationSelector from '$lib/components/LocationSelector.svelte'
   import { groupMultiseriesByDay } from '$lib/data/providers/utils'
   import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
@@ -90,7 +90,10 @@
     return timePeriodWithoutPrecipitation?.datetime
   })
 
-  loadForecastData()
+  onMount(()=>{
+
+    loadForecastData()
+  })
 </script>
 
 <!-- TODO: add data-vaul-drawer-wrapper -->
@@ -212,10 +215,10 @@
     <LocationSelector bind:coordinates />
 
     <Drawer.Root>
-      <Drawer.Trigger asChild let:builder>
-        <Button builders={[builder]} variant="midground" size="icon" class="size-14! grow-0 rounded-full text-lg!">
-          <LucideSettings />
-        </Button>
+      <Drawer.Trigger
+        class={cn(buttonVariants({ variant: 'midground', size: 'icon' }), 'size-14! grow-0 rounded-full text-lg!')}
+      >
+        <LucideSettings />
       </Drawer.Trigger>
       <Drawer.Content>
         <div class="flex w-full flex-col gap-4 p-4">

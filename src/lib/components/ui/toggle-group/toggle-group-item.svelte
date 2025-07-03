@@ -10,7 +10,6 @@
     class: className,
     size,
     variant,
-    children,
     ...restProps
   }: ToggleGroupPrimitive.ItemProps & ToggleVariants = $props()
 
@@ -32,6 +31,4 @@
   )}
   {value}
   {...restProps}
->
-  {@render children()}
-</ToggleGroupPrimitive.Item>
+/>

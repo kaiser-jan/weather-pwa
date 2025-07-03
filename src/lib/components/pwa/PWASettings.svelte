@@ -11,7 +11,7 @@
     LucideCirclePlay,
     LucideLockKeyhole,
     LucideRotateCw,
-  } from 'lucide-svelte'
+  } from '@lucide/svelte'
   import { Button } from '$lib/components/ui/button'
   import { useRegisterSW } from 'virtual:pwa-register/svelte'
   import LoaderPulsatingRing from '$lib/components/LoaderPulsatingRing.svelte'
