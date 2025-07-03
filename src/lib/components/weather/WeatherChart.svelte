@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { MultivariateTimeSeries, WeatherMetricKey } from '$lib/types/data'
+  import type { MultivariateTimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { onMount } from 'svelte'
   import * as d3 from 'd3'
   import { DateTime } from 'luxon'
@@ -10,6 +10,9 @@
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
+  import { handleInteraction } from '$lib/utils/d3/interaction'
+  import { CONFIG } from '$lib/config'
+  import type { CreatedSeriesDetails } from '$lib/types/ui'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -18,9 +21,18 @@
     startDateTime: DateTime
     endDateTime: DateTime
     className: string
+    ontimestamp: (timebucket: Record<WeatherMetricKey, TimeSeriesNumberEntry> | null) => void
   }
 
-  const { multiseries: data, visibleSeries, startDateTime, endDateTime, className, loaded }: Props = $props()
+  const {
+    multiseries: data,
+    visibleSeries,
+    startDateTime,
+    endDateTime,
+    className,
+    loaded,
+    ontimestamp = $bindable(),
+  }: Props = $props()
 
   let container: HTMLDivElement
 
@@ -91,7 +103,7 @@
     createXAxis({ svg, dimensions, scale: scaleX, addLines: true }) //
       .attr('transform', `translate(0,${dimensions.margin.top + dimensions.height})`)
 
-    const createdSeriesDetails: [] = []
+    const createdSeriesDetails: CreatedSeriesDetails[] = []
 
     for (const seriesKey of [...visibleSeries].reverse()) {
       const series = data[seriesKey]
@@ -165,11 +177,37 @@
       .attr('width', dimensions.width)
       .attr('height', dimensions.height)
 
-    createAxisPointer({
+    const { updateXAxisPointer } = createAxisPointer({
       svg,
       dimensions,
       scaleX,
       seriesList: createdSeriesDetails,
+      tooltip: CONFIG.chart.tooltip,
+    })
+
+    handleInteraction({
+      svg,
+      onLongPress: (e) => {
+        const datetime = DateTime.fromMillis(scaleX.invert(e.clientX).getTime())
+        updateXAxisPointer(datetime)
+      },
+      onScrollX: (e) => {
+        const [px] = d3.pointer(e)
+        const datetime = DateTime.fromMillis(scaleX.invert(px).getTime())
+        const points = updateXAxisPointer(datetime)
+        const timebucket = Object.fromEntries(points.map((p) => [p.name, p.d])) as Record<
+          WeatherMetricKey,
+          TimeSeriesNumberEntry
+        >
+        ontimestamp(timebucket)
+      },
+      onSwipeX: (_) => {
+        updateXAxisPointer(DateTime.now(), false)
+      },
+      onRelease: (_) => {
+        updateXAxisPointer(DateTime.now(), false)
+        ontimestamp(null)
+      },
     })
 
     container.replaceChildren(svg.node())

@@ -41,6 +41,9 @@ export const CONFIG = {
       ] as ColorStop[],
     },
   },
+  chart: {
+    tooltip: false,
+  },
   locations: [
     {
       name: 'Home',
