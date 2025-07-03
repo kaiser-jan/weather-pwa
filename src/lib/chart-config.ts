@@ -40,6 +40,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     formatter: (d) => `${d}mm`,
     scaleOnRight: true,
   },
+  // TODO: combine with gust speed
   wind_speed: {
     domain: [0, 118 / 3.6],
     style: 'line',

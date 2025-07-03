@@ -38,21 +38,31 @@ export function createAxisPointer(options: {
     xAxisPointer.attr('transform', `translate(${nearest.x},0)`)
     xAxisPointer.select('line').attr('y1', highest.y)
 
-    points.forEach((p) => xAxisPointer.select(`circle#x-axis-pointer-circle-${p.name}`).attr('cy', p.y))
+    points.forEach((p, i) =>
+      xAxisPointer
+        .select(`circle#x-axis-pointer-circle-${p.name}`)
+        .attr('cy', p.y)
+        .classed('!fill-text', i === 0),
+    )
 
     if (!showTooltip) {
       fo.style('display', 'none')
       return
     }
 
-    fo.attr('x', nearest.x + 8)
-      .attr('y', points[0].y - 20)
+    const alignLeft = nearest.x > dimensions.widthFull / 2
+    const alignTop = points[0].y > dimensions.heightFull / 2
+    const offset = 4
+    const tooltipBBox = (tooltip.node() as Element).getBoundingClientRect()
+
+    fo.attr('x', nearest.x + (alignLeft ? -tooltipBBox.width - 3 - offset : offset))
+      .attr('y', points[0].y + (alignTop ? -tooltipBBox.height - 3 - offset : offset))
       .style('display', null)
 
     tooltip.html(
       `${points[0].d.datetime.toFormat('HH:mm')}<br>${points
         .map((p) => {
-          const svg = renderIcon(p.icon)
+          const svg = renderIcon(p.name, p.icon)
           const text = p.formatter(p.d.value)
           return `<div class="flex items-center gap-2">${svg}${text}</div>`
         })
@@ -76,7 +86,7 @@ export function createAxisPointer(options: {
       .attr('cx', 0)
       .attr('cy', 123)
       .attr('r', 4)
-      .classed('stroke-midground fill-text stroke-4', true)
+      .classed('stroke-midground fill-text-muted stroke-4', true)
       .attr('id', 'x-axis-pointer-circle-' + series.name)
   }
 
@@ -84,14 +94,14 @@ export function createAxisPointer(options: {
 
   const fo = svg
     .append('foreignObject')
-    .attr('width', 100)
-    .attr('height', 100)
+    .attr('width', 200)
+    .attr('height', 200)
     .style('pointer-events', 'none')
     .style('display', 'none')
 
   const tooltip = fo
     .append('xhtml:div')
-    .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow w-fit')
+    .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow w-fit min-w-20')
 
   let pointerMode: 'x' | 'y' | 'swipe-x' | null = null
   let startX: number | null = null
@@ -153,8 +163,15 @@ export function createAxisPointer(options: {
   updateXAxisPointer(DateTime.now(), false)
 }
 
-function renderIcon(icon: any, size = 16): string {
+// PERF: rendering the icons has a noticable performance impact
+let renderedIcons: Record<string, string> = {}
+function renderIcon(id: string, icon: any, size = 16): string {
+  if (renderedIcons[id]) return renderedIcons[id]
+
   const container = document.createElement('div')
   mount(icon, { target: container, props: { size } })
-  return container.innerHTML
+  const renderedIcon = container.innerHTML
+
+  renderedIcons[id] = renderedIcon
+  return renderedIcon
 }
