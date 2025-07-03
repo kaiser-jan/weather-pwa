@@ -24,23 +24,59 @@
 
   let container: HTMLDivElement
 
-  const margin = { top: 10, right: 50, bottom: 20, left: 25 }
+  let margin = { top: 10, right: 40, bottom: 20, left: 40 }
   const widthFull = 360
   const heightFull = 240
-  const dimensions: Dimensions = {
-    width: widthFull - margin.left - margin.right,
-    height: heightFull - margin.top - margin.bottom,
-    widthFull,
-    heightFull,
-    margin,
+
+  let dimensions: Dimensions = computeDimensions()
+
+  function computeDimensions() {
+    return {
+      width: widthFull - margin.left - margin.right,
+      height: heightFull - margin.top - margin.bottom,
+      widthFull,
+      heightFull,
+      margin,
+    }
   }
 
   function clearChart() {
     d3.select(container).selectAll('*').remove()
   }
 
+  function estimateTextWidth(text: string, font: string = '12px sans-serif'): number {
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    if (!context) return 0
+    context.font = font
+    return context.measureText(text).width
+  }
+
   function updateChart() {
     clearChart()
+
+    margin = { top: 10, right: 0, bottom: 20, left: 0 }
+
+    let yScaleOffsets: Partial<Record<WeatherMetricKey, number>> = {}
+    let yScaleRightCurrentOffset = 0
+    let yScaleLeftCurrentOffset = 0
+
+    for (const seriesKey of visibleSeries) {
+      const details = CHART_SERIES_DETAILS[seriesKey]
+      if (!details || details.hideScale) continue
+      const maxString = details.formatter(details.domain[1])
+      const requiredX = estimateTextWidth(maxString) + 10
+      if (details.scaleOnRight) {
+        margin['right'] += requiredX
+        yScaleOffsets[seriesKey] = yScaleRightCurrentOffset
+        yScaleRightCurrentOffset += requiredX
+      } else {
+        margin['left'] += requiredX
+        yScaleOffsets[seriesKey] = yScaleLeftCurrentOffset
+        yScaleLeftCurrentOffset -= requiredX
+      }
+    }
+    dimensions = computeDimensions()
 
     const svg = d3
       .select(container)
@@ -76,7 +112,10 @@
           formatter: details.formatter,
           addLines: false,
         }) //
-          .attr('transform', `translate(${dimensions.margin.left + (details.scaleOnRight ? dimensions.width : 0)},0)`)
+          .attr(
+            'transform',
+            `translate(${dimensions.margin.left + (details.scaleOnRight ? dimensions.width : 0) + yScaleOffsets[seriesKey]},0)`,
+          )
       }
 
       const gradientId = `gradient-${seriesKey}`

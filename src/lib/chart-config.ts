@@ -1,4 +1,4 @@
-import { CloudyIcon, ThermometerIcon, UmbrellaIcon } from 'lucide-svelte'
+import { CloudyIcon, ThermometerIcon, UmbrellaIcon, WindIcon } from 'lucide-svelte'
 import type { WeatherMetricKey } from './types/data'
 import type { SeriesDetails } from './types/ui'
 import { CONFIG } from './config'
@@ -18,7 +18,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     icon: CloudyIcon,
     class: 'fill-blue-200 opacity-15',
     formatter: (d) => `${d * 100}%`,
-    hideScale: true,
     // TODO: implement invert
     invert: true,
   },
@@ -28,6 +27,14 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     icon: UmbrellaIcon,
     class: 'fill-blue-300 opacity-80',
     formatter: (d) => `${d}mm`,
+    scaleOnRight: true,
+  },
+  wind_speed: {
+    domain: [0, 118 / 3.6],
+    style: 'line',
+    icon: WindIcon,
+    class: 'stroke-blue-100 opacity-80',
+    formatter: (d) => `${Math.round(d)}m/s`,
     scaleOnRight: true,
   },
 } as const
