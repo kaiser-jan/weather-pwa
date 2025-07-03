@@ -8,7 +8,7 @@ export interface SeriesDetails {
   style: 'line' | 'bars'
   icon: typeof ThermometerIcon
   class: string
-  formatter: (d: number) => string
+  unit: string
   hideScale?: boolean
   scaleOnRight?: boolean
   gradientColorStops?: ColorStop[]

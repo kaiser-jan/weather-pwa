@@ -45,7 +45,7 @@
           <div class="flex h-9 flex-row items-center gap-1 last:mr-1.5">
             <details.icon />
             <!-- TODO: proper formatting -->
-            {details.formatter(entry.value)}
+            {entry.value.toFixed(details.unit === '%' ? 0 : 1) + details.unit}
           </div>
         {/each}
       {:else}

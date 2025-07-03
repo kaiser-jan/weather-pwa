@@ -83,7 +83,7 @@ function getNearestPointAtDateTime(
     y: series.scale(d.value),
     d,
     name: series.name,
-    formatter: series.formatter,
+    unit: series.unit,
     icon: series.icon,
   }
 }
@@ -136,7 +136,7 @@ export function createTooltip(options: {
       `<b>${points[0].d.datetime.toFormat('HH:mm')}</b><br>${points
         .map((p) => {
           const svg = renderIcon(p.name, p.icon)
-          const text = p.formatter(p.d.value)
+          const text = p.d.value.toFixed(p.unit === '%' ? 0 : 1)
           return `<div class="flex items-center gap-2">${svg}${text}</div>`
         })
         .join('')}`,

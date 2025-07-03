@@ -76,7 +76,8 @@
     for (const seriesKey of visibleSeries) {
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!details || details.hideScale) continue
-      const maxString = details.formatter(details.domain[1])
+      const maxString = details.domain[1].toFixed(0) + details.unit
+
       const requiredX = estimateTextWidth(maxString) + 10
       if (details.scaleOnRight) {
         margin['right'] += requiredX
@@ -121,7 +122,7 @@
           dimensions,
           scale: scaleY,
           side: details.scaleOnRight ? 'right' : 'left',
-          formatter: details.formatter,
+          unit: details.unit,
           addLines: false,
         }) //
           .attr(

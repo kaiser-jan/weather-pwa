@@ -2,7 +2,7 @@ import type { MultivariateTimeSeries, TimeSeries } from '$lib/types/data'
 import { DateTime, type Duration } from 'luxon'
 
 export type TimeSeriesConfig<InKeyT extends string, OutKeyT extends string> =
-  | { type: 'normal'; inKey: InKeyT; outKey: OutKeyT }
+  | { type: 'normal'; inKey: InKeyT; outKey: OutKeyT; multiplier?: number }
   | { type: 'accumulated'; inKey: InKeyT; outKey: OutKeyT }
   | { type: 'vector'; xKey: InKeyT; yKey: InKeyT; outKeyLength: OutKeyT; outKeyAngle: OutKeyT }
 
@@ -34,7 +34,10 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
   timestamps.forEach((datetime, i) => {
     for (const item of configs) {
       if (item.type === 'normal') {
-        output[item.outKey].push({ datetime, duration, value: values[item.inKey].data[i] })
+        const multiplier = item.multiplier ?? 1
+        const rawValue = values[item.inKey].data[i]
+        const value = rawValue !== null ? rawValue * multiplier : null
+        output[item.outKey].push({ datetime, duration, value })
       }
       if (item.type === 'accumulated') {
         const arr = values[item.inKey].data

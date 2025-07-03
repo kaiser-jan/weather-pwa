@@ -55,7 +55,7 @@ export async function loadGeosphereNwpTimeseriesForecast(
     { outKey: 'precipitation_amount', inKey: 'rr_acc', type: 'accumulated' },
     { outKey: 'relative_humidity', inKey: 'rh2m', type: 'normal' },
     { outKey: 'pressure', inKey: 'sp', type: 'normal' },
-    { outKey: 'cloud_coverage', inKey: 'tcc', type: 'normal' },
+    { outKey: 'cloud_coverage', inKey: 'tcc', type: 'normal', multiplier: 100 },
     { outKeyLength: 'wind_speed', outKeyAngle: 'wind_degrees', xKey: 'u10m', yKey: 'v10m', type: 'vector' },
     { outKeyLength: 'wind_speed_gust', outKeyAngle: 'wind_degrees_gust', xKey: 'ugust', yKey: 'vgust', type: 'vector' },
     { outKey: 'symbol', inKey: 't2m', type: 'normal' },
