@@ -1,10 +1,12 @@
 import {
+  CloudOffIcon,
   CloudyIcon,
   DropletIcon,
   GaugeIcon,
   SoapDispenserDropletIcon,
   ThermometerIcon,
   UmbrellaIcon,
+  UmbrellaOffIcon,
   WindIcon,
 } from 'lucide-svelte'
 import type { WeatherMetricKey } from './types/data'
@@ -24,6 +26,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     domain: [0, 100],
     style: 'bars',
     icon: CloudyIcon,
+    iconIfZero: CloudOffIcon,
     class: 'fill-blue-200 opacity-15',
     unit: '%',
     hideScale: true,
@@ -34,6 +37,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     domain: [0, 50],
     style: 'bars',
     icon: UmbrellaIcon,
+    iconIfZero: UmbrellaOffIcon,
     class: 'fill-blue-300 opacity-80',
     unit: 'mm/h',
     scaleOnRight: true,

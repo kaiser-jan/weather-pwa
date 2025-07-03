@@ -7,6 +7,7 @@ export interface SeriesDetails {
   domain: [number, number]
   style: 'line' | 'bars'
   icon: typeof ThermometerIcon
+  iconIfZero?: typeof ThermometerIcon
   class: string
   unit: string
   hideScale?: boolean

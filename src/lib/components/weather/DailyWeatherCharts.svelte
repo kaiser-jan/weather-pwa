@@ -5,6 +5,7 @@
   import WeatherChart from './WeatherChart.svelte'
   import * as ToggleGroup from '../ui/toggle-group'
   import Toggle from '../ui/toggle/toggle.svelte'
+  import { slide } from 'svelte/transition'
 
   interface Props {
     dailyMultiseries: MultivariateTimeSeriesTimeBucket[]
@@ -31,31 +32,41 @@
 </script>
 
 <div class="bg-midground flex w-full flex-col gap-2 rounded-lg p-2">
-  <div class="flex flex-row items-center justify-between gap-2">
-    <div class="ml-1.5 flex flex-row gap-2">
+  <div class="-mb-1.5 flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-2">
+    <div class="border-foreground bg-foreground flex h-9 flex-row gap-2 rounded-lg border-1 p-2 text-sm">
       <span class="font-bold">{dayLabel}</span>
       {#if highlightedTimeBucket}
         <span class="">{Object.values(highlightedTimeBucket)[0].datetime.toFormat('HH:mm')}</span>
       {/if}
     </div>
-    <div class="text-text flex flex-row gap-4 text-sm">
+    <ToggleGroup.Root type="multiple" variant="outline" bind:value={visibleSeries}>
+      {#each Object.entries(CHART_SERIES_DETAILS) as [key, seriesDetails]}
+        <ToggleGroup.Item value={key}>
+          <seriesDetails.icon />
+        </ToggleGroup.Item>
+      {/each}
+    </ToggleGroup.Root>
+
+    <div class=" w-full">
       {#if highlightedTimeBucket}
-        {#each Object.entries(highlightedTimeBucket) as [parameter, entry]}
-          {@const details = CHART_SERIES_DETAILS[parameter as WeatherMetricKey]!}
-          <div class="flex h-9 flex-row items-center gap-1 last:mr-1.5">
-            <details.icon />
-            <!-- TODO: proper formatting -->
-            {entry.value.toFixed(details.unit === '%' ? 0 : 1) + details.unit}
-          </div>
-        {/each}
-      {:else}
-        <ToggleGroup.Root type="multiple" variant="outline" bind:value={visibleSeries}>
-          {#each Object.entries(CHART_SERIES_DETAILS) as [key, seriesDetails]}
-            <ToggleGroup.Item value={key}>
-              <seriesDetails.icon />
-            </ToggleGroup.Item>
+        <div
+          class="text-text border-foreground flex h-9 grow flex-row gap-4 rounded-lg border-1 text-sm"
+          transition:slide
+        >
+          {#each Object.entries(highlightedTimeBucket) as [parameter, entry]}
+            {@const details = CHART_SERIES_DETAILS[parameter as WeatherMetricKey]!}
+            {@const showZeroIcon = entry.value === 0 && details.iconIfZero}
+            {@const ParameterIcon = showZeroIcon ? details.iconIfZero : details.icon}
+            <div class="align-center flex flex-1 flex-row items-center justify-center gap-1 last:mr-1.5">
+              <ParameterIcon />
+              <!-- TODO: proper formatting -->
+              {#if !showZeroIcon}
+                <span class="whitespace-nowrap">{entry.value.toFixed(details.unit === '%' ? 0 : 1) + details.unit}</span
+                >
+              {/if}
+            </div>
           {/each}
-        </ToggleGroup.Root>
+        </div>
       {/if}
     </div>
   </div>
