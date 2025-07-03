@@ -1,9 +1,12 @@
 <script lang="ts">
-  import type { Forecast, MultivariateTimeSeriesTimeBucket } from '$lib/types/data'
+  import { CHART_SERIES_DETAILS } from '$lib/chart-config'
+  import type { Forecast, MultivariateTimeSeriesTimeBucket, WeatherMetricKey } from '$lib/types/data'
   import { DateTime } from 'luxon'
   import { Button } from '../ui/button'
   import WeatherChart from './WeatherChart.svelte'
-  import { RotateCwIcon } from 'lucide-svelte'
+  import { BoldIcon, RotateCwIcon } from 'lucide-svelte'
+  import Toggle from '../ui/toggle/toggle.svelte'
+  import * as ToggleGroup from '../ui/toggle-group'
 
   interface Props {
     dailyMultiseries: MultivariateTimeSeriesTimeBucket[]
@@ -12,6 +15,8 @@
   const { dailyMultiseries }: Props = $props()
 
   let activeChartIndex = $state<number>(0)
+
+  let visibleSeries: WeatherMetricKey[] = $state(['cloud_coverage', 'precipitation_amount', 'temperature'])
 
   function handleChartScroll(event: { currentTarget: EventTarget & HTMLDivElement }) {
     const { currentTarget } = event
@@ -28,10 +33,17 @@
 <div class="bg-midground flex w-full flex-col gap-2 rounded-lg p-2">
   <div class="flex flex-row items-center justify-between gap-2">
     <span class="font-bold">{dayLabel}</span>
-    <Button variant="secondary" size="icon" class="size-8 text-sm">
-      <RotateCwIcon />
-    </Button>
+    <div class="text-text flex flex-row gap-2">
+      <ToggleGroup.Root type="multiple" variant="outline" bind:value={visibleSeries}>
+        {#each Object.entries(CHART_SERIES_DETAILS) as [key, seriesDetails]}
+          <ToggleGroup.Item value={key}>
+            <seriesDetails.icon />
+          </ToggleGroup.Item>
+        {/each}
+      </ToggleGroup.Root>
+    </div>
   </div>
+
   <div
     class="scrollbar-none flex w-full shrink-0 snap-x snap-mandatory flex-row gap-4 overflow-x-scroll"
     onscroll={handleChartScroll}
@@ -39,9 +51,10 @@
     {#each dailyMultiseries.entries() as [index, timeBucket]}
       <WeatherChart
         multiseries={timeBucket.series}
+        {visibleSeries}
+        loaded={activeChartIndex >= index - 1 && activeChartIndex <= index + 1}
         startDateTime={timeBucket.datetime}
         endDateTime={timeBucket.datetime.plus(timeBucket.duration)}
-        loaded={activeChartIndex >= index - 1 && activeChartIndex <= index + 1}
         className="snap-center shrink-0 w-full"
       />
     {/each}

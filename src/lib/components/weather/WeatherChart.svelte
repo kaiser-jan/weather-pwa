@@ -1,61 +1,28 @@
 <script lang="ts">
-  import type { MultivariateTimeSeries, TimeSeries, WeatherMetricKey } from '$lib/types/data'
+  import type { MultivariateTimeSeries, WeatherMetricKey } from '$lib/types/data'
   import { onMount } from 'svelte'
-  import { Button } from '../ui/button'
-  import { CloudyIcon, RotateCwIcon, ThermometerIcon, UmbrellaIcon } from 'lucide-svelte'
   import * as d3 from 'd3'
   import { DateTime } from 'luxon'
-  import { CONFIG } from '$lib/config'
   import { createXAxis, createYAxis } from '$lib/utils/d3/axis'
   import type { Dimensions } from '$lib/utils/d3/types'
   import { createBars } from '$lib/utils/d3/bars'
   import { createLine } from '$lib/utils/d3/line'
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
-  import type { ColorStop, SeriesDetails } from '$lib/types/ui'
+  import { CHART_SERIES_DETAILS } from '$lib/chart-config'
 
   interface Props {
     multiseries: MultivariateTimeSeries
+    loaded: boolean
+    visibleSeries: WeatherMetricKey[]
     startDateTime: DateTime
     endDateTime: DateTime
     className: string
-    loaded: boolean
   }
 
-  const { multiseries: data, startDateTime, endDateTime, className, loaded }: Props = $props()
+  const { multiseries: data, visibleSeries, startDateTime, endDateTime, className, loaded }: Props = $props()
 
   let container: HTMLDivElement
-
-  let visibleSeries: WeatherMetricKey[] = ['cloud_coverage', 'precipitation_amount', 'temperature']
-
-  let seriesDetails: Partial<Record<WeatherMetricKey, SeriesDetails>> = {
-    temperature: {
-      domain: [0, 40],
-      style: 'line',
-      icon: ThermometerIcon,
-      class: '',
-      formatter: (d) => `${d}°`,
-      gradientColorStops: CONFIG.appearance.colors.temperatureColorStops,
-    },
-    cloud_coverage: {
-      domain: [0, 1],
-      style: 'bars',
-      icon: CloudyIcon,
-      class: 'fill-blue-200 opacity-15',
-      formatter: (d) => `${d * 100}%`,
-      hideScale: true,
-      // TODO: implement invert
-      invert: true,
-    },
-    precipitation_amount: {
-      domain: [0, 50],
-      style: 'bars',
-      icon: UmbrellaIcon,
-      class: 'fill-blue-300 opacity-80',
-      formatter: (d) => `${d}mm`,
-      scaleOnRight: true,
-    },
-  }
 
   const margin = { top: 10, right: 50, bottom: 20, left: 25 }
   const widthFull = 360
@@ -94,7 +61,7 @@
       const series = data[seriesKey]
       if (!series) return
 
-      const details = seriesDetails[seriesKey]
+      const details = CHART_SERIES_DETAILS[seriesKey]
       if (!details) continue
 
       const rangeY = [dimensions.height + dimensions.margin.top, margin.top]
@@ -178,7 +145,7 @@
       clearChart()
       return
     }
-    if (data) updateChart()
+    if (data && visibleSeries.length) updateChart()
   })
 </script>
 

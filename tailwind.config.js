@@ -44,13 +44,17 @@ const config = {
 					...colors.primary,
 					foreground: colors.text.DEFAULT
 				},
+				accent: {
+					DEFAULT: colors.foreground,
+					foreground: colors.text.DEFAULT
+				},
 				secondary: {
 					DEFAULT: colors.foreground,
 					foreground: colors.text.DEFAULT
 				},
 				muted: {
 					DEFAULT: colors.disabled.DEFAULT,
-					foreground: colors.text.disabled,
+					foreground: colors.disabled.foreground,
 				},
 				popover: {
 					DEFAULT: colors.background
