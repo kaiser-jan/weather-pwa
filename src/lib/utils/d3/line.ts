@@ -16,6 +16,7 @@ export function createLine(options: {
     .x((d) => scaleX(d.datetime.toMillis()))
     .y((d) => scaleY(d.value))
     .curve(d3.curveBasis)
+    .defined((d) => d.value !== null && !isNaN(d.value))
 
   const line = svg
     .append('path')

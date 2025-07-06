@@ -8,9 +8,9 @@ import meta from './meta'
 import { transformTimeSeries, type TimeSeriesConfig } from '$lib/utils/data'
 
 export const REQUESTED_WEATHER_PARAMETERS: (typeof meta.availableParameters)[number][] = [
-  // 'cape',
-  // 'cin',
-  // 'grad',
+  'cape',
+  'cin',
+  'grad',
   // 'mnt2m',
   // 'mxt2m',
   // 'rain_acc',
@@ -58,7 +58,10 @@ export async function loadGeosphereNwpTimeseriesForecast(
     { outKey: 'cloud_coverage', inKey: 'tcc', type: 'normal', multiplier: 100 },
     { outKeyLength: 'wind_speed', outKeyAngle: 'wind_degrees', xKey: 'u10m', yKey: 'v10m', type: 'vector' },
     { outKeyLength: 'wind_speed_gust', outKeyAngle: 'wind_degrees_gust', xKey: 'ugust', yKey: 'vgust', type: 'vector' },
-    { outKey: 'symbol', inKey: 't2m', type: 'normal' },
+    // { outKey: 'symbol', inKey: 't2m', type: 'normal' },
+    { outKey: 'cape', inKey: 'cape', type: 'normal' },
+    { outKey: 'cin', inKey: 'cin', type: 'normal' },
+    { outKey: 'grad', inKey: 'grad', type: 'normal' },
   ]
 
   return transformTimeSeries(

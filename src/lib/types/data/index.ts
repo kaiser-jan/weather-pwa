@@ -49,6 +49,10 @@ export type WeatherMetricKey =
   | 'precipitation_amount'
   | 'precipitation_probability'
   | 'thunder_probability'
+  | 'snow_amount' // kg/m2
+  | 'cape' // m2/s2 - Convective available potential energy
+  | 'cin' // J/kg - Convective inhibition
+  | 'grad' // Ws/m2 - Surface global radiation
 
 export interface DataProvider {
   load: (coordinates: Coordinates) => Promise<Partial<Forecast>>

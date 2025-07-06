@@ -3,11 +3,14 @@ import {
   CloudyIcon,
   DropletIcon,
   GaugeIcon,
+  ShieldIcon,
   SoapDispenserDropletIcon,
+  SunIcon,
   ThermometerIcon,
   UmbrellaIcon,
   UmbrellaOffIcon,
   WindIcon,
+  ZapIcon,
 } from '@lucide/svelte'
 import type { WeatherMetricKey } from './types/data'
 import type { SeriesDetails } from './types/ui'
@@ -79,4 +82,28 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   //   formatter: (d) => d.toString(),
   //   scaleOnRight: false,
   // },
+  cape: {
+    domain: [0, 1000],
+    style: 'line',
+    icon: ZapIcon,
+    class: 'stroke-yellow-300 opacity-80',
+    unit: 'm2/s2',
+    scaleOnRight: false,
+  },
+  cin: {
+    domain: [-500, 0],
+    style: 'line',
+    icon: ShieldIcon,
+    class: 'stroke-orange-300 opacity-80',
+    unit: 'J/kg',
+    scaleOnRight: false,
+  },
+  grad: {
+    domain: [-1000, 50_000_000],
+    style: 'line',
+    icon: SunIcon,
+    class: 'stroke-yellow-300 opacity-80',
+    unit: 'Ws/m2',
+    scaleOnRight: false,
+  },
 } as const

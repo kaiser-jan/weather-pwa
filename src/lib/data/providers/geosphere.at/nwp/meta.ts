@@ -12,7 +12,7 @@ const availableParameters = [
   'rh2m', // Relative humidity 2m above ground
   'rr_acc', // Total precipitation amount
   'snow_acc', // Total surface snow amount
-  'snowlmt', // Snow limit
+  'snowlmt', // Snow limit - height above ground where falling snow melts (NOTE: does ground = sealevel?)
   'sp', // Surface pressure
   'sundur_acc', // Sunshine duration accumulated
   'sy', // Weather symbol
