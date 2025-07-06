@@ -65,12 +65,12 @@
   bind:clientHeight={barHeight}
 >
   <div
-    class="stripe-pattern absolute top-0 bottom-0 z-100"
+    class="stripe-pattern absolute top-0 bottom-0 z-10"
     style={`width: ${distanceFromDatetimes(now, startDatetime)}%; left: 0;`}
   ></div>
   {#each marks as mark}
     <div
-      class="bg-foreground absolute -top-1 -bottom-1 z-100 w-[0.05rem] mix-blend-difference"
+      class="bg-foreground absolute -top-1 -bottom-1 z-10 w-[0.05rem] mix-blend-difference"
       style={`left: ${distanceFromDatetimes(mark, startDatetime)}%;`}
     ></div>
   {/each}
