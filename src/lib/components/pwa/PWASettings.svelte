@@ -94,16 +94,16 @@
 </script>
 
 <div class="flex flex-row gap-2">
-  <Button variant="outline" size="icon" on:click={() => (window.location.href = 'https://auth.kjan.dev')}>
+  <Button variant="outline" size="icon" onclick={() => (window.location.href = 'https://auth.kjan.dev')}>
     <LucideLockKeyhole />
   </Button>
-  <Button variant="outline" size="icon" on:click={() => window.location.reload()}>
+  <Button variant="outline" size="icon" onclick={() => window.location.reload()}>
     <LucideRotateCw />
   </Button>
   <Button
     variant={$needRefresh ? 'default' : 'outline'}
     size="icon"
-    on:click={() => ($needRefresh ? applyServiceWorkerUpdate() : checkServiceWorkerUpdates())}
+    onclick={() => ($needRefresh ? applyServiceWorkerUpdate() : checkServiceWorkerUpdates())}
   >
     {#if isCheckingUpdates}
       <LoaderPulsatingRing className="size-4 text-text" />

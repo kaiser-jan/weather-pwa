@@ -90,8 +90,7 @@
     return timePeriodWithoutPrecipitation?.datetime
   })
 
-  onMount(()=>{
-
+  onMount(() => {
     loadForecastData()
   })
 </script>
@@ -230,6 +229,7 @@
           />
           <h2 class="text-xl font-bold">PWA Options</h2>
           <PwaSettings />
+          <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
         </div>
       </Drawer.Content>
     </Drawer.Root>
