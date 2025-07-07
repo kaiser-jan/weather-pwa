@@ -49,16 +49,16 @@ export function createYAxis<ScaleT extends d3.AxisDomain>(options: {
   dimensions: Dimensions
   scale: d3.AxisScale<ScaleT>
   side: 'right' | 'left'
-  unit: string
+  format: (domainValue: ScaleT, index: number) => string
   addLines?: boolean
 }) {
-  const { svg, dimensions, scale } = options
+  const { svg, dimensions, scale, format } = options
 
   const axisGenerator = options.side === 'left' ? d3.axisLeft : d3.axisRight
 
   const yAxis = svg
     .append('g')
-    .call(axisGenerator(scale).tickFormat((d) => d + options.unit))
+    .call(axisGenerator(scale).tickFormat(format))
     .classed('text-overlay', true)
     .call((g) => g.selectAll('.tick text').classed('text-text-muted', true))
 

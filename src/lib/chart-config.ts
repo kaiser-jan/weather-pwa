@@ -77,7 +77,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     hideScale: true,
   },
   pressure: {
-    domain: [970 * 100, 1050 * 100],
+    domain: [960 * 100, 1060 * 100],
     style: 'line',
     icon: GaugeIcon,
     class: 'stroke-purple-300 opacity-80',

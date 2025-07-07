@@ -8,6 +8,7 @@
   import { slide } from 'svelte/transition'
   import { CONFIG } from '$lib/config'
   import { Button } from '../ui/button'
+  import { formatMetric, getPreferredUnit } from '$lib/utils/units'
 
   interface Props {
     dailyMultiseries: MultivariateTimeSeriesTimeBucket[]
@@ -80,7 +81,8 @@
           transition:slide
         >
           {#each Object.entries(timeBucket) as [parameter, entry]}
-            {@const details = CHART_SERIES_DETAILS[parameter as WeatherMetricKey]!}
+            {@const parameterTyped = parameter as WeatherMetricKey}
+            {@const details = CHART_SERIES_DETAILS[parameterTyped]!}
             {@const showZeroIcon = entry?.value === 0 && details.iconIfZero}
             {@const ParameterIcon = showZeroIcon ? details.iconIfZero : details.icon}
             <div class="align-center flex flex-1 flex-row items-center justify-center gap-1 last:mr-1.5">
@@ -89,9 +91,9 @@
                 <span>-</span>
               {:else if !showZeroIcon}
                 <!-- TODO: proper formatting -->
-                <span class="whitespace-nowrap"
-                  >{entry?.value?.toFixed(details.unit === '%' ? 0 : 1) + details.unit}</span
-                >
+                <span class="whitespace-nowrap">
+                  {formatMetric(entry?.value, parameterTyped, getPreferredUnit(parameterTyped))}
+                </span>
               {/if}
             </div>
           {/each}

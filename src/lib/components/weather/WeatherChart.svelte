@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { convertToUnit, formatMetric, getPreferredUnit } from '../../utils/units'
   import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { onMount } from 'svelte'
   import * as d3 from 'd3'
@@ -79,9 +80,12 @@
     for (const seriesKey of visibleSeries) {
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!details || details.hideScale) continue
-      const maxString = details.domain[1].toFixed(0) + details.unit
+      const minString = formatMetric(details.domain[0], seriesKey, getPreferredUnit(seriesKey))
+      const maxString = formatMetric(details.domain[1], seriesKey, getPreferredUnit(seriesKey))
+      const textWidthMinValue = estimateTextWidth(minString)
+      const textWidthMaxValue = estimateTextWidth(maxString)
+      const requiredX = textWidthMaxValue > textWidthMinValue ? textWidthMaxValue + 10 : textWidthMinValue + 10
 
-      const requiredX = estimateTextWidth(maxString) + 10
       if (details.scaleOnRight) {
         margin['right'] += requiredX
         yScaleOffsets[seriesKey] = yScaleRightCurrentOffset
@@ -115,15 +119,18 @@
       if (!series || !details) continue
 
       const rangeY = [dimensions.height + dimensions.margin.top, margin.top]
-      const scaleY = d3.scaleLinear(details.domain, rangeY)
+      const scaleY = d3.scaleLinear(details.domain, rangeY) //.nice()
 
       if (!details.hideScale) {
+        const unit = getPreferredUnit(seriesKey)
+        const format = (d: number) => formatMetric(d, seriesKey, unit)
+
         createYAxis({
           svg,
           dimensions,
           scale: scaleY,
           side: details.scaleOnRight ? 'right' : 'left',
-          unit: details.unit,
+          format,
           addLines: false,
         }) //
           .attr(

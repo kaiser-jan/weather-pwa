@@ -1,6 +1,7 @@
 import type { ColorStop } from '$lib/types/ui'
 import { BriefcaseIcon, HomeIcon } from '@lucide/svelte'
 import type { DateObjectUnits } from 'luxon'
+import type { Unit, UnitDimension } from './utils/units'
 
 type Location = {
   name: string
@@ -11,6 +12,18 @@ type Location = {
 }
 
 export const CONFIG = {
+  units: {
+    temperature: '°C',
+    pressure: 'hPa',
+    length: 'km',
+    speed: 'km/h',
+    angle: '°',
+    percentage: '%',
+    index: 'index',
+    energy: 'J/kg',
+    radiation: 'kWh/m2',
+    precipitation: 'mm/h',
+  } as Record<UnitDimension, Unit>,
   weather: {
     preferDerivedSymbols: true,
     precipitation: {
