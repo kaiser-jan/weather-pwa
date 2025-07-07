@@ -14,7 +14,14 @@ export function createAxisPointer(options: {
 }) {
   const { svg, dimensions, scaleX, seriesList } = options
 
-  function updateXAxisPointer(datetime: DateTime, showTooltip = true) {
+  function updateXAxisPointer(datetime: DateTime | null, showTooltip = true) {
+    if (datetime === null) {
+      xAxisPointer.classed('hidden', true)
+      return
+    }
+
+    xAxisPointer.classed('hidden', false)
+
     const points = seriesList.map((m) => getNearestPointAtDateTime(datetime, m, scaleX)).filter((p) => p !== null)
 
     const nearest = points.reduce((a, b) => (b.d.datetime.diffNow() < a.d.datetime.diffNow() ? b : a))

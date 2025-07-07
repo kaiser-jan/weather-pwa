@@ -6,6 +6,7 @@
   import * as ToggleGroup from '../ui/toggle-group'
   import Toggle from '../ui/toggle/toggle.svelte'
   import { slide } from 'svelte/transition'
+  import { CONFIG } from '$lib/config'
 
   interface Props {
     dailyMultiseries: MultivariateTimeSeriesTimeBucket[]
@@ -17,7 +18,23 @@
 
   let visibleSeries: WeatherMetricKey[] = $state(['cloud_coverage', 'precipitation_amount', 'temperature'])
 
-  let highlightedTimeBucket: Record<WeatherMetricKey, TimeSeriesNumberEntry> | null = $state(null)
+  let currentTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | null>(null)
+  let highlightedTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | null>(null)
+
+  let timeBucket = $derived.by(() => {
+    if (highlightedTimeBucket) return highlightedTimeBucket
+    if (activeChartIndex === 0) return currentTimeBucket
+    if (CONFIG.chart.alwaysShowValuesDisplay) return createEmptyTimeBucket()
+    return null
+  })
+
+  function createEmptyTimeBucket() {
+    const emptyTimeBucket = { ...currentTimeBucket }
+    for (const key of Object.keys(emptyTimeBucket)) {
+      emptyTimeBucket[key as keyof typeof emptyTimeBucket] = undefined
+    }
+    return emptyTimeBucket
+  }
 
   function handleChartScroll(event: { currentTarget: EventTarget & HTMLDivElement }) {
     const { currentTarget } = event
@@ -48,20 +65,23 @@
     </ToggleGroup.Root>
 
     <div class=" w-full">
-      {#if highlightedTimeBucket}
+      {#if timeBucket}
         <div
           class="text-text border-foreground flex h-9 grow flex-row gap-4 rounded-lg border-1 text-sm"
           transition:slide
         >
-          {#each Object.entries(highlightedTimeBucket) as [parameter, entry]}
+          {#each Object.entries(timeBucket) as [parameter, entry]}
             {@const details = CHART_SERIES_DETAILS[parameter as WeatherMetricKey]!}
-            {@const showZeroIcon = entry.value === 0 && details.iconIfZero}
+            {@const showZeroIcon = entry?.value === 0 && details.iconIfZero}
             {@const ParameterIcon = showZeroIcon ? details.iconIfZero : details.icon}
             <div class="align-center flex flex-1 flex-row items-center justify-center gap-1 last:mr-1.5">
               <ParameterIcon />
-              <!-- TODO: proper formatting -->
-              {#if !showZeroIcon}
-                <span class="whitespace-nowrap">{entry.value.toFixed(details.unit === '%' ? 0 : 1) + details.unit}</span
+              {#if entry?.value === undefined}
+                <span>-</span>
+              {:else if !showZeroIcon}
+                <!-- TODO: proper formatting -->
+                <span class="whitespace-nowrap"
+                  >{entry?.value?.toFixed(details.unit === '%' ? 0 : 1) + details.unit}</span
                 >
               {/if}
             </div>
@@ -83,7 +103,8 @@
         startDateTime={timeBucket.datetime}
         endDateTime={timeBucket.datetime.plus(timeBucket.duration)}
         className="snap-center shrink-0 w-full"
-        ontimestamp={(tb) => (highlightedTimeBucket = tb)}
+        onHighlightTimestamp={(tb) => (highlightedTimeBucket = tb)}
+        onCurrentTimestamp={(tb) => (currentTimeBucket = tb)}
       />
     {/each}
   </div>

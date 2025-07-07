@@ -21,7 +21,8 @@
     startDateTime: DateTime
     endDateTime: DateTime
     className: string
-    ontimestamp: (timebucket: Record<WeatherMetricKey, TimeSeriesNumberEntry> | null) => void
+    onHighlightTimestamp: (timebucket: Record<WeatherMetricKey, TimeSeriesNumberEntry> | null) => void
+    onCurrentTimestamp: (timebucket: Record<WeatherMetricKey, TimeSeriesNumberEntry>) => void
   }
 
   const {
@@ -31,7 +32,8 @@
     endDateTime,
     className,
     loaded,
-    ontimestamp = $bindable(),
+    onHighlightTimestamp = $bindable(),
+    onCurrentTimestamp = $bindable(),
   }: Props = $props()
 
   let container: HTMLDivElement
@@ -186,30 +188,47 @@
       tooltip: CONFIG.chart.tooltip,
     })
 
+    function selectDatetime(datetime: DateTime | null) {
+      const now = DateTime.now()
+      const isToday = now >= startDateTime && now <= endDateTime
+
+      if (datetime === null && !isToday) {
+        updateXAxisPointer(null)
+        onHighlightTimestamp(null)
+        return
+      }
+
+      const points = updateXAxisPointer(datetime ?? now)
+      const timebucket = Object.fromEntries(points.map((p) => [p.name, p.d])) as Record<
+        WeatherMetricKey,
+        TimeSeriesNumberEntry
+      >
+
+      if (isToday) {
+        onCurrentTimestamp(timebucket)
+      } else {
+        onHighlightTimestamp(timebucket)
+      }
+    }
+
     handleInteraction({
       svg,
       onLongPress: (e) => {
         const datetime = DateTime.fromMillis(scaleX.invert(e.clientX).getTime())
-        updateXAxisPointer(datetime)
+        selectDatetime(datetime)
       },
       onScrollX: (e) => {
         const [px] = d3.pointer(e)
         const datetime = DateTime.fromMillis(scaleX.invert(px).getTime())
-        const points = updateXAxisPointer(datetime)
-        const timebucket = Object.fromEntries(points.map((p) => [p.name, p.d])) as Record<
-          WeatherMetricKey,
-          TimeSeriesNumberEntry
-        >
-        ontimestamp(timebucket)
+        selectDatetime(datetime)
       },
-      onSwipeX: (_) => {
-        updateXAxisPointer(DateTime.now(), false)
-      },
+      onSwipeX: (_) => {},
       onRelease: (_) => {
-        updateXAxisPointer(DateTime.now(), false)
-        ontimestamp(null)
+        selectDatetime(null)
       },
     })
+
+    selectDatetime(null)
 
     container.replaceChildren(svg.node())
   }

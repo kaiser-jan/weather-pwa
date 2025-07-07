@@ -43,6 +43,7 @@ export const CONFIG = {
   },
   chart: {
     tooltip: false,
+    alwaysShowValuesDisplay: true,
   },
   locations: [
     {
