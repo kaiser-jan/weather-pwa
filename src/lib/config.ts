@@ -14,7 +14,7 @@ export const CONFIG = {
   weather: {
     preferDerivedSymbols: true,
     precipitation: {
-      threshold: 0.1,
+      threshold: 0.0,
     },
   },
   dashboard: {

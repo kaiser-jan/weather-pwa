@@ -67,11 +67,15 @@
 
   // TODO: reactivity
   const precipitationStartDatetime = $derived.by(() => {
-    if (!data?.multiseries?.precipitation_amount) return undefined
+    const precipitation_amount = data?.multiseries?.precipitation_amount
+    if (!precipitation_amount) return undefined
 
     // the first time period with precipitation from now on
-    const timePeriodWithPrecipitation = data.multiseries.precipitation_amount.find((tp) => {
-      if (tp.value === undefined || tp.datetime < DateTime.now()) return false
+    const timePeriodWithPrecipitation = precipitation_amount.find((tp, index) => {
+      if (tp.value === undefined) return false
+      // also allow the current timebucket -> it is already raining
+      const isCurrentTimeBucket = precipitation_amount[index + 1].datetime > DateTime.now()
+      if (tp.datetime < DateTime.now() && !isCurrentTimeBucket) return false
       return tp.value > CONFIG.weather.precipitation.threshold
     })
 
