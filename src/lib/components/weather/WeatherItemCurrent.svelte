@@ -25,6 +25,14 @@
   }
 
   const details = $derived(itemMap[item])
+
+  const formattedValue = $derived.by(() => {
+    const rawValue = current[details.datapoint]!
+    const multiplier = details.multiplier ?? 1
+    const value = rawValue * multiplier
+    if (value < 1) return '<1'
+    return Math.round(value)
+  })
 </script>
 
 {#if current[details.datapoint] !== undefined}
@@ -33,7 +41,7 @@
     <details.icon />
 
     <span class="inline-flex items-center gap-0.5">
-      <span>{Math.round(current[details.datapoint]! * (details.multiplier ?? 1))}</span>
+      <span>{formattedValue}</span>
       {#if details.unit?.match(/\w\/\w/)}
         <MathFraction numerator={details.unit.split('/')[0]} denominator={details.unit.split('/')[1]} />
       {:else}
