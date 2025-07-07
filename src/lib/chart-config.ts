@@ -24,6 +24,14 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     class: '',
     unit: '°',
     gradientColorStops: CONFIG.appearance.colors.temperatureColorStops,
+    include: {
+      temperature_max: {
+        style: 'area',
+        class: 'opacity-40',
+        gradientColorStops: CONFIG.appearance.colors.temperatureColorStops,
+        areaSecondParameter: 'temperature_min',
+      },
+    },
   },
   cloud_coverage: {
     domain: [0, 100],
@@ -45,7 +53,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     unit: 'mm/h',
     scaleOnRight: true,
   },
-  // TODO: combine with gust speed
   wind_speed: {
     domain: [0, 118 / 3.6],
     style: 'line',
@@ -53,6 +60,12 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     class: 'stroke-blue-100 opacity-80',
     unit: 'm/s',
     scaleOnRight: true,
+    include: {
+      wind_speed_gust: {
+        style: 'line',
+        class: 'stroke-blue-100 opacity-50 [stroke-dasharray:4_8]',
+      },
+    },
   },
   relative_humidity: {
     domain: [0, 100],

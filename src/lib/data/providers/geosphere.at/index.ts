@@ -59,10 +59,16 @@ async function graceful<T>(promise: Promise<T>): Promise<T | null> {
 function addOlderMultiseries(a: MultivariateTimeSeries, b: MultivariateTimeSeries) {
   for (const parameter of Object.keys(b)) {
     const parameterTyped = parameter as keyof typeof a
-    const aValues = a[parameterTyped]
+    const aValues = a[parameterTyped]!
     const bValues = b[parameterTyped]!
 
-    const hourlyPastOverlapIndex = bValues.findIndex((h) => h.datetime >= aValues![0].datetime)
+    // HACK: some forecasts have some nullish values at the beginning, we try to ignore these
+    const aFirstNonNullValueIndex = aValues?.[0].value === null ? aValues?.findIndex((a) => a.value !== null) : 0
+
+    const hourlyPastOverlapIndex = bValues.findIndex(
+      (h) => h.datetime >= aValues![aFirstNonNullValueIndex ?? 0].datetime,
+    )
+    a[parameterTyped] = aValues.slice(aFirstNonNullValueIndex)
     a[parameterTyped]?.unshift(...bValues.slice(0, hourlyPastOverlapIndex))
   }
 

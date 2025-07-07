@@ -33,6 +33,8 @@ export type TimeBucketSummary = TimePeriod & { summary: Record<WeatherMetricKey,
 
 export type WeatherMetricKey =
   | 'temperature'
+  | 'temperature_min'
+  | 'temperature_max'
   | 'temperature_feel'
   | 'pressure'
   | 'relative_humidity'

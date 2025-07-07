@@ -50,16 +50,10 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
 
         const isComplete = vx !== null || vy !== null
 
-        output[item.outKeyLength].push({
-          datetime,
-          duration,
-          value: isComplete ? Math.hypot(vx!, vy!) : null,
-        })
-        output[item.outKeyAngle].push({
-          datetime,
-          duration,
-          value: isComplete ? (Math.atan2(vy!, vx!) * 180) / Math.PI : null,
-        })
+        const length = isComplete ? Math.hypot(vx!, vy!) : null
+        const angle = isComplete ? (Math.atan2(vy!, vx!) * 180) / Math.PI : null
+        output[item.outKeyLength].push({ datetime, duration, value: length })
+        output[item.outKeyAngle].push({ datetime, duration, value: angle })
       }
     }
   })
@@ -104,7 +98,7 @@ export function mergeMultivariateTimeSeries(
       .map((ms) => DateTime.fromMillis(ms))
 
     const findCover = (series: TimeSeries<number>, start: DateTime, end: DateTime) =>
-      series.find((pt) => pt.datetime <= start && pt.datetime.plus(pt.duration) >= end)
+      series.find((pt) => pt.datetime <= start && pt.datetime.plus(pt.duration) >= end && pt.value !== null)
 
     const out: TimeSeries<number> = []
     for (let i = 0; i < times.length - 1; i++) {

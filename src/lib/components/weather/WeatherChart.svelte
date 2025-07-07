@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { MultivariateTimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
+  import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { onMount } from 'svelte'
   import * as d3 from 'd3'
   import { DateTime } from 'luxon'
@@ -12,7 +12,8 @@
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { CONFIG } from '$lib/config'
-  import type { CreatedSeriesDetails } from '$lib/types/ui'
+  import type { CreatedSeriesDetails, SeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
+  import { createArea } from '$lib/utils/d3/area'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -110,10 +111,8 @@
 
     for (const seriesKey of [...visibleSeries].reverse()) {
       const series = data[seriesKey]
-      if (!series) return
-
       const details = CHART_SERIES_DETAILS[seriesKey]
-      if (!details) continue
+      if (!series || !details) continue
 
       const rangeY = [dimensions.height + dimensions.margin.top, margin.top]
       const scaleY = d3.scaleLinear(details.domain, rangeY)
@@ -133,29 +132,53 @@
           )
       }
 
-      const gradientId = `gradient-${seriesKey}`
+      function addDataRepresentation(
+        seriesKey: string,
+        seriesA: TimeSeries<number> | undefined,
+        details: SeriesDetailsBase,
+        seriesB?: TimeSeries<number> | undefined,
+      ) {
+        if (!seriesA || !details) return
 
-      let dataRepresentation: d3.Selection<any, any, any, undefined>
-      switch (details.style) {
-        case 'line':
-          dataRepresentation = createLine({ svg, dimensions, scaleX, scaleY, data: series }) //
-          break
-        case 'bars':
-          dataRepresentation = createBars({ svg, dimensions, scaleX, scaleY, data: series }) //
-          break
+        let dataRepresentation: d3.Selection<any, any, any, undefined>
+        switch (details.style) {
+          case 'line':
+            dataRepresentation = createLine({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
+            break
+          case 'bars':
+            dataRepresentation = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
+            break
+          case 'area':
+            console.log(seriesA, seriesB)
+            dataRepresentation = createArea({ svg, dimensions, scaleX, scaleY, dataA: seriesA, dataB: seriesB }) //
+            break
+        }
+
+        dataRepresentation.classed([details.class].join(' '), true)
+
+        if (details.gradientColorStops) {
+          const gradientId = `gradient-${seriesKey}`
+
+          createGradientDefinition({
+            svg,
+            scaleY,
+            stops: details.gradientColorStops,
+            id: gradientId,
+          })
+
+          dataRepresentation.attr('stroke', `url(#${gradientId})`)
+          if (details.style === 'area') dataRepresentation.attr('fill', `url(#${gradientId})`)
+        }
       }
 
-      dataRepresentation.classed([details.class].join(' '), true)
+      addDataRepresentation(seriesKey, series, details)
 
-      if (details.gradientColorStops) {
-        createGradientDefinition({
-          svg,
-          scaleY,
-          stops: details.gradientColorStops,
-          id: gradientId,
-        })
-
-        dataRepresentation.attr('stroke', `url(#${gradientId})`)
+      if (details.include) {
+        for (const [includeParameter, includeDetails] of Object.entries(details.include)) {
+          const includeSeriesA = data[includeParameter as WeatherMetricKey]
+          const includeSeriesB = data[includeDetails.areaSecondParameter as WeatherMetricKey]
+          addDataRepresentation(includeParameter, includeSeriesA, includeDetails, includeSeriesB)
+        }
       }
 
       createdSeriesDetails.push({ ...details, name: seriesKey, scale: scaleY, data: series })

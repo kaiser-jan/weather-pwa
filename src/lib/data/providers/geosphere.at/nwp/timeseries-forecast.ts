@@ -11,8 +11,8 @@ export const REQUESTED_WEATHER_PARAMETERS: (typeof meta.availableParameters)[num
   'cape',
   'cin',
   'grad',
-  // 'mnt2m',
-  // 'mxt2m',
+  'mnt2m',
+  'mxt2m',
   // 'rain_acc',
   'rh2m',
   'rr_acc',
@@ -52,6 +52,8 @@ export async function loadGeosphereNwpTimeseriesForecast(
 
   const configs: TimeSeriesConfig<(typeof REQUESTED_WEATHER_PARAMETERS)[number], keyof MultivariateTimeSeries>[] = [
     { outKey: 'temperature', inKey: 't2m', type: 'normal' },
+    { outKey: 'temperature_min', inKey: 'mnt2m', type: 'normal' },
+    { outKey: 'temperature_max', inKey: 'mxt2m', type: 'normal' },
     { outKey: 'precipitation_amount', inKey: 'rr_acc', type: 'accumulated' },
     { outKey: 'relative_humidity', inKey: 'rh2m', type: 'normal' },
     { outKey: 'pressure', inKey: 'sp', type: 'normal' },

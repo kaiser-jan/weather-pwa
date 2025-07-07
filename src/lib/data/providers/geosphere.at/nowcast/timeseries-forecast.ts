@@ -44,7 +44,7 @@ export async function loadGeosphereNowcastTimeseriesForecast(
     { outKey: 'precipitation_amount', inKey: 'rr', type: 'normal' },
     { outKey: 'wind_speed', inKey: 'ff', type: 'normal' },
     { outKey: 'wind_degrees', inKey: 'dd', type: 'normal' },
-    { outKey: 'wind_speed_gust', inKey: 'rr', type: 'normal' },
+    { outKey: 'wind_speed_gust', inKey: 'fx', type: 'normal' },
   ]
 
   return transformTimeSeries(
