@@ -30,7 +30,7 @@
     const rawValue = current[details.datapoint]!
     const multiplier = details.multiplier ?? 1
     const value = rawValue * multiplier
-    if (value < 1) return '<1'
+    if (value < 1 && value > 0) return '<1'
     return Math.round(value)
   })
 </script>
