@@ -204,8 +204,9 @@
         TimeSeriesNumberEntry
       >
 
-      if (isToday) {
+      if (datetime === null && isToday) {
         onCurrentTimestamp(timebucket)
+        onHighlightTimestamp(null)
       } else {
         onHighlightTimestamp(timebucket)
       }
