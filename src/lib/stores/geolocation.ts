@@ -12,6 +12,7 @@ interface GeolocationState {
 
 interface GeolocationOptions extends PositionOptions {
   watch: boolean
+  startInactive: boolean
 }
 
 async function getPermission() {
@@ -28,11 +29,14 @@ const initialState: GeolocationState = {
   error: null,
 }
 
-export function createGeolocationStore({ watch, ...options }: GeolocationOptions = { watch: false }) {
+export function createGeolocationStore(
+  { watch, startInactive, ...options }: GeolocationOptions = { watch: false, startInactive: false },
+) {
   const navigator = typeof window !== 'undefined' ? window.navigator : null
   let cancelled = false
   let watcher: number
   let updateGeolocation: () => void
+  let started = false
 
   const store = readable<GeolocationState>(initialState, (set, update) => {
     if (!(navigator && 'geolocation' in navigator)) {
@@ -51,6 +55,7 @@ export function createGeolocationStore({ watch, ...options }: GeolocationOptions
 
     updateGeolocation = async () => {
       if (cancelled) return
+      started = true
 
       update((state) => ({ ...state, status: 'requesting' }))
       if (!getPermission()) return update((state) => ({ ...state, status: 'unpermitted' }))
@@ -64,7 +69,7 @@ export function createGeolocationStore({ watch, ...options }: GeolocationOptions
       }
     }
 
-    updateGeolocation()
+    if (!startInactive) updateGeolocation()
 
     return () => {
       if (watcher) navigator.geolocation.clearWatch(watcher)
@@ -75,5 +80,9 @@ export function createGeolocationStore({ watch, ...options }: GeolocationOptions
   return {
     store,
     refresh: () => updateGeolocation(),
+    start: () => {
+      if (started) return
+      updateGeolocation()
+    },
   }
 }

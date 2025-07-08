@@ -9,7 +9,9 @@
   import { get } from 'svelte/store'
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
 
-  let selectedItemId = persistantState('selected-location-id', -1)
+  const ITEM_ID_GEOLOCATION = -1
+
+  let selectedItemId = persistantState('selected-location-id', ITEM_ID_GEOLOCATION)
 
   interface Props {
     coordinates: Coordinates | undefined
@@ -20,7 +22,7 @@
   let locationName = 'TODO: locationName'
 
   $effect(() => {
-    if (selectedItemId.value === -1) {
+    if (selectedItemId.value === ITEM_ID_GEOLOCATION) {
       const coords = get(geolocation).position?.coords
       if (!coords) return
       coordinates = coords
@@ -31,6 +33,7 @@
 
   const { store: geolocation, refresh: updateGeolocation } = createGeolocationStore({
     watch: false,
+    startInactive: selectedItemId.value !== ITEM_ID_GEOLOCATION,
     enableHighAccuracy: false,
     timeout: 15000,
     maximumAge: 0,
@@ -41,13 +44,19 @@
 
   geolocation.subscribe((g) => {
     if (!useGeolocation.value || !g.position) return
-    if (selectedItemId.value === -1) coordinates = g.position.coords
+    if (selectedItemId.value === ITEM_ID_GEOLOCATION) coordinates = g.position.coords
     // loadForecastData()
   })
 
   // TODO: extrcact and make globally available
 
-  let geolocationStateDetails = $derived.by((): { icon: typeof NavigationIcon | null; label: string | undefined } => {
+  interface GeolocationStateDetails {
+    icon: typeof NavigationIcon | null
+    label: string | undefined
+    class?: string
+  }
+
+  let geolocationStateDetails = $derived.by((): GeolocationStateDetails => {
     const ERROR_LABELS: Record<number, string> = {
       [GeolocationPositionError.TIMEOUT]: 'Timed Out',
       [GeolocationPositionError.PERMISSION_DENIED]: 'Denied',
@@ -56,6 +65,7 @@
 
     switch ($geolocation.status) {
       case 'unstarted':
+        return { icon: NavigationIcon, label: 'Inactive', class: 'opacity-50' }
       case 'requesting':
       case 'loading':
         return { icon: null, label: 'Loading...' }
@@ -75,12 +85,15 @@
     <button
       class={[
         'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
-        selectedItemId.value === -1 ? 'bg-primary' : 'bg-foreground text-text-d',
+        selectedItemId.value === ITEM_ID_GEOLOCATION ? 'bg-primary' : 'bg-foreground text-text-d',
       ]}
-      onclick={() => (selectedItemId.value = -1)}
+      onclick={() => {
+        updateGeolocation()
+        selectedItemId.value = ITEM_ID_GEOLOCATION
+      }}
     >
       {#if geolocationStateDetails.icon}
-        <geolocationStateDetails.icon class="-mb-0.5 -ml-0.5" />
+        <geolocationStateDetails.icon class={['-mb-0.5 -ml-0.5', geolocationStateDetails.class]} />
       {:else}
         <LoaderPulsatingRing className="size-4" />
       {/if}
