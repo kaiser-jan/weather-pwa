@@ -1,4 +1,10 @@
-import type { Forecast, MultivariateTimeSeries, MultivariateTimeSeriesTimeBucket, NumberSummary } from '$lib/types/data'
+import type {
+  Forecast,
+  MultivariateTimeSeries,
+  MultivariateTimeSeriesTimeBucket,
+  NumberSummary,
+  WeatherMetricKey,
+} from '$lib/types/data'
 import type { TimeBucketSummary } from '$lib/types/data'
 import { DateTime, Duration } from 'luxon'
 
@@ -96,6 +102,18 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
 
   const grouped = Object.values(groupedMap)
 
+  // add one item from the neighboring day at each
+  for (let i = 1; i < grouped.length; i++) {
+    for (const key of Object.keys(grouped[i].series)) {
+      const keyTyped = key as WeatherMetricKey
+      const previousSeries = grouped[i - 1].series[keyTyped]
+      const currentSeries = grouped[i].series[keyTyped]
+      if (!previousSeries || !currentSeries) continue
+      previousSeries.push(currentSeries[0])
+      currentSeries.unshift(previousSeries[previousSeries.length - 2]) // -2 because -1 was just added
+    }
+  }
+
   const groupedCompleteOnly = grouped.filter((g) => {
     if (!g.series.temperature?.length) return true
 
@@ -106,8 +124,6 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
     if (isIncomplete) return false
     return true
   })
-
-  console.log(groupedCompleteOnly)
 
   return groupedCompleteOnly
 }
