@@ -1,4 +1,4 @@
-import type { WeatherSituation } from '$lib/data/providers/symbols'
+import type { WeatherSituation } from '$lib/data/symbols'
 import type { DateTime, Duration } from 'luxon'
 
 export interface Coordinates {
@@ -40,14 +40,12 @@ export const WEATHER_METRIC_KEYS = [
   'relative_humidity',
   'uvi_clear_sky',
   'cloud_coverage',
-  'cloud_coverage_low',
-  'cloud_coverage_medium',
-  'cloud_coverage_high',
   'fog',
   'visibility',
   'wind_speed',
   'wind_speed_gust',
   'wind_degrees',
+  'wind_degrees_gust',
   'precipitation_amount',
   'precipitation_probability',
   'thunder_probability',

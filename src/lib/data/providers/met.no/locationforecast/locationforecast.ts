@@ -6,11 +6,11 @@ import type {
   ForecastTimeStep as MetnoForecastTimeStep,
   MetjsonForecast,
 } from '$lib/types/metno'
-import { mapNumbersToStatisticalSummaries } from '$lib/data/providers/utils'
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
+import type { Dataset } from '$lib/types/data/providers'
 
-export async function loadMetnoLocationforecast(coords: Coordinates) {
+export async function loadLocationforecast(coords: Coordinates) {
   if (coords.altitude === null) throw new Error('Locationforecast from met.no requires an altitude!')
 
   const url = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete.json')
@@ -77,11 +77,6 @@ export async function loadMetnoLocationforecast(coords: Coordinates) {
   return multiseries
 }
 
-function percentageToFraction(value: number | undefined) {
-  if (value === undefined) return undefined
-  return value / 100
-}
-
 function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<WeatherInstant> {
   return {
     temperature: instant.air_temperature,
@@ -89,9 +84,9 @@ function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<Weathe
     relative_humidity: instant.relative_humidity,
     uvi_clear_sky: (instant as any).ultraviolet_index_clear_sky,
     cloud_coverage: instant.cloud_area_fraction,
-    cloud_coverage_low: instant.cloud_area_fraction_low,
-    cloud_coverage_medium: instant.cloud_area_fraction_medium,
-    cloud_coverage_high: instant.cloud_area_fraction_high,
+    // cloud_coverage_low: instant.cloud_area_fraction_low,
+    // cloud_coverage_medium: instant.cloud_area_fraction_medium,
+    // cloud_coverage_high: instant.cloud_area_fraction_high,
     fog: instant.fog_area_fraction,
     wind_speed: instant.wind_speed,
     wind_speed_gust: instant.wind_speed_of_gust,

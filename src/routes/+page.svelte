@@ -9,22 +9,18 @@
   import { cn, formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
   import PwaSettings from '$lib/components/pwa/PWASettings.svelte'
-  import { providers, type ProviderId } from '$lib/data/providers'
+  import { loadForecast } from '$lib/data/providers'
   import { Button, buttonVariants } from '$lib/components/ui/button'
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/data/location'
-  import { deriveWeatherSituationFromInstant, deriveWeatherSituationFromPeriod } from '$lib/data/providers/symbols'
+  import { deriveWeatherSituationFromInstant, deriveWeatherSituationFromPeriod } from '$lib/data/symbols'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
-  import { persistantState } from '$lib/utils/state.svelte'
   import { onMount, tick } from 'svelte'
   import LocationSelector from '$lib/components/LocationSelector.svelte'
-  import { groupMultiseriesByDay } from '$lib/data/providers/utils'
-  import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
+  import { groupMultiseriesByDay } from '$lib/data/utils'
   import DailyWeatherCharts from '$lib/components/weather/DailyWeatherCharts.svelte'
-  import SelectAuto from '$lib/components/SelectAuto.svelte'
 
   let data = $state<Partial<Forecast>>()
 
-  let providerId = persistantState<ProviderId>('provider-id', 'geosphere.at')
   let locationName = $state<string>()
   let isLoading = $state(false)
   let coordinates = $state<Coordinates>()
@@ -47,10 +43,7 @@
 
     isLoading = true
 
-    data = await providers[providerId.value].load(coordinates)
-
-    console.log(providerId.value)
-    console.log(data)
+    data = await loadForecast(coordinates, CONFIG.datasets)
 
     // show the spinning even when using cache
     setTimeout(() => (isLoading = false), 500)
@@ -225,13 +218,6 @@
       </Drawer.Trigger>
       <Drawer.Content>
         <div class="flex w-full flex-col gap-4 p-4">
-          <h2 class="text-xl font-bold">Weather Data</h2>
-          <SelectAuto
-            items={Object.keys(providers)}
-            bind:selected={providerId.value}
-            onselect={() => tick().then(loadForecastData)}
-            placeholder="Select provider"
-          />
           <h2 class="text-xl font-bold">PWA Options</h2>
           <PwaSettings />
           <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>

@@ -1,13 +1,11 @@
 import type { Coordinates, MultivariateTimeSeries } from '$lib/types/data'
 import type { TimeseriesForecastGeoJsonSerializer } from '$lib/types/geosphere-at'
-import { calculateVector } from '$lib/utils'
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
-import { symbolToWeatherSituationMap } from '../symbols'
-import meta from './meta'
+import nwp from './index'
 import { transformTimeSeries, type TimeSeriesConfig } from '$lib/utils/data'
 
-export const REQUESTED_WEATHER_PARAMETERS: (typeof meta.availableParameters)[number][] = [
+export const REQUESTED_WEATHER_PARAMETERS: string[] = [
   'cape',
   'cin',
   'grad',
@@ -29,10 +27,7 @@ export const REQUESTED_WEATHER_PARAMETERS: (typeof meta.availableParameters)[num
   'vgust',
 ] as const
 
-export async function loadGeosphereNwpTimeseriesForecast(
-  coordinates: Coordinates,
-  offset = 0,
-): Promise<MultivariateTimeSeries> {
+export async function loadTimeseriesForecast(coordinates: Coordinates, offset = 0): Promise<MultivariateTimeSeries> {
   const url = new URL('https://dataset.api.hub.geosphere.at/v1/timeseries/forecast/nwp-v1-1h-2500m')
   url.searchParams.set('lat_lon', coordinates.latitude?.toString() + ',' + coordinates.longitude?.toString())
   REQUESTED_WEATHER_PARAMETERS.forEach((p) => url.searchParams.append('parameters', p))
@@ -44,7 +39,9 @@ export async function loadGeosphereNwpTimeseriesForecast(
     const response = await fetch(url.toString())
     const data = (await response.json()) as TimeseriesForecastGeoJsonSerializer
     const referenceDatetime = DateTime.fromISO(data.reference_time as string)
-    const expires = referenceDatetime.plus(meta.reftimeOffset).plus(meta.interval.mapUnits((x, _) => x * (1 + offset)))
+    const expires = referenceDatetime
+      .plus(nwp.meta.offset!)
+      .plus(nwp.meta.interval!.mapUnits((x, _) => x * (1 + offset)))
     return { data, expires }
   })
 

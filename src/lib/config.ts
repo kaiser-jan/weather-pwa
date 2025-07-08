@@ -2,6 +2,7 @@ import type { ColorStop } from '$lib/types/ui'
 import { BriefcaseIcon, HomeIcon } from '@lucide/svelte'
 import type { DateObjectUnits } from 'luxon'
 import type { Unit, UnitDimension } from './utils/units'
+import type { DatasetId } from './data/providers'
 
 type Location = {
   name: string
@@ -12,6 +13,12 @@ type Location = {
 }
 
 export const CONFIG = {
+  datasets: [
+    'met.no_locationforecast',
+    'geosphere.at_nwp-v1-1h-2500m_offset',
+    'geosphere.at_nwp-v1-1h-2500m',
+    'geosphere.at_nowcast-v1-15min-1km',
+  ] as DatasetId[],
   units: {
     temperature: '°C',
     pressure: 'hPa',

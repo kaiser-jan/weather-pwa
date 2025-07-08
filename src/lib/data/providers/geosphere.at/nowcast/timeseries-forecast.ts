@@ -1,11 +1,11 @@
 import type { Coordinates, MultivariateTimeSeries } from '$lib/types/data'
-import type { TimeseriesForecastGeoJsonSerializer } from '$lib/types/geosphere-at'
+import type { Dataset, TimeseriesForecastGeoJsonSerializer } from '$lib/types/geosphere-at'
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
-import meta from './meta'
+import nowcast from './index'
 import { transformTimeSeries, type TimeSeriesConfig } from '$lib/utils/data'
 
-export const REQUESTED_WEATHER_PARAMETERS: (typeof meta.availableParameters)[number][] = [
+export const REQUESTED_WEATHER_PARAMETERS: string[] = [
   't2m', // Air temperature 2m above ground
   'rh2m', // Relative humidity 2m above ground
   'pt', // Precipitation type
@@ -16,10 +16,7 @@ export const REQUESTED_WEATHER_PARAMETERS: (typeof meta.availableParameters)[num
   // 'td', // Dew point temperature 2m above ground
 ] as const
 
-export async function loadGeosphereNowcastTimeseriesForecast(
-  coordinates: Coordinates,
-  offset = 0,
-): Promise<MultivariateTimeSeries> {
+export async function loadTimeseriesForecast(coordinates: Coordinates, offset = 0): Promise<MultivariateTimeSeries> {
   const url = new URL('https://dataset.api.hub.geosphere.at/v1/timeseries/forecast/nowcast-v1-15min-1km')
   url.searchParams.set('lat_lon', coordinates.latitude?.toString() + ',' + coordinates.longitude?.toString())
   REQUESTED_WEATHER_PARAMETERS.forEach((p) => url.searchParams.append('parameters', p))
@@ -32,7 +29,9 @@ export async function loadGeosphereNowcastTimeseriesForecast(
     // TODO: handle api errors and do not store those
     const data = (await response.json()) as TimeseriesForecastGeoJsonSerializer
     const referenceDatetime = DateTime.fromISO(data.reference_time as string)
-    const expires = referenceDatetime.plus(meta.reftimeOffset).plus(meta.interval.mapUnits((x, _) => x * (1 + offset)))
+    const expires = referenceDatetime
+      .plus(nowcast.meta.offset!)
+      .plus(nowcast.meta.interval!.mapUnits((x, _) => x * (1 + offset)))
     return { data, expires }
   })
 

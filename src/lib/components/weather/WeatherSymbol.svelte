@@ -1,6 +1,6 @@
 <script lang="ts">
   import { CONFIG } from '$lib/config'
-  import { getWeatherIcon, type WeatherSituation } from '$lib/data/providers/symbols'
+  import { getWeatherIcon, type WeatherSituation } from '$lib/data/symbols'
   import type { Coordinates } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { DateTime } from 'luxon'

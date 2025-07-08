@@ -51,7 +51,7 @@
     </ToggleGroup.Root>
   {/if}
 
-  <Popover.Root open={true}>
+  <Popover.Root>
     <Popover.Trigger>
       <Button size="icon" variant="secondary" class="size-9! border-1 p-2">
         <EllipsisIcon />
@@ -64,7 +64,8 @@
         <button
           class={[
             'flex flex-row items-center gap-2 rounded-md px-2 py-1',
-            isActive ? 'bg-midground text-text' : 'text-text-muted',
+            isActive ? 'text-text' : 'text-text-muted',
+            // isActive ? 'bg-midground text-text' : 'text-text-muted',
           ]}
           onclick={() => {
             toggle(visible, parameter)
@@ -74,7 +75,7 @@
           <parameterDetails.icon />
           {parameterDetails.label}
           <span class="grow"></span>
-          <Button variant="outline" class="size-8 p-0">
+          <Button variant={isActive ? 'secondary' : 'outline'} class="size-8 p-0">
             {#if isActive}
               <EyeIcon />
             {:else}
@@ -82,7 +83,7 @@
             {/if}
           </Button>
           <Button
-            variant="outline"
+            variant={isPinned ? 'secondary' : 'outline'}
             class="size-8 p-0"
             onclick={(e: PointerEvent) => {
               e.stopPropagation()
