@@ -57,6 +57,7 @@ export const CONFIG = {
   chart: {
     tooltip: false,
     alwaysShowValuesDisplay: true,
+    axisUnits: 'replace' as 'inline' | 'above' | 'replace' | 'off',
   },
   locations: [
     {

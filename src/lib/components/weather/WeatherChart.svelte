@@ -73,6 +73,10 @@
 
     margin = { top: 10, right: 0, bottom: 20, left: 0 }
 
+    if (CONFIG.chart.axisUnits === 'above') {
+      margin.top += 10
+    }
+
     let yScaleOffsets: Partial<Record<WeatherMetricKey, number>> = {}
     let yScaleRightCurrentOffset = 0
     let yScaleLeftCurrentOffset = 0
@@ -80,8 +84,9 @@
     for (const seriesKey of visibleSeries) {
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!details || details.hideScale) continue
-      const minString = formatMetric(details.domain[0], seriesKey, getPreferredUnit(seriesKey))
-      const maxString = formatMetric(details.domain[1], seriesKey, getPreferredUnit(seriesKey))
+      const hideUnit = CONFIG.chart.axisUnits !== 'inline'
+      const minString = formatMetric(details.domain[0], seriesKey, getPreferredUnit(seriesKey), hideUnit)
+      const maxString = formatMetric(details.domain[1], seriesKey, getPreferredUnit(seriesKey), hideUnit)
       const textWidthMinValue = estimateTextWidth(minString)
       const textWidthMaxValue = estimateTextWidth(maxString)
       const requiredX = textWidthMaxValue > textWidthMinValue ? textWidthMaxValue + 10 : textWidthMinValue + 10
@@ -131,6 +136,7 @@
           scale: scaleY,
           side: details.scaleOnRight ? 'right' : 'left',
           format,
+          unit,
           addLines: false,
         }) //
           .attr(
@@ -205,10 +211,10 @@
       .append('clipPath')
       .attr('id', 'clip')
       .append('rect')
-      .attr('x', dimensions.margin.left)
-      .attr('y', dimensions.margin.top)
-      .attr('width', dimensions.width)
-      .attr('height', dimensions.height)
+      .attr('x', dimensions.margin.left + 1)
+      .attr('y', dimensions.margin.top + 1)
+      .attr('width', dimensions.width - 2)
+      .attr('height', dimensions.height - 2)
 
     const { updateXAxisPointer } = createAxisPointer({
       svg,

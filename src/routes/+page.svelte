@@ -214,7 +214,7 @@
   <div
     class="from-background via-background/80 absolute right-0 bottom-0 left-0 flex h-30 flex-row gap-2 bg-gradient-to-t to-transparent"
   ></div>
-  <div class="absolute right-6 bottom-6 left-6 flex flex-row gap-2">
+  <div class="absolute right-6 bottom-6 left-6 z-20 flex flex-row gap-2">
     <LocationSelector bind:coordinates />
 
     <Drawer.Root>

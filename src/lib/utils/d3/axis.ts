@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import type { Dimensions } from './types'
+import { CONFIG } from '$lib/config'
 
 export function createXAxis<ScaleT extends d3.AxisDomain>(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
@@ -44,21 +45,28 @@ export function createXAxis<ScaleT extends d3.AxisDomain>(options: {
   return xAxis
 }
 
-export function createYAxis<ScaleT extends d3.AxisDomain>(options: {
+export function createYAxis(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
   dimensions: Dimensions
-  scale: d3.AxisScale<ScaleT>
+  scale: d3.AxisScale<number>
   side: 'right' | 'left'
-  format: (domainValue: ScaleT, index: number) => string
+  format: (d: number) => string
+  unit: string
   addLines?: boolean
 }) {
   const { svg, dimensions, scale, format } = options
 
   const axisGenerator = options.side === 'left' ? d3.axisLeft : d3.axisRight
 
+  const tickFormat = CONFIG.chart.axisUnits === 'inline' ? format : d3.format('.1~f')
+
   const yAxis = svg
     .append('g')
-    .call(axisGenerator(scale).tickFormat(format))
+    .call(
+      axisGenerator(scale)
+        .tickFormat(tickFormat)
+        .tickSizeOuter(CONFIG.chart.axisUnits === 'replace' ? 0 : 6),
+    )
     .classed('text-overlay', true)
     .call((g) => g.selectAll('.tick text').classed('text-text-muted', true))
 
@@ -71,6 +79,31 @@ export function createYAxis<ScaleT extends d3.AxisDomain>(options: {
         .attr('x2', dimensions.width)
         .classed('stroke-overlay', true),
     )
+  }
+
+  if (CONFIG.chart.axisUnits === 'above') {
+    yAxis
+      .append('text')
+      .attr('x', 0)
+      .attr('y', 10)
+      .attr('text-anchor', options.side === 'left' ? 'right' : 'left')
+      .attr('class', 'text-2xs fill-text-muted')
+      .text(options.unit)
+  }
+
+  if (CONFIG.chart.axisUnits === 'replace') {
+    yAxis
+      .selectAll('.tick')
+      .filter((_, i, nodes) => i === nodes.length - 1)
+      .select('line')
+      .remove()
+
+    yAxis
+      .selectAll('.tick')
+      .filter((_, i, nodes) => i === nodes.length - 1)
+      .select('text')
+      .attr('class', 'text-2xs fill-text-muted')
+      .text(options.unit)
   }
 
   return yAxis

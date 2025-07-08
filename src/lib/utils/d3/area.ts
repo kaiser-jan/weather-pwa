@@ -17,7 +17,7 @@ export function createArea(options: {
     .x((d) => scaleX(d.datetime.toMillis()))
     .y0((d, i) => scaleY(dataA[i].value)) // NOTE: assumes the indices match
     // .y0((d, i) => scaleY(dataA.find((dA) => dA.datetime.equals(d.datetime))?.value))
-    .y1((d, i) => scaleY(d.value))
+    .y1((d) => scaleY(d.value))
     .curve(d3.curveBasis)
 
   const area = svg

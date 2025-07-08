@@ -109,10 +109,11 @@ export function convertToUnit(value: number, key: WeatherMetricKey, unit: string
   return converter(value)
 }
 
-export function formatMetric(value: number, key: WeatherMetricKey, unit: string): string {
+export function formatMetric(value: number, key: WeatherMetricKey, unit: string, excludeUnit = false): string {
   const converted = convertToUnit(value, key, unit)
   // const string = converted.toFixed(unit === '%' ? 0 : 1)
   const string = d3.format('.1~f')(converted)
+  if (excludeUnit) return string
   return string + unit
 }
 
