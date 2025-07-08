@@ -92,3 +92,13 @@ export function capitalizeFirstChar(word: string | undefined) {
   if (word === undefined || word.length === 0) return word
   return word.charAt(0).toUpperCase() + word.slice(1)
 }
+
+export function toggle(array: string[], value: string): void {
+  const index = array.indexOf(value)
+  if (index === -1) array.push(value)
+  else array.splice(index, 1)
+}
+
+export function sortByReferenceOrder<T extends string>(items: T[], reference: readonly T[]): T[] {
+  return items.slice().sort((a, b) => reference.indexOf(a) - reference.indexOf(b))
+}

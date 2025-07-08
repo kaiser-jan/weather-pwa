@@ -18,6 +18,7 @@ import { CONFIG } from './config'
 
 export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetails>> = {
   temperature: {
+    label: 'Temperature',
     domain: [0, 40],
     style: 'line',
     icon: ThermometerIcon,
@@ -34,6 +35,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     },
   },
   cloud_coverage: {
+    label: 'Cloud Coverage',
     domain: [0, 100],
     style: 'bars',
     icon: CloudyIcon,
@@ -45,6 +47,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     invert: true,
   },
   precipitation_amount: {
+    label: 'Precipitation Amount',
     domain: [0, 50],
     style: 'bars',
     icon: UmbrellaIcon,
@@ -54,6 +57,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     scaleOnRight: true,
   },
   wind_speed: {
+    label: 'Wind',
     domain: [0, 118 / 3.6],
     style: 'line',
     icon: WindIcon,
@@ -68,6 +72,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     },
   },
   relative_humidity: {
+    label: 'Relative Humidity',
     domain: [0, 100],
     style: 'line',
     icon: DropletIcon,
@@ -77,6 +82,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     hideScale: true,
   },
   pressure: {
+    label: 'Pressure',
     domain: [960 * 100, 1060 * 100],
     style: 'line',
     icon: GaugeIcon,
@@ -96,6 +102,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   //   scaleOnRight: false,
   // },
   cape: {
+    label: 'CAPE',
     domain: [0, 1000],
     style: 'line',
     icon: ZapIcon,
@@ -104,6 +111,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     scaleOnRight: false,
   },
   cin: {
+    label: 'CIN',
     domain: [-500, 0],
     style: 'line',
     icon: ShieldIcon,
@@ -112,6 +120,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     scaleOnRight: false,
   },
   grad: {
+    label: 'Global Radiation',
     domain: [-1000, 50_000_000],
     style: 'line',
     icon: SunIcon,

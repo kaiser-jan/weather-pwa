@@ -3,12 +3,12 @@
   import type { MultivariateTimeSeriesTimeBucket, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { DateTime } from 'luxon'
   import WeatherChart from './WeatherChart.svelte'
-  import * as ToggleGroup from '../ui/toggle-group'
-  import Toggle from '../ui/toggle/toggle.svelte'
   import { slide } from 'svelte/transition'
   import { CONFIG } from '$lib/config'
   import { Button } from '../ui/button'
   import { formatMetric, getPreferredUnit } from '$lib/utils/units'
+  import ParameterSelect from '../ParameterSelect.svelte'
+  import { persistantState } from '$lib/utils/state.svelte'
 
   interface Props {
     dailyMultiseries: MultivariateTimeSeriesTimeBucket[]
@@ -19,7 +19,11 @@
   let activeChartIndex = $state<number>(0)
   let chartScroller = $state<HTMLDivElement>()
 
-  let visibleSeries: WeatherMetricKey[] = $state(['cloud_coverage', 'precipitation_amount', 'temperature'])
+  let visibleSeries = persistantState<WeatherMetricKey[]>('chart-parameters-visible', [
+    'temperature',
+    'precipitation_amount',
+    'cloud_coverage',
+  ])
 
   let currentTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | null>(null)
   let highlightedTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | null>(null)
@@ -66,13 +70,8 @@
         <span class="">{Object.values(highlightedTimeBucket)[0].datetime.toFormat('HH:mm')}</span>
       {/if}
     </Button>
-    <ToggleGroup.Root type="multiple" variant="outline" bind:value={visibleSeries}>
-      {#each Object.entries(CHART_SERIES_DETAILS) as [key, seriesDetails]}
-        <ToggleGroup.Item value={key}>
-          <seriesDetails.icon />
-        </ToggleGroup.Item>
-      {/each}
-    </ToggleGroup.Root>
+
+    <ParameterSelect bind:visible={visibleSeries.value} />
 
     <div class=" w-full">
       {#if timeBucket}
@@ -110,7 +109,7 @@
     {#each dailyMultiseries.entries() as [index, timeBucket]}
       <WeatherChart
         multiseries={timeBucket.series}
-        {visibleSeries}
+        visibleSeries={visibleSeries.value}
         loaded={activeChartIndex >= index - 1 && activeChartIndex <= index + 1}
         startDateTime={timeBucket.datetime}
         endDateTime={timeBucket.datetime.plus(timeBucket.duration)}

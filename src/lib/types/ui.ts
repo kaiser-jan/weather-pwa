@@ -12,6 +12,7 @@ export interface SeriesDetailsBase {
 }
 
 export interface SeriesDetails extends SeriesDetailsBase {
+  label: string
   domain: [number, number]
   icon: typeof ThermometerIcon
   iconIfZero?: typeof ThermometerIcon
