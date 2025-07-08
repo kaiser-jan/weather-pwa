@@ -1,24 +1,30 @@
-<script lang="ts" generics="T">
+<script lang="ts">
   import * as Select from '$lib/components/ui/select/index.js'
-  import type { Selected } from 'bits-ui'
 
   interface Props {
-    items: Selected<T>[]
-    selected: Selected<T>
-    onselect: (selected: Selected<T> | undefined) => void
+    items: string[]
+    selected: string
+    onselect: (value: string | undefined) => void
+    placeholder: string
   }
 
-  let { items, selected = $bindable(), onselect }: Props = $props()
+  let { items, selected = $bindable(), onselect, placeholder }: Props = $props()
 </script>
 
-<Select.Root portal={null} bind:selected onSelectedChange={onselect}>
+<Select.Root
+  type="single"
+  onValueChange={(v) => {
+    selected = v
+    onselect(v)
+  }}
+>
   <Select.Trigger>
-    <Select.Value placeholder="Select provider" />
+    {selected ?? placeholder}
   </Select.Trigger>
   <Select.Content>
     <Select.Group>
       {#each items as item}
-        <Select.Item value={item.value} label={item.label}>{item.label}</Select.Item>
+        <Select.Item value={item} label={item}>{item}</Select.Item>
       {/each}
     </Select.Group>
   </Select.Content>

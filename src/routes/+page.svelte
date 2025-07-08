@@ -10,7 +10,6 @@
   import { DateTime } from 'luxon'
   import PwaSettings from '$lib/components/pwa/PWASettings.svelte'
   import { providers, type ProviderId } from '$lib/data/providers'
-  import SelectAutoString from '$lib/components/SelectAutoString.svelte'
   import { Button, buttonVariants } from '$lib/components/ui/button'
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/data/location'
   import { deriveWeatherSituationFromInstant, deriveWeatherSituationFromPeriod } from '$lib/data/providers/symbols'
@@ -21,6 +20,7 @@
   import { groupMultiseriesByDay } from '$lib/data/providers/utils'
   import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
   import DailyWeatherCharts from '$lib/components/weather/DailyWeatherCharts.svelte'
+  import SelectAuto from '$lib/components/SelectAuto.svelte'
 
   let data = $state<Partial<Forecast>>()
 
@@ -226,10 +226,11 @@
       <Drawer.Content>
         <div class="flex w-full flex-col gap-4 p-4">
           <h2 class="text-xl font-bold">Weather Data</h2>
-          <SelectAutoString
+          <SelectAuto
             items={Object.keys(providers)}
             bind:selected={providerId.value}
             onselect={() => tick().then(loadForecastData)}
+            placeholder="Select provider"
           />
           <h2 class="text-xl font-bold">PWA Options</h2>
           <PwaSettings />
