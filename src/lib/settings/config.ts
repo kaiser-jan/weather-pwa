@@ -1,5 +1,5 @@
 import { UNIT_OPTIONS, type Unit } from '$lib/utils/units'
-import type { DatasetId } from '$lib/data/providers'
+import { DATASET_IDS, DATASETS, PROVIDERS, type DatasetId } from '$lib/data/providers'
 import type { ConfigItem, ConfigType } from './types'
 import type { DateObjectUnits } from 'luxon'
 import { BriefcaseIcon, HomeIcon } from '@lucide/svelte'
@@ -18,12 +18,14 @@ export const settingsConfig = [
     id: 'datasets',
     label: 'Datasets',
     type: 'multiselect',
-    options: [
-      'met.no_locationforecast',
-      'geosphere.at_nwp-v1-1h-2500m_offset',
-      'geosphere.at_nwp-v1-1h-2500m',
-      'geosphere.at_nowcast-v1-15min-1km',
-    ] as DatasetId[],
+    options: DATASET_IDS,
+    labels: Object.fromEntries(
+      DATASET_IDS.map((id) => {
+        const dataset = DATASETS[id]
+        // const provider = PROVIDERS[dataset.providerId]
+        return [id, dataset.providerId + ' ' + dataset.name]
+      }),
+    ),
     default: [
       'met.no_locationforecast',
       'geosphere.at_nwp-v1-1h-2500m_offset',

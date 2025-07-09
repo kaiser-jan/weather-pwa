@@ -14,7 +14,7 @@ export const colors = {
 	},
 
 	disabled: {
-		DEFAULT: 'hsl(220, 15%, 30%)',
+		DEFAULT: 'hsl(220, 15%, 20%)',
 		foreground: 'hsl(220, 15%, 65%)',
 	},
 

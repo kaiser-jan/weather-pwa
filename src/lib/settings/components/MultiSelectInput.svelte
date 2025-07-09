@@ -1,0 +1,35 @@
+<script lang="ts">
+  import type { SelectSetting } from '../types'
+  import { Checkbox } from '$lib/components/ui/checkbox'
+  import { Label } from '$lib/components/ui/label'
+
+  interface Props {
+    item: SelectSetting
+    value: string[]
+    onchange: (v: string[]) => void
+  }
+
+  let { item, value = $bindable(), onchange }: Props = $props()
+</script>
+
+<div class="flex flex-col gap-1">
+  <span>{item.label}</span>
+  {#each item.options as option}
+    <div class="flex flex-row items-center gap-2">
+      <Checkbox
+        id={option}
+        bind:checked={
+          () => value.includes(option),
+          (v) => {
+            const index = value.indexOf(option)
+            if (v && index === -1) value.push(option)
+            else if (!v && index !== -1) value.splice(index, 1)
+            onchange(value)
+          }
+        }
+      />
+
+      <Label for={option} class="leading-5">{item.labels?.[option] ?? option}</Label>
+    </div>
+  {/each}
+</div>

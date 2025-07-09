@@ -52,6 +52,7 @@
   }
 
   const dayLabel = $derived.by(() => {
+    if (!dailyMultiseries || dailyMultiseries.length === 0) return
     if (dailyMultiseries[activeChartIndex].datetime.startOf('day').equals(DateTime.now().startOf('day'))) return 'Today'
     return dailyMultiseries[activeChartIndex].datetime.toFormat('cccc')
   })

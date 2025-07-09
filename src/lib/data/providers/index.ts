@@ -9,7 +9,7 @@ import locationforecast from './met.no/locationforecast'
 
 const PROVIDER_IDS = ['geosphere.at', 'met.no'] as const
 
-const DATASET_IDS = [
+export const DATASET_IDS = [
   'geosphere.at_nwp-v1-1h-2500m',
   'geosphere.at_nwp-v1-1h-2500m_offset',
   'geosphere.at_nowcast-v1-15min-1km',
@@ -46,6 +46,16 @@ export async function loadForecast(coordinates: Coordinates, datasets: DatasetId
   const promises = loaders.map((l) => graceful(l(coordinates)))
 
   const results = (await Promise.all(promises)).filter((r) => r !== null)
+
+  if (results.length === 0) {
+    // TODO: error
+    return {
+      current: null,
+      multiseries: [],
+      daily: [],
+      total: null,
+    }
+  }
 
   let multiseries: MultivariateTimeSeries = results[0]
 

@@ -5,7 +5,7 @@
   import { settingsWritable, settingsDefaults } from '../store'
   import type { ConfigItem } from '../types'
   import Button from '$lib/components/ui/button/button.svelte'
-  import { ChevronRightIcon, RotateCcwIcon } from '@lucide/svelte'
+  import { ChevronRightIcon, LockIcon, RotateCcwIcon } from '@lucide/svelte'
 
   interface Props {
     path: string[]
@@ -55,7 +55,12 @@
     {:else if item.type === 'description'}
       <p>{item.text}</p>
     {:else if item.type === 'not-implemented'}
-      <div class="italic opacity-50">{item.label}: not implemented</div>
+      <div
+        class="bg-disabled text-disabled-foreground flex min-h-10 items-center justify-between gap-2 rounded-md px-4"
+      >
+        {item.label}
+        <LockIcon />
+      </div>
     {:else}
       {@const Component = getComponent(item.type)}
       <div class="bg-midground flex min-h-10 items-center justify-between gap-2 rounded-md px-4">

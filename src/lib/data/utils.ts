@@ -151,7 +151,9 @@ function mapRecord<KeyT extends string, ItemT, TargetT>(
   return result
 }
 
-export function forecastTotalFromDailyForecast(daily: TimeBucketSummary[]): TimeBucketSummary {
+export function forecastTotalFromDailyForecast(daily: TimeBucketSummary[]): TimeBucketSummary | null {
+  if (daily.length === 0) return null
+
   const total = combineStatisticalNumberSummaries(daily.map((d) => d.summary))
 
   const first = daily[0]

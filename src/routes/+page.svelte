@@ -21,7 +21,6 @@
   import SettingsRenderer from '$lib/settings/components/SettingsRenderer.svelte'
   import { settingsConfig } from '$lib/settings/config'
   import SettingsView from '$lib/settings/components/SettingsView.svelte'
-  import { derived, get } from 'svelte/store'
 
   let data = $state<Partial<Forecast>>()
 
@@ -58,7 +57,7 @@
   const multiseriesByDay = $derived(data?.multiseries ? groupMultiseriesByDay(data?.multiseries) : undefined)
 
   function getMultiseriesForDate(targetDate: DateTime) {
-    if (!multiseriesByDay) return undefined
+    if (!multiseriesByDay || multiseriesByDay.length === 0) return undefined
     const result = multiseriesByDay.findLast((tp) => tp.datetime <= targetDate)
     const series = result?.series ?? multiseriesByDay[0].series
     return series
