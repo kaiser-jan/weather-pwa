@@ -1,7 +1,7 @@
 <script lang="ts">
   import { generateCssRangeGradient } from '$lib/utils/ui'
   import type { NumberSummary } from '$lib/types/data'
-  import { CONFIG } from '$lib/config'
+  import { settings } from '$lib/settings/store'
   import { cn } from '$lib/utils'
 
   interface Props {
@@ -16,7 +16,7 @@
   const left = $derived(scale(instance.min))
   const right = $derived(100 - scale(instance.max))
   const gradientCss = $derived(
-    generateCssRangeGradient(instance.min, instance.max, CONFIG.appearance.colors.temperatureColorStops),
+    generateCssRangeGradient(instance.min, instance.max, $settings.appearance.colors.temperatureColorStops),
   )
 
   function scale(temperature: number) {

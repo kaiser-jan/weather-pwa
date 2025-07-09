@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CONFIG } from '$lib/config'
+  import { settings } from '$lib/settings/store'
   import { getWeatherIcon, type WeatherSituation } from '$lib/data/symbols'
   import type { Coordinates } from '$lib/types/data'
   import { cn } from '$lib/utils'
@@ -17,7 +17,7 @@
 
   let icon = $derived.by(() => {
     let weatherSitutation =
-      (CONFIG.weather.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
+      ($settings.weather.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
 
     const now = DateTime.now()
     let isDay = now > DateTime.fromObject({ hour: 6 }) && now < DateTime.fromObject({ hour: 20 })
@@ -29,7 +29,7 @@
 
     let iconName = getWeatherIcon({ ...weatherSitutation, timeOfDay: isDay ? 'day' : 'night' })
 
-    let iconPath = `/weather-symbols/${CONFIG.appearance.symbols}/${iconName}.svg`
+    let iconPath = `/weather-symbols/${$settings.appearance.symbols}/${iconName}.svg`
 
     return { name: iconName, path: iconPath }
   })

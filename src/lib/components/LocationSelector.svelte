@@ -1,6 +1,14 @@
 <script lang="ts">
-  import { MapPinIcon, NavigationIcon, NavigationOffIcon, SearchIcon } from '@lucide/svelte'
-  import { CONFIG } from '$lib/config'
+  import {
+    BriefcaseIcon,
+    HomeIcon,
+    type Icon as IconType,
+    MapPinIcon,
+    NavigationIcon,
+    NavigationOffIcon,
+    SearchIcon,
+  } from '@lucide/svelte'
+  import { settings } from '$lib/settings/store'
   import { Button } from './ui/button'
   import type { Coordinates } from '$lib/types/data'
   import type { env } from '$env/dynamic/private'
@@ -26,7 +34,7 @@
       const coords = get(geolocation).position?.coords
       if (!coords) return
       coordinates = coords
-    } else coordinates = CONFIG.locations[selectedItemId.value]
+    } else coordinates = $settings.locations[selectedItemId.value]
   })
 
   let useGeolocation = persistantState('use-geolocation', true)
@@ -78,6 +86,12 @@
         return { icon: NavigationIcon, label: locationName }
     }
   })
+
+  // TODO:
+  const iconMap: Record<string, typeof IconType> = {
+    home: HomeIcon,
+    briefcase: BriefcaseIcon,
+  }
 </script>
 
 <div class="flex grow flex-row items-center gap-1">
@@ -101,7 +115,7 @@
   </div>
   <div class="bg-midground relative w-1 grow">
     <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
-      {#each CONFIG.locations as location, locationId}
+      {#each $settings.locations as location, locationId}
         <button
           class={[
             'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
@@ -110,7 +124,8 @@
           onclick={() => (selectedItemId.value = locationId)}
         >
           {#if location.icon}
-            <location.icon />
+            {@const Icon = iconMap[location.icon]}
+            <Icon />
           {:else}
             {location.name}
           {/if}

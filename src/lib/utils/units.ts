@@ -1,6 +1,7 @@
-import { CONFIG } from '$lib/config'
+import { settings } from '$lib/settings/store'
 import type { WeatherMetricKey } from '$lib/types/data'
 import * as d3 from 'd3'
+import { get } from 'svelte/store'
 
 export type UnitDimension =
   | 'temperature'
@@ -118,5 +119,6 @@ export function formatMetric(value: number, key: WeatherMetricKey, unit: string,
 }
 
 export function getPreferredUnit(key: WeatherMetricKey) {
-  return CONFIG.units[METRIC_DIMENSION[key]]
+  // TODO:
+  return get(settings).units[METRIC_DIMENSION[key]]
 }

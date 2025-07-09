@@ -3,8 +3,8 @@
   import type { Coordinates, Forecast } from '$lib/types/data'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
-  import { ArrowRightIcon, DropletsIcon, LucideSettings, RefreshCwIcon, UmbrellaIcon } from '@lucide/svelte'
-  import { CONFIG } from '$lib/config'
+  import { ArrowRightIcon, Divide, DropletsIcon, LucideSettings, RefreshCwIcon, UmbrellaIcon } from '@lucide/svelte'
+  import { settings } from '$lib/settings/store'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { cn, formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
@@ -18,6 +18,9 @@
   import LocationSelector from '$lib/components/LocationSelector.svelte'
   import { groupMultiseriesByDay } from '$lib/data/utils'
   import DailyWeatherCharts from '$lib/components/weather/DailyWeatherCharts.svelte'
+  import SettingsRenderer from '$lib/settings/components/SettingsRenderer.svelte'
+  import { settingsConfig } from '$lib/settings/config'
+  import SettingsView from '$lib/settings/components/SettingsView.svelte'
 
   let data = $state<Partial<Forecast>>()
 
@@ -43,7 +46,7 @@
 
     isLoading = true
 
-    data = await loadForecast(coordinates, CONFIG.datasets)
+    data = await loadForecast(coordinates, $settings.datasets)
 
     // show the spinning even when using cache
     setTimeout(() => (isLoading = false), 500)
@@ -69,7 +72,7 @@
       // also allow the current timebucket -> it is already raining
       const isCurrentTimeBucket = precipitation_amount[index + 1].datetime > DateTime.now()
       if (tp.datetime < DateTime.now() && !isCurrentTimeBucket) return false
-      return tp.value > CONFIG.weather.precipitation.threshold
+      return tp.value > $settings.weather.precipitation.threshold
     })
 
     return timePeriodWithPrecipitation?.datetime
@@ -81,7 +84,7 @@
     // the first time period without precipitation after the precipitationStartDatetime
     const timePeriodWithoutPrecipitation = data.multiseries.precipitation_amount.find((tp) => {
       if (tp.value === undefined || tp.datetime < precipitationStartDatetime) return false
-      return tp.value <= CONFIG.weather.precipitation.threshold
+      return tp.value <= $settings.weather.precipitation.threshold
     })
 
     return timePeriodWithoutPrecipitation?.datetime
@@ -149,7 +152,7 @@
       parameters={['temperature']}
       startDatetime={DateTime.now().startOf('day')}
       endDatetime={DateTime.now().startOf('day').plus({ days: 1 })}
-      marks={CONFIG.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m))}
+      marks={$settings.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m))}
       {coordinates}
       className="h-2"
     />
@@ -171,7 +174,7 @@
               startDatetime={day.datetime.startOf('day')}
               endDatetime={day.datetime.endOf('day')}
               parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-              marks={CONFIG.dashboard.timelineBar.marks.map((m) => day.datetime.set(m))}
+              marks={$settings.dashboard.timelineBar.marks.map((m) => day.datetime.set(m))}
               {coordinates}
               className="h-2"
             />
@@ -210,18 +213,20 @@
   <div class="absolute right-6 bottom-6 left-6 z-20 flex flex-row gap-2">
     <LocationSelector bind:coordinates />
 
-    <Drawer.Root>
+    <Drawer.Root open={true}>
       <Drawer.Trigger
         class={cn(buttonVariants({ variant: 'midground', size: 'icon' }), 'size-14! grow-0 rounded-full text-lg!')}
       >
         <LucideSettings />
       </Drawer.Trigger>
-      <Drawer.Content>
+      <Drawer.Content class="h-full w-full">
         <div class="flex w-full flex-col gap-4 p-4">
           <h2 class="text-xl font-bold">PWA Options</h2>
           <PwaSettings />
           <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
         </div>
+
+        <SettingsView config={settingsConfig} path={[]} />
       </Drawer.Content>
     </Drawer.Root>
   </div>

@@ -14,8 +14,10 @@ import {
 } from '@lucide/svelte'
 import type { WeatherMetricKey } from './types/data'
 import type { SeriesDetails } from './types/ui'
-import { CONFIG } from './config'
+import { settings } from '$lib/settings/store'
+import { get } from 'svelte/store'
 
+// TODO: reactive settings
 export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetails>> = {
   temperature: {
     label: 'Temperature',
@@ -24,12 +26,12 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     icon: ThermometerIcon,
     class: '',
     unit: '°',
-    gradientColorStops: CONFIG.appearance.colors.temperatureColorStops,
+    gradientColorStops: get(settings).appearance.colors.temperatureColorStops,
     include: {
       temperature_max: {
         style: 'area',
         class: 'opacity-40',
-        gradientColorStops: CONFIG.appearance.colors.temperatureColorStops,
+        gradientColorStops: get(settings).appearance.colors.temperatureColorStops,
         areaSecondParameter: 'temperature_min',
       },
     },

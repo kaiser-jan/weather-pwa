@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 import type { Dimensions } from './types'
-import { CONFIG } from '$lib/config'
+import { settings } from '$lib/settings/store'
+import { get } from 'svelte/store'
 
 export function createXAxis<ScaleT extends d3.AxisDomain>(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
@@ -58,14 +59,14 @@ export function createYAxis(options: {
 
   const axisGenerator = options.side === 'left' ? d3.axisLeft : d3.axisRight
 
-  const tickFormat = CONFIG.chart.axisUnits === 'inline' ? format : d3.format('.1~f')
+  const tickFormat = get(settings).chart.axisUnits === 'inline' ? format : d3.format('.1~f')
 
   const yAxis = svg
     .append('g')
     .call(
       axisGenerator(scale)
         .tickFormat(tickFormat)
-        .tickSizeOuter(CONFIG.chart.axisUnits === 'replace' ? 0 : 6),
+        .tickSizeOuter(get(settings).chart.axisUnits === 'replace' ? 0 : 6),
     )
     .classed('text-overlay', true)
     .call((g) => g.selectAll('.tick text').classed('text-text-muted', true))
@@ -81,7 +82,7 @@ export function createYAxis(options: {
     )
   }
 
-  if (CONFIG.chart.axisUnits === 'above') {
+  if (get(settings).chart.axisUnits === 'above') {
     yAxis
       .append('text')
       .attr('x', 0)
@@ -91,7 +92,7 @@ export function createYAxis(options: {
       .text(options.unit)
   }
 
-  if (CONFIG.chart.axisUnits === 'replace') {
+  if (get(settings).chart.axisUnits === 'replace') {
     yAxis
       .selectAll('.tick')
       .filter((_, i, nodes) => i === nodes.length - 1)

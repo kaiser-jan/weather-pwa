@@ -12,7 +12,7 @@
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
   import { handleInteraction } from '$lib/utils/d3/interaction'
-  import { CONFIG } from '$lib/config'
+  import { settings } from '$lib/settings/store'
   import type { CreatedSeriesDetails, SeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
 
@@ -73,7 +73,7 @@
 
     margin = { top: 10, right: 0, bottom: 20, left: 0 }
 
-    if (CONFIG.chart.axisUnits === 'above') {
+    if ($settings.chart.axisUnits === 'above') {
       margin.top += 10
     }
 
@@ -84,7 +84,7 @@
     for (const seriesKey of visibleSeries) {
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!details || details.hideScale) continue
-      const hideUnit = CONFIG.chart.axisUnits !== 'inline'
+      const hideUnit = $settings.chart.axisUnits !== 'inline'
       const minString = formatMetric(details.domain[0], seriesKey, getPreferredUnit(seriesKey), hideUnit)
       const maxString = formatMetric(details.domain[1], seriesKey, getPreferredUnit(seriesKey), hideUnit)
       const textWidthMinValue = estimateTextWidth(minString)
@@ -221,7 +221,7 @@
       dimensions,
       scaleX,
       seriesList: createdSeriesDetails,
-      tooltip: CONFIG.chart.tooltip,
+      tooltip: $settings.chart.tooltip,
     })
 
     function selectDatetime(datetime: DateTime | null) {

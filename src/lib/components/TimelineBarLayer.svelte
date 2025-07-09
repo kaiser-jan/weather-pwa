@@ -1,7 +1,7 @@
 <script lang="ts">
   import { interpolateColor } from '$lib/utils/ui'
   import type { Coordinates, TimeSeries } from '$lib/types/data'
-  import { CONFIG } from '$lib/config'
+  import { settings } from '$lib/settings/store'
   import { DateTime, Duration } from 'luxon'
 
   interface Props {
@@ -41,7 +41,7 @@
 
     switch (parameter) {
       case 'temperature':
-        return { color: interpolateColor(CONFIG.appearance.colors.temperatureColorStops, value) }
+        return { color: interpolateColor($settings.appearance.colors.temperatureColorStops, value) }
       case 'cloud_coverage':
         return { color: `hsla(0, 0%, 70%, ${value}%)` }
       case 'precipitation_amount':

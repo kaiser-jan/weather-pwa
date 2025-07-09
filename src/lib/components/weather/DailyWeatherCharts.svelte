@@ -4,7 +4,7 @@
   import { DateTime } from 'luxon'
   import WeatherChart from './WeatherChart.svelte'
   import { slide } from 'svelte/transition'
-  import { CONFIG } from '$lib/config'
+  import { settings } from '$lib/settings/store'
   import { Button } from '../ui/button'
   import { formatMetric, getPreferredUnit } from '$lib/utils/units'
   import ParameterSelect from '../ParameterSelect.svelte'
@@ -31,7 +31,7 @@
   let timeBucket = $derived.by(() => {
     if (highlightedTimeBucket) return highlightedTimeBucket
     if (activeChartIndex === 0) return currentTimeBucket
-    if (CONFIG.chart.alwaysShowValuesDisplay) return createEmptyTimeBucket()
+    if ($settings.chart.alwaysShowValuesDisplay) return createEmptyTimeBucket()
     return null
   })
 
