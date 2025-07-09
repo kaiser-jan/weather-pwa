@@ -11,7 +11,7 @@ export function select<T, U>(
       return store.subscribe((value) => {
         const next = selector(value)
         if (prev === undefined || !isEqual(prev, next)) {
-          prev = next
+          prev = structuredClone(next)
           run(next)
         }
       })
