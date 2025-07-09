@@ -2,7 +2,7 @@
   import SettingsRenderer from './SettingsRenderer.svelte'
   import { getDeep, setDeep } from '../deep'
   import { getComponent } from '../registry'
-  import { settings, settingsDefaults } from '../store'
+  import { settingsWritable, settingsDefaults } from '../store'
   import type { ConfigItem } from '../types'
   import Button from '$lib/components/ui/button/button.svelte'
   import { ChevronRightIcon, RotateCcwIcon } from '@lucide/svelte'
@@ -16,13 +16,13 @@
   let { path, config, onnavigate }: Props = $props()
 
   function getValue(id: string) {
-    const v = getDeep($settings, [...path, id])
+    const v = getDeep($settingsWritable, [...path, id])
     console.log(v)
     return v
   }
 
   function setValue(id: string, value: unknown) {
-    settings.update((s) => {
+    settingsWritable.update((s) => {
       setDeep(s, [...path, id], value)
       return s
     })
@@ -35,7 +35,7 @@
 </script>
 
 {#each config as item}
-  {#if !item.visible || item.visible($settings)}
+  {#if !item.visible || item.visible($settingsWritable)}
     {#if item.type === 'page'}
       <Button variant="midground" onclick={() => onnavigate(item.id)} class="justify-between">
         {item.label}

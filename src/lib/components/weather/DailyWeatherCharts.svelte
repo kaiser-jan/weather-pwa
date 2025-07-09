@@ -16,6 +16,8 @@
 
   const { dailyMultiseries }: Props = $props()
 
+  const settingsChart = settings.select((s) => s.chart)
+
   let activeChartIndex = $state<number>(0)
   let chartScroller = $state<HTMLDivElement>()
 
@@ -31,7 +33,7 @@
   let timeBucket = $derived.by(() => {
     if (highlightedTimeBucket) return highlightedTimeBucket
     if (activeChartIndex === 0) return currentTimeBucket
-    if ($settings.chart.alwaysShowValuesDisplay) return createEmptyTimeBucket()
+    if ($settingsChart.alwaysShowValuesDisplay) return createEmptyTimeBucket()
     return null
   })
 

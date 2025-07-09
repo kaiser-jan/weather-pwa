@@ -27,6 +27,8 @@
 
   let { coordinates = $bindable() }: Props = $props()
 
+  const settingLocations = settings.select((s) => s.locations)
+
   let locationName = 'TODO: locationName'
 
   $effect(() => {
@@ -34,7 +36,7 @@
       const coords = get(geolocation).position?.coords
       if (!coords) return
       coordinates = coords
-    } else coordinates = $settings.locations[selectedItemId.value]
+    } else coordinates = $settingLocations[selectedItemId.value]
   })
 
   let useGeolocation = persistantState('use-geolocation', true)
@@ -115,7 +117,7 @@
   </div>
   <div class="bg-midground relative w-1 grow">
     <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
-      {#each $settings.locations as location, locationId}
+      {#each $settingLocations as location, locationId}
         <button
           class={[
             'flex size-10 min-w-fit items-center justify-center rounded-full px-3',

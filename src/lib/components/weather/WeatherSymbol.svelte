@@ -15,6 +15,8 @@
 
   let { derived: derivedSituation, provided: providedSituation, coordinates, className }: Props = $props()
 
+  const settingSymbols = settings.select((s) => s.appearance.symbols)
+
   let icon = $derived.by(() => {
     let weatherSitutation =
       ($settings.weather.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
@@ -29,7 +31,7 @@
 
     let iconName = getWeatherIcon({ ...weatherSitutation, timeOfDay: isDay ? 'day' : 'night' })
 
-    let iconPath = `/weather-symbols/${$settings.appearance.symbols}/${iconName}.svg`
+    let iconPath = `/weather-symbols/${$settingSymbols}/${iconName}.svg`
 
     return { name: iconName, path: iconPath }
   })

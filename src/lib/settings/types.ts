@@ -74,7 +74,13 @@ export type ConfigItem = Setting | DescriptionBlock | SettingGroup | SettingPage
 export type ConfigType<T extends readonly ConfigItem[]> = {
   [K in T[number] as K['id']]: K extends { type: 'group' | 'page'; children: infer C }
     ? ConfigType<C & readonly ConfigItem[]>
-    : K extends { default: infer D }
-      ? D
-      : never
+    : K extends { type: 'select'; options: infer O }
+      ? O extends readonly unknown[]
+        ? O[number]
+        : never
+      : K extends { type: 'multiselect'; options: infer O }
+        ? O
+        : K extends { default: infer D }
+          ? D
+          : never
 }

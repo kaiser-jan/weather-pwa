@@ -38,6 +38,8 @@
     onCurrentTimestamp = $bindable(),
   }: Props = $props()
 
+  const settingsChart = settings.select((s) => s.chart)
+
   let container: HTMLDivElement
 
   let margin = { top: 10, right: 40, bottom: 20, left: 40 }
@@ -73,7 +75,7 @@
 
     margin = { top: 10, right: 0, bottom: 20, left: 0 }
 
-    if ($settings.chart.axisUnits === 'above') {
+    if ($settingsChart.axisUnits === 'above') {
       margin.top += 10
     }
 
@@ -84,7 +86,7 @@
     for (const seriesKey of visibleSeries) {
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!details || details.hideScale) continue
-      const hideUnit = $settings.chart.axisUnits !== 'inline'
+      const hideUnit = $settingsChart.axisUnits !== 'inline'
       const minString = formatMetric(details.domain[0], seriesKey, getPreferredUnit(seriesKey), hideUnit)
       const maxString = formatMetric(details.domain[1], seriesKey, getPreferredUnit(seriesKey), hideUnit)
       const textWidthMinValue = estimateTextWidth(minString)
@@ -221,7 +223,7 @@
       dimensions,
       scaleX,
       seriesList: createdSeriesDetails,
-      tooltip: $settings.chart.tooltip,
+      tooltip: $settingsChart.tooltip,
     })
 
     function selectDatetime(datetime: DateTime | null) {

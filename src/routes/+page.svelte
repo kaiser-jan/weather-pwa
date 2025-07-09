@@ -4,7 +4,7 @@
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
   import { ArrowRightIcon, Divide, DropletsIcon, LucideSettings, RefreshCwIcon, UmbrellaIcon } from '@lucide/svelte'
-  import { settings } from '$lib/settings/store'
+  import { settings, settingsWritable } from '$lib/settings/store'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { cn, formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
@@ -21,12 +21,15 @@
   import SettingsRenderer from '$lib/settings/components/SettingsRenderer.svelte'
   import { settingsConfig } from '$lib/settings/config'
   import SettingsView from '$lib/settings/components/SettingsView.svelte'
+  import { derived, get } from 'svelte/store'
 
   let data = $state<Partial<Forecast>>()
 
   let locationName = $state<string>()
   let isLoading = $state(false)
   let coordinates = $state<Coordinates>()
+
+  const settingDatasets = settings.select((s) => s.datasets)
 
   $effect(() => {
     if (coordinates) {
@@ -46,7 +49,7 @@
 
     isLoading = true
 
-    data = await loadForecast(coordinates, $settings.datasets)
+    data = await loadForecast(coordinates, $settingDatasets)
 
     // show the spinning even when using cache
     setTimeout(() => (isLoading = false), 500)
@@ -223,6 +226,13 @@
         <div class="flex w-full flex-col gap-4 p-4">
           <h2 class="text-xl font-bold">PWA Options</h2>
           <PwaSettings />
+          <button
+            onclick={() =>
+              settingsWritable.update((c) => {
+                c.appearance.symbols = 'meteocons-fill-static'
+                return c
+              })}>update</button
+          >
           <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
         </div>
 

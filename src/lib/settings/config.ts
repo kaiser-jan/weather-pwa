@@ -5,6 +5,14 @@ import type { DateObjectUnits } from 'luxon'
 import { BriefcaseIcon, HomeIcon } from '@lucide/svelte'
 import type { ColorStop } from '$lib/types/ui'
 
+type Location = {
+  name: string
+  icon: typeof HomeIcon
+  longitude: number
+  latitude: number
+  altitude: number
+}
+
 export const settingsConfig = [
   {
     id: 'datasets',
