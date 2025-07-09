@@ -10,7 +10,7 @@
   let { item, value, onchange }: Props = $props()
 </script>
 
-<label class="flex flex-col gap-1">
+<label class="flex grow flex-row items-center justify-between gap-2">
   <span>{item.label}</span>
   <input type="number" bind:value oninput={(e) => onchange((e.target as HTMLInputElement).value)} />
 </label>

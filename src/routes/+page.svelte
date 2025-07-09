@@ -221,21 +221,14 @@
       >
         <LucideSettings />
       </Drawer.Trigger>
-      <Drawer.Content class="h-full w-full">
-        <div class="flex w-full flex-col gap-4 p-4">
+      <Drawer.Content class="h-full">
+        <div class="flex w-full flex-1 flex-col gap-4 overflow-y-auto p-4">
+          <SettingsView config={settingsConfig} path={[]} />
+          <div class="grow"></div>
           <h2 class="text-xl font-bold">PWA Options</h2>
           <PwaSettings />
-          <button
-            onclick={() =>
-              settingsWritable.update((c) => {
-                c.appearance.symbols = 'meteocons-fill-static'
-                return c
-              })}>update</button
-          >
           <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
         </div>
-
-        <SettingsView config={settingsConfig} path={[]} />
       </Drawer.Content>
     </Drawer.Root>
   </div>

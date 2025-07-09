@@ -43,7 +43,9 @@
       </Button>
     {:else if item.type === 'group'}
       <section>
-        {#if item.label}<h2>{item.label}</h2>{/if}
+        {#if item.label}
+          <h2 class="text-text-muted">{item.label}</h2>
+        {/if}
         <SettingsRenderer
           config={item.children}
           path={[...path, item.id]}

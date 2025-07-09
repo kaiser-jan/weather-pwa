@@ -11,7 +11,7 @@
   let { item, value, onchange }: Props = $props()
 </script>
 
-<label class="flex flex-col gap-1">
+<label class="flex grow flex-row items-center justify-between gap-1">
   <span>{item.label}</span>
   <Switch
     bind:checked={

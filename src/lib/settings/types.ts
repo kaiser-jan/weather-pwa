@@ -68,7 +68,9 @@ export type SettingPage = BaseConfigItem & {
   children: ConfigItem[]
 }
 
-export type ConfigItem = Setting | DescriptionBlock | SettingGroup | SettingPage
+export type NestableSetting = SettingGroup | SettingPage
+
+export type ConfigItem = Setting | DescriptionBlock | NestableSetting
 
 //
 

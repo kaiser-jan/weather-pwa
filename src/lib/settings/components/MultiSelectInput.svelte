@@ -12,7 +12,7 @@
   let { item, value = $bindable(), onchange }: Props = $props()
 </script>
 
-<div class="flex flex-col gap-1">
+<div class="flex flex-col gap-1 py-2">
   <span>{item.label}</span>
   {#each item.options as option}
     <div class="flex flex-row items-center gap-2">
@@ -24,6 +24,7 @@
             const index = value.indexOf(option)
             if (v && index === -1) value.push(option)
             else if (!v && index !== -1) value.splice(index, 1)
+            value = value
             onchange(value)
           }
         }
