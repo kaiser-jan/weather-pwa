@@ -16,7 +16,7 @@
 
   const { dailyMultiseries }: Props = $props()
 
-  const settingsChart = settings.select((s) => s.chart)
+  const settingsChart = settings.select((s) => s.sections.chart)
 
   let activeChartIndex = $state<number>(0)
   let chartScroller = $state<HTMLDivElement>()

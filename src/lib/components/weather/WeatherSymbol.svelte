@@ -19,7 +19,7 @@
 
   let icon = $derived.by(() => {
     let weatherSitutation =
-      ($settings.weather.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
+      ($settings.data.forecast.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
 
     const now = DateTime.now()
     let isDay = now > DateTime.fromObject({ hour: 6 }) && now < DateTime.fromObject({ hour: 20 })

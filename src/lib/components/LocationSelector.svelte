@@ -27,7 +27,7 @@
 
   let { coordinates = $bindable() }: Props = $props()
 
-  const settingLocations = settings.select((s) => s.locations)
+  const settingLocations = settings.select((s) => s.data.locations)
 
   let locationName = 'TODO: locationName'
 

@@ -5,6 +5,7 @@ type BaseConfigItem = {
   id: string
   label?: string
   visible?: VisibilityCallback
+  disabled?: boolean
 }
 
 export type TextSetting = BaseConfigItem & {

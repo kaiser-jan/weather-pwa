@@ -10,28 +10,25 @@ export type UnitDimension =
   | 'speed'
   | 'angle'
   | 'percentage'
-  | 'index'
   | 'energy'
   | 'radiation'
   | 'precipitation'
 
-const METRIC_DIMENSION: Record<WeatherMetricKey, UnitDimension> = {
+const METRIC_DIMENSION: Record<WeatherMetricKey, UnitDimension | null> = {
   temperature: 'temperature',
   temperature_min: 'temperature',
   temperature_max: 'temperature',
   temperature_feel: 'temperature',
   pressure: 'pressure',
   relative_humidity: 'percentage',
-  uvi_clear_sky: 'index',
+  uvi_clear_sky: null,
   cloud_coverage: 'percentage',
-  cloud_coverage_low: 'percentage',
-  cloud_coverage_medium: 'percentage',
-  cloud_coverage_high: 'percentage',
   fog: 'percentage',
   visibility: 'length',
   wind_speed: 'speed',
   wind_speed_gust: 'speed',
   wind_degrees: 'angle',
+  wind_degrees_gust: 'angle',
   precipitation_amount: 'precipitation',
   precipitation_probability: 'percentage',
   thunder_probability: 'percentage',
@@ -48,7 +45,6 @@ export const UNIT_OPTIONS = {
   speed: ['m/s', 'km/h', 'mph'],
   angle: ['°'],
   percentage: ['%', 'fraction'],
-  index: ['index'],
   energy: ['J/kg', 'm2/s2'],
   radiation: ['Ws/m2', 'J/m2', 'Wh/m2', 'kWh/m2'],
   precipitation: ['mm/h'],
@@ -86,9 +82,6 @@ const CONVERTERS: Record<UnitDimension, Partial<Record<Unit, (v: number) => numb
     '%': (v) => v,
     fraction: (v) => v / 100,
   },
-  index: {
-    index: (v) => v,
-  },
   energy: {
     'J/kg': (v) => v,
     'm2/s2': (v) => v,
@@ -106,6 +99,7 @@ const CONVERTERS: Record<UnitDimension, Partial<Record<Unit, (v: number) => numb
 
 export function convertToUnit(value: number, key: WeatherMetricKey, unit: string): number {
   const dimension = METRIC_DIMENSION[key]
+  if (!dimension) return value
   const converter = CONVERTERS[dimension]?.[unit as Unit] ?? ((v) => v)
   return converter(value)
 }
@@ -119,6 +113,8 @@ export function formatMetric(value: number, key: WeatherMetricKey, unit: string,
 }
 
 export function getPreferredUnit(key: WeatherMetricKey) {
+  const dimension = METRIC_DIMENSION[key]
+  if (!dimension) return null
   // TODO:
-  return get(settings).units[METRIC_DIMENSION[key]]
+  return get(settings).general.units[dimension]
 }

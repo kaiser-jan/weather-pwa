@@ -28,7 +28,7 @@
   let isLoading = $state(false)
   let coordinates = $state<Coordinates>()
 
-  const settingDatasets = settings.select((s) => s.datasets)
+  const settingDatasets = settings.select((s) => s.data.datasets)
 
   $effect(() => {
     if (coordinates) {
@@ -74,7 +74,7 @@
       // also allow the current timebucket -> it is already raining
       const isCurrentTimeBucket = precipitation_amount[index + 1].datetime > DateTime.now()
       if (tp.datetime < DateTime.now() && !isCurrentTimeBucket) return false
-      return tp.value > $settings.weather.precipitation.threshold
+      return tp.value > $settings.data.forecast.precipitation.threshold
     })
 
     return timePeriodWithPrecipitation?.datetime
@@ -86,7 +86,7 @@
     // the first time period without precipitation after the precipitationStartDatetime
     const timePeriodWithoutPrecipitation = data.multiseries.precipitation_amount.find((tp) => {
       if (tp.value === undefined || tp.datetime < precipitationStartDatetime) return false
-      return tp.value <= $settings.weather.precipitation.threshold
+      return tp.value <= $settings.data.forecast.precipitation.threshold
     })
 
     return timePeriodWithoutPrecipitation?.datetime
@@ -154,7 +154,7 @@
       parameters={['temperature']}
       startDatetime={DateTime.now().startOf('day')}
       endDatetime={DateTime.now().startOf('day').plus({ days: 1 })}
-      marks={$settings.dashboard.timelineBar.marks.map((m) => DateTime.now().set(m))}
+      marks={$settings.sections.components.timelineBar.marks.map((m) => DateTime.now().set(m))}
       {coordinates}
       className="h-2"
     />
@@ -176,7 +176,7 @@
               startDatetime={day.datetime.startOf('day')}
               endDatetime={day.datetime.endOf('day')}
               parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-              marks={$settings.dashboard.timelineBar.marks.map((m) => day.datetime.set(m))}
+              marks={$settings.sections.components.timelineBar.marks.map((m) => day.datetime.set(m))}
               {coordinates}
               className="h-2"
             />

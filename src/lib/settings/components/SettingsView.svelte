@@ -90,7 +90,7 @@
       <div class="flex w-full h-fit shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
         <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => onnavigate(t, i)} />
       </div>
-      <div class="flex shrink-0"></div>
+      <div class="flex w-full shrink-0"></div>
     {/each}
   </div>
 </div>

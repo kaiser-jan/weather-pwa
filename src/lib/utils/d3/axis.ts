@@ -59,14 +59,14 @@ export function createYAxis(options: {
 
   const axisGenerator = options.side === 'left' ? d3.axisLeft : d3.axisRight
 
-  const tickFormat = get(settings).chart.axisUnits === 'inline' ? format : d3.format('.1~f')
+  const tickFormat = get(settings).sections.chart.axisUnits === 'inline' ? format : d3.format('.1~f')
 
   const yAxis = svg
     .append('g')
     .call(
       axisGenerator(scale)
         .tickFormat(tickFormat)
-        .tickSizeOuter(get(settings).chart.axisUnits === 'replace' ? 0 : 6),
+        .tickSizeOuter(get(settings).sections.chart.axisUnits === 'replace' ? 0 : 6),
     )
     .classed('text-overlay', true)
     .call((g) => g.selectAll('.tick text').classed('text-text-muted', true))
@@ -82,7 +82,7 @@ export function createYAxis(options: {
     )
   }
 
-  if (get(settings).chart.axisUnits === 'above') {
+  if (get(settings).sections.chart.axisUnits === 'above') {
     yAxis
       .append('text')
       .attr('x', 0)
@@ -92,7 +92,7 @@ export function createYAxis(options: {
       .text(options.unit)
   }
 
-  if (get(settings).chart.axisUnits === 'replace') {
+  if (get(settings).sections.chart.axisUnits === 'replace') {
     yAxis
       .selectAll('.tick')
       .filter((_, i, nodes) => i === nodes.length - 1)

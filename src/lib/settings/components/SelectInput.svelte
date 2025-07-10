@@ -21,6 +21,7 @@
       value = v
       onchange(v)
     }}
+    disabled={item.disabled}
   >
     <Select.Trigger>
       {value}

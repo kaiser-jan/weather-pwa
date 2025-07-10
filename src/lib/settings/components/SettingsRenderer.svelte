@@ -37,14 +37,14 @@
 {#each config as item}
   {#if !item.visible || item.visible($settingsWritable)}
     {#if item.type === 'page'}
-      <Button variant="midground" onclick={() => onnavigate(item.id)} class="justify-between">
+      <Button variant="midground" onclick={() => onnavigate(item.id)} class="justify-between text-base! min-h-12">
         {item.label}
         <ChevronRightIcon />
       </Button>
     {:else if item.type === 'group'}
-      <section>
+      <section class="flex flex-col gap-2">
         {#if item.label}
-          <h2 class="text-text-muted">{item.label}</h2>
+          <h2 class="text-text-muted -mb-1">{item.label}</h2>
         {/if}
         <SettingsRenderer
           config={item.children}
@@ -58,14 +58,14 @@
       <p>{item.text}</p>
     {:else if item.type === 'not-implemented'}
       <div
-        class="bg-disabled text-disabled-foreground flex min-h-10 items-center justify-between gap-2 rounded-md px-4"
+        class="bg-disabled text-disabled-foreground flex min-h-10 items-center justify-between gap-2 rounded-md px-4 min-h-12"
       >
         {item.label}
         <LockIcon />
       </div>
     {:else}
       {@const Component = getComponent(item.type)}
-      <div class="bg-midground flex min-h-10 items-center justify-between gap-2 rounded-md px-4">
+      <div class="bg-midground flex min-h-12 items-center justify-between gap-2 rounded-md px-4">
         {#if Component}
           <Component {item} value={getValue(item.id)} onchange={(v: any) => setValue(item.id, v)} />
         {:else}

@@ -38,7 +38,7 @@
     onCurrentTimestamp = $bindable(),
   }: Props = $props()
 
-  const settingsChart = settings.select((s) => s.chart)
+  const settingsChart = settings.select((s) => s.sections.chart)
 
   let container: HTMLDivElement
 
