@@ -9,7 +9,6 @@
   import { cn, formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
   import PwaSettings from '$lib/components/pwa/PWASettings.svelte'
-  import { loadForecast } from '$lib/data/providers'
   import { Button, buttonVariants } from '$lib/components/ui/button'
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/data/location'
   import { deriveWeatherSituationFromInstant, deriveWeatherSituationFromPeriod } from '$lib/data/symbols'
@@ -18,17 +17,15 @@
   import LocationSelector from '$lib/components/LocationSelector.svelte'
   import { groupMultiseriesByDay } from '$lib/data/utils'
   import DailyWeatherCharts from '$lib/components/weather/DailyWeatherCharts.svelte'
-  import SettingsRenderer from '$lib/settings/components/SettingsRenderer.svelte'
   import { settingsConfig } from '$lib/settings/config'
   import SettingsView from '$lib/settings/components/SettingsView.svelte'
-
-  let data = $state<Partial<Forecast>>()
+  import { forecastStore } from '$lib/stores/data'
 
   let locationName = $state<string>()
   let isLoading = $state(false)
   let coordinates = $state<Coordinates>()
 
-  const settingDatasets = settings.select((s) => s.data.datasets)
+  const settingData = settings.select((s) => s.data)
 
   $effect(() => {
     if (coordinates) {
@@ -48,13 +45,15 @@
 
     isLoading = true
 
-    data = await loadForecast(coordinates, $settingDatasets)
+    forecastStore.update(coordinates, $settingData.datasets, $settingData.incrementalLoad)
 
     // show the spinning even when using cache
     setTimeout(() => (isLoading = false), 500)
   }
 
-  const multiseriesByDay = $derived(data?.multiseries ? groupMultiseriesByDay(data?.multiseries) : undefined)
+  const multiseriesByDay = $derived(
+    $forecastStore?.multiseries ? groupMultiseriesByDay($forecastStore?.multiseries) : undefined,
+  )
 
   function getMultiseriesForDate(targetDate: DateTime) {
     if (!multiseriesByDay || multiseriesByDay.length === 0) return undefined
@@ -65,7 +64,7 @@
 
   // TODO: reactivity
   const precipitationStartDatetime = $derived.by(() => {
-    const precipitation_amount = data?.multiseries?.precipitation_amount
+    const precipitation_amount = $forecastStore?.multiseries?.precipitation_amount
     if (!precipitation_amount) return undefined
 
     // the first time period with precipitation from now on
@@ -81,10 +80,10 @@
   })
 
   const precipitationEndDatetime = $derived.by(() => {
-    if (!data?.multiseries?.precipitation_amount || !precipitationStartDatetime) return undefined
+    if (!$forecastStore?.multiseries?.precipitation_amount || !precipitationStartDatetime) return undefined
 
     // the first time period without precipitation after the precipitationStartDatetime
-    const timePeriodWithoutPrecipitation = data.multiseries.precipitation_amount.find((tp) => {
+    const timePeriodWithoutPrecipitation = $forecastStore.multiseries.precipitation_amount.find((tp) => {
       if (tp.value === undefined || tp.datetime < precipitationStartDatetime) return false
       return tp.value <= $settings.data.forecast.precipitation.threshold
     })
@@ -110,21 +109,21 @@
     </button>
   </div>
 
-  {#if data?.current}
+  {#if $forecastStore?.current}
     <div class="my-auto flex flex-row items-center justify-center gap-4">
       <WeatherSymbol
         className="size-30"
-        derived={deriveWeatherSituationFromInstant(data.current)}
-        provided={data.current.symbol}
+        derived={deriveWeatherSituationFromInstant($forecastStore.current)}
+        provided={$forecastStore.current.symbol}
         {coordinates}
       />
-      <span class="text-6xl">{Math.round(data.current.temperature)}°C</span>
+      <span class="text-6xl">{Math.round($forecastStore.current.temperature)}°C</span>
     </div>
 
     <div class="bg-background flex w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
-      <WeatherItemCurrent item="cloud_coverage" current={data.current} />
-      <WeatherItemCurrent item="uvi" current={data.current} />
-      <WeatherItemCurrent item="wind" current={data.current} />
+      <WeatherItemCurrent item="cloud_coverage" current={$forecastStore.current} />
+      <WeatherItemCurrent item="uvi" current={$forecastStore.current} />
+      <WeatherItemCurrent item="wind" current={$forecastStore.current} />
       {#if precipitationStartDatetime}
         <span class="inline-flex items-center gap-2">
           <UmbrellaIcon />
@@ -140,8 +139,8 @@
           {/if}
         </span>
       {/if}
-      {#if data.current.precipitation_amount && data.current.precipitation_amount > 0}
-        <WeatherItemCurrent item="precipitation_amount" current={data.current} />
+      {#if $forecastStore.current.precipitation_amount && $forecastStore.current.precipitation_amount > 0}
+        <WeatherItemCurrent item="precipitation_amount" current={$forecastStore.current} />
       {/if}
     </div>
   {/if}
@@ -165,7 +164,7 @@
   {/if}
 
   <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
-    {#each data?.daily ?? [] as day}
+    {#each $forecastStore?.daily ?? [] as day}
       <div class="inline-flex flex-row items-center justify-between gap-2">
         <span class="w-[3ch]">{day.datetime.toFormat('ccc')}</span>
 
@@ -195,7 +194,7 @@
         <div class="flex w-[40%] items-center gap-2">
           <span class="w-[2ch]">{Math.round(day.summary.temperature.min)}</span>
           <NumberRangeBar
-            total={data?.total?.summary.temperature}
+            total={$forecastStore?.total?.summary.temperature}
             instance={day.summary.temperature}
             color="temperature"
             className="h-2 w-full"
@@ -224,7 +223,7 @@
       <Drawer.Content class="h-full">
         <div class="flex grow flex-col gap-4 overflow-y-hidden p-4">
           <SettingsView config={settingsConfig} path={[]} />
-          <h2 class="text-xl font-bold mt-auto">PWA Options</h2>
+          <h2 class="mt-auto text-xl font-bold">PWA Options</h2>
           <PwaSettings />
           <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
         </div>

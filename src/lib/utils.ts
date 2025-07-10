@@ -102,3 +102,11 @@ export function toggle(array: string[], value: string): void {
 export function sortByReferenceOrder<T extends string>(items: T[], reference: readonly T[]): T[] {
   return items.slice().sort((a, b) => reference.indexOf(a) - reference.indexOf(b))
 }
+
+export function debounce<F extends (...args: any[]) => void>(fn: F, wait: number): F {
+  let timer: ReturnType<typeof setTimeout>
+  return ((...args: any[]) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => fn(...args), wait)
+  }) as F
+}

@@ -41,49 +41,5 @@ export const LOADERS: Record<DatasetId, (coordinates: Coordinates) => Promise<Mu
   'met.no_locationforecast': locationforecast.load,
 }
 
-export async function loadForecast(coordinates: Coordinates, datasets: DatasetId[]): Promise<Forecast> {
-  const loaders = datasets.map((d) => LOADERS[d])
-  const promises = loaders.map((l) => graceful(l(coordinates)))
-
-  const results = (await Promise.all(promises)).filter((r) => r !== null)
-
-  if (results.length === 0) {
-    // TODO: error
-    return {
-      current: null,
-      multiseries: [],
-      daily: [],
-      total: null,
-    }
-  }
-
-  let multiseries: MultivariateTimeSeries = results[0]
-
-  for (let i = 1; i < results.length; i++) {
-    multiseries = mergeMultivariateTimeSeries(multiseries, results[i])
-  }
-
-  const daily = combineMultiseriesToDailyForecast(multiseries)
-
-  const total = forecastTotalFromDailyForecast(daily)
-
-  const current = currentFromMultiseries(multiseries)
-
-  return {
-    current,
-    multiseries,
-    daily,
-    total,
-  }
-}
-
-// NOTE: workaround to allow parallel api calls and ignoring failure of one call
-// TODO: this should be redundant when implementing proper error handling like with the ts-result Result type
-async function graceful<T>(promise: Promise<T>): Promise<T | null> {
-  try {
-    return await promise
-  } catch {}
-  return null
-}
 export type DatasetId = (typeof DATASET_IDS)[number]
 export type ProviderId = (typeof PROVIDER_IDS)[number]
