@@ -25,7 +25,7 @@
             if (v && index === -1) value.push(option)
             else if (!v && index !== -1) value.splice(index, 1)
             value = value
-            onchange(value)
+            onchange($state.snapshot(value))
           }
         }
       />

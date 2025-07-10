@@ -63,12 +63,12 @@
     if (historyElements.length) {
       const filteredHistoryElements = historyElements.filter((e) => e)
       const lastElement = filteredHistoryElements[filteredHistoryElements.length - 1]
-      scrollContainer.scrollLeft = lastElement.offsetLeft
+      scrollContainer.scrollLeft = lastElement.offsetLeft - scrollContainer.getBoundingClientRect().left
     }
   })
 </script>
 
-<div class="relative flex h-full w-full flex-col gap-4 overflow-x-visible overflow-y-auto">
+<div class="flex flex-col gap-4 overflow-x-visible min-h-0">
   <Breadcrumb.Root>
     <Breadcrumb.List>
       {#each pages as page, index}
@@ -83,14 +83,14 @@
   </Breadcrumb.Root>
 
   <div
-    class="flex w-full shrink-0 grow flex-row justify-start gap-6 overflow-x-hidden scroll-smooth"
+    class="flex flex-row gap-6 overflow-x-hidden min-h-0 overflow-y-auto scroll-smooth"
     bind:this={scrollContainer}
   >
     {#each pages as page, i}
-      <div class="flex w-full shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
+      <div class="flex w-full h-fit shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
         <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => onnavigate(t, i)} />
       </div>
-      <div class="flex w-full shrink-0"></div>
+      <div class="flex shrink-0"></div>
     {/each}
   </div>
 </div>

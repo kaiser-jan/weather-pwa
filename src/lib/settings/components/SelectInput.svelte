@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SelectSetting } from '../types'
-  import SelectAuto from '$lib/components/SelectAuto.svelte'
+  import * as Select from '$lib/components/ui/select'
 
   interface Props {
     item: SelectSetting
@@ -13,13 +13,24 @@
 
 <label class="flex grow flex-row flex-wrap items-center justify-between gap-x-4 gap-y-2 py-2">
   <span>{item.label}</span>
-  <SelectAuto
-    placeholder={'Click to select'}
-    items={item.options}
-    selected={value}
-    onselect={(v) => {
+
+  <Select.Root
+    type="single"
+    {value}
+    onValueChange={(v) => {
       value = v
       onchange(v)
     }}
-  />
+  >
+    <Select.Trigger>
+      {value}
+    </Select.Trigger>
+    <Select.Content>
+      <Select.Group>
+        {#each item.options as option}
+          <Select.Item value={option} label={option}>{option}</Select.Item>
+        {/each}
+      </Select.Group>
+    </Select.Content>
+  </Select.Root>
 </label>
