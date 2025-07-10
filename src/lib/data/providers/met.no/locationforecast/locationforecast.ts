@@ -9,17 +9,18 @@ import type {
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
 import type { Dataset } from '$lib/types/data/providers'
+import type { DatasetId } from '../..'
 
-export async function loadLocationforecast(coords: Coordinates) {
-  if (coords.altitude === null) throw new Error('Locationforecast from met.no requires an altitude!')
+export async function loadLocationforecast(coordinates: Coordinates) {
+  if (coordinates.altitude === null) throw new Error('Locationforecast from met.no requires an altitude!')
 
   const url = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete.json')
-  url.searchParams.set('lat', coords.latitude.toString())
-  url.searchParams.set('lon', coords.longitude.toString())
-  url.searchParams.set('altitude', coords.altitude.toFixed(0))
+  url.searchParams.set('lat', coordinates.latitude.toString())
+  url.searchParams.set('lon', coordinates.longitude.toString())
+  url.searchParams.set('altitude', coordinates.altitude.toFixed(0))
   const urlString = url.toString()
 
-  const data = await useCache(urlString, async () => {
+  const data = await useCache('met.no_locationforecast' as DatasetId, { coordinates }, async () => {
     const response = await fetch(urlString.toString())
     const data = (await response.json()) as MetjsonForecast
     // const referenceDatetime = DateTime.fromISO(data.properties.meta.updated_at as string)

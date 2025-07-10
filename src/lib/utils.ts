@@ -110,3 +110,7 @@ export function debounce<F extends (...args: any[]) => void>(fn: F, wait: number
     timer = setTimeout(() => fn(...args), wait)
   }) as F
 }
+
+export function deepEqual(a: unknown, b: unknown): boolean {
+  return JSON.stringify(a) === JSON.stringify(b)
+}

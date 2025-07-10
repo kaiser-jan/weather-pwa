@@ -4,6 +4,7 @@ import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
 import nwp from './index'
 import { transformTimeSeries, type TimeSeriesConfig } from '$lib/utils/data'
+import type { DatasetId } from '../..'
 
 export const REQUESTED_WEATHER_PARAMETERS: string[] = [
   'cape',
@@ -34,8 +35,7 @@ export async function loadTimeseriesForecast(coordinates: Coordinates, offset = 
   url.searchParams.set('start', DateTime.now().startOf('day').toISO())
   url.searchParams.set('forecast_offset', offset.toString())
 
-  // TODO: this will fill up local storage with data from different locations
-  const data = await useCache(url.toString(), async () => {
+  const data = await useCache('geosphere.at_nwp-v1-1h-2500m' as DatasetId, { coordinates, offset }, async () => {
     const response = await fetch(url.toString())
     const data = (await response.json()) as TimeseriesForecastGeoJsonSerializer
     const referenceDatetime = DateTime.fromISO(data.reference_time as string)
