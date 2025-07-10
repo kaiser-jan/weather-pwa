@@ -201,8 +201,8 @@
 
     svg
       .append('rect')
-      .attr('x', dimensions.margin.left + 1)
-      .attr('y', dimensions.margin.top - 1)
+      .attr('x', dimensions.margin.left + 0.25)
+      .attr('y', dimensions.margin.top - 0.25)
       .attr('width', scaleX(DateTime.now()) - dimensions.margin.left)
       .attr('height', dimensions.height)
       .classed('fill-midground', true)
@@ -213,10 +213,10 @@
       .append('clipPath')
       .attr('id', 'clip')
       .append('rect')
-      .attr('x', dimensions.margin.left + 1)
-      .attr('y', dimensions.margin.top + 1)
-      .attr('width', dimensions.width - 2)
-      .attr('height', dimensions.height - 2)
+      .attr('x', dimensions.margin.left + 0.25)
+      .attr('y', dimensions.margin.top)
+      .attr('width', dimensions.width - 0.25)
+      .attr('height', dimensions.height)
 
     const { updateXAxisPointer } = createAxisPointer({
       svg,
@@ -229,20 +229,21 @@
     function selectDatetime(datetime: DateTime | null) {
       const now = DateTime.now()
       const isToday = now >= startDateTime && now <= endDateTime
+      const isManual = datetime !== null
 
-      if (datetime === null && !isToday) {
-        updateXAxisPointer(null)
+      if (!isManual && !isToday) {
+        updateXAxisPointer(null, false)
         onHighlightTimestamp(null)
         return
       }
 
-      const points = updateXAxisPointer(datetime ?? now)
+      const points = updateXAxisPointer(datetime ?? now, isManual)
       const timebucket = Object.fromEntries(points.map((p) => [p.name, p.d])) as Record<
         WeatherMetricKey,
         TimeSeriesNumberEntry
       >
 
-      if (datetime === null && isToday) {
+      if (!isManual) {
         onCurrentTimestamp(timebucket)
         onHighlightTimestamp(null)
       } else {

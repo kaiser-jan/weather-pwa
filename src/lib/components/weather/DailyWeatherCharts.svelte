@@ -31,9 +31,12 @@
   let highlightedTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | null>(null)
 
   let timeBucket = $derived.by(() => {
+    if ($settingsChart.tooltip) return null
     if (highlightedTimeBucket) return highlightedTimeBucket
-    if (activeChartIndex === 0) return currentTimeBucket
-    if ($settingsChart.alwaysShowValuesDisplay) return createEmptyTimeBucket()
+    if ($settingsChart.alwaysShowValuesDisplay) {
+      if (activeChartIndex === 0) return currentTimeBucket
+      else return createEmptyTimeBucket()
+    }
     return null
   })
 

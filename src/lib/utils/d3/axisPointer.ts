@@ -18,6 +18,7 @@ export function createAxisPointer(options: {
   function updateXAxisPointer(datetime: DateTime | null, showTooltip = true) {
     if (datetime === null) {
       xAxisPointer.classed('hidden', true)
+      tooltip?.hideTooltip()
       return
     }
 
