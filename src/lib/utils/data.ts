@@ -69,8 +69,6 @@ export function mergeMultivariateTimeSeries(
 
   const keys = Array.from(new Set([...Object.keys(multiseriesA), ...Object.keys(multiseriesB)]))
 
-  console.log(keys)
-
   for (const parameter of keys) {
     const parameterTyped = parameter as keyof typeof multiseriesB
     const a = multiseriesA[parameterTyped]!
@@ -89,7 +87,7 @@ export function mergeMultivariateTimeSeries(
     const bounds = new Set<number>()
     for (const { datetime, duration } of [...a!, ...b]) {
       bounds.add(datetime.toMillis())
-      bounds.add(datetime.plus(duration).toMillis())
+      bounds.add(datetime.toMillis() + duration.toMillis())
     }
 
     // sort the bounds and convert back to DateTimes
@@ -98,7 +96,12 @@ export function mergeMultivariateTimeSeries(
       .map((ms) => DateTime.fromMillis(ms))
 
     const findCover = (series: TimeSeries<number>, start: DateTime, end: DateTime) =>
-      series.find((pt) => pt.datetime <= start && pt.datetime.plus(pt.duration) >= end && pt.value !== null)
+      series.find(
+        (pt) =>
+          pt.datetime <= start &&
+          pt.datetime.toMillis() + pt.duration.toMillis() >= end.toMillis() &&
+          pt.value !== null,
+      )
 
     const out: TimeSeries<number> = []
     for (let i = 0; i < times.length - 1; i++) {
