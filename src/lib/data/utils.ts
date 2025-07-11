@@ -109,8 +109,17 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
       const previousSeries = grouped[i - 1].series[keyTyped]
       const currentSeries = grouped[i].series[keyTyped]
       if (!previousSeries || !currentSeries) continue
+      const lastItemPrevious = previousSeries[previousSeries.length - 1]
+      const firstItemCurrent = currentSeries[0]
+      const startOfDay = firstItemCurrent.datetime.startOf('day')
+      if (lastItemPrevious.datetime.plus(lastItemPrevious.duration) > startOfDay) {
+        currentSeries.unshift({
+          value: lastItemPrevious.value,
+          datetime: startOfDay,
+          duration: firstItemCurrent.datetime.diff(startOfDay),
+        })
+      }
       previousSeries.push(currentSeries[0])
-      currentSeries.unshift(previousSeries[previousSeries.length - 2]) // -2 because -1 was just added
     }
   }
 
