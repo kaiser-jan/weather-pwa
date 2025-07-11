@@ -40,20 +40,8 @@
     return _pages
   })
 
-  function onnavigate(key: string, pageIndex: number) {
-    if (pageIndex !== pages.length - 1) {
-      console.warn('Tried to navigate from an old page.', path, `${pageIndex}/${pages.length}`)
-      return
-    }
-    navigateToKey(key)
-  }
-
-  function navigateToKey(key: string) {
-    path = [...path, key]
-  }
-
-  function goBack() {
-    path = path.slice(0, path.length - 1)
+  function navigateToKey(key: string, pageIndex: number = pages.length - 1) {
+    path = [...path.slice(0, pageIndex), key]
   }
 
   let scrollContainer: HTMLDivElement
@@ -68,7 +56,7 @@
   })
 </script>
 
-<div class="flex flex-col gap-4 overflow-x-visible min-h-0">
+<div class="flex min-h-0 flex-col gap-4 overflow-x-visible">
   <Breadcrumb.Root>
     <Breadcrumb.List>
       {#each pages as page, index}
@@ -82,13 +70,10 @@
     </Breadcrumb.List>
   </Breadcrumb.Root>
 
-  <div
-    class="flex flex-row gap-6 overflow-x-hidden min-h-0 overflow-y-auto scroll-smooth"
-    bind:this={scrollContainer}
-  >
+  <div class="flex min-h-0 flex-row gap-6 overflow-x-hidden overflow-y-auto scroll-smooth" bind:this={scrollContainer}>
     {#each pages as page, i}
-      <div class="flex w-full h-fit shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
-        <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => onnavigate(t, i)} />
+      <div class="flex h-fit w-full shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
+        <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => navigateToKey(t, i)} />
       </div>
       <div class="flex w-full shrink-0"></div>
     {/each}

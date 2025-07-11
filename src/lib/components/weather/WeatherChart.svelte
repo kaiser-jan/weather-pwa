@@ -164,7 +164,6 @@
             dataRepresentation = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
             break
           case 'area':
-            console.log(seriesA, seriesB)
             dataRepresentation = createArea({ svg, dimensions, scaleX, scaleY, dataA: seriesA, dataB: seriesB }) //
             break
         }

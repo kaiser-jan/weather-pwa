@@ -85,8 +85,6 @@
       gradientStops.unshift(`${COLOR_ERROR} ${distanceFromDatetimes(series[0].datetime)}%`)
     }
 
-    console.log(gradientStops)
-
     return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
   }
 

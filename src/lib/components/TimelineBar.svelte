@@ -47,7 +47,6 @@
     start: DateTime = startDatetime,
     end = endDatetime,
   ) {
-    console.log('distanceFromDatetimes')
     if (!d || !d1 || !start || !end) return
     return ((d.toUnixInteger() - d1.toUnixInteger()) / (end.toUnixInteger() - start.toUnixInteger())) * 100
   }

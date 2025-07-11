@@ -17,7 +17,6 @@
 
   function getValue(id: string) {
     const v = getDeep($settingsWritable, [...path, id])
-    console.log(v)
     return v
   }
 
@@ -37,7 +36,7 @@
 {#each config as item}
   {#if !item.visible || item.visible($settingsWritable)}
     {#if item.type === 'page'}
-      <Button variant="midground" onclick={() => onnavigate(item.id)} class="justify-between text-base! min-h-12">
+      <Button variant="midground" onclick={() => onnavigate(item.id)} class="min-h-12 justify-between text-base!">
         {item.label}
         <ChevronRightIcon />
       </Button>
@@ -58,7 +57,7 @@
       <p>{item.text}</p>
     {:else if item.type === 'not-implemented'}
       <div
-        class="bg-disabled text-disabled-foreground flex min-h-10 items-center justify-between gap-2 rounded-md px-4 min-h-12"
+        class="bg-disabled text-disabled-foreground flex min-h-10 min-h-12 items-center justify-between gap-2 rounded-md px-4"
       >
         {item.label}
         <LockIcon />
