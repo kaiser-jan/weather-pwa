@@ -1,20 +1,14 @@
 <script lang="ts">
-  import { CHART_SERIES_DETAILS } from '$lib/chart-config'
+  import { forecastStore } from '$lib/stores/data'
   import type { MultivariateTimeSeriesTimeBucket, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { DateTime } from 'luxon'
-  import WeatherChart from './WeatherChart.svelte'
+  import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
   import { slide } from 'svelte/transition'
   import { settings } from '$lib/settings/store'
   import { Button } from '../ui/button'
-  import { formatMetric, getPreferredUnit } from '$lib/utils/units'
   import ParameterSelect from '../ParameterSelect.svelte'
   import { persistantState } from '$lib/utils/state.svelte'
-
-  interface Props {
-    dailyMultiseries: MultivariateTimeSeriesTimeBucket[]
-  }
-
-  const { dailyMultiseries }: Props = $props()
+  import ParameterValue from '../ParameterValue.svelte'
 
   const settingsChart = settings.select((s) => s.sections.chart)
 
@@ -55,9 +49,10 @@
   }
 
   const dayLabel = $derived.by(() => {
-    if (!dailyMultiseries || dailyMultiseries.length === 0) return
-    if (dailyMultiseries[activeChartIndex].datetime.startOf('day').equals(DateTime.now().startOf('day'))) return 'Today'
-    return dailyMultiseries[activeChartIndex].datetime.toFormat('cccc')
+    if (!$forecastStore?.daily || $forecastStore.daily.length === 0) return
+    if ($forecastStore.daily[activeChartIndex].datetime.startOf('day').equals(DateTime.now().startOf('day')))
+      return 'Today'
+    return $forecastStore.daily[activeChartIndex].datetime.toFormat('cccc')
   })
 </script>
 
@@ -79,28 +74,14 @@
 
     <ParameterSelect bind:visible={visibleSeries.value} />
 
-    <div class=" w-full">
+    <div class="w-full">
       {#if timeBucket}
         <div
           class="text-text border-foreground flex h-9 grow flex-row gap-4 rounded-lg border-1 text-sm"
           transition:slide
         >
           {#each Object.entries(timeBucket) as [parameter, entry]}
-            {@const parameterTyped = parameter as WeatherMetricKey}
-            {@const details = CHART_SERIES_DETAILS[parameterTyped]!}
-            {@const showZeroIcon = entry?.value === 0 && details.iconIfZero}
-            {@const ParameterIcon = showZeroIcon ? details.iconIfZero : details.icon}
-            <div class="align-center flex flex-1 flex-row items-center justify-center gap-1 last:mr-1.5">
-              <ParameterIcon />
-              {#if entry?.value === undefined}
-                <span>-</span>
-              {:else if !showZeroIcon}
-                <!-- TODO: proper formatting -->
-                <span class="whitespace-nowrap">
-                  {formatMetric(entry?.value, parameterTyped, getPreferredUnit(parameterTyped))}
-                </span>
-              {/if}
-            </div>
+            <ParameterValue parameter={parameter as WeatherMetricKey} value={entry.value} />
           {/each}
         </div>
       {/if}
@@ -112,13 +93,13 @@
     bind:this={chartScroller}
     onscroll={handleChartScroll}
   >
-    {#each dailyMultiseries.entries() as [index, timeBucket]}
+    {#each $forecastStore?.daily?.entries() as [index, day]}
       <WeatherChart
-        multiseries={timeBucket.series}
+        multiseries={day.multiseries}
         visibleSeries={visibleSeries.value}
         loaded={activeChartIndex >= index - 1 && activeChartIndex <= index + 1}
-        startDateTime={timeBucket.datetime}
-        endDateTime={timeBucket.datetime.plus(timeBucket.duration)}
+        startDateTime={day.datetime}
+        endDateTime={day.datetime.plus(day.duration)}
         className="snap-center shrink-0 w-full min-h-10"
         onHighlightTimestamp={(tb) => (highlightedTimeBucket = tb)}
         onCurrentTimestamp={(tb) => (currentTimeBucket = tb)}

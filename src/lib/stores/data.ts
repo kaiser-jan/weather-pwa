@@ -9,9 +9,7 @@ import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/d
 import { LOADERS, type DatasetId } from '$lib/data/providers'
 import { debounce, deepEqual } from '$lib/utils'
 
-const emptyForecast: Forecast = { current: null, multiseries: [], daily: [], total: null }
-
-const { subscribe, set } = writable<Forecast>(emptyForecast)
+const { subscribe, set } = writable<Forecast | null>(null)
 
 export const forecastStore = {
   subscribe,
@@ -23,7 +21,7 @@ function update(coordinates: Coordinates, datasets: DatasetId[], stream = true) 
   const cachedForecast = getCachedForecast(coordinates, datasets)
   if (cachedForecast) set(cachedForecast)
 
-  set(emptyForecast)
+  set(null)
   const loaders = datasets.map((d) => LOADERS[d])
   const parts: (MultivariateTimeSeries | null)[] = Array(datasets.length).fill(null)
   const debouncedUpdate = debounce(() => updateForecast(parts), 50)
@@ -43,6 +41,11 @@ function update(coordinates: Coordinates, datasets: DatasetId[], stream = true) 
   function updateForecast(partsRaw: (MultivariateTimeSeries | null)[]) {
     const parts = partsRaw.filter((p) => p !== null)
 
+    if (parts.length === 0) {
+      set(null)
+      return
+    }
+
     let merged = parts[0]
     for (let i = 1; i < parts.length; i++) {
       merged = mergeMultivariateTimeSeries(merged, parts[i])
@@ -58,6 +61,8 @@ function update(coordinates: Coordinates, datasets: DatasetId[], stream = true) 
       daily,
       total,
     }
+
+    console.log(forecast)
 
     set(forecast)
 

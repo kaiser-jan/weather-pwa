@@ -12,7 +12,9 @@ export type NumberSummary = { min: number; avg: number; max: number; sum: number
 export interface Forecast {
   current: WeatherInstant & { symbol?: WeatherSituation }
   multiseries: MultivariateTimeSeries
-  daily: TimeBucketSummary[]
+  daily: (TimeBucketSummary & {
+    multiseries: MultivariateTimeSeries
+  })[]
   total: TimeBucketSummary
 }
 

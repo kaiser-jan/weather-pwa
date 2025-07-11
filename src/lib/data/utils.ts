@@ -144,6 +144,7 @@ export function combineMultiseriesToDailyForecast(multiserIes: MultivariateTimeS
     datetime: day.datetime,
     duration: day.duration,
     summary: mapRecord(day.series, (s) => calculateStatisticalNumberSummary(s.map((tp) => tp.value))),
+    multiseries: day.series,
   }))
 }
 
@@ -161,8 +162,6 @@ function mapRecord<KeyT extends string, ItemT, TargetT>(
 }
 
 export function forecastTotalFromDailyForecast(daily: TimeBucketSummary[]): TimeBucketSummary | null {
-  if (daily.length === 0) return null
-
   const total = combineStatisticalNumberSummaries(daily.map((d) => d.summary))
 
   const first = daily[0]

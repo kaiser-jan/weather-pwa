@@ -1,5 +1,4 @@
 <script lang="ts">
-  import * as Drawer from '$lib/components/ui/drawer/index.js'
   import type { Coordinates, Forecast } from '$lib/types/data'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
@@ -8,18 +7,16 @@
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { cn, formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
-  import PwaSettings from '$lib/components/pwa/PWASettings.svelte'
-  import { Button, buttonVariants } from '$lib/components/ui/button'
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/data/location'
   import { deriveWeatherSituationFromInstant, deriveWeatherSituationFromPeriod } from '$lib/data/symbols'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
   import { onMount, tick } from 'svelte'
   import LocationSelector from '$lib/components/LocationSelector.svelte'
   import { groupMultiseriesByDay } from '$lib/data/utils'
-  import DailyWeatherCharts from '$lib/components/weather/DailyWeatherCharts.svelte'
-  import { settingsConfig } from '$lib/settings/config'
-  import SettingsView from '$lib/settings/components/SettingsView.svelte'
   import { forecastStore } from '$lib/stores/data'
+  import SettingsButton from '$lib/components/SettingsButton.svelte'
+  import SectionDaily from '$lib/components/sections/SectionDaily.svelte'
+  import SectionChartDaily from '$lib/components/sections/SectionChartDaily.svelte'
 
   let locationName = $state<string>()
   let isLoading = $state(false)
@@ -51,16 +48,7 @@
     setTimeout(() => (isLoading = false), 500)
   }
 
-  const multiseriesByDay = $derived(
-    $forecastStore?.multiseries ? groupMultiseriesByDay($forecastStore?.multiseries) : undefined,
-  )
-
-  function getMultiseriesForDate(targetDate: DateTime) {
-    if (!multiseriesByDay || multiseriesByDay.length === 0) return undefined
-    const result = multiseriesByDay.findLast((tp) => tp.datetime <= targetDate)
-    const series = result?.series ?? multiseriesByDay[0].series
-    return series
-  }
+  const today = $derived($forecastStore?.daily.findLast((d) => d.datetime <= DateTime.now()))
 
   // TODO: reactivity
   const precipitationStartDatetime = $derived.by(() => {
@@ -147,9 +135,9 @@
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  {#if getMultiseriesForDate(DateTime.now())}
+  {#if today}
     <TimelineBar
-      multiseries={getMultiseriesForDate(DateTime.now())!}
+      multiseries={today.multiseries}
       parameters={['temperature']}
       startDatetime={DateTime.now().startOf('day')}
       endDatetime={DateTime.now().startOf('day').plus({ days: 1 })}
@@ -159,51 +147,9 @@
     />
   {/if}
 
-  {#if multiseriesByDay}
-    <DailyWeatherCharts dailyMultiseries={multiseriesByDay} />
-  {/if}
+  <SectionChartDaily />
 
-  <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
-    {#each $forecastStore?.daily ?? [] as day}
-      <div class="inline-flex flex-row items-center justify-between gap-2">
-        <span class="w-[3ch]">{day.datetime.toFormat('ccc')}</span>
-
-        <div class="flex w-[40%] gap-2">
-          {#if getMultiseriesForDate(day.datetime)}
-            <TimelineBar
-              multiseries={getMultiseriesForDate(day.datetime)}
-              startDatetime={day.datetime.startOf('day')}
-              endDatetime={day.datetime.endOf('day')}
-              parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-              marks={$settings.sections.components.timelineBar.marks.map((m) => day.datetime.set(m))}
-              {coordinates}
-              className="h-2"
-            />
-          {:else}
-            <WeatherSymbol className="size-6" derived={deriveWeatherSituationFromPeriod(day)} {coordinates} />
-            <!-- TODO: unify this with WeatherItemCurrent, add other values -->
-            {#if day.summary.precipitation_amount?.sum && day.summary.precipitation_amount.sum >= 1}
-              <span class="inline-flex items-center gap-1 text-blue-200">
-                <DropletsIcon />
-                {Math.round(day.summary.precipitation_amount.sum)}mm
-              </span>
-            {/if}
-          {/if}
-        </div>
-
-        <div class="flex w-[40%] items-center gap-2">
-          <span class="w-[2ch]">{Math.round(day.summary.temperature.min)}</span>
-          <NumberRangeBar
-            total={$forecastStore?.total?.summary.temperature}
-            instance={day.summary.temperature}
-            color="temperature"
-            className="h-2 w-full"
-          />
-          <span class="w-[2ch]">{Math.round(day.summary.temperature.max)}</span>
-        </div>
-      </div>
-    {/each}
-  </div>
+  <SectionDaily {coordinates} />
 
   <!-- NOTE: bottom navbar overlap padding -->
   <div class="h-16"></div>
@@ -213,21 +159,6 @@
   ></div>
   <div class="absolute right-6 bottom-6 left-6 z-20 flex flex-row gap-2">
     <LocationSelector bind:coordinates />
-
-    <Drawer.Root>
-      <Drawer.Trigger
-        class={cn(buttonVariants({ variant: 'midground', size: 'icon' }), 'size-14! grow-0 rounded-full text-lg!')}
-      >
-        <LucideSettings />
-      </Drawer.Trigger>
-      <Drawer.Content class="h-full">
-        <div class="flex grow flex-col gap-4 overflow-y-hidden p-4">
-          <SettingsView config={settingsConfig} path={[]} />
-          <h2 class="mt-auto text-xl font-bold">PWA Options</h2>
-          <PwaSettings />
-          <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
-        </div>
-      </Drawer.Content>
-    </Drawer.Root>
+    <SettingsButton />
   </div>
 </div>
