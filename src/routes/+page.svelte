@@ -4,7 +4,7 @@
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
   import { ArrowRightIcon, Divide, DropletsIcon, LucideSettings, RefreshCwIcon, UmbrellaIcon } from '@lucide/svelte'
-  import { settings, settingsWritable } from '$lib/settings/store'
+  import { settings } from '$lib/settings/store'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { cn, formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'

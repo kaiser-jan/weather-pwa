@@ -1,11 +1,11 @@
 <script lang="ts">
   import SettingsRenderer from './SettingsRenderer.svelte'
-  import { getDeep, setDeep } from '../deep'
   import { getComponent } from '../registry'
-  import { settingsWritable, settingsDefaults } from '../store'
+  import { settings } from '../store'
   import type { ConfigItem } from '../types'
   import Button from '$lib/components/ui/button/button.svelte'
   import { ChevronRightIcon, LockIcon, RotateCcwIcon } from '@lucide/svelte'
+  import SettingsItemRenderer from './SettingsItemRenderer.svelte'
 
   interface Props {
     path: string[]
@@ -13,28 +13,12 @@
     onnavigate: (target: string) => void
   }
 
-  let { path, config, onnavigate }: Props = $props()
-
-  function getValue(id: string) {
-    const v = getDeep($settingsWritable, [...path, id])
-    return v
-  }
-
-  function setValue(id: string, value: unknown) {
-    settingsWritable.update((s) => {
-      setDeep(s, [...path, id], value)
-      return s
-    })
-  }
-
-  function resetValue(id: string) {
-    const def = getDeep(settingsDefaults, [...path, id])
-    setValue(id, def)
-  }
+  let { path: parentPath, config, onnavigate }: Props = $props()
 </script>
 
 {#each config as item}
-  {#if !item.visible || item.visible($settingsWritable)}
+  {@const path = [...parentPath, item.id]}
+  {#if !item.visible || item.visible($settings)}
     {#if item.type === 'page'}
       <Button variant="midground" onclick={() => onnavigate(item.id)} class="min-h-12 justify-between text-base!">
         {item.label}
@@ -57,24 +41,13 @@
       <p>{item.text}</p>
     {:else if item.type === 'not-implemented'}
       <div
-        class="bg-disabled text-disabled-foreground flex min-h-10 min-h-12 items-center justify-between gap-2 rounded-md px-4"
+        class="bg-disabled text-disabled-foreground flex min-h-12 items-center justify-between gap-2 rounded-md px-4"
       >
         {item.label}
         <LockIcon />
       </div>
     {:else}
-      {@const Component = getComponent(item.type)}
-      <div class="bg-midground flex min-h-12 items-center justify-between gap-2 rounded-md px-4">
-        {#if Component}
-          <Component {item} value={getValue(item.id)} onchange={(v: any) => setValue(item.id, v)} />
-        {:else}
-          {item.type}
-          {item.id}
-        {/if}
-        <Button variant="outline" size="icon" class="size-8" onclick={() => resetValue(item.id)}>
-          <RotateCcwIcon />
-        </Button>
-      </div>
+      <SettingsItemRenderer path={[...parentPath, item.id]} {item} />
     {/if}
   {/if}
 {/each}
