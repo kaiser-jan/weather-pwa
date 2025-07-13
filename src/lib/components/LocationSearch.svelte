@@ -47,6 +47,7 @@
   }
 
   let isOpen = $state(false)
+  let isLoading = $state(false)
 
   $effect(() => {
     if (isOpen) geolocationStore.start()
@@ -76,7 +77,7 @@
   }
 
   let search = $state('')
-  let results = $state<PlaceOutput[]>([])
+  let results = $state<PlaceOutput[] | null>(null)
 
   const debouncedLoadResults = debounce(loadResults, 2000)
 
@@ -84,6 +85,7 @@
     const query = $state.snapshot(search)
     if (query === '') return
     console.log(`Searching for ${query}...`)
+    isLoading = true
 
     const url = new URL('https://nominatim.openstreetmap.org/search')
     url.searchParams.append('limit', '10')
@@ -97,6 +99,7 @@
     console.log(json)
 
     results = json
+    isLoading = false
   }
 
   const geolocationAddress = readable<string | null>(null, (set) => {
@@ -123,13 +126,12 @@
   }
 </script>
 
-<Drawer.Root bind:open={isOpen}>
+<Drawer.Root bind:open={isOpen} onOpenChange={(o) => (isOpen = o)}>
   <Drawer.Trigger
     class={cn(
       buttonVariants({ variant: active ? 'default' : 'midground', size: 'icon' }),
       'size-10! grow-0 rounded-full text-xl',
     )}
-    onclick={() => (isOpen = true)}
   >
     <SearchIcon />
   </Drawer.Trigger>
@@ -141,7 +143,7 @@
       </div>
 
       <LocationList
-        placeholder="Here should be your geolocation... :("
+        placeholderEmpty="Here should be your geolocation... :("
         items={[
           {
             icon: $geolocationDetails.icon,
@@ -155,7 +157,7 @@
       />
 
       <LocationList
-        placeholder="Save a searched location or your current geolocation for it to show up here."
+        placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
         items={$savedLocations.map((l) => ({
           icon: iconMap[l.icon],
           label: l.name,
@@ -167,8 +169,11 @@
       />
 
       <LocationList
-        placeholder="Use the searchbar to show the weather at another location!"
-        items={results.map((r) => ({
+        placeholderEmpty={`No results for "${search}".\nTry rephrasing your search!`}
+        placeholderNull={'Use the searchbar to show the weather at another location!'}
+        placeholderLoading={`Looking up "${search}"...`}
+        loading={isLoading}
+        items={results?.map((r) => ({
           icon: classIconMap[r.category ?? r.class],
           label: r.name !== '' ? r.name : typeToString(r.type),
           sublabel: r.display_name,
@@ -176,7 +181,7 @@
             latitude: parseFloat(r.lat),
             longitude: parseFloat(r.lon),
           },
-        }))}
+        })) ?? null}
         {onselect}
       />
     </div>

@@ -9,16 +9,29 @@
   interface Props {
     onselect: (s: LocationSelection) => void
     selectByIndex?: boolean
-    placeholder: string
-    items: {
-      icon: typeof Icon
-      label: string
-      sublabel: string
-      coordinates: Coordinates
-    }[]
+    loading: boolean
+    placeholderEmpty?: string
+    placeholderNull?: string
+    placeholderLoading?: string
+    items:
+      | {
+          icon: typeof Icon
+          label: string
+          sublabel: string
+          coordinates: Coordinates
+        }[]
+      | null
   }
 
-  let { items, selectByIndex, onselect = $bindable(), placeholder }: Props = $props()
+  let {
+    items,
+    selectByIndex,
+    onselect = $bindable(),
+    loading,
+    placeholderEmpty,
+    placeholderLoading,
+    placeholderNull,
+  }: Props = $props()
 
   function distanceMeters(a: Coordinates | null, b: Coordinates | null): number | null {
     if (!a || !b) return null
@@ -43,10 +56,18 @@
 </script>
 
 <div class="bg-midground flex flex-col gap-0 rounded-md">
-  {#if items.length === 0}
-    <span class="text-text-muted px-2 py-1">{placeholder}</span>
+  {#if loading}
+    <span class="text-muted-foreground flex flex-row items-center gap-2 px-2 py-1">
+      <LoaderPulsatingRing className="size-5" />
+      {placeholderLoading}
+    </span>
+  {:else if items === null}
+    <span class="text-muted-foreground px-2 py-1">{placeholderNull}</span>
+  {:else if items.length === 0}
+    <span class="text-text px-2 py-1">{placeholderEmpty}</span>
   {/if}
-  {#each items as item, index}
+
+  {#each items ?? [] as item, index}
     {#if index !== 0}
       <span class=" bg-background mx-auto h-0.5 w-full"></span>
     {/if}
