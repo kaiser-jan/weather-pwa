@@ -94,7 +94,7 @@
         </span>
       </div>
       <div class="flex flex-row items-center gap-2">
-        {#if $geolocationStore.position?.coords}
+        {#if $geolocationStore.position?.coords && item?.coordinates}
           <span class="text-text-muted">
             {formatDistance(
               distanceMeters($geolocationStore.position.coords, {

@@ -127,7 +127,8 @@
   }
 </script>
 
-<Drawer.Root bind:open={isOpen} onOpenChange={(o) => (isOpen = o)}>
+<Drawer.Root bind:open={isOpen}>
+  <!-- bind:open={isOpen} -->
   <Drawer.Trigger
     class={cn(
       buttonVariants({ variant: active ? 'default' : 'midground', size: 'icon' }),
@@ -182,8 +183,8 @@
             label: r.name !== '' ? r.name : typeToString(r.type),
             sublabel: r.display_name,
             coordinates: {
-              latitude: parseFloat(r.lat),
-              longitude: parseFloat(r.lon),
+              latitude: parseFloat(r?.lat),
+              longitude: parseFloat(r?.lon),
             },
           })) ?? null}
           {onselect}
