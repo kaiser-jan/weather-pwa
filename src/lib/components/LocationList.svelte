@@ -7,6 +7,7 @@
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
 
   interface Props {
+    title: string
     onselect: (s: LocationSelection) => void
     selectByIndex?: boolean
     loading: boolean
@@ -24,6 +25,7 @@
   }
 
   let {
+    title,
     items,
     selectByIndex,
     onselect = $bindable(),
@@ -55,6 +57,7 @@
   }
 </script>
 
+<h5 class="text-text-muted -mb-3 text-sm">{title}</h5>
 <div class="bg-midground flex flex-col gap-0 rounded-md">
   {#if loading}
     <span class="text-muted-foreground flex flex-row items-center gap-2 px-2 py-1">

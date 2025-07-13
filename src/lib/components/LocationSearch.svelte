@@ -15,6 +15,7 @@
     LayersIcon,
     LeafIcon,
     MapPinIcon,
+    MapPinnedIcon,
     MountainIcon,
     PlaneIcon,
     SearchIcon,
@@ -136,54 +137,63 @@
     <SearchIcon />
   </Drawer.Trigger>
   <Drawer.Content class="h-full">
-    <div class="flex grow flex-col gap-4 overflow-y-hidden p-4">
-      <div class="relative">
-        <Input placeholder="Search any location..." bind:value={search} oninput={debouncedLoadResults} />
-        <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
+    <div class="flex min-h-0 grow flex-col gap-4 p-4">
+      <h1 class="text-bold flex flex-row items-center gap-2 text-xl">
+        <MapPinnedIcon />
+        Location Search
+      </h1>
+      <div class="flex grow flex-col gap-4 overflow-y-auto">
+        <LocationList
+          title="Geolocation"
+          placeholderEmpty="Here should be your geolocation... :("
+          items={[
+            {
+              icon: $geolocationDetails.icon,
+              label: $geolocationDetails.label,
+              sublabel: $geolocationAddress,
+              coordinates: null,
+            },
+          ]}
+          selectByIndex
+          {onselect}
+        />
+
+        <LocationList
+          title="Saved Locations"
+          placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
+          items={$savedLocations.map((l) => ({
+            icon: iconMap[l.icon],
+            label: l.name,
+            sublabel: null,
+            coordinates: l,
+          }))}
+          selectByIndex
+          {onselect}
+        />
+
+        <LocationList
+          title="Search Results"
+          placeholderEmpty={`No results for "${search}".\nTry rephrasing your search!`}
+          placeholderNull={'Use the searchbar to show the weather at another location!'}
+          placeholderLoading={`Looking up "${search}"...`}
+          loading={isLoading}
+          items={results?.map((r) => ({
+            icon: classIconMap[r.category ?? r.class],
+            label: r.name !== '' ? r.name : typeToString(r.type),
+            sublabel: r.display_name,
+            coordinates: {
+              latitude: parseFloat(r.lat),
+              longitude: parseFloat(r.lon),
+            },
+          })) ?? null}
+          {onselect}
+        />
       </div>
 
-      <LocationList
-        placeholderEmpty="Here should be your geolocation... :("
-        items={[
-          {
-            icon: $geolocationDetails.icon,
-            label: $geolocationDetails.label,
-            sublabel: $geolocationAddress,
-            coordinates: null,
-          },
-        ]}
-        selectByIndex
-        {onselect}
-      />
-
-      <LocationList
-        placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
-        items={$savedLocations.map((l) => ({
-          icon: iconMap[l.icon],
-          label: l.name,
-          sublabel: null,
-          coordinates: l,
-        }))}
-        selectByIndex
-        {onselect}
-      />
-
-      <LocationList
-        placeholderEmpty={`No results for "${search}".\nTry rephrasing your search!`}
-        placeholderNull={'Use the searchbar to show the weather at another location!'}
-        placeholderLoading={`Looking up "${search}"...`}
-        loading={isLoading}
-        items={results?.map((r) => ({
-          icon: classIconMap[r.category ?? r.class],
-          label: r.name !== '' ? r.name : typeToString(r.type),
-          sublabel: r.display_name,
-          coordinates: {
-            latitude: parseFloat(r.lat),
-            longitude: parseFloat(r.lon),
-          },
-        })) ?? null}
-        {onselect}
-      />
+      <div class="relative">
+        <Input placeholder="Search any location..." bind:value={search} oninput={debouncedLoadResults} class="h-12" />
+        <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
+      </div>
     </div>
   </Drawer.Content>
 </Drawer.Root>
