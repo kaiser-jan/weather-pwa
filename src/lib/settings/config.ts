@@ -7,7 +7,7 @@ import type { ColorStop } from '$lib/types/ui'
 
 type Location = {
   name: string
-  icon: typeof HomeIcon
+  icon: string
   longitude: number
   latitude: number
   altitude: number

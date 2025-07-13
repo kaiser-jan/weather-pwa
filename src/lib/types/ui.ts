@@ -1,5 +1,5 @@
 import type { ThermometerIcon } from '@lucide/svelte'
-import type { TimeSeries, WeatherMetricKey } from './data'
+import type { Coordinates, TimeSeries, WeatherMetricKey } from './data'
 
 export type ColorStop = { value: number; h: number; s: number; l: number }
 
@@ -27,3 +27,11 @@ export interface CreatedSeriesDetails extends SeriesDetails {
   scale: d3.ScaleLinear<number, number, never>
   data: TimeSeries<number>
 }
+
+export type LocationSelection =
+  | {
+      index: number
+    }
+  | {
+      coordinates: Coordinates
+    }

@@ -17,7 +17,7 @@ export async function loadLocationforecast(coordinates: Coordinates) {
   const url = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete.json')
   url.searchParams.set('lat', coordinates.latitude.toString())
   url.searchParams.set('lon', coordinates.longitude.toString())
-  url.searchParams.set('altitude', coordinates.altitude.toFixed(0))
+  if (coordinates.altitude) url.searchParams.set('altitude', coordinates.altitude.toFixed(0))
   const urlString = url.toString()
 
   const data = await useCache('met.no_locationforecast' as DatasetId, { coordinates }, async () => {

@@ -23,8 +23,9 @@ export async function reverseGeocoding(coordinates: Coordinates) {
 }
 
 export function placeToWeatherLocation(place: PlaceOutput) {
-  const { neighbourhood, suburb, town, county, city } = place.address
-  const specific = neighbourhood ?? suburb
+  const { neighbourhood, suburb, town, county, city } = place.address!
+  const name = place.name !== '' ? place.name : undefined
+  const specific = name ?? neighbourhood ?? suburb
   const general = town ?? city ?? county
   if (specific && general) return specific + ', ' + general
   return place.display_name

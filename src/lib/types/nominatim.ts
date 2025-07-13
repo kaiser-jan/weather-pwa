@@ -16,19 +16,21 @@ interface Address {
 }
 
 export interface PlaceOutput {
-  place_id: string
+  place_id: number
   licence: string
   osm_type: string
-  osm_id: string
+  osm_id: number
+  boundingbox: [string, string, string, string]
   lat: string
   lon: string
-  place_rank: string
-  category: string
-  type: string
-  importance: string
-  addresstype: string
   display_name: string
+  class?: string
+  category?: string
+  type: string
+  importance: number
+  place_rank: number
+
+  addresstype: string
   name: string
-  address: Address
-  boundingbox: string[]
+  address?: Address
 }

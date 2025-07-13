@@ -1,6 +1,9 @@
 // Based on [svelte-legos](https://github.com/ankurrsinghal/svelte-legos)
 
-import { readable } from 'svelte/store'
+import { reverseGeocoding } from '$lib/data/location'
+import type { PlaceOutput } from '$lib/types/nominatim'
+import { NavigationIcon, NavigationOffIcon, type Icon as IconType } from '@lucide/svelte'
+import { derived, readable, type Writable } from 'svelte/store'
 
 type GeolocationStatus = 'unstarted' | 'unsupported' | 'requesting' | 'unpermitted' | 'loading' | 'error' | 'active'
 
@@ -38,7 +41,7 @@ export function createGeolocationStore(
   let updateGeolocation: () => void
   let started = false
 
-  const store = readable<GeolocationState>(initialState, (set, update) => {
+  const geolocation = readable<GeolocationState>(initialState, (set, update) => {
     if (!(navigator && 'geolocation' in navigator)) {
       return update((state) => ({ ...state, status: 'unsupported' }))
     }
@@ -77,12 +80,52 @@ export function createGeolocationStore(
     }
   })
 
+  const details = derived(geolocation, getDetailsForState)
+
   return {
-    store,
+    subscribe: geolocation.subscribe,
     refresh: () => updateGeolocation(),
     start: () => {
       if (started) return
       updateGeolocation()
     },
+    details,
+  }
+}
+
+export const geolocationStore = createGeolocationStore({
+  watch: false,
+  startInactive: true,
+  enableHighAccuracy: false,
+  timeout: 15000,
+  maximumAge: 0,
+})
+
+interface GeolocationStateDetails {
+  icon: typeof IconType | null
+  label: string | undefined
+  class?: string
+}
+
+const ERROR_LABELS: Record<number, string> = {
+  [GeolocationPositionError.TIMEOUT]: 'Timed Out',
+  [GeolocationPositionError.PERMISSION_DENIED]: 'Denied',
+  [GeolocationPositionError.POSITION_UNAVAILABLE]: 'Unavailable',
+} as const
+
+function getDetailsForState(g: GeolocationState): GeolocationStateDetails {
+  switch (g.status) {
+    case 'unstarted':
+      return { icon: NavigationIcon, label: 'Inactive', class: 'opacity-50' }
+    case 'requesting':
+    case 'loading':
+      return { icon: null, label: 'Loading...' }
+    case 'unsupported':
+    case 'unpermitted':
+    case 'error':
+      const error = g.error?.code as keyof typeof ERROR_LABELS | null
+      return { icon: NavigationOffIcon, label: error ? ERROR_LABELS[error] : 'Error' }
+    case 'active':
+      return { icon: NavigationIcon, label: 'Active' }
   }
 }

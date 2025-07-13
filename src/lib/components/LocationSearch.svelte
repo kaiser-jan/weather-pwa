@@ -1,0 +1,184 @@
+<script lang="ts">
+  import { buttonVariants } from '$lib/components/ui/button'
+  import * as Drawer from '$lib/components/ui/drawer'
+  import { Input } from '$lib/components/ui/input'
+  import { cn, debounce } from '$lib/utils'
+  import {
+    AlertCircleIcon,
+    BinocularsIcon,
+    BuildingIcon,
+    CarIcon,
+    DumbbellIcon,
+    HammerIcon,
+    type Icon as IconType,
+    LandmarkIcon,
+    LayersIcon,
+    LeafIcon,
+    MapPinIcon,
+    MountainIcon,
+    PlaneIcon,
+    SearchIcon,
+    StoreIcon,
+    TrainIcon,
+    WavesIcon,
+  } from '@lucide/svelte'
+  import { settings } from '$lib/settings/store'
+  import { iconMap } from '$lib/utils/icons'
+  import type { PlaceOutput } from '$lib/types/nominatim'
+  import type { Coordinates } from '$lib/types/data'
+  import { geolocationStore } from '$lib/stores/geolocation'
+  import { readable } from 'svelte/store'
+  import LocationList from './LocationList.svelte'
+  import { reverseGeocoding } from '$lib/data/location'
+  import type { LocationSelection } from '$lib/types/ui'
+
+  const geolocationDetails = geolocationStore.details
+
+  interface Props {
+    active: boolean
+    onselect: (s: LocationSelection) => void
+  }
+
+  let { active, onselect: _onselect = $bindable() }: Props = $props()
+
+  function onselect(s: LocationSelection) {
+    isOpen = false
+    _onselect(s)
+  }
+
+  let isOpen = $state(false)
+
+  $effect(() => {
+    if (isOpen) geolocationStore.start()
+  })
+
+  const savedLocations = settings.select((s) => s.data.locations)
+
+  // https://gist.githubusercontent.com/seeebiii/d929a2ee2601791554d315f212164ed6/raw/poi_nominatim.json
+  export const classIconMap: Record<string, typeof IconType> = {
+    boundary: MapPinIcon,
+    historic: LandmarkIcon,
+    shop: StoreIcon,
+    natural: LeafIcon,
+    man_made: HammerIcon,
+    amenity: BuildingIcon,
+    waterway: WavesIcon,
+    mountain_pass: MountainIcon,
+    emergency: AlertCircleIcon,
+    tourism: BinocularsIcon,
+    building: BuildingIcon,
+    landuse: LayersIcon,
+    place: MapPinIcon,
+    railway: TrainIcon,
+    highway: CarIcon,
+    leisure: DumbbellIcon,
+    aeroway: PlaneIcon,
+  }
+
+  let search = $state('')
+  let results = $state<PlaceOutput[]>([])
+
+  const debouncedLoadResults = debounce(loadResults, 2000)
+
+  async function loadResults() {
+    const query = $state.snapshot(search)
+    if (query === '') return
+    console.log(`Searching for ${query}...`)
+
+    const url = new URL('https://nominatim.openstreetmap.org/search')
+    url.searchParams.append('limit', '10')
+    url.searchParams.append('q', query)
+    url.searchParams.append('format', 'json')
+    // url.searchParams.append('layer', ['address', 'poi', 'manmade'].join(','))
+    // url.searchParams.append('featureType', ['city', 'settlement'].join(','))
+    // countrycodes https://nominatim.org/release-docs/develop/api/Search/#result-restriction
+    const response = await fetch(url.toString())
+    const json = await response.json()
+    console.log(json)
+
+    results = json
+  }
+
+  const geolocationAddress = readable<string | null>(null, (set) => {
+    const unsubscribe = geolocationStore.subscribe(async (g) => {
+      if (!g.position?.coords) return set(null)
+
+      set('Looking up address...')
+
+      try {
+        const result = await reverseGeocoding(g.position.coords)
+        set(result.display_name)
+      } catch {
+        set('Failed to fetch address.')
+      }
+    })
+
+    return unsubscribe
+  })
+
+  function typeToString(label: string) {
+    const items = label.split('_')
+    const itemsUppercase = items.map((i) => i.charAt(0).toUpperCase() + i.slice(1))
+    return itemsUppercase.join(' ')
+  }
+</script>
+
+<Drawer.Root bind:open={isOpen}>
+  <Drawer.Trigger
+    class={cn(
+      buttonVariants({ variant: active ? 'default' : 'midground', size: 'icon' }),
+      'size-10! grow-0 rounded-full text-xl',
+    )}
+    onclick={() => (isOpen = true)}
+  >
+    <SearchIcon />
+  </Drawer.Trigger>
+  <Drawer.Content class="h-full">
+    <div class="flex grow flex-col gap-4 overflow-y-hidden p-4">
+      <div class="relative">
+        <Input placeholder="Search any location..." bind:value={search} oninput={debouncedLoadResults} />
+        <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
+      </div>
+
+      <LocationList
+        placeholder="Here should be your geolocation... :("
+        items={[
+          {
+            icon: $geolocationDetails.icon,
+            label: $geolocationDetails.label,
+            sublabel: $geolocationAddress,
+            coordinates: null,
+          },
+        ]}
+        selectByIndex
+        {onselect}
+      />
+
+      <LocationList
+        placeholder="Save a searched location or your current geolocation for it to show up here."
+        items={$savedLocations.map((l) => ({
+          icon: iconMap[l.icon],
+          label: l.name,
+          sublabel: null,
+          coordinates: l,
+        }))}
+        selectByIndex
+        {onselect}
+      />
+
+      <LocationList
+        placeholder="Use the searchbar to show the weather at another location!"
+        items={results.map((r) => ({
+          icon: classIconMap[r.category ?? r.class],
+          label: r.name !== '' ? r.name : typeToString(r.type),
+          sublabel: r.display_name,
+          coordinates: {
+            latitude: parseFloat(r.lat),
+            longitude: parseFloat(r.lon),
+          },
+        }))}
+        {onselect}
+      />
+    </div>
+  </Drawer.Content>
+</Drawer.Root>
