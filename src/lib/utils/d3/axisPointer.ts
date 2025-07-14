@@ -39,8 +39,8 @@ export function createAxisPointer(options: {
     )
 
     if (tooltip) {
+      tooltip.updateTooltip(nearest.x, points[0].y, points)
       if (!showTooltip) tooltip.hideTooltip()
-      else tooltip.updateTooltip(nearest.x, points[0].y, points)
     }
 
     return points
@@ -121,14 +121,16 @@ export function createTooltip(options: {
     .attr('width', 200)
     .attr('height', 200)
     .style('pointer-events', 'none')
-    .style('display', 'none')
+    // .style('display', 'none')
+    .style('opacity', '0%')
 
   const tooltip = fo
     .append('xhtml:div')
     .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow w-fit min-w-20')
 
   function hideTooltip() {
-    fo.style('display', 'none')
+    // fo.style('display', 'none')
+    fo.style('opacity', '0%')
   }
 
   function updateTooltip(x: number, y: number, points: ReturnType<typeof getNearestPointAtDateTime>[]) {
@@ -137,9 +139,12 @@ export function createTooltip(options: {
     const offset = 4
     const tooltipBBox = (tooltip.node() as Element).getBoundingClientRect()
 
-    fo.attr('x', x + (alignLeft ? -tooltipBBox.width - 3 - offset : offset))
-      .attr('y', y + (alignTop ? -tooltipBBox.height - 3 - offset : offset))
-      .style('display', null)
+    fo.attr('x', x + (alignLeft ? -tooltipBBox.width - 3 - offset : offset)).attr(
+      'y',
+      y + (alignTop ? -tooltipBBox.height - 3 - offset : offset),
+    )
+    // .style('display', null)
+    fo.style('opacity', '100%')
 
     tooltip.html(
       `<b>${points[0].d.datetime.toFormat('HH:mm')}</b><br>${points
