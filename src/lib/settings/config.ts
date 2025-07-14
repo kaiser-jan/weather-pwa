@@ -90,29 +90,7 @@ export const settingsConfig = [
         id: 'locations',
         label: 'Locations',
         type: 'not-implemented',
-        default: [
-          {
-            name: 'Home',
-            icon: 'home',
-
-            latitude: 48.208481,
-            longitude: 16.373097,
-            altitude: 330,
-          },
-          {
-            name: 'Work',
-            icon: 'briefcase',
-            latitude: 47.076157,
-            longitude: 15.436853,
-            altitude: 330,
-          },
-          // {
-          //   name: 'Vienna',
-          //   latitude: 48.208815,
-          //   longitude: 16.372547,
-          //   altitude: 330,
-          // },
-        ] as Location[],
+        default: [] as Location[],
       },
       {
         id: 'forecast',
