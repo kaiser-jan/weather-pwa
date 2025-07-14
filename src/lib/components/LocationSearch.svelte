@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { buttonVariants } from '$lib/components/ui/button'
+  import { Button, buttonVariants } from '$lib/components/ui/button'
   import * as Drawer from '$lib/components/ui/drawer'
   import { Input } from '$lib/components/ui/input'
   import { cn, debounce } from '$lib/utils'
@@ -22,6 +22,7 @@
     StoreIcon,
     TrainIcon,
     WavesIcon,
+    XIcon,
   } from '@lucide/svelte'
   import { settings } from '$lib/settings/store'
   import { iconMap } from '$lib/utils/icons'
@@ -32,6 +33,7 @@
   import LocationList from './LocationList.svelte'
   import { reverseGeocoding } from '$lib/data/location'
   import type { LocationSelection } from '$lib/types/ui'
+  import { persistantState } from '$lib/utils/state.svelte'
 
   const geolocationDetails = geolocationStore.details
 
@@ -77,13 +79,13 @@
     aeroway: PlaneIcon,
   }
 
-  let search = $state('')
-  let results = $state<PlaceOutput[] | null>(null)
+  let search = persistantState('location-search-term', '')
+  let results = persistantState<PlaceOutput[] | null>('location-search-results', null)
 
   const debouncedLoadResults = debounce(loadResults, 2000)
 
   async function loadResults() {
-    const query = $state.snapshot(search)
+    const query = $state.snapshot(search.value)
     if (query === '') return
     console.log(`Searching for ${query}...`)
     isLoading = true
@@ -99,7 +101,7 @@
     const json = await response.json()
     console.log(json)
 
-    results = json
+    results.value = json
     isLoading = false
   }
 
@@ -157,6 +159,7 @@
           ]}
           selectByIndex
           {onselect}
+          disabled={$geolocationStore.status !== 'active'}
         />
 
         <LocationList
@@ -174,11 +177,11 @@
 
         <LocationList
           title="Search Results"
-          placeholderEmpty={`No results for "${search}".\nTry rephrasing your search!`}
+          placeholderEmpty={`No results for "${search.value}".\nTry rephrasing your search!`}
           placeholderNull={'Use the searchbar to show the weather at another location!'}
-          placeholderLoading={`Looking up "${search}"...`}
+          placeholderLoading={`Looking up "${search.value}"...`}
           loading={isLoading}
-          items={results?.map((r) => ({
+          items={results.value?.map((r) => ({
             icon: classIconMap[r.category ?? r.class],
             label: r.name !== '' ? r.name : typeToString(r.type),
             sublabel: r.display_name,
@@ -192,9 +195,29 @@
       </div>
 
       <div class="relative">
-        <Input placeholder="Search any location..." bind:value={search} oninput={debouncedLoadResults} class="h-12" />
+        <Input
+          placeholder="Search any location..."
+          bind:value={search.value}
+          oninput={debouncedLoadResults}
+          class="h-12"
+        />
         <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
+        {#if search}
+          <Button
+            size="icon"
+            variant="outline"
+            class="text-muted-foreground absolute top-1/2 right-2 size-8 -translate-y-1/2"
+            onclick={() => {
+              search.value = ''
+              results.value = []
+            }}
+          >
+            <XIcon />
+          </Button>
+        {/if}
       </div>
     </div>
+
+    <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
   </Drawer.Content>
 </Drawer.Root>

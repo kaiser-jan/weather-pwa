@@ -14,7 +14,7 @@ const settingsOverrides = writable(stored ?? {})
 settingsOverrides.subscribe((value) => localStorage.setItem('settings', JSON.stringify(value)))
 
 export const settingsDefaults = extractDefaults(settingsConfig) as SettingsSchema
-const settingsBaseStore = writable(mergeDeep(structuredClone(settingsDefaults), get(settingsOverrides)))
+const settingsBaseStore = writable<SettingsSchema>(mergeDeep(structuredClone(settingsDefaults), get(settingsOverrides)))
 
 export const settings = {
   subscribe: settingsBaseStore.subscribe,

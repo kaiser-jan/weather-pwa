@@ -1,10 +1,19 @@
 <script lang="ts">
   import { geolocationStore } from '$lib/stores/geolocation'
   import type { Coordinates } from '$lib/types/data'
-  import { ChevronRight, type Icon } from '@lucide/svelte'
+  import { BookmarkIcon, ChevronRight, MapPinIcon, PinIcon, PinOffIcon, Trash2Icon, type Icon } from '@lucide/svelte'
   import { Button } from './ui/button'
   import type { LocationSelection } from '$lib/types/ui'
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
+  import { settings } from '$lib/settings/store'
+  import { get } from 'svelte/store'
+
+  type Item = {
+    icon: typeof Icon
+    label: string
+    sublabel: string
+    coordinates?: Coordinates
+  }
 
   interface Props {
     title: string
@@ -14,14 +23,8 @@
     placeholderEmpty?: string
     placeholderNull?: string
     placeholderLoading?: string
-    items:
-      | {
-          icon: typeof Icon
-          label: string
-          sublabel: string
-          coordinates: Coordinates
-        }[]
-      | null
+    disabled?: boolean
+    items: Item[] | null
   }
 
   let {
@@ -33,6 +36,7 @@
     placeholderEmpty,
     placeholderLoading,
     placeholderNull,
+    disabled,
   }: Props = $props()
 
   function distanceMeters(a: Coordinates | null, b: Coordinates | null): number | null {
@@ -55,10 +59,47 @@
     }
     return Math.round(meters) + 'm'
   }
+
+  function getSavedLocationFor(item: Item) {
+    return $settings.data.locations.find(
+      (l) => l.latitude === item.coordinates?.latitude && l.longitude === item.coordinates?.longitude,
+    )
+  }
+
+  function deleteSavedLocation(item: Item) {
+    // TODO: this is made to be forgotten when changing this setting
+    const savedLocations = get(settings).data.locations
+
+    const index = savedLocations.findIndex(
+      (l) => l.latitude === item.coordinates?.latitude && l.longitude === item.coordinates?.longitude,
+    )
+    if (index === -1) return
+
+    savedLocations.splice(index, 1)
+    settings.writeSetting(['data', 'locations'], savedLocations)
+  }
+
+  function saveLocation(item: Item) {
+    if (!item.coordinates) return
+    // TODO: this is made to be forgotten when changing this setting
+    const savedLocations = get(settings).data.locations
+
+    const newLocation: (typeof savedLocations)[number] = {
+      name: item.label,
+      latitude: item.coordinates.latitude,
+      longitude: item.coordinates.longitude,
+      // TODO: icon: item.icon
+      icon: 'map-pin',
+    }
+    if (item.coordinates.altitude) newLocation.altitude = item.coordinates.altitude
+    savedLocations.push(newLocation)
+
+    settings.writeSetting(['data', 'locations'], savedLocations)
+  }
 </script>
 
 <h5 class="text-text-muted -mb-3 text-sm">{title}</h5>
-<div class="bg-midground flex flex-col gap-0 rounded-md">
+<div class={['bg-midground flex flex-col gap-0 rounded-md', disabled ? 'bg-disabled!' : '']}>
   {#if loading}
     <span class="text-muted-foreground flex flex-row items-center gap-2 px-2 py-1">
       <LoaderPulsatingRing className="size-5" />
@@ -71,23 +112,26 @@
   {/if}
 
   {#each items ?? [] as item, index}
+    {@const asSaved = getSavedLocationFor(item)}
+
     {#if index !== 0}
       <span class=" bg-background mx-auto h-0.5 w-full"></span>
     {/if}
 
     <Button
-      variant="midground"
+      variant="ghost"
       class="flex h-fit! flex-row items-center justify-between gap-2 p-2 text-base"
       onclick={() => onselect(selectByIndex ? { index } : { coordinates: item.coordinates })}
+      {disabled}
     >
       <div class="flex min-w-0 flex-col">
         <div class="flex min-w-0 flex-row items-center gap-2">
           {#if item.icon}
             <item.icon class="shrink-0" />
           {:else}
-            <LoaderPulsatingRing />
+            <MapPinIcon class="text-text-muted shrink-0" />
           {/if}
-          <span>{item.label}</span>
+          <span class="overflow-hidden text-ellipsis">{item.label}</span>
         </div>
         <span class="text-text-disabled min-w-0 overflow-hidden text-left text-xs text-wrap text-ellipsis">
           {item.sublabel}
@@ -104,7 +148,36 @@
             )}
           </span>
         {/if}
-        <ChevronRight />
+        {#if !disabled}
+          {#if asSaved}
+            <Button
+              size="icon"
+              variant="outline"
+              class="size-8"
+              onclick={(e: PointerEvent) => {
+                e.preventDefault()
+                e.stopPropagation()
+                if (selectByIndex) deleteSavedLocation(item)
+              }}
+            >
+              <Trash2Icon />
+            </Button>
+          {:else}
+            <Button
+              size="icon"
+              variant="outline"
+              class="size-8"
+              onclick={(e: PointerEvent) => {
+                e.preventDefault()
+                e.stopPropagation()
+                saveLocation(item)
+              }}
+            >
+              <BookmarkIcon />
+            </Button>
+          {/if}
+          <ChevronRight />
+        {/if}
       </div>
     </Button>
   {/each}
