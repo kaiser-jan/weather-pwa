@@ -1,9 +1,12 @@
+import type { Icon } from '@lucide/svelte'
+
 // TODO: settings type
 export type VisibilityCallback = (ctx: Record<string, unknown>) => boolean
 
 type BaseConfigItem = {
   id: string
-  label?: string
+  label: string
+  icon: typeof Icon
   visible?: VisibilityCallback
   disabled?: boolean
 }

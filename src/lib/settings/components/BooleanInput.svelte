@@ -11,15 +11,12 @@
   let { item, value, onchange }: Props = $props()
 </script>
 
-<label class="flex grow flex-row items-center justify-between gap-1">
-  <span>{item.label}</span>
-  <Switch
-    bind:checked={
-      () => value,
-      (v) => {
-        value = v
-        onchange(v)
-      }
+<Switch
+  bind:checked={
+    () => value,
+    (v) => {
+      value = v
+      onchange(v)
     }
-  />
-</label>
+  }
+/>

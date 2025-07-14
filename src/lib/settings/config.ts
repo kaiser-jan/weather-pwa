@@ -2,7 +2,35 @@ import { UNIT_OPTIONS, type Unit, type UnitDimension } from '$lib/utils/units'
 import { DATASET_IDS, DATASETS, PROVIDERS, type DatasetId } from '$lib/data/providers'
 import type { ConfigItem, ConfigType } from './types'
 import type { DateObjectUnits } from 'luxon'
-import { BriefcaseIcon, HomeIcon } from '@lucide/svelte'
+import {
+  ArrowUpAz,
+  BadgeInfoIcon,
+  BriefcaseIcon,
+  CalculatorIcon,
+  CalendarDaysIcon,
+  CalendarIcon,
+  ChartLineIcon,
+  ChartNoAxesGanttIcon,
+  CloudSunIcon,
+  ComponentIcon,
+  DatabaseIcon,
+  HashIcon,
+  HighlighterIcon,
+  HomeIcon,
+  LanguagesIcon,
+  LayoutPanelTopIcon,
+  ListIcon,
+  MapPinIcon,
+  PaletteIcon,
+  PuzzleIcon,
+  RulerIcon,
+  SettingsIcon,
+  SparklesIcon,
+  SquareSplitHorizontalIcon,
+  SquareSplitVerticalIcon,
+  ThermometerIcon,
+  UmbrellaIcon,
+} from '@lucide/svelte'
 import type { ColorStop } from '$lib/types/ui'
 
 type Location = {
@@ -29,11 +57,13 @@ export const settingsConfig = [
   {
     id: 'general',
     label: 'General',
+    icon: SettingsIcon,
     type: 'page',
     children: [
       {
         id: 'language',
         label: 'Language',
+        icon: LanguagesIcon,
         type: 'select',
         options: ['en'] as string[],
         default: 'en',
@@ -43,6 +73,7 @@ export const settingsConfig = [
         id: 'units',
         label: 'Units',
         type: 'page',
+        icon: RulerIcon,
         children: Object.entries(UNIT_OPTIONS).map(
           ([dimension, options]) =>
             ({
@@ -60,11 +91,13 @@ export const settingsConfig = [
     id: 'data',
     label: 'Data',
     type: 'page',
+    icon: DatabaseIcon,
     children: [
       {
         id: 'datasets',
         label: 'Datasets',
         type: 'multiselect',
+        icon: ListIcon,
         options: DATASET_IDS,
         labels: Object.fromEntries(
           DATASET_IDS.map((id) => {
@@ -84,33 +117,39 @@ export const settingsConfig = [
         id: 'incrementalLoad',
         label: 'Incremental Load',
         type: 'boolean',
+        icon: SquareSplitHorizontalIcon,
         default: true,
       },
       {
         id: 'locations',
         label: 'Locations',
         type: 'not-implemented',
+        icon: MapPinIcon,
         default: [] as Location[],
       },
       {
         id: 'forecast',
         label: 'Forecast',
         type: 'page',
+        icon: CloudSunIcon,
         children: [
           {
             id: 'preferDerivedSymbols',
             label: 'Prefer Derived Symbols',
             type: 'boolean',
+            icon: CalculatorIcon,
             default: true,
           },
           {
             id: 'precipitation',
             label: 'Precipitation',
             type: 'group',
+            icon: UmbrellaIcon,
             children: [
               {
                 id: 'threshold',
                 label: 'Threshold',
+                icon: SquareSplitVerticalIcon,
                 type: 'number',
                 default: 0.0,
                 step: 0.01,
@@ -125,11 +164,13 @@ export const settingsConfig = [
     id: 'appearance',
     label: 'Appearance',
     type: 'page',
+    icon: SparklesIcon,
     children: [
       {
         id: 'symbols',
         label: 'Symbols',
         type: 'select',
+        icon: ComponentIcon,
         options: ['meteocons-fill-animated', 'meteocons-fill-static'] as const,
         default: 'meteocons-fill-animated',
       },
@@ -137,11 +178,13 @@ export const settingsConfig = [
         id: 'colors',
         label: 'Colors',
         type: 'group',
+        icon: PaletteIcon,
         children: [
           {
             id: 'temperatureColorStops',
             label: 'Temperature Colors',
             type: 'not-implemented',
+            icon: ThermometerIcon,
             default: [
               { value: -50, h: 0, s: 100, l: 50 },
               { value: 0, h: 0, s: 0, l: 100 },
@@ -161,28 +204,33 @@ export const settingsConfig = [
     id: 'sections',
     label: 'Sections',
     type: 'page',
+    icon: LayoutPanelTopIcon,
     children: [
       {
         id: 'chart',
         label: 'Chart',
         type: 'page',
+        icon: ChartLineIcon,
         children: [
           {
             id: 'tooltip',
             label: 'Show Tooltip',
             type: 'boolean',
+            icon: BadgeInfoIcon,
             default: false,
           },
           {
             id: 'alwaysShowValuesDisplay',
             label: 'Pin Value Display',
             type: 'boolean',
+            icon: HashIcon,
             default: true,
           },
           {
             id: 'axisUnits',
             label: 'Axis Unit Location',
             type: 'select',
+            icon: ArrowUpAz,
             options: ['inline', 'above', 'replace', 'off'] as const,
             default: 'replace',
           },
@@ -192,11 +240,13 @@ export const settingsConfig = [
         id: 'daily',
         label: 'Daily',
         type: 'page',
+        icon: CalendarDaysIcon,
         children: [
           {
             id: 'showIncompleteLastDay',
             label: 'Show Incomplete Last Day',
             type: 'boolean',
+            icon: PuzzleIcon,
             default: false,
           },
         ],
@@ -205,16 +255,19 @@ export const settingsConfig = [
         id: 'components',
         label: 'Compenents',
         type: 'page',
+        icon: ComponentIcon,
         children: [
           {
             id: 'timelineBar',
             label: 'Timeline Bar',
             type: 'group',
+            icon: ChartNoAxesGanttIcon,
             children: [
               {
                 id: 'marks',
                 label: 'Marks',
                 type: 'not-implemented',
+                icon: HighlighterIcon,
                 default: [{ hour: 6 }, { hour: 12 }, { hour: 18 }] as DateObjectUnits[],
               },
             ],

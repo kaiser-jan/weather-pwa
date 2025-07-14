@@ -12,8 +12,7 @@
   let { item, value = $bindable(), onchange }: Props = $props()
 </script>
 
-<div class="flex flex-col gap-1 py-2">
-  <span>{item.label}</span>
+<div class="flex flex-col gap-1">
   {#each item.options as option}
     <div class="flex flex-row items-center gap-2">
       <Checkbox

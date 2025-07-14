@@ -20,15 +20,17 @@
   {@const path = [...parentPath, item.id]}
   {#if !item.visible || item.visible($settings)}
     {#if item.type === 'page'}
-      <Button variant="midground" onclick={() => onnavigate(item.id)} class="min-h-12 justify-between text-base!">
+      <Button variant="midground" onclick={() => onnavigate(item.id)} class="min-h-12 justify-between gap-3 text-base!">
+        <item.icon />
         {item.label}
-        <ChevronRightIcon />
+        <ChevronRightIcon class="ml-auto" />
       </Button>
     {:else if item.type === 'group'}
       <section class="flex flex-col gap-2">
-        {#if item.label}
-          <h2 class="text-text-muted -mb-1">{item.label}</h2>
-        {/if}
+        <h2 class="text-text-muted -mb-1 flex flex-row items-center gap-2">
+          <item.icon />
+          {item.label}
+        </h2>
         <SettingsRenderer
           config={item.children}
           path={[...path, item.id]}
@@ -43,7 +45,10 @@
       <div
         class="bg-disabled text-disabled-foreground flex min-h-12 items-center justify-between gap-2 rounded-md px-4"
       >
-        {item.label}
+        <span class="flex flex-row items-center gap-3">
+          <item.icon />
+          {item.label}
+        </span>
         <LockIcon />
       </div>
     {:else}
