@@ -116,21 +116,19 @@ export function createTooltip(options: {
 }) {
   const { svg, dimensions } = options
 
-  const fo = svg
+  const fo = svg //
     .append('foreignObject')
     .attr('width', 200)
     .attr('height', 200)
     .style('pointer-events', 'none')
-    // .style('display', 'none')
-    .style('opacity', '0%')
 
   const tooltip = fo
     .append('xhtml:div')
     .attr('class', 'text-xs bg-foreground text-text backdrop-blur rounded px-2 py-1 shadow w-fit min-w-20')
+    .style('opacity', 0)
 
   function hideTooltip() {
-    // fo.style('display', 'none')
-    fo.style('opacity', '0%')
+    tooltip.style('opacity', 0)
   }
 
   function updateTooltip(x: number, y: number, points: ReturnType<typeof getNearestPointAtDateTime>[]) {
@@ -143,8 +141,6 @@ export function createTooltip(options: {
       'y',
       y + (alignTop ? -tooltipBBox.height - 3 - offset : offset),
     )
-    // .style('display', null)
-    fo.style('opacity', '100%')
 
     tooltip.html(
       `<b>${points[0].d.datetime.toFormat('HH:mm')}</b><br>${points
@@ -159,6 +155,7 @@ export function createTooltip(options: {
         })
         .join('')}`,
     )
+    tooltip.style('opacity', 1)
   }
 
   return { hideTooltip, updateTooltip }

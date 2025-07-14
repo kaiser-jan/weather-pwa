@@ -19,6 +19,10 @@ https://github.com/huntabyte/vaul-svelte/issues/123
 FIX: translate-z-0
 https://stackoverflow.com/questions/17967307/css-by-data-attribute-will-not-refresh-repaint
 
+##### iOS SVG Foreign Object bugs
+
+- opacity does not affect foreign objects
+
 ## Attribution & Credits
 
 - [Nominatim](nominatim.org) for reverse geocoding
