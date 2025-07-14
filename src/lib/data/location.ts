@@ -5,9 +5,12 @@ export async function reverseGeocoding(coordinates: Coordinates) {
   const cacheKey = 'known-locations'
   const knownLocations = JSON.parse(localStorage.getItem(cacheKey) ?? '{}') as Record<string, PlaceOutput>
   const coordinatesKey = `${coordinates.latitude}-${coordinates.longitude}`
-  console.log(knownLocations[coordinatesKey])
-  if (knownLocations[coordinatesKey]) return knownLocations[coordinatesKey]
+  if (knownLocations[coordinatesKey]) {
+    console.debug(`Reverse geocoded location for ${coordinatesKey} found in cache!`)
+    return knownLocations[coordinatesKey]
+  }
 
+  console.debug(`Fetching reverse geocoded location for ${coordinatesKey}...`)
   const url = new URL('https://nominatim.openstreetmap.org/reverse')
   url.searchParams.set('lat', coordinates.latitude.toString())
   url.searchParams.set('lon', coordinates.longitude.toString())

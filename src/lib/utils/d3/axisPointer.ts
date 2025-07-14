@@ -4,7 +4,7 @@ import type { Dimensions } from './types'
 import { DateTime } from 'luxon'
 import type { CreatedSeriesDetails } from '$lib/types/ui'
 import { mount } from 'svelte'
-import { formatMetric, getPreferredUnit } from '../units'
+import { convertAndFormatMetric, formatMetric, getPreferredUnit } from '../units'
 
 export function createAxisPointer(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
@@ -146,11 +146,7 @@ export function createTooltip(options: {
       `<b>${points[0].d.datetime.toFormat('HH:mm')}</b><br>${points
         .map((p) => {
           const svg = renderIcon(p.name, p.icon)
-          const metric = formatMetric(
-            p.d.value,
-            p.name as WeatherMetricKey,
-            getPreferredUnit(p.name as WeatherMetricKey),
-          )
+          const metric = formatMetric(p.d.value, getPreferredUnit(p.name as WeatherMetricKey))
           return `<div class="flex items-center gap-2">${svg}${metric}</div>`
         })
         .join('')}`,

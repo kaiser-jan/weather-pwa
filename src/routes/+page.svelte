@@ -33,6 +33,8 @@
   })
 
   async function loadForecastData() {
+    console.debug(`Requesting forecast data update`)
+
     if (!coordinates) {
       console.warn(`Unable to load data, no coordinates.`)
       return
@@ -75,10 +77,6 @@
     })
 
     return timePeriodWithoutPrecipitation?.datetime
-  })
-
-  onMount(() => {
-    loadForecastData()
   })
 </script>
 

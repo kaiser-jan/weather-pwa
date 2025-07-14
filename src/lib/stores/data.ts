@@ -24,13 +24,13 @@ function update(coordinates: Coordinates, datasets: DatasetId[], stream = true) 
   set(null)
   const loaders = datasets.map((d) => LOADERS[d])
   const parts: (MultivariateTimeSeries | null)[] = Array(datasets.length).fill(null)
-  const debouncedUpdate = debounce(() => updateForecast(parts), 50)
+  const debouncedUpdate = debounce(() => updateForecast(parts), 100)
 
   for (const [loaderIndex, loader] of loaders.entries()) {
     loader(coordinates)
       .then((r) => {
         parts[loaderIndex] = r
-        const isComplete = parts.length === loaders.length
+        const isComplete = parts.filter((p) => p !== null).length === loaders.length
         if (stream || isComplete) debouncedUpdate()
       })
       .catch((e) => {
@@ -62,7 +62,7 @@ function update(coordinates: Coordinates, datasets: DatasetId[], stream = true) 
       total,
     }
 
-    console.log(forecast)
+    console.info(forecast)
 
     set(forecast)
 

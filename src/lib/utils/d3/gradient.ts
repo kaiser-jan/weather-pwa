@@ -10,9 +10,9 @@ export function createGradientDefinition(options: {
 }) {
   const { svg, scaleY, stops, id } = options
 
-  const min = -50
-  const max = 50
-  const steps = 10
+  const min = stops[0].value
+  const max = stops[stops.length - 1].value
+  const steps = 20
   const gradientStops = Array.from({ length: steps + 1 }, (_, i) => {
     // the gradient is inverted, causing the 1 - Ans
     const v = min + (1 - i / steps) * (max - min)

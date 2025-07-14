@@ -87,7 +87,7 @@
   async function loadResults() {
     const query = $state.snapshot(search.value)
     if (query === '') return
-    console.log(`Searching for ${query}...`)
+    console.log(`Searching for "${query}"...`)
     isLoading = true
 
     const url = new URL('https://nominatim.openstreetmap.org/search')
@@ -99,7 +99,7 @@
     // countrycodes https://nominatim.org/release-docs/develop/api/Search/#result-restriction
     const response = await fetch(url.toString())
     const json = await response.json()
-    console.log(json)
+    console.debug(json)
 
     results.value = json
     isLoading = false

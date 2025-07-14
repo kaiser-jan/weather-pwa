@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { convertToUnit, formatMetric, getPreferredUnit } from '../../utils/units'
+  import { convertAndFormatMetric, convertToUnit, formatMetric, getPreferredUnit } from '../../utils/units'
   import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { onMount } from 'svelte'
   import * as d3 from 'd3'
@@ -62,7 +62,7 @@
     d3.select(container).selectAll('*').remove()
   }
 
-  function estimateTextWidth(text: string, font: string = '12px sans-serif'): number {
+  function estimateTextWidth(text: string, font: string = '10px sans-serif'): number {
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
     if (!context) return 0
@@ -86,12 +86,14 @@
     for (const seriesKey of visibleSeries) {
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!details || details.hideScale) continue
-      const hideUnit = $settingsChart.axisUnits !== 'inline'
-      const minString = formatMetric(details.domain[0], seriesKey, getPreferredUnit(seriesKey), hideUnit)
-      const maxString = formatMetric(details.domain[1], seriesKey, getPreferredUnit(seriesKey), hideUnit)
+      const unit = getPreferredUnit(seriesKey)
+      const unitInline = $settingsChart.axisUnits === 'inline' ? unit : null
+      const minString = convertAndFormatMetric(details.domain[0], seriesKey, unitInline)
+      const maxString = convertAndFormatMetric(details.domain[1], seriesKey, unitInline)
       const textWidthMinValue = estimateTextWidth(minString)
+      const textWidthUnit = estimateTextWidth(unit ?? '')
       const textWidthMaxValue = estimateTextWidth(maxString)
-      const requiredX = textWidthMaxValue > textWidthMinValue ? textWidthMaxValue + 10 : textWidthMinValue + 10
+      const requiredX = Math.max(textWidthMinValue, textWidthUnit, textWidthMaxValue) + 10
 
       if (details.scaleOnRight) {
         margin['right'] += requiredX
@@ -121,16 +123,22 @@
     const createdSeriesDetails: CreatedSeriesDetails[] = []
 
     for (const seriesKey of [...visibleSeries].reverse()) {
-      const series = data[seriesKey]
+      const unit = getPreferredUnit(seriesKey)
+      const unitConversion = (d: number) => convertToUnit(d, seriesKey, unit)
+
+      const useSeries = (parameter: keyof typeof data) => {
+        return data[parameter]?.map((d) => ({ ...d, value: unitConversion(d.value) }))
+      }
+
+      const series = useSeries(seriesKey)
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!series || !details) continue
 
       const rangeY = [dimensions.height + dimensions.margin.top, margin.top]
-      const scaleY = d3.scaleLinear(details.domain, rangeY) //.nice()
+      const scaleY = d3.scaleLinear(details.domain.map(unitConversion), rangeY) //.nice()
 
       if (!details.hideScale) {
-        const unit = getPreferredUnit(seriesKey)
-        const format = (d: number) => formatMetric(d, seriesKey, unit)
+        const format = (d: number) => formatMetric(d, unit)
 
         createYAxis({
           svg,
@@ -176,7 +184,7 @@
           createGradientDefinition({
             svg,
             scaleY,
-            stops: details.gradientColorStops,
+            stops: details.gradientColorStops.map((s) => ({ ...s, value: unitConversion(s.value) })),
             id: gradientId,
           })
 
@@ -189,8 +197,8 @@
 
       if (details.include) {
         for (const [includeParameter, includeDetails] of Object.entries(details.include)) {
-          const includeSeriesA = data[includeParameter as WeatherMetricKey]
-          const includeSeriesB = data[includeDetails.areaSecondParameter as WeatherMetricKey]
+          const includeSeriesA = useSeries(includeParameter as WeatherMetricKey)
+          const includeSeriesB = useSeries(includeDetails.areaSecondParameter as WeatherMetricKey)
           addDataRepresentation(includeParameter, includeSeriesA, includeDetails, includeSeriesB)
         }
       }

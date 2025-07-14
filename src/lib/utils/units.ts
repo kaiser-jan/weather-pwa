@@ -97,19 +97,22 @@ const CONVERTERS: Record<UnitDimension, Partial<Record<Unit, (v: number) => numb
   },
 } as const
 
-export function convertToUnit(value: number, key: WeatherMetricKey, unit: string): number {
+export function convertToUnit(value: number, key: WeatherMetricKey, unit: Unit | null): number {
   const dimension = METRIC_DIMENSION[key]
-  if (!dimension) return value
-  const converter = CONVERTERS[dimension]?.[unit as Unit] ?? ((v) => v)
+  if (!dimension || !unit) return value
+  const converter = CONVERTERS[dimension]?.[unit] ?? ((v) => v)
   return converter(value)
 }
 
-export function formatMetric(value: number, key: WeatherMetricKey, unit: string, excludeUnit = false): string {
-  const converted = convertToUnit(value, key, unit)
-  // const string = converted.toFixed(unit === '%' ? 0 : 1)
-  const string = d3.format('.1~f')(converted)
-  if (excludeUnit) return string
+export function formatMetric(value: number, unit: Unit | null): string {
+  const string = d3.format('.1~f')(value)
+  if (!unit) return string
   return string + unit
+}
+
+export function convertAndFormatMetric(value: number, key: WeatherMetricKey, unit: Unit): string {
+  const converted = convertToUnit(value, key, unit)
+  return formatMetric(converted, unit)
 }
 
 export function getPreferredUnit(key: WeatherMetricKey) {

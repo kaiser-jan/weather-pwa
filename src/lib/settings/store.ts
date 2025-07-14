@@ -28,14 +28,12 @@ export const settings = {
 }
 
 function writeSetting(path: string[], value: any) {
-  console.log(path)
+  console.info(`Writing setting: ${path} = ${JSON.stringify(value)}`)
   settingsBaseStore.update((s) => {
-    console.log(s)
     setDeep(s, path, value)
     return s
   })
 
-  console.log(settingsOverrides)
   setDeep(settingsOverrides, path, value)
 
   settingsOverrides.update((s) => {
@@ -46,16 +44,23 @@ function writeSetting(path: string[], value: any) {
 }
 
 function readSetting(path: string[]) {
+  console.debug(`Reading setting: ${path}`)
   const valueOverride = getDeep(get(settingsOverrides), path)
-  if (valueOverride !== undefined) return { value: valueOverride, changed: true }
+  if (valueOverride !== undefined) {
+    console.log(`Read changed setting: ${path} = ${JSON.stringify(valueOverride)}`)
+    return { value: valueOverride, changed: true }
+  }
 
   const value = getDeep(get(settingsBaseStore), path)
+  console.log(`Read default setting: ${path} = ${JSON.stringify(value)}`)
+
   return { value: value, changed: false }
 }
 
 function resetSetting(path: string[]) {
+  console.debug(`Resetting setting: ${path}`)
+
   const defaultValue = getDeep(settingsDefaults, path)
-  console.log('reset', path, defaultValue)
 
   settingsBaseStore.update((s) => {
     setDeep(s, path, defaultValue)
@@ -68,6 +73,8 @@ function resetSetting(path: string[]) {
     console.log(s)
     return s
   })
+
+  console.info(`Reset setting: ${path} to ${JSON.stringify(defaultValue)}`)
 
   return defaultValue
 }
