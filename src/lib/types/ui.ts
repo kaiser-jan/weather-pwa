@@ -13,7 +13,7 @@ export interface SeriesDetailsBase {
 
 export interface SeriesDetails extends SeriesDetailsBase {
   label: string
-  domain: [number, number]
+  domain: { min: number[]; max: number[] }
   icon: typeof ThermometerIcon
   iconIfZero?: typeof ThermometerIcon
   unit: string

@@ -21,7 +21,7 @@ import { get } from 'svelte/store'
 export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetails>> = {
   temperature: {
     label: 'Temperature',
-    domain: [0, 40],
+    domain: { min: [-40, -20, 0], max: [20, 40, 60] },
     style: 'line',
     icon: ThermometerIcon,
     class: '',
@@ -38,7 +38,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   },
   cloud_coverage: {
     label: 'Cloud Coverage',
-    domain: [0, 100],
+    domain: { min: [0], max: [100] },
     style: 'bars',
     icon: CloudyIcon,
     iconIfZero: CloudOffIcon,
@@ -50,7 +50,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   },
   precipitation_amount: {
     label: 'Precipitation Amount',
-    domain: [0, 50],
+    domain: { min: [0], max: [20, 50] },
     style: 'bars',
     icon: UmbrellaIcon,
     iconIfZero: UmbrellaOffIcon,
@@ -60,7 +60,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   },
   wind_speed: {
     label: 'Wind',
-    domain: [0, 118 / 3.6],
+    domain: { min: [0], max: [61 / 3.6, 118 / 3.6] },
     style: 'line',
     icon: WindIcon,
     class: 'stroke-blue-100 opacity-80',
@@ -75,7 +75,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   },
   relative_humidity: {
     label: 'Relative Humidity',
-    domain: [0, 100],
+    domain: { min: [0], max: [100] },
     style: 'line',
     icon: DropletIcon,
     class: 'stroke-green-300 opacity-80',
@@ -85,7 +85,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   },
   pressure: {
     label: 'Pressure',
-    domain: [960 * 100, 1060 * 100],
+    domain: { min: [960 * 100], max: [1060 * 100] },
     style: 'line',
     icon: GaugeIcon,
     class: 'stroke-purple-300 opacity-80',
@@ -105,7 +105,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   // },
   cape: {
     label: 'CAPE',
-    domain: [0, 1000],
+    domain: { min: [0], max: [1000] },
     style: 'line',
     icon: ZapIcon,
     class: 'stroke-yellow-300 opacity-80',
@@ -114,7 +114,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   },
   cin: {
     label: 'CIN',
-    domain: [-500, 0],
+    domain: { min: [-500], max: [0] },
     style: 'line',
     icon: ShieldIcon,
     class: 'stroke-orange-300 opacity-80',
@@ -123,7 +123,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
   },
   grad: {
     label: 'Global Radiation',
-    domain: [-1000, 50_000_000],
+    domain: { min: [-1000], max: [50_000_000] },
     style: 'line',
     icon: SunIcon,
     class: 'stroke-yellow-300 opacity-80',

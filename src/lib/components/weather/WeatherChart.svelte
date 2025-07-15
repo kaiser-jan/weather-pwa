@@ -89,13 +89,19 @@
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!details || details.hideScale) continue
       const unit = getPreferredUnit(seriesKey)
-      const unitInline = $settingsChart.axisUnits === 'inline' ? unit : null
-      const minString = convertAndFormatMetric(details.domain[0], seriesKey, unitInline)
-      const maxString = convertAndFormatMetric(details.domain[1], seriesKey, unitInline)
+      const showUnitInline = $settingsChart.axisUnits === 'inline'
+      const minString = convertAndFormatMetric(details.domain.min[0], seriesKey, unit, showUnitInline)
+      const maxString = convertAndFormatMetric(
+        details.domain.max[details.domain.max.length - 1],
+        seriesKey,
+        unit,
+        showUnitInline,
+      )
       const textWidthMinValue = estimateTextWidth(minString)
       const textWidthUnit = estimateTextWidth(unit ?? '')
       const textWidthMaxValue = estimateTextWidth(maxString)
       const requiredX = Math.max(textWidthMinValue, textWidthUnit, textWidthMaxValue) + 10
+      console.debug(minString, maxString, unit)
 
       if (details.scaleOnRight) {
         margin['right'] += requiredX
@@ -137,7 +143,17 @@
       if (!series || !details) continue
 
       const rangeY = [dimensions.height + dimensions.margin.top, margin.top]
-      const scaleY = d3.scaleLinear(details.domain.map(unitConversion), rangeY) //.nice()
+
+      const extent = d3.extent(series, (d) => d.value)
+      const min = extent[0] ?? 0
+      const max = extent[1] ?? 0
+      const domain = [
+        details.domain.min.findLast((t) => t <= min) ?? details.domain.min[0],
+        details.domain.max.find((t) => t >= max) ?? details.domain.max[0],
+      ]
+      // console.debug(seriesKey, domain, extent, details.domain.max)
+
+      const scaleY = d3.scaleLinear(domain.map(unitConversion), rangeY) //.nice()
 
       if (!details.hideScale) {
         const format = (d: number) => formatMetric(d, unit)
