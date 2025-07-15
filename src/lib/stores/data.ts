@@ -16,7 +16,7 @@ export const forecastStore = {
   update,
 }
 
-function update(coordinates: Coordinates, datasets: DatasetId[], stream = true) {
+function update(coordinates: Coordinates, datasets: readonly DatasetId[], stream = true) {
   // show cached data for this location while loading
   const cachedForecast = getCachedForecast(coordinates, datasets)
   if (cachedForecast) set(cachedForecast)
@@ -77,11 +77,11 @@ function update(coordinates: Coordinates, datasets: DatasetId[], stream = true) 
 
 type CachedForecast = {
   coordinates: Coordinates
-  datasets: DatasetId[]
+  datasets: readonly DatasetId[]
   forecast: Forecast
 }
 
-function getCachedForecast(coordinates: Coordinates, datasets: DatasetId[]) {
+function getCachedForecast(coordinates: Coordinates, datasets: readonly DatasetId[]) {
   try {
     const lastForecastString = localStorage.getItem('last-forecast')
     if (!lastForecastString) return null

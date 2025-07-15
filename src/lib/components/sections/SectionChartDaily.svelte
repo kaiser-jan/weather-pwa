@@ -9,6 +9,7 @@
   import ParameterSelect from '../ParameterSelect.svelte'
   import { persistantState } from '$lib/utils/state.svelte'
   import ParameterValue from '../ParameterValue.svelte'
+  import { Skeleton } from '../ui/skeleton'
 
   const settingsChart = settings.select((s) => s.sections.chart)
 
@@ -49,7 +50,7 @@
   }
 
   const dayLabel = $derived.by(() => {
-    if (!$forecastStore?.daily || $forecastStore.daily.length === 0) return
+    if (!$forecastStore?.daily || $forecastStore.daily.length === 0) return 'Today'
     if ($forecastStore.daily[activeChartIndex].datetime.startOf('day').equals(DateTime.now().startOf('day')))
       return 'Today'
     return $forecastStore.daily[activeChartIndex].datetime.toFormat('cccc')
@@ -89,7 +90,7 @@
   </div>
 
   <div
-    class="scrollbar-none flex w-full shrink-0 snap-x snap-mandatory flex-row gap-4 overflow-x-scroll"
+    class="scrollbar-none flex h-[25vh] w-full shrink-0 snap-x snap-mandatory flex-row gap-4 overflow-x-scroll"
     bind:this={chartScroller}
     onscroll={handleChartScroll}
   >
@@ -104,6 +105,8 @@
         onHighlightTimestamp={(tb) => (highlightedTimeBucket = tb)}
         onCurrentTimestamp={(tb) => (currentTimeBucket = tb)}
       />
+    {:else}
+      <Skeleton class="h-full w-full" />
     {/each}
   </div>
 </div>

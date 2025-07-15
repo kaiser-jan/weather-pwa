@@ -1,7 +1,7 @@
 <script lang="ts">
   import { convertAndFormatMetric, convertToUnit, formatMetric, getPreferredUnit } from '../../utils/units'
   import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import * as d3 from 'd3'
   import { DateTime } from 'luxon'
   import { createXAxis, createYAxis } from '$lib/utils/d3/axis'
@@ -15,6 +15,8 @@
   import { settings } from '$lib/settings/store'
   import type { CreatedSeriesDetails, SeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
+  import { debounce } from '$lib/utils'
+  import { Skeleton } from '../ui/skeleton'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -43,8 +45,8 @@
   let container: HTMLDivElement
 
   let margin = { top: 10, right: 40, bottom: 20, left: 40 }
-  const widthFull = 360
-  const heightFull = 240
+  let widthFull = 360
+  let heightFull = 240
 
   let dimensions: Dimensions = computeDimensions()
 
@@ -280,8 +282,23 @@
     container.replaceChildren(svg.node())
   }
 
+  function resizeChart() {
+    if (!container) return
+    widthFull = container.clientWidth
+    heightFull = container.clientHeight
+    dimensions = computeDimensions()
+    updateChart()
+  }
+
+  const debouncedResizeChart = debounce(resizeChart, 50)
+
   onMount(() => {
-    // window.addEventListener('resize', () => chart.resize())
+    resizeChart()
+    window.addEventListener('resize', debouncedResizeChart)
+  })
+
+  onDestroy(() => {
+    window.removeEventListener('resize', debouncedResizeChart)
   })
 
   $effect(() => {
@@ -293,4 +310,6 @@
   })
 </script>
 
-<div bind:this={container} class={['relative h-fit', className]}></div>
+<div bind:this={container} class={['relative', className]}>
+  <Skeleton class="h-full w-full" />
+</div>

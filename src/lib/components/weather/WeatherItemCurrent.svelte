@@ -7,7 +7,7 @@
 
   interface Props {
     item: AvailableItemsCurrent
-    current: Forecast['current']
+    current: Forecast['current'] | null
   }
 
   const { item, current }: Props = $props()
@@ -27,7 +27,7 @@
   const details = $derived(itemMap[item])
 
   const formattedValue = $derived.by(() => {
-    const rawValue = current[details.datapoint]!
+    const rawValue = current?.[details.datapoint]!
     const multiplier = details.multiplier ?? 1
     const value = rawValue * multiplier
     if (value < 1 && value > 0) return '<1'
@@ -35,7 +35,7 @@
   })
 </script>
 
-{#if current[details.datapoint] !== undefined}
+{#if current?.[details.datapoint] !== undefined}
   <span class="inline-flex items-center gap-[0.375rem]">
     <!-- svelte-ignore element_invalid_self_closing_tag -->
     <details.icon />

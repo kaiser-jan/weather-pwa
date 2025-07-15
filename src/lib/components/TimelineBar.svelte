@@ -4,6 +4,7 @@
   import { DateTime } from 'luxon'
   import { onDestroy } from 'svelte'
   import TimelineBarLayer from './TimelineBarLayer.svelte'
+  import Skeleton from './ui/skeleton/skeleton.svelte'
 
   type Parameter =
     | Extract<
@@ -14,7 +15,7 @@
     | 'moon'
 
   interface Props {
-    multiseries: MultivariateTimeSeries
+    multiseries: MultivariateTimeSeries | null
     parameters: Parameter[]
     startDatetime: DateTime
     endDatetime: DateTime
@@ -75,10 +76,10 @@
   {/each}
   {#each parameters as parameter}
     <!-- TODO: properly handle sun and moon -->
-    {#if multiseries[parameter as keyof typeof multiseries]?.length || ['sun', 'moon'].includes(parameter)}
+    {#if multiseries?.[parameter as keyof typeof multiseries]?.length || ['sun', 'moon'].includes(parameter)}
       <TimelineBarLayer
         {parameter}
-        series={multiseries[parameter as keyof typeof multiseries] ?? []}
+        series={multiseries![parameter as keyof typeof multiseries] ?? []}
         style={parameterStyleMap[parameter]}
         {startDatetime}
         {endDatetime}
@@ -86,6 +87,8 @@
         {barHeight}
         {distanceFromDatetimes}
       />
+    {:else}
+      <Skeleton class="size-full" />
     {/if}
   {/each}
 </div>

@@ -58,3 +58,13 @@ body {
   width: 1em;
   height: 1em;
 }
+
+@theme {
+  --animate-skeleton: skeleton 1s ease-in-out infinite;
+  @keyframes skeleton {
+    50% {
+      /* TODO: merge with tailwind config */
+      background-color: hsl(220, 20%, 20%);
+    }
+  }
+}

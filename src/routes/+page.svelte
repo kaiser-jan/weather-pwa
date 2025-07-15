@@ -15,6 +15,7 @@
   import SettingsButton from '$lib/components/SettingsButton.svelte'
   import SectionDaily from '$lib/components/sections/SectionDaily.svelte'
   import SectionChartDaily from '$lib/components/sections/SectionChartDaily.svelte'
+  import AsyncText from '$lib/components/AsyncText.svelte'
 
   let locationName = $state<string>()
   let isLoading = $state(false)
@@ -93,55 +94,57 @@
     </button>
   </div>
 
-  {#if $forecastStore?.current}
-    <div class="my-auto flex flex-row items-center justify-center gap-4">
-      <WeatherSymbol
-        className="size-30"
-        derived={deriveWeatherSituationFromInstant($forecastStore.current)}
-        provided={$forecastStore.current.symbol}
-        {coordinates}
-      />
-      <span class="text-6xl">{Math.round($forecastStore.current.temperature)}°C</span>
-    </div>
+  <div class="my-auto flex flex-row items-center justify-center gap-4">
+    <WeatherSymbol
+      className="size-30"
+      derived={deriveWeatherSituationFromInstant($forecastStore?.current)}
+      provided={$forecastStore?.current?.symbol}
+      {coordinates}
+    />
+    <!-- TODO: units -->
+    <AsyncText
+      class="text-6xl"
+      text={Math.round($forecastStore?.current?.temperature) + '°C'}
+      placeholder={'20°C'}
+      loaded={$forecastStore?.current !== undefined}
+    />
+  </div>
 
-    <div class="bg-background flex w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
-      <WeatherItemCurrent item="cloud_coverage" current={$forecastStore.current} />
-      <WeatherItemCurrent item="uvi" current={$forecastStore.current} />
-      <WeatherItemCurrent item="wind" current={$forecastStore.current} />
-      {#if precipitationStartDatetime}
-        <span class="inline-flex items-center gap-2">
-          <UmbrellaIcon />
-          {#if precipitationStartDatetime > DateTime.now()}
-            {formatRelativeDatetime(precipitationStartDatetime)}
-          {:else if precipitationEndDatetime}
-            <span class="inline-flex flex-row items-center">
-              <ArrowRightIcon class="text-text-muted" />
-              {formatRelativeDatetime(precipitationEndDatetime)}
-            </span>
-          {:else}
-            now
-          {/if}
-        </span>
-      {/if}
-      {#if $forecastStore.current.precipitation_amount && $forecastStore.current.precipitation_amount > 0}
-        <WeatherItemCurrent item="precipitation_amount" current={$forecastStore.current} />
-      {/if}
-    </div>
-  {/if}
+  <div class="bg-background flex h-10 w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
+    <WeatherItemCurrent item="cloud_coverage" current={$forecastStore?.current} />
+    <WeatherItemCurrent item="uvi" current={$forecastStore?.current} />
+    <WeatherItemCurrent item="wind" current={$forecastStore?.current} />
+    {#if precipitationStartDatetime}
+      <span class="inline-flex items-center gap-2">
+        <UmbrellaIcon />
+        {#if precipitationStartDatetime > DateTime.now()}
+          {formatRelativeDatetime(precipitationStartDatetime)}
+        {:else if precipitationEndDatetime}
+          <span class="inline-flex flex-row items-center">
+            <ArrowRightIcon class="text-text-muted" />
+            {formatRelativeDatetime(precipitationEndDatetime)}
+          </span>
+        {:else}
+          now
+        {/if}
+      </span>
+    {/if}
+    {#if $forecastStore?.current?.precipitation_amount && $forecastStore.current.precipitation_amount > 0}
+      <WeatherItemCurrent item="precipitation_amount" current={$forecastStore.current} />
+    {/if}
+  </div>
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  {#if today}
-    <TimelineBar
-      multiseries={today.multiseries}
-      parameters={['temperature']}
-      startDatetime={DateTime.now().startOf('day')}
-      endDatetime={DateTime.now().startOf('day').plus({ days: 1 })}
-      marks={$settings.sections.components.timelineBar.marks.map((m) => DateTime.now().set(m))}
-      {coordinates}
-      className="h-2"
-    />
-  {/if}
+  <TimelineBar
+    multiseries={today?.multiseries}
+    parameters={['temperature']}
+    startDatetime={DateTime.now().startOf('day')}
+    endDatetime={DateTime.now().startOf('day').plus({ days: 1 })}
+    marks={$settings.sections.components.timelineBar.marks.map((m) => DateTime.now().set(m))}
+    {coordinates}
+    className="h-2"
+  />
 
   <SectionChartDaily />
 

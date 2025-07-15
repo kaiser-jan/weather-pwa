@@ -7,6 +7,7 @@
   import WeatherSymbol from '../weather/WeatherSymbol.svelte'
   import { deriveWeatherSituationFromPeriod } from '$lib/data/symbols'
   import type { Coordinates } from '$lib/types/data'
+  import { Skeleton } from '../ui/skeleton'
 
   interface Props {
     coordinates: Coordinates
@@ -54,5 +55,7 @@
         <span class="w-[2ch]">{Math.round(day.summary.temperature.max)}</span>
       </div>
     </div>
+  {:else}
+    <Skeleton class="w-full h-32" />
   {/each}
 </div>

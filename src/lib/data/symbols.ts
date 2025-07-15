@@ -52,9 +52,11 @@ export function getWeatherIcon(s: WeatherSituation): string {
 }
 
 export function deriveWeatherSituationFromInstant(
-  data: Partial<WeatherInstant>,
+  data: Partial<WeatherInstant> | null,
   useSymbolData = true,
-): WeatherSituation {
+): WeatherSituation | null {
+  if (!data) return null
+
   const situation: WeatherSituation = {}
 
   if (data.thunder_probability ? data.thunder_probability > 20 : data.symbol?.thunder && useSymbolData)

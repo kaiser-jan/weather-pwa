@@ -103,12 +103,30 @@ export function sortByReferenceOrder<T extends string>(items: T[], reference: re
   return items.slice().sort((a, b) => reference.indexOf(a) - reference.indexOf(b))
 }
 
-export function debounce<F extends (...args: any[]) => void>(fn: F, wait: number): F {
-  let timer: ReturnType<typeof setTimeout>
-  return ((...args: any[]) => {
-    clearTimeout(timer)
-    timer = setTimeout(() => fn(...args), wait)
-  }) as F
+export function debounce<F extends (...args: any[]) => void>(callback: F, wait: number, immediate = false): F {
+  let timeout: ReturnType<typeof setTimeout> | null = null
+
+  const debounced = (...args: Parameters<F>) => {
+    console.log(immediate, timeout)
+    const shouldCallNow = immediate && !timeout
+
+    if (timeout) {
+      clearTimeout(timeout)
+    }
+
+    timeout = setTimeout(() => {
+      timeout = null
+      if (!shouldCallNow) {
+        callback(...args)
+      }
+    }, wait)
+
+    if (shouldCallNow) {
+      callback(...args)
+    }
+  }
+
+  return debounced as F
 }
 
 export function deepEqual(a: unknown, b: unknown): boolean {
