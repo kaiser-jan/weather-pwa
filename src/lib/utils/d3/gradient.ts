@@ -6,13 +6,15 @@ export function createGradientDefinition(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
   scaleY: d3.ScaleLinear<number, number, never>
   stops: ColorStop[]
-  id: string
+  name: string
 }) {
-  const { svg, scaleY, stops, id } = options
+  const { svg, scaleY, stops, name } = options
+
+  const id = `gradient-${name}-${crypto.randomUUID()}`
 
   const min = stops[0].value
   const max = stops[stops.length - 1].value
-  const steps = 20
+  const steps = 50
   const gradientStops = Array.from({ length: steps + 1 }, (_, i) => {
     // the gradient is inverted, causing the 1 - Ans
     const v = min + (1 - i / steps) * (max - min)
@@ -40,4 +42,6 @@ export function createGradientDefinition(options: {
     .append('stop')
     .attr('offset', (d) => d.offset)
     .attr('stop-color', (d) => d.color)
+
+  return id
 }

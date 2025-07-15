@@ -197,13 +197,11 @@
         dataRepresentation.classed([details.class].join(' '), true)
 
         if (details.gradientColorStops) {
-          const gradientId = `gradient-${seriesKey}`
-
-          createGradientDefinition({
+          const gradientId = createGradientDefinition({
             svg,
             scaleY,
             stops: details.gradientColorStops.map((s) => ({ ...s, value: unitConversion(s.value) })),
-            id: gradientId,
+            id: seriesKey,
           })
 
           dataRepresentation.attr('stroke', `url(#${gradientId})`)

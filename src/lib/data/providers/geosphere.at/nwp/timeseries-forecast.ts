@@ -63,10 +63,38 @@ export async function loadTimeseriesForecast(coordinates: Coordinates, offset = 
     { outKey: 'grad', inKey: 'grad', type: 'normal' },
   ]
 
-  return transformTimeSeries(
+  const transformed = transformTimeSeries(
     parsedTimestamps,
     data.features[0].properties.parameters,
     configs,
     Duration.fromObject({ hour: 1 }),
   )
+
+  if (coordinates.altitude !== null) {
+    transformed.pressure.forEach((v, i) => {
+      const pressure = v.value
+      const temperature = transformed.temperature[i].value
+      if (pressure === null || temperature === null) return
+      transformed.pressure[i].value = convertSurfacePressureToSeaLevel(pressure, coordinates.altitude!, temperature)
+    })
+  } else {
+    // TODO: how can we handle this better? using an api like open-elevation means selfhosting the api
+    console.warn('No altitude available, cannot convert surface pressure to sea level pressure!')
+  }
+
+  return transformed
+}
+
+function convertSurfacePressureToSeaLevel(P: number, h: number, t: number): number {
+  const g = 9.80665 // m/s²
+  const M = 0.0289644 // kg/mol
+  const R = 8.31432 // J/(mol·K)
+  const L = 0.0065 // K/m (lapse rate)
+
+  const T = t + 273.15
+
+  const factor = (g * M) / (R * L)
+  const base = 1 - (L * h) / T
+
+  return P * Math.pow(base, -factor)
 }
