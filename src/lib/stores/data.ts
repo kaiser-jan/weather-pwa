@@ -8,6 +8,7 @@ import { mergeMultivariateTimeSeries } from '../utils/data'
 import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/data'
 import { LOADERS, type DatasetId } from '$lib/data/providers'
 import { debounce, deepEqual } from '$lib/utils'
+import { DateTime, Duration } from 'luxon'
 
 const { subscribe, set } = writable<Forecast | null>(null)
 
@@ -17,11 +18,14 @@ export const forecastStore = {
 }
 
 function update(coordinates: Coordinates, datasets: readonly DatasetId[], stream = true) {
+  set(null)
+
   // show cached data for this location while loading
   const cachedForecast = getCachedForecast(coordinates, datasets)
-  if (cachedForecast) set(cachedForecast)
+  if (cachedForecast) {
+    set(cachedForecast)
+  }
 
-  set(null)
   const loaders = datasets.map((d) => LOADERS[d])
   const parts: (MultivariateTimeSeries | null)[] = Array(datasets.length).fill(null)
   const debouncedUpdate = debounce(() => updateForecast(parts), 100)
@@ -81,12 +85,26 @@ type CachedForecast = {
   forecast: Forecast
 }
 
+export function luxonReviver(key: string, value: any): any {
+  if (typeof value === 'string') {
+    if (key === 'datetime') {
+      const dt = DateTime.fromISO(value)
+      if (dt.isValid) return dt
+    }
+    if (key === 'duration') {
+      const dur = Duration.fromISO(value)
+      if (dur.isValid) return dur
+    }
+  }
+  return value
+}
+
 function getCachedForecast(coordinates: Coordinates, datasets: readonly DatasetId[]) {
   try {
     const lastForecastString = localStorage.getItem('last-forecast')
     if (!lastForecastString) return null
-    const lastForecast = JSON.parse(lastForecastString) as CachedForecast
-    const isValid = deepEqual(coordinates, lastForecast.coordinates) && deepEqual(datasets, lastForecast.coordinates)
+    const lastForecast = JSON.parse(lastForecastString, luxonReviver) as CachedForecast
+    const isValid = deepEqual(coordinates, lastForecast.coordinates) && deepEqual(datasets, lastForecast.datasets)
     if (isValid) return lastForecast.forecast
   } catch (error) {}
 
