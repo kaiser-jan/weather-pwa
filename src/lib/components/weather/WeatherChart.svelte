@@ -152,17 +152,19 @@
       const extent = d3.extent(series, (d) => d.value)
       const min = extent[0] ?? 0
       const max = extent[1] ?? 0
-      const domain = [
-        details.domain.min.findLast((t) => t <= min) ?? details.domain.min[0],
-        details.domain.max.find((t) => t >= max) ?? details.domain.max[0],
-      ]
-      // console.debug(seriesKey, domain, extent, details.domain.max)
+      const domainMins = details.domain.min.map(unitConversion)
+      const domainMaxs = details.domain.max.map(unitConversion)
 
-      const scaleY = d3.scaleLinear(domain.map(unitConversion), rangeY) //.nice()
+      const domain = [
+        domainMins.findLast((t) => t <= min) ?? domainMins[0],
+        domainMaxs.find((t) => t >= max) ?? domainMaxs[0],
+      ]
+
+      const scaleY = d3.scaleLinear(domain, rangeY) //.nice()
+
+      const format = (d: number) => formatMetric(d, unit)
 
       if (!details.hideScale) {
-        const format = (d: number) => formatMetric(d, unit)
-
         const xOffset =
           dimensions.margin.left +
           (details.scaleOnRight ? dimensions.width : 0) +
