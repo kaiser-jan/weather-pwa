@@ -12,6 +12,8 @@ import {
   CalendarIcon,
   ChartLineIcon,
   ChartNoAxesGanttIcon,
+  ChevronsUpDownIcon,
+  ChevronsUpIcon,
   CloudSunIcon,
   ComponentIcon,
   DatabaseIcon,
@@ -219,6 +221,13 @@ export const settingsConfig = [
             type: 'boolean',
             icon: BadgeInfoIcon,
             default: false,
+          },
+          {
+            id: 'highlightExtrema',
+            label: 'Highlight Extrema',
+            type: 'boolean',
+            icon: ChevronsUpDownIcon,
+            default: true,
           },
           {
             id: 'alwaysShowValuesDisplay',

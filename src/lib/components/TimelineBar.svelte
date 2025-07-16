@@ -101,10 +101,10 @@
     background-color: var(--color-blue-500);
     background: repeating-linear-gradient(
       45deg,
-      hsla(220, 20%, 20%, 45%),
-      hsla(220, 20%, 20%, 45%) 4px,
-      hsla(220, 25%, 12%, 70%) 4px,
-      hsla(220, 25%, 12%, 70%) 8px
+      hsla(220, 20%, 20%, 25%),
+      hsla(220, 20%, 20%, 25%) 4px,
+      hsla(220, 25%, 12%, 50%) 4px,
+      hsla(220, 25%, 12%, 50%) 8px
     );
   }
 </style>

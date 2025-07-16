@@ -9,6 +9,7 @@ export interface SeriesDetailsBase {
   gradientColorStops?: ColorStop[]
   invert?: boolean
   areaSecondParameter?: WeatherMetricKey
+  markExtrema?: boolean
 }
 
 export interface SeriesDetails extends SeriesDetailsBase {

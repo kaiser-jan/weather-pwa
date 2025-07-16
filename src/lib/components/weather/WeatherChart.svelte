@@ -17,6 +17,7 @@
   import { createArea } from '$lib/utils/d3/area'
   import { debounce } from '$lib/utils'
   import { Skeleton } from '../ui/skeleton'
+  import { createExtremaMarkers } from '$lib/utils/d3/extrema'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -217,9 +218,11 @@
           dataRepresentation.attr('stroke', `url(#${gradientId})`)
           if (details.style === 'area') dataRepresentation.attr('fill', `url(#${gradientId})`)
         }
-      }
 
-      addDataRepresentation(seriesKey, series, details)
+        if (details.markExtrema && $settingsChart.highlightExtrema) {
+          createExtremaMarkers({ svg, dimensions, scaleX, scaleY, data: seriesA, format })
+        }
+      }
 
       if (details.include) {
         for (const [includeParameter, includeDetails] of Object.entries(details.include)) {
@@ -228,6 +231,8 @@
           addDataRepresentation(includeParameter, includeSeriesA, includeDetails, includeSeriesB)
         }
       }
+
+      addDataRepresentation(seriesKey, series, details)
 
       createdSeriesDetails.push({ ...details, name: seriesKey, scale: scaleY, data: series })
     }

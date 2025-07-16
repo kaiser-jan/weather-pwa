@@ -27,6 +27,7 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     class: '',
     unit: '°',
     gradientColorStops: get(settings).appearance.colors.temperatureColorStops,
+    markExtrema: true,
     include: {
       temperature_max: {
         style: 'area',
