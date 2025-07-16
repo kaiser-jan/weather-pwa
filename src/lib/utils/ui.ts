@@ -1,6 +1,11 @@
 import type { ColorStop } from '$lib/types/ui'
 
-export function generateCssRangeGradient(rangeMin: number, rangeMax: number, stops: ColorStop[]): string {
+export function generateCssRangeGradient(
+  rangeMin: number,
+  rangeMax: number,
+  stops: ColorStop[],
+  direction: 'left' | 'top' | 'right' | 'bottom' = 'right',
+): string {
   const includedStops = stops.filter((s) => s.value >= rangeMin && s.value <= rangeMax)
 
   const before = [...stops].reverse().find((s) => s.value < rangeMin)
@@ -14,7 +19,7 @@ export function generateCssRangeGradient(rangeMin: number, rangeMax: number, sto
     return `hsl(${s.h}, ${s.s}%, ${s.l}%) ${pos}%`
   })
 
-  return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
+  return `background: linear-gradient(to ${direction}, ${gradientStops.join(', ')});`
 }
 
 export function interpolate(a: number, b: number, t: number): number {

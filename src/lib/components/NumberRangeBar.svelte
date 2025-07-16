@@ -9,14 +9,21 @@
     instance: NumberSummary
     color: 'clouds' | 'temperature'
     className: string
+    vertical: boolean
   }
 
-  const { total, instance, color, className }: Props = $props()
+  const { total, instance, color, className, vertical }: Props = $props()
 
-  const left = $derived(scale(instance.min))
-  const right = $derived(100 - scale(instance.max))
+  const start = $derived(scale(instance.min))
+  const end = $derived(100 - scale(instance.max))
+  const startAverage = $derived(scale(instance.avg))
   const gradientCss = $derived(
-    generateCssRangeGradient(instance.min, instance.max, $settings.appearance.colors.temperatureColorStops),
+    generateCssRangeGradient(
+      instance.min,
+      instance.max,
+      $settings.appearance.colors.temperatureColorStops,
+      vertical ? 'top' : 'right',
+    ),
   )
 
   function scale(temperature: number) {
@@ -33,13 +40,20 @@
         return 'bg-red'
     }
   })
+
+  const insetStyle = $derived(vertical ? `top: ${end}%; bottom: ${start}%;` : `left: ${start}%; right: ${end}%;`)
 </script>
 
 <div class={cn('bg-foreground relative h-full w-full rounded-full', className)}>
   <span
-    class={['absolute inset-0 h-full min-w-1 rounded-full', `left-[${left}%] right-[${right}%]`, backgroundColor]}
-    style={[`left: ${left}%; right: ${right}%;`, color === 'temperature' && gradientCss]
-      .filter((v) => v !== false)
-      .join('')}
+    class={['absolute inset-0 rounded-full', backgroundColor]}
+    style={[insetStyle, color === 'temperature' && gradientCss].filter((v) => v !== false).join('')}
+  ></span>
+  <span
+    class={[
+      'bg-background absolute h-1 w-1 rounded-full opacity-50',
+      vertical ? `left-1/2 -translate-1/2` : 'top-1/2 -translate-1/2',
+    ]}
+    style={vertical ? `bottom: ${startAverage}%;` : `left: ${startAverage}%;`}
   ></span>
 </div>

@@ -19,6 +19,7 @@
   import PrecipitationTime from '$lib/components/weather/PrecipitationTime.svelte'
   import { currentFromMultiseries } from '$lib/data/utils'
   import SectionDailyDetails from '$lib/components/sections/SectionDailyDetails.svelte'
+  import SectionDailyOutlook from '$lib/components/sections/SectionDailyOutlook.svelte'
 
   let locationName = $state<string>()
   let isLoading = $state(false)
@@ -159,20 +160,11 @@
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  <TimelineBar
-    multiseries={today?.multiseries}
-    parameters={['temperature']}
-    startDatetime={NOW.startOf('day')}
-    endDatetime={NOW.startOf('day').plus({ days: 1 })}
-    datetime={NOW}
-    marks={$settings.sections.components.timelineBar.marks.map((m) => NOW.set(m))}
-    {coordinates}
-    className="h-2"
-  />
-
   <SectionChartDaily datetime={NOW} />
 
   <SectionDailyDetails {coordinates} datetime={NOW} />
+
+  <SectionDailyOutlook {coordinates} datetime={NOW} />
 
   <!-- NOTE: bottom navbar overlap padding -->
   <div class="h-16"></div>
