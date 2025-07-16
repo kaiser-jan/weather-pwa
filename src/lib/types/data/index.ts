@@ -10,7 +10,7 @@ export interface Coordinates {
 export type NumberSummary = { min: number; avg: number; max: number; sum: number }
 
 export interface Forecast {
-  current: WeatherInstant & { symbol?: WeatherSituation }
+  current: (WeatherInstant & { symbol?: WeatherSituation }) | null
   multiseries: MultivariateTimeSeries
   daily: (TimeBucketSummary & {
     multiseries: MultivariateTimeSeries

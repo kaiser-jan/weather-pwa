@@ -12,9 +12,16 @@
     provided?: WeatherSituation | null
     coordinates: Coordinates | undefined
     className: string
+    datetime: DateTime
   }
 
-  let { derived: derivedSituation, provided: providedSituation, coordinates, className }: Props = $props()
+  let {
+    derived: derivedSituation,
+    provided: providedSituation,
+    coordinates,
+    className,
+    datetime: NOW,
+  }: Props = $props()
 
   let loaded = $state(false)
 
@@ -26,12 +33,11 @@
 
     if (!weatherSitutation) return null
 
-    const now = DateTime.now()
-    let isDay = now > DateTime.fromObject({ hour: 6 }) && now < DateTime.fromObject({ hour: 20 })
+    let isDay = NOW > DateTime.fromObject({ hour: 6 }) && NOW < DateTime.fromObject({ hour: 20 })
 
     if (coordinates) {
-      const times = SunCalc.getTimes(now.toJSDate(), coordinates.latitude, coordinates.longitude)
-      isDay = now >= DateTime.fromJSDate(times.sunrise) && now <= DateTime.fromJSDate(times.sunset)
+      const times = SunCalc.getTimes(NOW.toJSDate(), coordinates.latitude, coordinates.longitude)
+      isDay = NOW >= DateTime.fromJSDate(times.sunrise) && NOW <= DateTime.fromJSDate(times.sunset)
     }
 
     let iconName = getWeatherIcon({ ...weatherSitutation, timeOfDay: isDay ? 'day' : 'night' })

@@ -5,6 +5,12 @@
   import { ArrowRightIcon, UmbrellaIcon } from '@lucide/svelte'
   import { DateTime } from 'luxon'
 
+  interface Props {
+    datetime: DateTime
+  }
+
+  let { datetime: NOW }: Props = $props()
+
   const precipitationStartDatetime = $derived.by(() => {
     const precipitation_amount = $forecastStore?.multiseries?.precipitation_amount
     if (!precipitation_amount) return undefined
@@ -13,8 +19,8 @@
     const timePeriodWithPrecipitation = precipitation_amount.find((tp, index) => {
       if (tp.value === undefined) return false
       // also allow the current timebucket -> it is already raining
-      const isCurrentTimeBucket = precipitation_amount[index + 1].datetime > DateTime.now()
-      if (tp.datetime < DateTime.now() && !isCurrentTimeBucket) return false
+      const isCurrentTimeBucket = precipitation_amount[index + 1].datetime > NOW
+      if (tp.datetime < NOW && !isCurrentTimeBucket) return false
       return tp.value > $settings.data.forecast.precipitation.threshold
     })
 
@@ -37,7 +43,7 @@
 {#if precipitationStartDatetime}
   <span class="inline-flex items-center gap-2">
     <UmbrellaIcon />
-    {#if precipitationStartDatetime > DateTime.now()}
+    {#if precipitationStartDatetime > NOW}
       {formatRelativeDatetime(precipitationStartDatetime)}
     {:else if precipitationEndDatetime}
       <span class="inline-flex flex-row items-center">

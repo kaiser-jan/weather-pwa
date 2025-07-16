@@ -57,10 +57,9 @@ function update(coordinates: Coordinates, datasets: readonly DatasetId[], stream
 
     const daily = combineMultiseriesToDailyForecast(merged)
     const total = forecastTotalFromDailyForecast(daily)
-    const current = currentFromMultiseries(merged)
 
     const forecast: Forecast = {
-      current,
+      current: null,
       multiseries: merged,
       daily,
       total,

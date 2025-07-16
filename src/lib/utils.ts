@@ -107,7 +107,6 @@ export function debounce<F extends (...args: any[]) => void>(callback: F, wait: 
   let timeout: ReturnType<typeof setTimeout> | null = null
 
   const debounced = (...args: Parameters<F>) => {
-    console.log(immediate, timeout)
     const shouldCallNow = immediate && !timeout
 
     if (timeout) {

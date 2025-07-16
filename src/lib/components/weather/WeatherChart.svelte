@@ -24,6 +24,7 @@
     visibleSeries: WeatherMetricKey[]
     startDateTime: DateTime
     endDateTime: DateTime
+    datetime: DateTime
     className: string
     onHighlightTimestamp: (timebucket: Record<WeatherMetricKey, TimeSeriesNumberEntry> | null) => void
     onCurrentTimestamp: (timebucket: Record<WeatherMetricKey, TimeSeriesNumberEntry>) => void
@@ -34,6 +35,7 @@
     visibleSeries,
     startDateTime,
     endDateTime,
+    datetime: NOW, // TODO: only update whats necessary
     className,
     loaded,
     onHighlightTimestamp = $bindable(),
@@ -256,8 +258,7 @@
     })
 
     function selectDatetime(datetime: DateTime | null) {
-      const now = DateTime.now()
-      const isToday = now >= startDateTime && now <= endDateTime
+      const isToday = NOW >= startDateTime && NOW <= endDateTime
       const isManual = datetime !== null
 
       if (!isManual && !isToday) {
@@ -266,7 +267,7 @@
         return
       }
 
-      const points = updateXAxisPointer(datetime ?? now, isManual)
+      const points = updateXAxisPointer(datetime ?? NOW, isManual)
       const timebucket = Object.fromEntries(points.map((p) => [p.name, p.d])) as Record<
         WeatherMetricKey,
         TimeSeriesNumberEntry

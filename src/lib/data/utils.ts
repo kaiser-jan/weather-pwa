@@ -174,11 +174,11 @@ export function forecastTotalFromDailyForecast(daily: TimeBucketSummary[]): Time
   }
 }
 
-export function currentFromMultiseries(multiseries: MultivariateTimeSeries) {
+export function currentFromMultiseries(multiseries: MultivariateTimeSeries, datetime: DateTime) {
   // retrieves the last value before DateTime.now() for each series
   const current: Forecast['current'] = {}
   Object.entries(multiseries).forEach(([key, series]) => {
-    current[key as keyof typeof current] = series.findLast((tp) => tp.datetime < DateTime.now())?.value
+    current[key as keyof typeof current] = series.findLast((tp) => tp.datetime < datetime)?.value
   })
   return current
 }

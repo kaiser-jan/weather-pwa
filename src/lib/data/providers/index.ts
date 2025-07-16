@@ -1,7 +1,5 @@
 import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/data'
 import type { Dataset, Provider } from '$lib/types/data/providers'
-import { mergeMultivariateTimeSeries } from '$lib/utils/data'
-import { combineMultiseriesToDailyForecast, currentFromMultiseries, forecastTotalFromDailyForecast } from '../utils'
 import nowcast from './geosphere.at/nowcast'
 import nwp from './geosphere.at/nwp'
 import nwpOffset from './geosphere.at/nwp-offset'

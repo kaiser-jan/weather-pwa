@@ -19,12 +19,22 @@
     parameters: Parameter[]
     startDatetime: DateTime
     endDatetime: DateTime
+    datetime: DateTime
     marks?: DateTime[]
     coordinates?: Coordinates
     className: string
   }
 
-  let { multiseries, parameters, startDatetime, endDatetime, marks = [], coordinates, className }: Props = $props()
+  let {
+    multiseries,
+    parameters,
+    startDatetime,
+    endDatetime,
+    datetime: NOW,
+    marks = [],
+    coordinates,
+    className,
+  }: Props = $props()
 
   let barHeight = $state<number>(0)
 
@@ -51,13 +61,6 @@
     if (!d || !d1 || !start || !end) return
     return ((d.toUnixInteger() - d1.toUnixInteger()) / (end.toUnixInteger() - start.toUnixInteger())) * 100
   }
-
-  let now = $state(DateTime.now())
-  const intervalUpdateCurrentDate = setInterval(() => {
-    now = DateTime.now()
-  }, 60000)
-
-  onDestroy(() => clearInterval(intervalUpdateCurrentDate))
 </script>
 
 <div
@@ -66,7 +69,7 @@
 >
   <div
     class="stripe-pattern absolute top-0 bottom-0 z-10"
-    style={`width: ${distanceFromDatetimes(now, startDatetime)}%; left: 0;`}
+    style={`width: ${distanceFromDatetimes(NOW, startDatetime)}%; left: 0;`}
   ></div>
   {#each marks as mark}
     <div

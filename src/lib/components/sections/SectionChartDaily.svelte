@@ -11,8 +11,15 @@
   import ParameterValue from '../ParameterValue.svelte'
   import { Skeleton } from '../ui/skeleton'
 
+  interface Props {
+    datetime: DateTime
+  }
+
+  let { datetime: NOW }: Props = $props()
+
   const settingsChart = settings.select((s) => s.sections.chart)
 
+  // TODO: ensure this actually uses the current day
   let activeChartIndex = $state<number>(0)
   let chartScroller = $state<HTMLDivElement>()
 
@@ -51,8 +58,7 @@
 
   const dayLabel = $derived.by(() => {
     if (!$forecastStore?.daily || $forecastStore.daily.length === 0) return 'Today'
-    if ($forecastStore.daily[activeChartIndex].datetime.startOf('day').equals(DateTime.now().startOf('day')))
-      return 'Today'
+    if ($forecastStore.daily[activeChartIndex].datetime.startOf('day').equals(NOW.startOf('day'))) return 'Today'
     return $forecastStore.daily[activeChartIndex].datetime.toFormat('cccc')
   })
 </script>
@@ -101,6 +107,7 @@
         loaded={activeChartIndex >= index - 1 && activeChartIndex <= index + 1}
         startDateTime={day.datetime}
         endDateTime={day.datetime.plus(day.duration)}
+        datetime={NOW}
         className="snap-center shrink-0 w-full min-h-10"
         onHighlightTimestamp={(tb) => (highlightedTimeBucket = tb)}
         onCurrentTimestamp={(tb) => (currentTimeBucket = tb)}
