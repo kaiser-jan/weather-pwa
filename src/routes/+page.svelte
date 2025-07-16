@@ -13,12 +13,12 @@
   import LocationSelector from '$lib/components/LocationSelector.svelte'
   import { forecastStore } from '$lib/stores/data'
   import SettingsButton from '$lib/components/SettingsButton.svelte'
-  import SectionDaily from '$lib/components/sections/SectionDaily.svelte'
   import SectionChartDaily from '$lib/components/sections/SectionChartDaily.svelte'
   import AsyncText from '$lib/components/AsyncText.svelte'
   import SkySimulation from '$lib/components/SkySimulation.svelte'
   import PrecipitationTime from '$lib/components/weather/PrecipitationTime.svelte'
   import { currentFromMultiseries } from '$lib/data/utils'
+  import SectionDailyDetails from '$lib/components/sections/SectionDailyDetails.svelte'
 
   let locationName = $state<string>()
   let isLoading = $state(false)
@@ -172,7 +172,7 @@
 
   <SectionChartDaily datetime={NOW} />
 
-  <SectionDaily {coordinates} datetime={NOW} />
+  <SectionDailyDetails {coordinates} datetime={NOW} />
 
   <!-- NOTE: bottom navbar overlap padding -->
   <div class="h-16"></div>
