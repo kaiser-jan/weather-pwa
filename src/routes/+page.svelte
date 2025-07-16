@@ -16,6 +16,7 @@
   import SectionDaily from '$lib/components/sections/SectionDaily.svelte'
   import SectionChartDaily from '$lib/components/sections/SectionChartDaily.svelte'
   import AsyncText from '$lib/components/AsyncText.svelte'
+  import SkySimulation from '$lib/components/SkySimulation.svelte'
 
   let locationName = $state<string>()
   let isLoading = $state(false)
@@ -83,34 +84,37 @@
 
 <!-- TODO: add data-vaul-drawer-wrapper -->
 <div
-  class="flex w-full flex-col items-center justify-center rounded-b-[1rem] bg-blue-950 p-[0.5rem] pt-0"
+  class="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-b-[1rem] bg-blue-950 p-[0.5rem] pt-0"
   style="height: calc(30vh + max(0.5rem, env(safe-area-inset-top)))"
 >
+  <SkySimulation class="absolute inset-0 z-0" {coordinates} turbidity={4} datetime={DateTime.now()} />
+
   <div class="shrink-0" style="height: max(0.5rem, env(safe-area-inset-top))"></div>
-  <div class="text-text-muted inline-flex w-full items-center justify-between text-xs">
-    {locationName}
+
+  <div class="text-text-muted z-10 inline-flex w-full items-center justify-between text-xs">
+    <span class="drop-shadow-2xl">{locationName}</span>
     <button onclick={loadForecastData} class={['p-2', isLoading ? 'animate-spin' : '']}>
       <RefreshCwIcon />
     </button>
   </div>
 
-  <div class="my-auto flex flex-row items-center justify-center gap-4">
+  <div class="z-10 my-auto flex flex-row items-center justify-center gap-4">
     <WeatherSymbol
-      className="size-30"
+      className="size-30 z-10"
       derived={deriveWeatherSituationFromInstant($forecastStore?.current)}
       provided={$forecastStore?.current?.symbol}
       {coordinates}
     />
     <!-- TODO: units -->
     <AsyncText
-      class="text-6xl"
+      class="text-6xl drop-shadow-2xl"
       text={Math.round($forecastStore?.current?.temperature) + '°C'}
       placeholder={'20°C'}
       loaded={$forecastStore?.current !== undefined}
     />
   </div>
 
-  <div class="bg-background flex h-10 w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
+  <div class="bg-background z-10 flex h-10 w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
     <WeatherItemCurrent item="cloud_coverage" current={$forecastStore?.current} />
     <WeatherItemCurrent item="uvi" current={$forecastStore?.current} />
     <WeatherItemCurrent item="wind" current={$forecastStore?.current} />
