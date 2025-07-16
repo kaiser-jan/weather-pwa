@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Coordinates } from '$lib/types/data'
+  import type { Coordinates, WeatherMetricKey } from '$lib/types/data'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
   import { ArrowRightIcon, RefreshCwIcon, UmbrellaIcon } from '@lucide/svelte'
   import { settings } from '$lib/settings/store'
@@ -27,6 +27,8 @@
   let NOW = $state(DateTime.now())
 
   const settingData = settings.select((s) => s.data)
+
+  const ITEMS_CURRENT: WeatherMetricKey[] = ['relative_humidity', 'wind_speed', 'pressure']
 
   const forecastCurrent = $derived.by(() => {
     if (!$forecastStore) return null
@@ -60,37 +62,6 @@
     // show the spinning even when using cache
     setTimeout(() => (isLoading = false), 500)
   }
-
-  const today = $derived($forecastStore?.daily.findLast((d) => d.datetime <= NOW))
-
-  // TODO: reactivity
-  const precipitationStartDatetime = $derived.by(() => {
-    const precipitation_amount = $forecastStore?.multiseries?.precipitation_amount
-    if (!precipitation_amount) return undefined
-
-    // the first time period with precipitation from now on
-    const timePeriodWithPrecipitation = precipitation_amount.find((tp, index) => {
-      if (tp.value === undefined) return false
-      // also allow the current timebucket -> it is already raining
-      const isCurrentTimeBucket = precipitation_amount[index + 1].datetime > NOW
-      if (tp.datetime < NOW && !isCurrentTimeBucket) return false
-      return tp.value > $settings.data.forecast.precipitation.threshold
-    })
-
-    return timePeriodWithPrecipitation?.datetime
-  })
-
-  const precipitationEndDatetime = $derived.by(() => {
-    if (!$forecastStore?.multiseries?.precipitation_amount || !precipitationStartDatetime) return undefined
-
-    // the first time period without precipitation after the precipitationStartDatetime
-    const timePeriodWithoutPrecipitation = $forecastStore.multiseries.precipitation_amount.find((tp) => {
-      if (tp.value === undefined || tp.datetime < precipitationStartDatetime) return false
-      return tp.value <= $settings.data.forecast.precipitation.threshold
-    })
-
-    return timePeriodWithoutPrecipitation?.datetime
-  })
 
   function onMinuteChange() {
     NOW = DateTime.now()
@@ -149,9 +120,9 @@
   </div>
 
   <div class="bg-background z-10 flex h-10 w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
-    <WeatherItemCurrent item="cloud_coverage" current={forecastCurrent} />
-    <WeatherItemCurrent item="uvi" current={forecastCurrent} />
-    <WeatherItemCurrent item="wind" current={forecastCurrent} />
+    {#each ITEMS_CURRENT as item}
+      <WeatherItemCurrent {item} current={forecastCurrent} />
+    {/each}
     <PrecipitationTime datetime={NOW} />
     {#if forecastCurrent?.precipitation_amount && forecastCurrent.precipitation_amount > 0}
       <WeatherItemCurrent item="precipitation_amount" current={forecastCurrent} />

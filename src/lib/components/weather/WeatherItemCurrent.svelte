@@ -2,36 +2,33 @@
   import type { Forecast, WeatherMetricKey } from '$lib/types/data'
   import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
   import MathFraction from '$lib/components/MathFraction.svelte'
-
-  type AvailableItemsCurrent = 'cloud_coverage' | 'uvi' | 'wind' | 'precipitation_amount' | 'pressure' | 'humidity'
+  import { convertAndFormatMetric, convertToUnit, getPreferredUnit } from '$lib/utils/units'
 
   interface Props {
-    item: AvailableItemsCurrent
+    item: WeatherMetricKey
     current: Forecast['current'] | null
   }
 
   const { item, current }: Props = $props()
 
-  const itemMap: Record<
-    AvailableItemsCurrent,
-    { icon: typeof CloudIcon; datapoint: WeatherMetricKey; unit?: string; multiplier?: number }
-  > = {
-    cloud_coverage: { icon: CloudIcon, datapoint: 'cloud_coverage', unit: '%', multiplier: 1 },
+  type Details = { icon?: typeof CloudIcon; datapoint: WeatherMetricKey }
+
+  const itemMap: Partial<Record<WeatherMetricKey, Details>> = {
+    cloud_coverage: { icon: CloudIcon, datapoint: 'cloud_coverage' },
     uvi: { icon: SunIcon, datapoint: 'uvi_clear_sky' },
-    wind: { icon: WindIcon, datapoint: 'wind_speed', unit: 'm/s' },
-    precipitation_amount: { icon: DropletsIcon, datapoint: 'precipitation_amount', unit: 'mm' },
-    pressure: { icon: GaugeIcon, datapoint: 'pressure', multiplier: 1 / 100, unit: 'hPa' },
-    humidity: { icon: DropletIcon, datapoint: 'relative_humidity', unit: '%' },
+    wind_speed: { icon: WindIcon, datapoint: 'wind_speed' },
+    precipitation_amount: { icon: DropletsIcon, datapoint: 'precipitation_amount' },
+    pressure: { icon: GaugeIcon, datapoint: 'pressure' },
+    relative_humidity: { icon: DropletIcon, datapoint: 'relative_humidity' },
   }
 
-  const details = $derived(itemMap[item])
+  const details = $derived<Details>(itemMap[item] ?? { datapoint: item })
+
+  const unit = $derived(getPreferredUnit(item))
 
   const formattedValue = $derived.by(() => {
     const rawValue = current?.[details.datapoint]!
-    const multiplier = details.multiplier ?? 1
-    const value = rawValue * multiplier
-    if (value < 1 && value > 0) return '<1'
-    return Math.round(value)
+    return Math.round(convertToUnit(rawValue, item, unit))
   })
 </script>
 
@@ -40,16 +37,16 @@
     <!-- svelte-ignore element_invalid_self_closing_tag -->
     <details.icon />
 
-    <span class="inline-flex items-center gap-0.5">
+    <span class="inline-flex items-end gap-0.5">
       <span>{formattedValue}</span>
-      {#if details.unit?.match(/\w\/\w/)}
-        <MathFraction numerator={details.unit.split('/')[0]} denominator={details.unit.split('/')[1]} />
+      {#if unit?.match(/\w\/\w/)}
+        <MathFraction numerator={unit.split('/')[0]} denominator={unit.split('/')[1]} />
       {:else}
-        {details.unit}
+        <span class="text-text-muted mb-0.5 text-xs">{unit}</span>
       {/if}
     </span>
 
-    {#if item === 'wind' && current.wind_degrees}
+    {#if item === 'wind_speed' && current.wind_degrees}
       <Navigation2Icon
         class="text-text-muted size-[0.8em]!"
         style={`transform: rotate(${current.wind_degrees - 180}deg)`}

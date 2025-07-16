@@ -110,7 +110,12 @@ export function formatMetric(value: number, unit: Unit | null): string {
   return string + unit
 }
 
-export function convertAndFormatMetric(value: number, key: WeatherMetricKey, unit: Unit, showUnit = true): string {
+export function convertAndFormatMetric(
+  value: number,
+  key: WeatherMetricKey,
+  unit: Unit | null,
+  showUnit = true,
+): string {
   const converted = convertToUnit(value, key, unit)
   return formatMetric(converted, showUnit ? unit : null)
 }
