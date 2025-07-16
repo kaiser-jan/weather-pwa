@@ -126,7 +126,7 @@
     const scaleX = d3.scaleUtc([startDateTime, endDateTime], [dimensions.margin.left, dimensions.width + margin.left])
 
     createXAxis({ svg, dimensions, scale: scaleX, addLines: true }) //
-      .attr('transform', `translate(0,${dimensions.margin.top + dimensions.height})`)
+      .attr('transform', `translate(0,${dimensions.margin.top + dimensions.height + 0.5})`)
 
     const createdSeriesDetails: CreatedSeriesDetails[] = []
 
