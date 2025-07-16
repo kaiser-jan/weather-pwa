@@ -40,6 +40,9 @@
     onCurrentTimestamp = $bindable(),
   }: Props = $props()
 
+  // move axis by half their line width to avoid overlap with content
+  const LINE_CORRECTION = 0.5
+
   const settingsChart = settings.select((s) => s.sections.chart)
 
   let container: HTMLDivElement
@@ -158,6 +161,12 @@
       if (!details.hideScale) {
         const format = (d: number) => formatMetric(d, unit)
 
+        const xOffset =
+          dimensions.margin.left +
+          (details.scaleOnRight ? dimensions.width : 0) +
+          (details.scaleOnRight ? LINE_CORRECTION : -LINE_CORRECTION) +
+          (yScaleOffsets[seriesKey] ?? 0)
+
         createYAxis({
           svg,
           dimensions,
@@ -167,10 +176,7 @@
           unit,
           addLines: false,
         }) //
-          .attr(
-            'transform',
-            `translate(${dimensions.margin.left + (details.scaleOnRight ? dimensions.width : 0) + yScaleOffsets[seriesKey]},0)`,
-          )
+          .attr('transform', `translate(${xOffset},${LINE_CORRECTION})`)
       }
 
       function addDataRepresentation(
@@ -224,9 +230,9 @@
 
     svg
       .append('rect')
-      .attr('x', dimensions.margin.left + 0.25)
-      .attr('y', dimensions.margin.top - 0.25)
-      .attr('width', scaleX(DateTime.now()) - dimensions.margin.left)
+      .attr('x', dimensions.margin.left)
+      .attr('y', dimensions.margin.top)
+      .attr('width', scaleX(NOW) - dimensions.margin.left)
       .attr('height', dimensions.height)
       .classed('fill-midground', true)
       .attr('opacity', 0.7)
@@ -236,9 +242,9 @@
       .append('clipPath')
       .attr('id', 'clip')
       .append('rect')
-      .attr('x', dimensions.margin.left + 0.25)
+      .attr('x', dimensions.margin.left)
       .attr('y', dimensions.margin.top)
-      .attr('width', dimensions.width - 0.25)
+      .attr('width', dimensions.width)
       .attr('height', dimensions.height)
 
     const { updateXAxisPointer } = createAxisPointer({
