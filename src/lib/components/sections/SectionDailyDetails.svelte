@@ -33,12 +33,12 @@
         />
       </div>
 
-      <div class="flex gap-2">
+      <div class="flex gap-1">
         {#each ['min', 'max'] as const as limit}
           <div class={['flex items-center gap-1', limit === 'min' ? 'flex-row' : 'flex-row-reverse']}>
             {Math.round(day.summary.temperature[limit])}
             <span
-              class="h-4 w-[0.25rem] rounded-full"
+              class={['h-4 w-[0.25rem]', limit === 'min' ? 'rounded-l-sm' : 'rounded-r-sm']}
               style={`background-color: ${interpolateColor($settings.appearance.colors.temperatureColorStops, day.summary.temperature[limit])}`}
             ></span>
           </div>

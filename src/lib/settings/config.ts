@@ -5,6 +5,7 @@ import type { DateObjectUnits } from 'luxon'
 import {
   ArrowUpAz,
   BadgeInfoIcon,
+  BinocularsIcon,
   BriefcaseIcon,
   CalculatorIcon,
   CalendarDaysIcon,
@@ -151,7 +152,7 @@ export const settingsConfig = [
                 label: 'Threshold',
                 icon: SquareSplitVerticalIcon,
                 type: 'number',
-                default: 0.0,
+                default: 0.05,
                 step: 0.01,
               },
             ],
@@ -247,6 +248,21 @@ export const settingsConfig = [
             label: 'Show Incomplete Last Day',
             type: 'boolean',
             icon: PuzzleIcon,
+            default: false,
+          },
+        ],
+      },
+      {
+        id: 'outlook',
+        label: 'Outlook',
+        type: 'page',
+        icon: BinocularsIcon,
+        children: [
+          {
+            id: 'showPrecipitation',
+            label: 'Show Precipitation',
+            type: 'boolean',
+            icon: UmbrellaIcon,
             default: false,
           },
         ],
