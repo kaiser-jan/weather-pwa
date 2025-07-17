@@ -7,13 +7,12 @@
   import { interpolateColor } from '$lib/utils/ui'
   import type { DateTime } from 'luxon'
   import { autoFormatMetric } from '$lib/utils/units'
+  import { NOW } from '$lib/stores/now'
+  import { coordinates } from '$lib/stores/location'
 
-  interface Props {
-    coordinates: Coordinates
-    datetime: DateTime
-  }
+  interface Props {}
 
-  let { coordinates, datetime: NOW }: Props = $props()
+  let {}: Props = $props()
 </script>
 
 <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
@@ -28,8 +27,8 @@
           endDatetime={day.datetime.endOf('day')}
           parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
           marks={$settings.sections.components.timelineBar.marks.map((m) => day.datetime.set(m))}
-          {coordinates}
-          datetime={NOW}
+          coordinates={$coordinates}
+          datetime={$NOW}
           className="h-2"
         />
       </div>

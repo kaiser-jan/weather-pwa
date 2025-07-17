@@ -1,4 +1,4 @@
-import { writable, type Writable } from 'svelte/store'
+import { writable, type Readable, type Writable } from 'svelte/store'
 
 export function persist<T>(key: string, initial: T): Writable<T> {
   const stored = localStorage.getItem(key)
@@ -50,4 +50,16 @@ export class LocalStorageState<T> {
 
 export function persistantState<T>(key: string, value: T) {
   return new LocalStorageState(key, value)
+}
+
+export function subscribeNonImmediate<T>(store: Readable<T>, subscription: (value: T) => void) {
+  let isFirst = true
+
+  return store.subscribe((state) => {
+    if (isFirst) {
+      isFirst = false
+    } else {
+      subscription(state)
+    }
+  })
 }

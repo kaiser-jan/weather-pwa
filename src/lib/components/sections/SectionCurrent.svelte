@@ -1,35 +1,29 @@
 <script lang="ts">
-  import { ArrowRightIcon, RefreshCwIcon, UmbrellaIcon } from '@lucide/svelte'
+  import { RefreshCwIcon } from '@lucide/svelte'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { deriveWeatherSituationFromInstant } from '$lib/data/symbols'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
   import AsyncText from '$lib/components/AsyncText.svelte'
   import SkySimulation from '$lib/components/SkySimulation.svelte'
   import { currentFromMultiseries } from '$lib/data/utils'
-  import { forecastStore } from '$lib/stores/data'
-  import type { Coordinates, WeatherMetricKey } from '$lib/types/data'
-  import type { DateTime } from 'luxon'
+  import { forecastStore, isForecastLoading } from '$lib/stores/data'
+  import type { WeatherMetricKey } from '$lib/types/data'
   import { autoFormatMetric } from '$lib/utils/units'
   import { settings } from '$lib/settings/store'
   import { reverseGeocoding, placeToWeatherLocation } from '$lib/data/location'
+  import { NOW } from '$lib/stores/now'
+  import { coordinates } from '$lib/stores/location'
 
   interface Props {
     shrink: boolean
-    datetime: DateTime
-    coordinates: Coordinates
-    loading: boolean
-    refresh: () => void
   }
 
-  let { shrink, datetime: NOW, coordinates, loading, refresh }: Props = $props()
+  let { shrink }: Props = $props()
 
   let locationNamePromise = $derived.by(async () => {
-    console.log(coordinates)
-    if (!coordinates) return null
-    const result = await reverseGeocoding(coordinates)
-    console.log(result)
+    if (!$coordinates) return null
+    const result = await reverseGeocoding($coordinates)
     const string = placeToWeatherLocation(result)
-    console.log(string)
     return string
   })
 
@@ -38,7 +32,7 @@
   const forecastCurrent = $derived.by(() => {
     if (!$forecastStore) return null
     if ($forecastStore.current) return $forecastStore.current
-    return currentFromMultiseries($forecastStore.multiseries, NOW)
+    return currentFromMultiseries($forecastStore.multiseries, $NOW)
   })
 </script>
 
@@ -47,7 +41,7 @@
   class:h-[25vh]={!shrink}
   class:h-[10vh]={shrink}
 >
-  <SkySimulation class="absolute inset-0 z-0" {coordinates} turbidity={4} datetime={NOW} />
+  <SkySimulation class="absolute inset-0 z-0" coordinates={$coordinates} turbidity={4} datetime={$NOW} />
 
   <div class="shrink-0" style="height: max(0.5rem, env(safe-area-inset-top))"></div>
 
@@ -55,7 +49,7 @@
     {#await locationNamePromise then locationName}
       <span class="drop-shadow-c-md">{locationName}</span>
     {/await}
-    <button onclick={refresh} class={['p-2', loading ? 'animate-spin' : '']}>
+    <button onclick={() => forecastStore.update()} class={['p-2', $isForecastLoading ? 'animate-spin' : '']}>
       <RefreshCwIcon />
     </button>
   </div>
@@ -65,8 +59,8 @@
       className="size-30 z-10"
       derived={deriveWeatherSituationFromInstant(forecastCurrent)}
       provided={forecastCurrent}
-      {coordinates}
-      datetime={NOW}
+      coordinates={$coordinates}
+      datetime={$NOW}
     />
     <!-- TODO: units -->
     <AsyncText

@@ -1,23 +1,58 @@
-import { readable, writable } from 'svelte/store'
-import {
-  combineMultiseriesToDailyForecast,
-  forecastTotalFromDailyForecast,
-  currentFromMultiseries,
-} from '../data/utils'
+import { get, readable, readonly, writable } from 'svelte/store'
+import { combineMultiseriesToDailyForecast, forecastTotalFromDailyForecast } from '../data/utils'
 import { mergeMultivariateTimeSeries } from '../utils/data'
 import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/data'
 import { LOADERS, type DatasetId } from '$lib/data/providers'
 import { debounce, deepEqual } from '$lib/utils'
 import { DateTime, Duration } from 'luxon'
+import { coordinates } from './location'
+import { settings } from '$lib/settings/store'
+import { NOW } from './now'
+import { subscribeNonImmediate } from '$lib/utils/state.svelte'
 
-const { subscribe, set } = writable<Forecast | null>(null)
+const _isForecastLoading = writable(false)
+
+const { subscribe, set } = writable<Forecast | null>(null, () => {
+  const subscriptionCoordinates = subscribeNonImmediate(coordinates, update)
+  const subscriptionDatetime = subscribeNonImmediate(NOW, update)
+  const subscriptionDatasets = subscribeNonImmediate(
+    settings.select((s) => s.data.datasets),
+    update,
+  )
+
+  return () => {
+    subscriptionCoordinates()
+    subscriptionDatetime()
+    subscriptionDatasets()
+  }
+})
+
+function update() {
+  console.debug('update')
+  const _coordinates = get(coordinates)
+  const datasetIds = get(settings).data.datasets
+  const stream = get(settings).data.incrementalLoad
+  updateWith(_coordinates, datasetIds, stream)
+}
+
+update()
 
 export const forecastStore = {
   subscribe,
   update,
 }
 
-function update(coordinates: Coordinates, datasets: readonly DatasetId[], stream = true) {
+export const isForecastLoading = readonly(_isForecastLoading)
+
+function onLoadingStart() {
+  _isForecastLoading.set(true)
+}
+function onLoadingDone() {
+  setTimeout(() => _isForecastLoading.set(false), 500)
+}
+
+function updateWith(coordinates: Coordinates, datasets: readonly DatasetId[], stream = true) {
+  onLoadingStart()
   set(null)
 
   // show cached data for this location while loading
@@ -36,6 +71,7 @@ function update(coordinates: Coordinates, datasets: readonly DatasetId[], stream
         parts[loaderIndex] = r
         const isComplete = parts.filter((p) => p !== null).length === loaders.length
         if (stream || isComplete) debouncedUpdate()
+        if (isComplete) onLoadingDone()
       })
       .catch((e) => {
         console.warn(`Loading dataset ${datasets[loaderIndex]} failed!\n${e}`)

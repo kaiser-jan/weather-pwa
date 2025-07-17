@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { type Icon as IconType, NavigationIcon, NavigationOffIcon } from '@lucide/svelte'
   import { settings } from '$lib/settings/store'
   import type { Coordinates } from '$lib/types/data'
   import { geolocationStore } from '$lib/stores/geolocation'
@@ -9,6 +8,7 @@
   import LocationSearch from './LocationSearch.svelte'
   import { iconMap } from '$lib/utils/icons'
   import { onMount } from 'svelte'
+  import { coordinates } from '$lib/stores/location'
 
   const geolocationDetails = geolocationStore.details
 
@@ -18,11 +18,9 @@
   let selectedItemId = persistantState('selected-location-id', ITEM_ID_GEOLOCATION)
   const previouslySelectedCoordinates = persistantState<Coordinates | null>('selected-coordinates', null)
 
-  interface Props {
-    coordinates: Coordinates | undefined
-  }
+  interface Props {}
 
-  let { coordinates = $bindable() }: Props = $props()
+  let {}: Props = $props()
 
   const settingLocations = settings.select((s) => s.data.locations)
 
@@ -30,9 +28,9 @@
     if (selectedItemId.value === ITEM_ID_GEOLOCATION) {
       const coords = get(geolocationStore).position?.coords
       if (!coords) return
-      coordinates = coords
+      coordinates.set(coords)
     } else if (selectedItemId.value === ITEM_ID_TEMPORARY) {
-    } else coordinates = $settingLocations[selectedItemId.value]
+    } else coordinates.set($settingLocations[selectedItemId.value])
   })
 
   let useGeolocation = persistantState('use-geolocation', true)
@@ -42,14 +40,8 @@
 
   geolocationStore.subscribe((g) => {
     if (!useGeolocation.value || !g.position) return
-    if (selectedItemId.value === ITEM_ID_GEOLOCATION) coordinates = g.position.coords
+    if (selectedItemId.value === ITEM_ID_GEOLOCATION) coordinates.set(g.position.coords)
     // loadForecastData()
-  })
-
-  onMount(() => {
-    if (previouslySelectedCoordinates.value && selectedItemId.value === -2) {
-      coordinates = previouslySelectedCoordinates.value
-    }
   })
 </script>
 
@@ -102,7 +94,7 @@
         if ('index' in s) {
           selectedItemId.value = s.index
         } else {
-          coordinates = s.coordinates
+          coordinates.set(s.coordinates)
           previouslySelectedCoordinates.value = s.coordinates
           selectedItemId.value = ITEM_ID_TEMPORARY
         }

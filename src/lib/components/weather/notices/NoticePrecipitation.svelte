@@ -4,12 +4,11 @@
   import { formatRelativeDatetime } from '$lib/utils'
   import { ArrowRightIcon, UmbrellaIcon } from '@lucide/svelte'
   import { DateTime } from 'luxon'
+  import { NOW } from '$lib/stores/now'
 
-  interface Props {
-    datetime: DateTime
-  }
+  interface Props {}
 
-  let { datetime: NOW }: Props = $props()
+  let {}: Props = $props()
 
   const precipitationGroups = $derived.by(() => {
     const precipitation_amount = $forecastStore?.multiseries?.precipitation_amount
@@ -17,7 +16,7 @@
 
     const groups: { start: DateTime; end: DateTime; amount: number }[] = []
     let isInGroup = false
-    const relevantEndDatetime = NOW.hour <= 12 ? NOW.endOf('day') : NOW.endOf('day').plus({ hours: 6 })
+    const relevantEndDatetime = $NOW.hour <= 12 ? $NOW.endOf('day') : $NOW.endOf('day').plus({ hours: 6 })
 
     for (const timeBucket of precipitation_amount) {
       if (timeBucket.datetime > relevantEndDatetime && !isInGroup) break
@@ -37,7 +36,7 @@
       groups[groups.length - 1].amount += timeBucket.value
     }
 
-    return groups.filter((g) => g.end > NOW)
+    return groups.filter((g) => g.end > $NOW)
   })
 </script>
 
