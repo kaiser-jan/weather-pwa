@@ -7,7 +7,7 @@ import { writable, get } from 'svelte/store'
 
 type ConfigLiteral = typeof settingsConfig
 
-type SettingsSchema = ConfigType<ConfigLiteral>
+export type SettingsSchema = ConfigType<ConfigLiteral>
 
 const stored = JSON.parse(localStorage.getItem('settings') ?? '{}')
 const settingsOverrides = writable(stored ?? {})

@@ -2,7 +2,8 @@
   import type { Forecast, WeatherMetricKey } from '$lib/types/data'
   import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
   import MathFraction from '$lib/components/MathFraction.svelte'
-  import { convertAndFormatMetric, convertToUnit, getPreferredUnit } from '$lib/utils/units'
+  import { autoFormatMetric, getPreferredUnit } from '$lib/utils/units'
+  import { settings } from '$lib/settings/store'
 
   interface Props {
     item: WeatherMetricKey
@@ -24,11 +25,12 @@
 
   const details = $derived<Details>(itemMap[item] ?? { datapoint: item })
 
-  const unit = $derived(getPreferredUnit(item))
+  const unit = $derived(getPreferredUnit(item, $settings))
 
   const formattedValue = $derived.by(() => {
     const rawValue = current?.[details.datapoint]!
-    return Math.round(convertToUnit(rawValue, item, unit))
+    console.log('CURRENT')
+    return autoFormatMetric(rawValue, item, $settings, { hideUnit: true })
   })
 </script>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { convertAndFormatMetric, convertToUnit, formatMetric, getPreferredUnit } from '../../utils/units'
+  import { autoFormatMetric, convertToUnit, formatMetric, getPreferredUnit } from '../../utils/units'
   import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { onDestroy, onMount } from 'svelte'
   import * as d3 from 'd3'
@@ -18,6 +18,7 @@
   import { debounce } from '$lib/utils'
   import { Skeleton } from '../ui/skeleton'
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
+  import { get } from 'svelte/store'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -94,15 +95,12 @@
     for (const seriesKey of visibleSeries) {
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!details || details.hideScale) continue
-      const unit = getPreferredUnit(seriesKey)
-      const showUnitInline = $settingsChart.axisUnits === 'inline'
-      const minString = convertAndFormatMetric(details.domain.min[0], seriesKey, unit, showUnitInline)
-      const maxString = convertAndFormatMetric(
-        details.domain.max[details.domain.max.length - 1],
-        seriesKey,
-        unit,
-        showUnitInline,
-      )
+      const unit = getPreferredUnit(seriesKey, get(settings))
+      const hideUnit = $settingsChart.axisUnits !== 'inline'
+      const minString = autoFormatMetric(details.domain.min[0], seriesKey, get(settings), { hideUnit })
+      const maxString = autoFormatMetric(details.domain.max[details.domain.max.length - 1], seriesKey, get(settings), {
+        hideUnit,
+      })
       const textWidthMinValue = estimateTextWidth(minString)
       const textWidthUnit = estimateTextWidth(unit ?? '')
       const textWidthMaxValue = estimateTextWidth(maxString)
@@ -137,7 +135,7 @@
     const createdSeriesDetails: CreatedSeriesDetails[] = []
 
     for (const seriesKey of [...visibleSeries].reverse()) {
-      const unit = getPreferredUnit(seriesKey)
+      const unit = getPreferredUnit(seriesKey, get(settings))
       const unitConversion = (d: number) => convertToUnit(d, seriesKey, unit)
 
       const useSeries = (parameter: keyof typeof data) => {
@@ -157,8 +155,8 @@
       const domainMaxs = details.domain.max.map(unitConversion)
 
       const domain = [
-        domainMins.findLast((t) => t <= min) ?? domainMins[0],
-        domainMaxs.find((t) => t >= max) ?? domainMaxs[0],
+        domainMins.findLast((t) => t <= min * 0.9) ?? domainMins[0],
+        domainMaxs.find((t) => t >= max * 1.1) ?? domainMaxs[0],
       ]
 
       const scaleY = d3.scaleLinear(domain, rangeY) //.nice()

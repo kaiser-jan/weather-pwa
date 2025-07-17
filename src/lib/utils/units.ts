@@ -1,7 +1,6 @@
-import { settings } from '$lib/settings/store'
+import { type SettingsSchema } from '$lib/settings/store'
 import type { WeatherMetricKey } from '$lib/types/data'
 import * as d3 from 'd3'
-import { get } from 'svelte/store'
 
 export type UnitDimension =
   | 'temperature'
@@ -67,7 +66,7 @@ const CONVERTERS: Record<UnitDimension, Partial<Record<Unit, (v: number) => numb
     m: (v) => v,
     km: (v) => v / 1000,
     mi: (v) => v / 1609.34,
-    mm: (v) => v,
+    mm: (v) => v * 1000,
     in: (v) => v / 25.4,
   },
   speed: {
@@ -97,6 +96,17 @@ const CONVERTERS: Record<UnitDimension, Partial<Record<Unit, (v: number) => numb
   },
 } as const
 
+// TODO: this breaks as soon as a unit is used for metrics in a different range: e.g. short vs long distances
+//
+// we could group units (mm, m, km) and have have values/a function to decide the unit for the value per group
+// this would break when having multiple values to compare which cross this boundary
+//
+// we could still group units but then define which of these to select per metric
+//
+// maybe don't decide on a per-value basis but define a range per metric
+// OR instance where the metric is used and auto-decide based on the range
+const DECIMAL_RECOMMENDED_FOR: Unit[] = ['bar', 'inHg', 'km']
+
 export function convertToUnit(value: number, key: WeatherMetricKey, unit: Unit | null): number {
   const dimension = METRIC_DIMENSION[key]
   if (!dimension || !unit) return value
@@ -104,25 +114,32 @@ export function convertToUnit(value: number, key: WeatherMetricKey, unit: Unit |
   return converter(value)
 }
 
-export function formatMetric(value: number, unit: Unit | null): string {
-  const string = d3.format('.1~f')(value)
-  if (!unit) return string
+export function formatMetric(
+  value: number,
+  unit: Unit | null,
+  options?: { showDecimal: boolean; hideUnit: boolean },
+): string {
+  const showDecimal = options?.showDecimal !== undefined ? options.showDecimal : DECIMAL_RECOMMENDED_FOR.includes(unit)
+  const string = d3.format(showDecimal ? '.1f' : 'd')(value)
+  // console.debug(value, unit, options, string)
+  if (options?.hideUnit) return string
   return string + unit
 }
 
-export function convertAndFormatMetric(
+export function autoFormatMetric(
   value: number,
   key: WeatherMetricKey,
-  unit: Unit | null,
-  showUnit = true,
+  settings: SettingsSchema,
+  options?: { hideUnit: boolean; showDecimal: boolean },
 ): string {
+  const unit = getPreferredUnit(key, settings)
   const converted = convertToUnit(value, key, unit)
-  return formatMetric(converted, showUnit ? unit : null)
+  return formatMetric(converted, unit, options)
 }
 
-export function getPreferredUnit(key: WeatherMetricKey) {
+// NOTE: passing in settings allows for deciding on reactivity
+export function getPreferredUnit(key: WeatherMetricKey, settings: SettingsSchema) {
   const dimension = METRIC_DIMENSION[key]
   if (!dimension) return null
-  // TODO:
-  return get(settings).general.units[dimension]
+  return settings.general.units[dimension]
 }

@@ -6,6 +6,7 @@
   import { Skeleton } from '../ui/skeleton'
   import { interpolateColor } from '$lib/utils/ui'
   import type { DateTime } from 'luxon'
+  import { autoFormatMetric } from '$lib/utils/units'
 
   interface Props {
     coordinates: Coordinates
@@ -33,10 +34,10 @@
         />
       </div>
 
-      <div class="flex gap-1">
+      <div class="flex gap-2">
         {#each ['min', 'max'] as const as limit}
           <div class={['flex items-center gap-1', limit === 'min' ? 'flex-row' : 'flex-row-reverse']}>
-            {Math.round(day.summary.temperature[limit])}
+            {autoFormatMetric(day.summary.temperature[limit], 'temperature', $settings)}
             <span
               class={['h-4 w-[0.25rem]', limit === 'min' ? 'rounded-l-sm' : 'rounded-r-sm']}
               style={`background-color: ${interpolateColor($settings.appearance.colors.temperatureColorStops, day.summary.temperature[limit])}`}

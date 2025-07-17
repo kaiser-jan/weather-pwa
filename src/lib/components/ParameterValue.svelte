@@ -1,5 +1,6 @@
 <script lang="ts">
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
+  import { settings } from '$lib/settings/store'
   import type { WeatherMetricKey } from '$lib/types/data'
   import { formatMetric, getPreferredUnit } from '$lib/utils/units'
 
@@ -22,7 +23,7 @@
   {:else if !showZeroIcon}
     <!-- TODO: proper formatting -->
     <span class="whitespace-nowrap">
-      {formatMetric(value, parameter, getPreferredUnit(parameter))}
+      {formatMetric(value, parameter, getPreferredUnit(parameter, $settings))}
     </span>
   {/if}
 </div>
