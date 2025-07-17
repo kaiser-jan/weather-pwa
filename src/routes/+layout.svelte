@@ -4,6 +4,9 @@
   // https://vite-pwa-org.netlify.app/frameworks/sveltekit.html#pwa-assets
   import { pwaAssetsHead } from 'virtual:pwa-assets/head'
   import { Toaster } from '$lib/components/ui/sonner'
+  import LocationSelector from '$lib/components/LocationSelector.svelte'
+  import SettingsButton from '$lib/components/SettingsButton.svelte'
+  import ContainerCorners from '$lib/components/ContainerCorners.svelte'
 
   let { children } = $props()
 
@@ -40,6 +43,22 @@
   <!-- TODO: how to handle the default page requiring full height? -->
   <!-- <div class="h-[env(safe-area-inset-top)] shrink-0"></div> -->
   {@render children()}
+
+  <!-- 
+    HACK: allow for rounding the containers corners without having to wrap it.
+    The container would need to be inside the padding, meaning it shifts the scrollbar
+    Also, wrapping it causes weird behaviour.
+  -->
+  <ContainerCorners left="left-4" bottom="bottom-22" right="right-4" />
+  <div
+    class="from-background/50 absolute right-0 bottom-22 left-0 flex h-8 flex-row gap-2 bg-gradient-to-t to-transparent"
+  ></div>
+
+  <div class="bg-background flex h-22 shrink-0 flex-row items-center gap-2 p-4">
+    <LocationSelector />
+    <SettingsButton />
+  </div>
+
   <!-- HACK: the safe area on iOS is quite large -->
   <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
 </div>

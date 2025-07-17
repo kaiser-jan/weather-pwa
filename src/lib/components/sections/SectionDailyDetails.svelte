@@ -34,7 +34,7 @@
         />
       </div>
 
-      {#if $settings.sections.daily.useTemperatureRangeBar}
+      {#if $settings.sections.daily.temperature === 'range-bar'}
         <div class="flex items-center gap-2">
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.min, 'temperature', $settings)}</span>
           <NumberRangeBar
@@ -45,17 +45,18 @@
           />
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
         </div>
-      {:else}
-        <div class="flex gap-2">
-          {#each ['min', 'max'] as const as limit}
-            <div class={['flex items-center gap-1', limit === 'min' ? 'flex-row' : 'flex-row-reverse']}>
-              {autoFormatMetric(day.summary.temperature[limit], 'temperature', $settings)}
-              <span
-                class={['size-2.5 rounded-full']}
-                style={`background-color: ${interpolateColor($settings.appearance.colors.temperatureColorStops, day.summary.temperature[limit])}`}
-              ></span>
-            </div>
-          {/each}
+      {:else if $settings.sections.daily.temperature === 'dots'}
+        <div class="flex items-center gap-2">
+          <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.min, 'temperature', $settings)}</span>
+          <span
+            class={['size-2.5 rounded-full']}
+            style={`background-color: ${interpolateColor($settings.appearance.colors.temperatureColorStops, day.summary.temperature.min)}`}
+          ></span>
+          <span
+            class={['size-2.5 rounded-full']}
+            style={`background-color: ${interpolateColor($settings.appearance.colors.temperatureColorStops, day.summary.temperature.max)}`}
+          ></span>
+          <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
         </div>
       {/if}
     </div>

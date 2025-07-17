@@ -52,6 +52,9 @@ body {
   margin: 0;
   user-select: none;
   -webkit-user-select: none;
+
+  --color-background: hsl(220, 50%, 5%);
+  --color-foreground: hsl(220, 20%, 20%);
 }
 
 .lucide-icon {
@@ -64,7 +67,7 @@ body {
   @keyframes skeleton {
     50% {
       /* TODO: merge with tailwind config */
-      background-color: hsl(220, 20%, 20%);
+      background-color: var(--color-foreground);
     }
   }
 }
