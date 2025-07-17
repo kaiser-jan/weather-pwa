@@ -44,7 +44,7 @@
 
 <div
   class={[
-    'top-0 z-50 flex w-full flex-col items-center justify-center overflow-hidden rounded-b-[1rem] bg-blue-950 p-[0.5rem] pt-0 transition-all',
+    'top-0 z-50 flex w-full flex-col items-center justify-center overflow-hidden rounded-b-[1rem] bg-blue-950 p-[0.5rem] transition-all',
     $settingCurrentSticky ? 'absolute' : 'relative',
   ]}
   style={`height: calc(min(4rem, env(safe-area-inset-top)) + ${shrink ? '10vh' : '25vh'})`}
@@ -52,7 +52,6 @@
   <SkySimulation class="absolute inset-0 z-0" coordinates={$coordinates} turbidity={4} datetime={$NOW} />
 
   <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
-  <div class="h-10 shrink-0"></div>
 
   <div
     class="text-text absolute top-[min(4rem,_env(safe-area-inset-top))] right-0 left-0 z-10 inline-flex w-full items-center justify-between p-1 text-xs"
@@ -65,7 +64,7 @@
     </button>
   </div>
 
-  <div class="z-10 my-auto flex flex-row items-center justify-center gap-4">
+  <div class={['z-10 flex flex-row items-center justify-center gap-4 transition-all', shrink ? 'mt-4' : 'mt-6']}>
     <WeatherSymbol
       className={[shrink ? 'size-16' : 'size-30', 'z-10 transition-all'].join(' ')}
       derived={deriveWeatherSituationFromInstant(forecastCurrent)}
@@ -83,7 +82,9 @@
   </div>
 
   <div
-    class="bg-background z-10 flex h-10 w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2"
+    class="bg-background z-10 mt-auto flex h-10 w-full flex-row justify-between gap-4 overflow-hidden rounded-[0.5rem] px-3 py-2 transition-all"
+    class:h-0!={shrink}
+    class:p-0!={shrink}
     class:opacity-0={shrink}
   >
     {#each ITEMS_CURRENT as item}

@@ -9,6 +9,7 @@
   import { autoFormatMetric } from '$lib/utils/units'
   import { NOW } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
+  import NumberRangeBar from '../NumberRangeBar.svelte'
 
   interface Props {}
 
@@ -33,17 +34,30 @@
         />
       </div>
 
-      <div class="flex gap-2">
-        {#each ['min', 'max'] as const as limit}
-          <div class={['flex items-center gap-1', limit === 'min' ? 'flex-row' : 'flex-row-reverse']}>
-            {autoFormatMetric(day.summary.temperature[limit], 'temperature', $settings)}
-            <span
-              class={['h-4 w-[0.25rem]', limit === 'min' ? 'rounded-l-sm' : 'rounded-r-sm']}
-              style={`background-color: ${interpolateColor($settings.appearance.colors.temperatureColorStops, day.summary.temperature[limit])}`}
-            ></span>
-          </div>
-        {/each}
-      </div>
+      {#if $settings.sections.daily.useTemperatureRangeBar}
+        <div class="flex items-center gap-2">
+          <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.min, 'temperature', $settings)}</span>
+          <NumberRangeBar
+            total={$forecastStore?.total?.summary.temperature}
+            instance={day.summary.temperature}
+            color="temperature"
+            className="h-2 w-8"
+          />
+          <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
+        </div>
+      {:else}
+        <div class="flex gap-2">
+          {#each ['min', 'max'] as const as limit}
+            <div class={['flex items-center gap-1', limit === 'min' ? 'flex-row' : 'flex-row-reverse']}>
+              {autoFormatMetric(day.summary.temperature[limit], 'temperature', $settings)}
+              <span
+                class={['size-2.5 rounded-full']}
+                style={`background-color: ${interpolateColor($settings.appearance.colors.temperatureColorStops, day.summary.temperature[limit])}`}
+              ></span>
+            </div>
+          {/each}
+        </div>
+      {/if}
     </div>
   {:else}
     <Skeleton class="w-full h-32" />

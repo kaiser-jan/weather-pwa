@@ -4,6 +4,7 @@ import type { ConfigItem, ConfigType } from './types'
 import type { DateObjectUnits } from 'luxon'
 import {
   ArrowUpAz,
+  ArrowUpDownIcon,
   BadgeInfoIcon,
   BinocularsIcon,
   BriefcaseIcon,
@@ -274,6 +275,13 @@ export const settingsConfig = [
             label: 'Show Incomplete Last Day',
             type: 'boolean',
             icon: PuzzleIcon,
+            default: false,
+          },
+          {
+            id: 'useTemperatureRangeBar',
+            label: 'Temperature Range Bar',
+            type: 'boolean',
+            icon: ArrowUpDownIcon,
             default: false,
           },
         ],
