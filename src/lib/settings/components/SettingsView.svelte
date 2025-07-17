@@ -1,9 +1,8 @@
 <script lang="ts">
   import SettingsRenderer from './SettingsRenderer.svelte'
   import type { ConfigItem, NestableSetting } from '../types'
-  import { Button } from '$lib/components/ui/button'
-  import { ChevronLeftIcon } from '@lucide/svelte'
   import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js'
+  import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
 
   interface Props {
     path?: string[]
@@ -11,6 +10,8 @@
   }
 
   let { path = $bindable([]), config }: Props = $props()
+
+  let recentPath = $state<typeof path | null>(null)
 
   type Page = NestableSetting & { path: string[] }
 
@@ -42,6 +43,7 @@
 
   function navigateToKey(key: string, pageIndex: number = pages.length - 1) {
     path = [...path.slice(0, pageIndex), key]
+    recentPath = null
   }
 
   let scrollContainer: HTMLDivElement
@@ -54,9 +56,22 @@
       scrollContainer.scrollLeft = lastElement.offsetLeft - scrollContainer.getBoundingClientRect().left
     }
   })
+
+  function handleSwipe(event: SwipeCustomEvent) {
+    switch (event.detail.direction) {
+      case 'right':
+        recentPath = $state.snapshot(path)
+        path.pop()
+        break
+      case 'left':
+        if (recentPath) path = recentPath
+        recentPath = null
+        break
+    }
+  }
 </script>
 
-<div class="flex min-h-0 flex-col gap-4 overflow-x-visible">
+<div class="flex min-h-0 grow flex-col gap-4 overflow-x-visible">
   <Breadcrumb.Root>
     <Breadcrumb.List>
       {#each pages as page, index}
@@ -64,13 +79,23 @@
           <Breadcrumb.Separator />
         {/if}
         <Breadcrumb.Item>
-          <Breadcrumb.Link onclick={() => (path = page.path)}>{page.label}</Breadcrumb.Link>
+          <Breadcrumb.Link
+            onclick={() => {
+              recentPath = $state.snapshot(path)
+              path = page.path
+            }}>{page.label}</Breadcrumb.Link
+          >
         </Breadcrumb.Item>
       {/each}
     </Breadcrumb.List>
   </Breadcrumb.Root>
 
-  <div class="flex min-h-0 flex-row gap-6 overflow-x-hidden overflow-y-auto scroll-smooth" bind:this={scrollContainer}>
+  <div
+    class="flex min-h-0 grow flex-row gap-6 overflow-x-hidden overflow-y-auto scroll-smooth"
+    bind:this={scrollContainer}
+    use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
+    onswipe={handleSwipe}
+  >
     {#each pages as page, i}
       <div class="flex h-fit w-full shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
         <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => navigateToKey(t, i)} />
