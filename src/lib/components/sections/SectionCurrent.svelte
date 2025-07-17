@@ -20,6 +20,8 @@
 
   let { shrink }: Props = $props()
 
+  const settingCurrentSticky = settings.select((s) => s.sections.current.sticky)
+
   let locationNamePromise = $derived.by(async () => {
     if (!$coordinates) return null
     const result = await reverseGeocoding($coordinates)
@@ -36,18 +38,27 @@
   })
 </script>
 
+{#if $settingCurrentSticky}
+  <div style={`height: calc(min(4rem, env(safe-area-inset-top)) + 25vh)`}></div>
+{/if}
+
 <div
-  class="sticky top-0 z-50 flex w-full flex-col items-center justify-center overflow-hidden rounded-b-[1rem] bg-blue-950 p-[0.5rem] pt-0"
-  class:h-[25vh]={!shrink}
-  class:h-[10vh]={shrink}
+  class={[
+    'top-0 z-50 flex w-full flex-col items-center justify-center overflow-hidden rounded-b-[1rem] bg-blue-950 p-[0.5rem] pt-0 transition-all',
+    $settingCurrentSticky ? 'absolute' : 'relative',
+  ]}
+  style={`height: calc(min(4rem, env(safe-area-inset-top)) + ${shrink ? '10vh' : '25vh'})`}
 >
   <SkySimulation class="absolute inset-0 z-0" coordinates={$coordinates} turbidity={4} datetime={$NOW} />
 
-  <div class="shrink-0" style="height: max(0.5rem, env(safe-area-inset-top))"></div>
+  <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
+  <div class="h-10 shrink-0"></div>
 
-  <div class="text-text z-10 inline-flex w-full items-center justify-between text-xs">
+  <div
+    class="text-text absolute top-[min(4rem,_env(safe-area-inset-top))] right-0 left-0 z-10 inline-flex w-full items-center justify-between p-1 text-xs"
+  >
     {#await locationNamePromise then locationName}
-      <span class="drop-shadow-c-md">{locationName}</span>
+      <span class="drop-shadow-c-md ml-1">{locationName}</span>
     {/await}
     <button onclick={() => forecastStore.update()} class={['p-2', $isForecastLoading ? 'animate-spin' : '']}>
       <RefreshCwIcon />
@@ -56,7 +67,7 @@
 
   <div class="z-10 my-auto flex flex-row items-center justify-center gap-4">
     <WeatherSymbol
-      className="size-30 z-10"
+      className={[shrink ? 'size-16' : 'size-30', 'z-10 transition-all'].join(' ')}
       derived={deriveWeatherSituationFromInstant(forecastCurrent)}
       provided={forecastCurrent}
       coordinates={$coordinates}
@@ -64,14 +75,17 @@
     />
     <!-- TODO: units -->
     <AsyncText
-      class="drop-shadow-c-md text-6xl"
+      class={[shrink ? 'text-4xl' : 'text-6xl', 'drop-shadow-c-md transition-all'].join(' ')}
       text={autoFormatMetric(forecastCurrent?.temperature, 'temperature', $settings)}
       placeholder={'20°C'}
       loaded={forecastCurrent !== null}
     />
   </div>
 
-  <div class="bg-background z-10 flex h-10 w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2">
+  <div
+    class="bg-background z-10 flex h-10 w-full flex-row justify-between gap-4 rounded-[0.5rem] px-3 py-2"
+    class:opacity-0={shrink}
+  >
     {#each ITEMS_CURRENT as item}
       <WeatherItemCurrent {item} current={forecastCurrent} />
     {/each}

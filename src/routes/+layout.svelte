@@ -20,12 +20,6 @@
     },
     { passive: false },
   )
-
-  let scrollOffset = $state(0)
-  let shrinkHeader = $derived(scrollOffset > 300)
-  $effect(() => {
-    console.log(scrollOffset)
-  })
 </script>
 
 <svelte:head>
@@ -45,9 +39,7 @@
 >
   <!-- TODO: how to handle the default page requiring full height? -->
   <!-- <div class="h-[env(safe-area-inset-top)] shrink-0"></div> -->
-  <main class="w-full grow overflow-x-hidden overflow-y-auto scroll-smooth">
-    {@render children()}
-  </main>
+  {@render children()}
   <!-- HACK: the safe area on iOS is quite large -->
   <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
 </div>

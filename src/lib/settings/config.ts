@@ -14,6 +14,7 @@ import {
   ChartNoAxesGanttIcon,
   ChevronsUpDownIcon,
   ChevronsUpIcon,
+  ClockIcon,
   CloudSunIcon,
   ComponentIcon,
   DatabaseIcon,
@@ -25,6 +26,7 @@ import {
   ListIcon,
   MapPinIcon,
   PaletteIcon,
+  PinIcon,
   PuzzleIcon,
   RulerIcon,
   SettingsIcon,
@@ -209,6 +211,21 @@ export const settingsConfig = [
     type: 'page',
     icon: LayoutPanelTopIcon,
     children: [
+      {
+        id: 'current',
+        label: 'Current',
+        type: 'page',
+        icon: ClockIcon,
+        children: [
+          {
+            id: 'sticky',
+            label: 'Keep Visible',
+            type: 'boolean',
+            icon: PinIcon,
+            default: true,
+          },
+        ],
+      },
       {
         id: 'chart',
         label: 'Chart',
