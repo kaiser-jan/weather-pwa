@@ -4,7 +4,7 @@ import type { Dimensions } from './types'
 import { DateTime } from 'luxon'
 import type { CreatedSeriesDetails } from '$lib/types/ui'
 import { mount } from 'svelte'
-import { formatMetric, getPreferredUnit } from '../units'
+import { autoFormatMetric, formatMetric, getPreferredUnit } from '../units'
 import { get } from 'svelte/store'
 import { settings } from '$lib/settings/store'
 
@@ -148,7 +148,7 @@ export function createTooltip(options: {
       `<b>${points[0].d.datetime.toFormat('HH:mm')}</b><br>${points
         .map((p) => {
           const svg = renderIcon(p.name, p.icon)
-          const metric = formatMetric(p.d.value, getPreferredUnit(p.name as WeatherMetricKey, get(settings)))
+          const metric = autoFormatMetric(p.d.value, p.name as WeatherMetricKey, get(settings), { showDecimal: true })
           return `<div class="flex items-center gap-2">${svg}${metric}</div>`
         })
         .join('')}`,

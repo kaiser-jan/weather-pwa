@@ -2,6 +2,7 @@ import * as d3 from 'd3'
 import type { Dimensions } from './types'
 import { settings } from '$lib/settings/store'
 import { get } from 'svelte/store'
+import { autoFormatMetric } from '../units'
 
 export function createXAxis<ScaleT extends d3.AxisDomain>(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
@@ -59,13 +60,11 @@ export function createYAxis(options: {
 
   const axisGenerator = options.side === 'left' ? d3.axisLeft : d3.axisRight
 
-  const tickFormat = get(settings).sections.chart.axisUnits === 'inline' ? format : d3.format('.1~f')
-
   const yAxis = svg
     .append('g')
     .call(
       axisGenerator(scale)
-        .tickFormat(tickFormat)
+        .tickFormat(format)
         .tickSizeOuter(get(settings).sections.chart.axisUnits === 'replace' ? 0 : 6),
     )
     .classed('text-overlay', true)

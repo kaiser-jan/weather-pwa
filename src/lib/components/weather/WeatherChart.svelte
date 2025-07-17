@@ -135,33 +135,28 @@
     const createdSeriesDetails: CreatedSeriesDetails[] = []
 
     for (const seriesKey of [...visibleSeries].reverse()) {
-      const unit = getPreferredUnit(seriesKey, get(settings))
-      const unitConversion = (d: number) => convertToUnit(d, seriesKey, unit)
-
-      const useSeries = (parameter: keyof typeof data) => {
-        return data[parameter]?.map((d) => ({ ...d, value: unitConversion(d.value) }))
-      }
-
-      const series = useSeries(seriesKey)
+      const series = data[seriesKey]
       const details = CHART_SERIES_DETAILS[seriesKey]
       if (!series || !details) continue
+
+      const unit = getPreferredUnit(seriesKey, get(settings))
+      const format = (d: number) =>
+        autoFormatMetric(d, seriesKey, get(settings), {
+          hideUnit: get(settings).sections.chart.axisUnits !== 'inline',
+        })
 
       const rangeY = [dimensions.height + dimensions.margin.top, margin.top]
 
       const extent = d3.extent(series, (d) => d.value)
       const min = extent[0] ?? 0
       const max = extent[1] ?? 0
-      const domainMins = details.domain.min.map(unitConversion)
-      const domainMaxs = details.domain.max.map(unitConversion)
 
       const domain = [
-        domainMins.findLast((t) => t <= min * 0.9) ?? domainMins[0],
-        domainMaxs.find((t) => t >= max * 1.1) ?? domainMaxs[0],
+        details.domain.min.findLast((t) => t <= min * 0.9) ?? details.domain.min[0],
+        details.domain.max.find((t) => t >= max * 1.1) ?? details.domain.max[0],
       ]
 
       const scaleY = d3.scaleLinear(domain, rangeY) //.nice()
-
-      const format = (d: number) => formatMetric(d, unit)
 
       if (!details.hideScale) {
         const xOffset =
@@ -175,9 +170,9 @@
           dimensions,
           scale: scaleY,
           side: details.scaleOnRight ? 'right' : 'left',
-          format,
-          unit,
           addLines: false,
+          unit,
+          format,
         }) //
           .attr('transform', `translate(${xOffset},${LINE_CORRECTION})`)
       }
@@ -209,7 +204,7 @@
           const gradientId = createGradientDefinition({
             svg,
             scaleY,
-            stops: details.gradientColorStops.map((s) => ({ ...s, value: unitConversion(s.value) })),
+            stops: details.gradientColorStops,
             id: seriesKey,
           })
 
@@ -224,8 +219,8 @@
 
       if (details.include) {
         for (const [includeParameter, includeDetails] of Object.entries(details.include)) {
-          const includeSeriesA = useSeries(includeParameter as WeatherMetricKey)
-          const includeSeriesB = useSeries(includeDetails.areaSecondParameter as WeatherMetricKey)
+          const includeSeriesA = data[includeParameter as WeatherMetricKey]
+          const includeSeriesB = data[includeDetails.areaSecondParameter as WeatherMetricKey]
           addDataRepresentation(includeParameter, includeSeriesA, includeDetails, includeSeriesB)
         }
       }

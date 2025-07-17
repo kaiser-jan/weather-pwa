@@ -29,7 +29,6 @@
 
   const formattedValue = $derived.by(() => {
     const rawValue = current?.[details.datapoint]!
-    console.log('CURRENT')
     return autoFormatMetric(rawValue, item, $settings, { hideUnit: true })
   })
 </script>

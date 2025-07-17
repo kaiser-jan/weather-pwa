@@ -117,7 +117,7 @@ export function convertToUnit(value: number, key: WeatherMetricKey, unit: Unit |
 export function formatMetric(
   value: number,
   unit: Unit | null,
-  options?: { showDecimal: boolean; hideUnit: boolean },
+  options?: { showDecimal?: boolean; hideUnit?: boolean },
 ): string {
   const showDecimal = options?.showDecimal !== undefined ? options.showDecimal : DECIMAL_RECOMMENDED_FOR.includes(unit)
   const string = d3.format(showDecimal ? '.1f' : 'd')(value)
@@ -130,7 +130,7 @@ export function autoFormatMetric(
   value: number,
   key: WeatherMetricKey,
   settings: SettingsSchema,
-  options?: { hideUnit: boolean; showDecimal: boolean },
+  options?: { hideUnit?: boolean; showDecimal?: boolean },
 ): string {
   const unit = getPreferredUnit(key, settings)
   const converted = convertToUnit(value, key, unit)

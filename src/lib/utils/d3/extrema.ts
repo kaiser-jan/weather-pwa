@@ -31,7 +31,7 @@ export function createExtremaMarkers(options: {
       const offset = 20
       if (x <= offset) {
         dx = x - offset
-      } else if (x >= dimensions.width - offset) {
+      } else if (x >= dimensions.width + dimensions.margin.left - offset) {
         dx = dimensions.width + dimensions.margin.left - offset - x
       }
 
