@@ -20,6 +20,12 @@
     },
     { passive: false },
   )
+
+  let scrollOffset = $state(0)
+  let shrinkHeader = $derived(scrollOffset > 300)
+  $effect(() => {
+    console.log(scrollOffset)
+  })
 </script>
 
 <svelte:head>

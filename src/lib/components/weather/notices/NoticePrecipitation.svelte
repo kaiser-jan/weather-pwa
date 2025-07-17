@@ -35,7 +35,6 @@
       }
 
       groups[groups.length - 1].amount += timeBucket.value
-      console.log(groups)
     }
 
     return groups.filter((g) => g.end > NOW)
@@ -53,6 +52,7 @@
           {formatRelativeDatetime(precipitationGroup.end, { omitDate: true })}
           <!-- TODO: color based on intensity -->
           <span class="ml-auto text-blue-200">{precipitationGroup.amount.toFixed(1)}mm</span>
+          <!-- TODO: consider mini chart -->
         </div>
       {/each}
     </div>
