@@ -1,10 +1,8 @@
 <script lang="ts">
   import type { Coordinates, WeatherMetricKey } from '$lib/types/data'
-  import TimelineBar from '$lib/components/TimelineBar.svelte'
   import { ArrowRightIcon, RefreshCwIcon, UmbrellaIcon } from '@lucide/svelte'
   import { settings } from '$lib/settings/store'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
-  import { formatRelativeDatetime } from '$lib/utils'
   import { DateTime } from 'luxon'
   import { placeToWeatherLocation as formatPlaceAsWeatherLocation, reverseGeocoding } from '$lib/data/location'
   import { deriveWeatherSituationFromInstant } from '$lib/data/symbols'
@@ -16,10 +14,10 @@
   import SectionChartDaily from '$lib/components/sections/SectionChartDaily.svelte'
   import AsyncText from '$lib/components/AsyncText.svelte'
   import SkySimulation from '$lib/components/SkySimulation.svelte'
-  import PrecipitationTime from '$lib/components/weather/PrecipitationTime.svelte'
   import { currentFromMultiseries } from '$lib/data/utils'
   import SectionDailyDetails from '$lib/components/sections/SectionDailyDetails.svelte'
   import SectionDailyOutlook from '$lib/components/sections/SectionDailyOutlook.svelte'
+  import NoticePrecipitation from '$lib/components/weather/notices/NoticePrecipitation.svelte'
 
   let locationName = $state<string>()
   let isLoading = $state(false)
@@ -123,14 +121,12 @@
     {#each ITEMS_CURRENT as item}
       <WeatherItemCurrent {item} current={forecastCurrent} />
     {/each}
-    <PrecipitationTime datetime={NOW} />
-    {#if forecastCurrent?.precipitation_amount && forecastCurrent.precipitation_amount > 0}
-      <WeatherItemCurrent item="precipitation_amount" current={forecastCurrent} />
-    {/if}
   </div>
 </div>
 
 <div class="flex flex-col gap-4 p-4">
+  <NoticePrecipitation datetime={NOW} />
+
   <SectionChartDaily datetime={NOW} />
 
   <SectionDailyDetails {coordinates} datetime={NOW} />

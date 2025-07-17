@@ -15,6 +15,8 @@
   const initialSetting = settings.readSetting(path)
   let value = $state(initialSetting.value)
   let hasChanged = $state(initialSetting.changed ?? false)
+
+  console.log(path, value)
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->

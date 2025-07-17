@@ -10,11 +10,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatRelativeDatetime(datetime: DateTime) {
+export function formatRelativeDatetime(datetime: DateTime, options?: { omitDate?: boolean }) {
   const today = DateTime.now().startOf('day')
   const inputDate = datetime.startOf('day')
 
-  if (inputDate.equals(today)) {
+  if (inputDate.equals(today) || options?.omitDate) {
     return datetime.toFormat('HH:mm')
     // NOTE: this requires translation
     // } else if (inputDate.equals(today.plus({ days: 1 }))) {

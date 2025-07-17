@@ -33,7 +33,7 @@
         </h2>
         <SettingsRenderer
           config={item.children}
-          path={[...path, item.id]}
+          {path}
           onnavigate={() => {
             throw new Error('onnavigate not implemented on group')
           }}
