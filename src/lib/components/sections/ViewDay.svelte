@@ -4,7 +4,6 @@
   import { NOW } from '$lib/stores/now'
   import { selectedDay } from '$lib/stores/selectedDay'
   import { DateTime } from 'luxon'
-  import WeatherChartWithTools from '../weather/WeatherChartWithTools.svelte'
   import { Button } from '../ui/button'
   import { ChevronLeft, ChevronRight, ThermometerIcon } from '@lucide/svelte'
   import NumberRangeBar from '../NumberRangeBar.svelte'
@@ -15,6 +14,10 @@
   import { coordinates } from '$lib/stores/location'
   import TimelineBar from '../TimelineBar.svelte'
   import { settings } from '$lib/settings/store'
+  import { persistantState } from '$lib/utils/state.svelte'
+  import type { today } from '@internationalized/date'
+  import { Skeleton } from '../ui/skeleton'
+  import WeatherChart from '../weather/WeatherChart.svelte'
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !$selectedDay) return false
@@ -69,6 +72,12 @@
         break
     }
   }
+
+  let visibleSeries = persistantState<WeatherMetricKey[]>('chart-parameters-visible', [
+    'temperature',
+    'precipitation_amount',
+    'cloud_coverage',
+  ])
 </script>
 
 <Drawer.Root
@@ -114,10 +123,18 @@
       />
 
       <div class="bg-midground flex h-fit flex-col gap-2 rounded-lg p-2">
-        <WeatherChartWithTools
-          isToday={$selectedDay?.datetime.equals($NOW.startOf('day')) ?? false}
-          day={$selectedDay}
-        />
+        {#if $selectedDay}
+          <WeatherChart
+            multiseries={$selectedDay.multiseries}
+            visibleSeries={visibleSeries.value}
+            startDateTime={$selectedDay.datetime}
+            endDateTime={$selectedDay.datetime.plus($selectedDay.duration)}
+            datetime={$NOW}
+            className="snap-center shrink-0 w-full h-[20vh]"
+          />
+        {:else}
+          <Skeleton class="h-full w-full" />
+        {/if}
       </div>
 
       <div class="flex flex-col gap-2">

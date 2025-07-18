@@ -19,6 +19,7 @@
   import { Skeleton } from '../ui/skeleton'
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
   import { get } from 'svelte/store'
+  import ChartValuesDisplay from './ChartValuesDisplay.svelte'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -28,8 +29,6 @@
     endDateTime: DateTime
     datetime: DateTime
     className: string
-    onHighlightTimestamp: (timebucket: Record<WeatherMetricKey, TimeSeriesNumberEntry> | null) => void
-    onCurrentTimestamp: (timebucket: Record<WeatherMetricKey, TimeSeriesNumberEntry>) => void
   }
 
   const {
@@ -40,14 +39,14 @@
     datetime: NOW, // TODO: only update whats necessary
     className,
     unloaded,
-    onHighlightTimestamp = $bindable(),
-    onCurrentTimestamp = $bindable(),
   }: Props = $props()
 
   // move axis by half their line width to avoid overlap with content
   const LINE_CORRECTION = 0.5
 
   const settingsChart = settings.select((s) => s.sections.chart)
+
+  let highlightedTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | null>()
 
   let container: HTMLDivElement
 
@@ -273,7 +272,7 @@
 
       if (!isManual && !isToday) {
         updateXAxisPointer(null, false)
-        onHighlightTimestamp(null)
+        highlightedTimeBucket = null
         return
       }
 
@@ -283,12 +282,7 @@
         TimeSeriesNumberEntry
       >
 
-      if (!isManual) {
-        onCurrentTimestamp(timebucket)
-        onHighlightTimestamp(null)
-      } else {
-        onHighlightTimestamp(timebucket)
-      }
+      highlightedTimeBucket = timebucket
     }
 
     handleInteraction({
@@ -341,6 +335,7 @@
   })
 </script>
 
+<ChartValuesDisplay parameters={visibleSeries} {highlightedTimeBucket} />
 <div bind:this={container} class={['relative', className]}>
   <Skeleton class="h-full w-full" />
 </div>

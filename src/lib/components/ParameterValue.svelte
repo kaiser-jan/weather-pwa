@@ -7,7 +7,7 @@
 
   interface Props {
     parameter: WeatherMetricKey
-    value: number
+    value: number | undefined
     class?: string
   }
 
