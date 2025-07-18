@@ -49,14 +49,14 @@
 
   const parameterConfigs: Record<WeatherMetricKey, ParameterDaySummaryProps> = {
     temperature: { useTotalAsDomain: true },
-    pressure: {},
     relative_humidity: {},
-    cloud_coverage: {},
     wind_speed: {},
-    precipitation_amount: {},
-    // cape: {},
-    // cin: {},
-    // grad: {},
+    pressure: { items: ['icon', 'avg', 'trend'], widthFraction: 0.4 },
+    cloud_coverage: { items: ['icon', 'avg'], widthFraction: 0.4 },
+    precipitation_amount: { items: ['icon', 'sum'], widthFraction: 0.4 },
+    cape: { items: ['icon', 'max', 'avg'], widthFraction: 0.4 },
+    cin: { items: ['icon', 'max'], widthFraction: 0.4 },
+    grad: { items: ['icon', 'max'], widthFraction: 0.4 },
   }
 
   function handleSwipe(event: SwipeCustomEvent) {
@@ -137,7 +137,7 @@
         {/if}
       </div>
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-row flex-wrap gap-2">
         {#each Object.entries(parameterConfigs) as [parameter, config]}
           <ParameterDaySummary {...config} {parameter} day={$selectedDay} />
         {/each}

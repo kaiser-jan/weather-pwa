@@ -2,7 +2,7 @@
   import { settings } from '$lib/settings/store'
   import type { TimeBucket, WeatherMetricKey } from '$lib/types/data'
   import { autoFormatMetric } from '$lib/utils/units'
-  import type { Icon } from '@lucide/svelte'
+  import { ArrowDownIcon, ArrowUpIcon, type Icon } from '@lucide/svelte'
   import NumberRangeBar from '../NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
   import type { ParameterDaySummaryProps, SeriesDetails } from '$lib/types/ui'
@@ -14,7 +14,14 @@
     day: TimeBucket | null
   }
 
-  let { parameter, icon, items = ['icon', 'min', 'range-bar', 'max'], day, useTotalAsDomain }: Props = $props()
+  let {
+    parameter,
+    icon,
+    items = ['icon', 'min', 'range-bar', 'max'],
+    day,
+    useTotalAsDomain,
+    widthFraction = 1,
+  }: Props = $props()
 
   const details = $derived<SeriesDetails>(CHART_SERIES_DETAILS[parameter] ?? { color: { tailwind: 'bg-text' } })
   const ParameterIcon = $derived(icon ?? details?.icon)
@@ -31,12 +38,18 @@
 </script>
 
 {#if day?.summary[parameter]}
-  <div class="bg-midground flex h-fit flex-row items-center gap-2 rounded-lg p-2">
+  <div
+    class="bg-midground flex h-fit grow flex-row items-center gap-2 rounded-lg px-2.5 py-2"
+    style={`width: ${widthFraction * 100}%`}
+  >
     {#each items as item}
       {#if item === 'icon' && ParameterIcon}
         <ParameterIcon class="shrink-0" />
-      {:else if item === 'min' || item === 'max'}
-        <FormattedMetric value={day?.summary[parameter][item]} {parameter} class="w-16 justify-center" />
+      {:else if item === 'min' || item === 'max' || item === 'avg' || item === 'sum'}
+        <FormattedMetric value={day?.summary[parameter][item]} {parameter} class="w-16" />
+        <div class="text-text-muted mt-1 text-xs leading-none">
+          {item}
+        </div>
       {:else if item === 'range-bar'}
         <NumberRangeBar
           total={domain}
@@ -44,6 +57,13 @@
           color={parameter === 'temperature' ? parameter : details.color?.tailwind?.bg}
           className="h-2"
         />
+      {:else if item === 'trend'}
+        {@const values = day.multiseries[parameter]}
+        {#if values && values[0] < values[values.length]}
+          <ArrowUpIcon />
+        {:else}
+          <ArrowDownIcon />
+        {/if}
       {:else}
         ...
       {/if}
