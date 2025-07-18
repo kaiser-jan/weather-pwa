@@ -275,18 +275,11 @@ export const settingsConfig = [
         ],
       },
       {
-        id: 'daily',
-        label: 'Daily',
+        id: 'upcoming',
+        label: 'Upcoming',
         type: 'page',
         icon: CalendarDaysIcon,
         children: [
-          {
-            id: 'showIncompleteLastDay',
-            label: 'Show Incomplete Last Day',
-            type: 'boolean',
-            icon: PuzzleIcon,
-            default: false,
-          },
           {
             id: 'temperature',
             label: 'Temperature Display',

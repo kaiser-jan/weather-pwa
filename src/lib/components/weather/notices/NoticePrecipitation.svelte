@@ -44,7 +44,13 @@
         }
       }
 
-      groups[groups.length - 1].amount += timeBucket.value
+      // ensure precipitation from the past is omitted
+      const currentGroup = groups[groups.length - 1]
+      if (timeBucket.datetime < NOW) {
+        currentGroup.amount = timeBucket.value
+      } else {
+        currentGroup.amount += timeBucket.value
+      }
     }
 
     return groups.filter((g) => g.end > $NOW)
@@ -58,7 +64,9 @@
       {#each precipitationGroups as precipitationGroup}
         <div class="flex flex-row items-center justify-between gap-2">
           <span class="inline-flex items-center gap-1">
-            {formatRelativeDatetime(precipitationGroup.start, { omitDate: true })}
+            {#if precipitationGroup.start > $NOW}
+              {formatRelativeDatetime(precipitationGroup.start, { omitDate: true })}
+            {/if}
             <ArrowRightIcon class="text-text-muted" />
             {formatRelativeDatetime(precipitationGroup.end, { omitDate: true })}
           </span>

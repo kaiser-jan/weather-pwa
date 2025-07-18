@@ -1,9 +1,9 @@
 <script lang="ts">
-  import SectionChartDaily from '$lib/components/sections/SectionChartDaily.svelte'
-  import SectionDailyDetails from '$lib/components/sections/SectionDailyDetails.svelte'
-  import SectionDailyOutlook from '$lib/components/sections/SectionDailyOutlook.svelte'
-  import NoticePrecipitation from '$lib/components/weather/notices/NoticePrecipitation.svelte'
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
+  import SectionOutlook from '$lib/components/sections/SectionOutlook.svelte'
+  import SectionTodayChart from '$lib/components/sections/SectionTodayChart.svelte'
+  import SectionUpcoming from '$lib/components/sections/SectionUpcoming.svelte'
+  import NoticePrecipitation from '$lib/components/weather/notices/NoticePrecipitation.svelte'
   import { settings } from '$lib/settings/store'
 
   let scrollContainer = $state<HTMLElement>()
@@ -26,10 +26,10 @@
   <div class="flex flex-col gap-4 p-4" data-vaul-drawer-wrapper>
     <NoticePrecipitation />
 
-    <SectionChartDaily />
+    <SectionTodayChart />
 
-    <SectionDailyDetails />
+    <SectionUpcoming />
 
-    <SectionDailyOutlook />
+    <SectionOutlook />
   </div>
 </main>
