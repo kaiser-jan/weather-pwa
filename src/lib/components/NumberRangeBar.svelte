@@ -7,7 +7,7 @@
   interface Props {
     total: Pick<NumberSummary, 'min' | 'max'>
     instance: NumberSummary
-    color: 'clouds' | 'temperature'
+    color: 'clouds' | 'temperature' | string
     className: string
     vertical: boolean
   }
@@ -37,7 +37,7 @@
       case 'clouds':
         return 'bg-gray-400'
       default:
-        return 'bg-red'
+        return color
     }
   })
 

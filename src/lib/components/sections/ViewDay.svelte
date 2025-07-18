@@ -1,0 +1,115 @@
+<script lang="ts">
+  import * as Drawer from '$lib/components/ui/drawer'
+  import { forecastStore } from '$lib/stores/data'
+  import { NOW } from '$lib/stores/now'
+  import { selectedDay } from '$lib/stores/selectedDay'
+  import { DateTime } from 'luxon'
+  import WeatherChartWithTools from '../weather/WeatherChartWithTools.svelte'
+  import { Button } from '../ui/button'
+  import { ChevronLeft, ChevronRight, ThermometerIcon } from '@lucide/svelte'
+  import NumberRangeBar from '../NumberRangeBar.svelte'
+  import ParameterDaySummary from '../weather/ParameterDaySummary.svelte'
+  import type { WeatherMetricKey } from '$lib/types/data'
+  import type { ParameterDaySummaryProps } from '$lib/types/ui'
+  import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
+
+  const isToday = $derived.by(() => {
+    if (!$forecastStore || !$selectedDay) return false
+    return $selectedDay.datetime.startOf('day').equals($NOW.startOf('day'))
+  })
+
+  const dayLabel = $derived.by(() => {
+    if (!$selectedDay) return 'Today'
+    if (isToday) return 'Today, ' + $selectedDay.datetime.toLocaleString(DateTime.DATE_FULL)
+    return $selectedDay.datetime.toLocaleString(DateTime.DATE_HUGE)
+  })
+
+  const currentIndex = $derived.by(() => {
+    if (!$forecastStore || !$selectedDay) return -1
+    return $forecastStore.daily.findIndex((d) => d.datetime.equals($selectedDay.datetime))
+  })
+
+  function navigateBy(delta: number) {
+    if (currentIndex === -1) return
+    const target = $forecastStore?.daily[currentIndex + delta]
+    if (!target) return
+    selectedDay.set(target)
+  }
+  function navigateToToday() {
+    const target = $forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day')))
+    if (!target) return
+    selectedDay.set(target)
+  }
+
+  const parameterConfigs: Record<WeatherMetricKey, ParameterDaySummaryProps> = {
+    temperature: { useTotalAsDomain: true },
+    pressure: {},
+    relative_humidity: {},
+    cloud_coverage: {},
+    wind_speed: {},
+    precipitation_amount: {},
+    // cape: {},
+    // cin: {},
+    // grad: {},
+  }
+
+  function handleSwipe(event: SwipeCustomEvent) {
+    switch (event.detail.direction) {
+      case 'right':
+        navigateBy(-1)
+        break
+      case 'left':
+        navigateBy(1)
+        break
+      case 'top':
+        navigateToToday()
+        break
+    }
+  }
+</script>
+
+<Drawer.Root
+  bind:open={
+    () => $selectedDay !== null,
+    (o) => {
+      if (!o) selectedDay.set(null)
+    }
+  }
+>
+  <Drawer.Content class="">
+    <div
+      class="flex h-full flex-col gap-2 overflow-y-auto p-4"
+      use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
+      onswipe={handleSwipe}
+    >
+      <header class="flex justify-between gap-4 text-xl font-bold">
+        <Button size="icon" variant="outline" onclick={() => navigateBy(-1)} disabled={currentIndex === 0}>
+          <ChevronLeft />
+        </Button>
+        <Button variant={isToday ? 'outline' : 'secondary'} class="grow" onclick={navigateToToday}>
+          {dayLabel}
+        </Button>
+        <Button
+          size="icon"
+          variant="outline"
+          onclick={() => navigateBy(1)}
+          disabled={currentIndex === $forecastStore?.daily.length - 1}
+        >
+          <ChevronRight />
+        </Button>
+      </header>
+
+      <div class="bg-midground flex h-fit flex-col gap-2 rounded-lg p-2">
+        <WeatherChartWithTools
+          isToday={$selectedDay?.datetime.equals($NOW.startOf('day')) ?? false}
+          day={$selectedDay}
+        />
+      </div>
+
+      {#each Object.entries(parameterConfigs) as [parameter, config]}
+        <ParameterDaySummary {...config} {parameter} day={$selectedDay} />
+      {/each}
+    </div>
+    <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
+  </Drawer.Content>
+</Drawer.Root>

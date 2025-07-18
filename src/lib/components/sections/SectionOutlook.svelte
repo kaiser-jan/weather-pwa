@@ -1,13 +1,17 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
+  import { selectedDay } from '$lib/stores/selectedDay'
   import NumberRangeBar from '../NumberRangeBar.svelte'
   import { Skeleton } from '../ui/skeleton'
 </script>
 
 <div class="bg-midground flex flex-row overflow-y-auto rounded-md py-1.5">
   {#each $forecastStore?.daily ?? [] as day}
-    <div class="flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1">
+    <button
+      class="flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1"
+      onclick={() => selectedDay.set(day)}
+    >
       <span>{day.datetime.toFormat('ccc')}</span>
 
       <span class="text-text-muted">{Math.round(day.summary.temperature.max)}</span>
@@ -27,7 +31,7 @@
           <span class="text-text-disabled text-xs">mm</span>
         </span>
       {/if}
-    </div>
+    </button>
   {:else}
     <Skeleton class="w-full h-32" />
   {/each}

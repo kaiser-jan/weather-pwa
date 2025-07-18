@@ -1,12 +1,16 @@
-import type { ThermometerIcon } from '@lucide/svelte'
-import type { Coordinates, TimeSeries, WeatherMetricKey } from './data'
+import type { Icon, ThermometerIcon } from '@lucide/svelte'
+import type { Coordinates, TimeBucket, TimeSeries, WeatherMetricKey } from './data'
 
 export type ColorStop = { value: number; h: number; s: number; l: number }
 
 export interface SeriesDetailsBase {
   style: 'line' | 'bars' | 'area'
   class: string
-  gradientColorStops?: ColorStop[]
+  color?:
+    | // HACK: this is ugly but allows tailwind to detect the class names
+    { tailwind: { bg: string; fill: string; stroke: string } } //
+    | { gradient: ColorStop[] }
+    | { gradientSetting: string[] }
   invert?: boolean
   areaSecondParameter?: WeatherMetricKey
   markExtrema?: boolean
@@ -36,3 +40,9 @@ export type LocationSelection =
   | {
       coordinates: Coordinates
     }
+
+export interface ParameterDaySummaryProps {
+  icon?: typeof Icon
+  useTotalAsDomain?: boolean
+  items?: ('icon' | 'min' | 'max' | 'avg' | 'range-bar')[]
+}

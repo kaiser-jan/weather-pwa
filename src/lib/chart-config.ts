@@ -14,8 +14,6 @@ import {
 } from '@lucide/svelte'
 import type { WeatherMetricKey } from './types/data'
 import type { SeriesDetails } from './types/ui'
-import { settings } from '$lib/settings/store'
-import { get } from 'svelte/store'
 
 // TODO: reactive settings
 export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetails>> = {
@@ -26,13 +24,13 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     icon: ThermometerIcon,
     class: '',
     unit: '°',
-    gradientColorStops: get(settings).appearance.colors.temperatureColorStops,
+    color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
     markExtrema: true,
     include: {
       temperature_max: {
         style: 'area',
         class: 'opacity-40',
-        gradientColorStops: get(settings).appearance.colors.temperatureColorStops,
+        color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
         areaSecondParameter: 'temperature_min',
       },
     },
@@ -43,7 +41,8 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     style: 'bars',
     icon: CloudyIcon,
     iconIfZero: CloudOffIcon,
-    class: 'fill-blue-200 opacity-15',
+    class: 'opacity-15',
+    color: { tailwind: { bg: 'bg-blue-200', fill: 'fill-blue-200', stroke: 'stroke-blue-200' } },
     unit: '%',
     hideScale: true,
     // TODO: implement invert
@@ -55,7 +54,8 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     style: 'bars',
     icon: UmbrellaIcon,
     iconIfZero: UmbrellaOffIcon,
-    class: 'fill-blue-300 opacity-80',
+    class: 'opacity-80',
+    color: { tailwind: { bg: 'bg-blue-300', fill: 'fill-blue-300', stroke: 'stroke-blue-300' } },
     unit: 'mm/h',
     scaleOnRight: true,
   },
@@ -64,13 +64,15 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     domain: { min: [0], max: [61 / 3.6, 118 / 3.6] },
     style: 'line',
     icon: WindIcon,
-    class: 'stroke-blue-100 opacity-80',
+    class: 'opacity-80',
+    color: { tailwind: { bg: 'bg-blue-100', fill: 'fill-blue-100', stroke: 'stroke-blue-100' } },
     unit: 'm/s',
     scaleOnRight: true,
     include: {
       wind_speed_gust: {
         style: 'line',
-        class: 'stroke-blue-100 opacity-50 [stroke-dasharray:4_8]',
+        class: 'opacity-50 [stroke-dasharray:4_8]',
+        color: { tailwind: { bg: 'bg-blue-100', fill: 'fill-blue-100', stroke: 'stroke-blue-100' } },
       },
     },
   },
@@ -79,17 +81,19 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     domain: { min: [0], max: [100] },
     style: 'line',
     icon: DropletIcon,
-    class: 'stroke-green-300 opacity-80',
+    class: 'opacity-80',
+    color: { tailwind: { bg: 'bg-green-300', fill: 'fill-green-300', stroke: 'stroke-green-300' } },
     unit: '%',
     scaleOnRight: true,
     hideScale: true,
   },
   pressure: {
     label: 'Pressure',
-    domain: { min: [960 * 100], max: [1060 * 100] },
+    domain: { min: [980 * 100], max: [1040 * 100] },
     style: 'line',
     icon: GaugeIcon,
-    class: 'stroke-purple-300 opacity-80',
+    class: 'opacity-80',
+    color: { tailwind: { bg: 'bg-purple-300', fill: 'fill-purple-300', stroke: 'stroke-purple-300' } },
     unit: 'hPa',
     scaleOnRight: false,
   },
@@ -109,7 +113,8 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     domain: { min: [0], max: [1000] },
     style: 'line',
     icon: ZapIcon,
-    class: 'stroke-yellow-300 opacity-80',
+    class: 'opacity-80',
+    color: { tailwind: { bg: 'bg-yellow-300', fill: 'fill-yellow-300', stroke: 'stroke-yellow-300' } },
     unit: 'm2/s2',
     scaleOnRight: false,
   },
@@ -118,7 +123,8 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     domain: { min: [-500], max: [0] },
     style: 'line',
     icon: ShieldIcon,
-    class: 'stroke-orange-300 opacity-80',
+    class: 'opacity-80',
+    color: { tailwind: { bg: 'bg-orange-300', fill: 'fill-orange-300', stroke: 'stroke-orange-300' } },
     unit: 'J/kg',
     scaleOnRight: false,
   },
@@ -127,7 +133,8 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     domain: { min: [-1000], max: [50_000_000] },
     style: 'line',
     icon: SunIcon,
-    class: 'stroke-yellow-300 opacity-80',
+    class: 'opacity-80',
+    color: { tailwind: { bg: 'bg-yellow-300', fill: 'fill-yellow-300', stroke: 'stroke-yellow-300' } },
     unit: 'Ws/m2',
     scaleOnRight: false,
   },

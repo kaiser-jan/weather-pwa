@@ -28,7 +28,6 @@ const config = {
 	// TODO: migrate
 	// darkMode: ["class"],
 	content: ["./src/**/*.{html,js,svelte,ts}"],
-	// safelist: ["dark"],
 	theme: {
 		container: {
 			center: true,

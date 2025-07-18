@@ -10,6 +10,7 @@
   import { NOW } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
   import NumberRangeBar from '../NumberRangeBar.svelte'
+  import { selectedDay } from '$lib/stores/selectedDay'
 
   interface Props {}
 
@@ -18,7 +19,7 @@
 
 <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
   {#each $forecastStore?.daily.slice(0, 3) ?? [] as day}
-    <div class="inline-flex flex-row items-center justify-between gap-3">
+    <button class="inline-flex flex-row items-center justify-between gap-3" onclick={() => selectedDay.set(day)}>
       <span class="w-[3ch]">{day.datetime.toFormat('ccc')}</span>
 
       <div class="flex grow gap-2">
@@ -59,7 +60,7 @@
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
         </div>
       {/if}
-    </div>
+    </button>
   {:else}
     <Skeleton class="w-full h-32" />
   {/each}

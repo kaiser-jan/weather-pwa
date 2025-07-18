@@ -3,8 +3,10 @@
   import SectionOutlook from '$lib/components/sections/SectionOutlook.svelte'
   import SectionTodayChart from '$lib/components/sections/SectionTodayChart.svelte'
   import SectionUpcoming from '$lib/components/sections/SectionUpcoming.svelte'
+  import ViewDay from '$lib/components/sections/ViewDay.svelte'
   import NoticePrecipitation from '$lib/components/weather/notices/NoticePrecipitation.svelte'
   import { settings } from '$lib/settings/store'
+  import type { DateTime } from 'luxon'
 
   let scrollContainer = $state<HTMLElement>()
   let shrinkHeader = $state(false)
@@ -32,4 +34,6 @@
 
     <SectionOutlook />
   </div>
+
+  <ViewDay />
 </main>

@@ -22,7 +22,7 @@
 
   interface Props {
     multiseries: MultivariateTimeSeries
-    loaded: boolean
+    unloaded?: boolean
     visibleSeries: WeatherMetricKey[]
     startDateTime: DateTime
     endDateTime: DateTime
@@ -39,7 +39,7 @@
     endDateTime,
     datetime: NOW, // TODO: only update whats necessary
     className,
-    loaded,
+    unloaded,
     onHighlightTimestamp = $bindable(),
     onCurrentTimestamp = $bindable(),
   }: Props = $props()
@@ -186,25 +186,35 @@
         if (!seriesA || !details) return
 
         let dataRepresentation: d3.Selection<any, any, any, undefined>
+        const color = details.color?.tailwind
         switch (details.style) {
           case 'line':
             dataRepresentation = createLine({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
+            if (color) dataRepresentation.classed(color.stroke, true)
             break
           case 'bars':
             dataRepresentation = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
+            if (color) dataRepresentation.classed(color.fill, true)
             break
           case 'area':
             dataRepresentation = createArea({ svg, dimensions, scaleX, scaleY, dataA: seriesA, dataB: seriesB }) //
+            if (color) dataRepresentation.classed(color.fill, true)
             break
         }
 
         dataRepresentation.classed([details.class].join(' '), true)
 
-        if (details.gradientColorStops) {
+        const gradientColorStops = details.color?.gradient
+          ? details.color.gradient
+          : details.color?.gradientSetting
+            ? settings.readSetting(details.color.gradientSetting).value
+            : undefined
+
+        if (gradientColorStops) {
           const gradientId = createGradientDefinition({
             svg,
             scaleY,
-            stops: details.gradientColorStops,
+            stops: gradientColorStops,
             id: seriesKey,
           })
 
@@ -323,7 +333,7 @@
   })
 
   $effect(() => {
-    if (!loaded) {
+    if (unloaded) {
       clearChart()
       return
     }

@@ -4,6 +4,7 @@
   import MathFraction from '$lib/components/MathFraction.svelte'
   import { autoFormatMetric, getPreferredUnit } from '$lib/utils/units'
   import { settings } from '$lib/settings/store'
+  import FormattedMetric from '../FormattedMetric.svelte'
 
   interface Props {
     item: WeatherMetricKey
@@ -24,13 +25,6 @@
   }
 
   const details = $derived<Details>(itemMap[item] ?? { datapoint: item })
-
-  const unit = $derived(getPreferredUnit(item, $settings))
-
-  const formattedValue = $derived.by(() => {
-    const rawValue = current?.[details.datapoint]!
-    return autoFormatMetric(rawValue, item, $settings, { hideUnit: true })
-  })
 </script>
 
 {#if current?.[details.datapoint] !== undefined}
@@ -38,14 +32,7 @@
     <!-- svelte-ignore element_invalid_self_closing_tag -->
     <details.icon />
 
-    <span class="inline-flex items-end gap-0.5">
-      <span>{formattedValue}</span>
-      {#if unit?.match(/\w\/\w/)}
-        <MathFraction numerator={unit.split('/')[0]} denominator={unit.split('/')[1]} />
-      {:else}
-        <span class="text-text-muted mb-0.5 text-xs">{unit}</span>
-      {/if}
-    </span>
+    <FormattedMetric value={current[details.datapoint]} parameter={item} />
 
     {#if item === 'wind_speed' && current.wind_degrees}
       <Navigation2Icon

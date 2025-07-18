@@ -12,9 +12,7 @@ export type NumberSummary = { min: number; avg: number; max: number; sum: number
 export interface Forecast {
   current: (WeatherInstant & { symbol?: WeatherSituation }) | null
   multiseries: MultivariateTimeSeries
-  daily: (TimeBucketSummary & {
-    multiseries: MultivariateTimeSeries
-  })[]
+  daily: TimeBucket[]
   total: TimeBucketSummary
 }
 
@@ -33,6 +31,7 @@ export type TimeSeries<T> = (TimePeriod & { value: T })[]
 export type TimeSeriesNumberEntry = TimeSeries<number>[number]
 
 export type TimeBucketSummary = TimePeriod & { summary: Record<WeatherMetricKey, NumberSummary> }
+export type TimeBucket = TimeBucketSummary & { multiseries: MultivariateTimeSeries }
 
 export const WEATHER_METRIC_KEYS = [
   'temperature',
