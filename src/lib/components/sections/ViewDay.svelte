@@ -12,6 +12,9 @@
   import type { WeatherMetricKey } from '$lib/types/data'
   import type { ParameterDaySummaryProps } from '$lib/types/ui'
   import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
+  import { coordinates } from '$lib/stores/location'
+  import TimelineBar from '../TimelineBar.svelte'
+  import { settings } from '$lib/settings/store'
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !$selectedDay) return false
@@ -78,7 +81,7 @@
 >
   <Drawer.Content class="">
     <div
-      class="flex h-full flex-col gap-2 overflow-y-auto p-4"
+      class="flex h-full flex-col gap-4 overflow-y-auto p-4"
       use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
       onswipe={handleSwipe}
     >
@@ -99,6 +102,17 @@
         </Button>
       </header>
 
+      <TimelineBar
+        multiseries={$selectedDay?.multiseries}
+        startDatetime={$selectedDay?.datetime.startOf('day')}
+        endDatetime={$selectedDay?.datetime.endOf('day')}
+        parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
+        marks={$settings.sections.components.timelineBar.marks.map((m) => $selectedDay?.datetime.set(m))}
+        coordinates={$coordinates}
+        datetime={$NOW}
+        className="h-2"
+      />
+
       <div class="bg-midground flex h-fit flex-col gap-2 rounded-lg p-2">
         <WeatherChartWithTools
           isToday={$selectedDay?.datetime.equals($NOW.startOf('day')) ?? false}
@@ -106,9 +120,11 @@
         />
       </div>
 
-      {#each Object.entries(parameterConfigs) as [parameter, config]}
-        <ParameterDaySummary {...config} {parameter} day={$selectedDay} />
-      {/each}
+      <div class="flex flex-col gap-2">
+        {#each Object.entries(parameterConfigs) as [parameter, config]}
+          <ParameterDaySummary {...config} {parameter} day={$selectedDay} />
+        {/each}
+      </div>
     </div>
     <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
   </Drawer.Content>
