@@ -18,6 +18,9 @@
   import type { today } from '@internationalized/date'
   import { Skeleton } from '../ui/skeleton'
   import WeatherChart from '../weather/WeatherChart.svelte'
+  import { cn, toggle } from '$lib/utils'
+  import { CHART_SERIES_DETAILS } from '$lib/chart-config'
+  import NoticePrecipitation from '../weather/notices/NoticePrecipitation.svelte'
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !$selectedDay) return false
@@ -50,13 +53,13 @@
   const parameterConfigs: Record<WeatherMetricKey, ParameterDaySummaryProps> = {
     temperature: { useTotalAsDomain: true },
     relative_humidity: {},
-    wind_speed: {},
-    pressure: { items: ['icon', 'avg', 'trend'], widthFraction: 0.4 },
-    cloud_coverage: { items: ['icon', 'avg'], widthFraction: 0.4 },
-    precipitation_amount: { items: ['icon', 'sum'], widthFraction: 0.4 },
-    cape: { items: ['icon', 'max', 'avg'], widthFraction: 0.4 },
-    cin: { items: ['icon', 'max'], widthFraction: 0.4 },
-    grad: { items: ['icon', 'max'], widthFraction: 0.4 },
+    precipitation_amount: { items: ['icon', 'sum'] },
+    wind_speed: { items: ['icon', 'avg', 'max'] },
+    pressure: { items: ['icon', 'avg', 'trend'] },
+    cloud_coverage: { items: ['icon', 'avg'] },
+    cape: { items: ['icon', 'avg', 'max'] },
+    cin: { items: ['icon', 'max'] },
+    grad: { items: ['icon', 'max'] },
   }
 
   function handleSwipe(event: SwipeCustomEvent) {
@@ -139,7 +142,20 @@
 
       <div class="flex flex-row flex-wrap gap-2">
         {#each Object.entries(parameterConfigs) as [parameter, config]}
-          <ParameterDaySummary {...config} {parameter} day={$selectedDay} />
+          <!-- {#if parameter === 'precipitation_amount'} -->
+          <!-- <NoticePrecipitation always /> -->
+          {#if $selectedDay?.summary[parameter as WeatherMetricKey]}
+            <button
+              class={cn(
+                'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
+                visibleSeries.value.includes(parameter) ? 'bg-midground' : '',
+              )}
+              style={`width: ${config.items?.includes('range-bar') || !config.items ? 100 : 40}%`}
+              onclick={() => toggle(visibleSeries.value, parameter)}
+            >
+              <ParameterDaySummary {...config} {parameter} day={$selectedDay} />
+            </button>
+          {/if}
         {/each}
       </div>
     </div>

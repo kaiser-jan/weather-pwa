@@ -30,7 +30,7 @@
   }
 </script>
 
-<div class="flex h-fit grow flex-row gap-2">
+<div class="flex h-fit w-full flex-row gap-2">
   <ToggleGroup.Root type="multiple" variant="outline" bind:value={visible} class="h-fit grow">
     {#each pinned.value as parameter}
       {@const details = CHART_SERIES_DETAILS[parameter]!}

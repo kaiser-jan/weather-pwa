@@ -2,13 +2,15 @@
   import { forecastStore } from '$lib/stores/data'
   import { settings } from '$lib/settings/store'
   import { formatRelativeDatetime } from '$lib/utils'
-  import { ArrowRightIcon, UmbrellaIcon } from '@lucide/svelte'
+  import { ArrowRightIcon, UmbrellaIcon, UmbrellaOffIcon } from '@lucide/svelte'
   import { DateTime, Duration } from 'luxon'
   import { NOW } from '$lib/stores/now'
 
-  interface Props {}
+  interface Props {
+    always?: boolean
+  }
 
-  let {}: Props = $props()
+  let { always }: Props = $props()
 
   const precipitationGroups = $derived.by(() => {
     const precipitation_amount = $forecastStore?.multiseries?.precipitation_amount
@@ -79,5 +81,10 @@
         </div>
       {/each}
     </div>
+  </div>
+{:else if always}
+  <div class="bg-midground inline-flex items-center gap-4 rounded-md border-l-6 border-blue-300 px-4 py-3">
+    <UmbrellaOffIcon />
+    No rain on this day!
   </div>
 {/if}
