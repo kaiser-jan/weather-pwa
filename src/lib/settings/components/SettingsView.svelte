@@ -34,7 +34,7 @@
       const lastPage = _pages[_pages.length - 1]
       let childPage = lastPage.children.find((p) => p.id === key)
 
-      if (lastPage.type === 'list') {
+      if (lastPage.type === 'list' && !isNaN(parseInt(key))) {
         const values = settings.readSetting(path.slice(0, index)).value as any[]
         const label = values && lastPage.nameProperty ? values[parseInt(key)][lastPage.nameProperty] : key
 
@@ -46,7 +46,8 @@
       }
 
       if (!childPage || !('children' in childPage)) {
-        throw new Error(`Path ${path} could not be traversed, as ${key} does not contain items.`)
+        console.warn(`Path ${path} could not be traversed, as ${key} does not contain items.`)
+        continue
       }
 
       _pages.push({ ...childPage, path: path.slice(0, index + 1) })
@@ -70,6 +71,12 @@
       scrollContainer.scrollLeft = lastElement.offsetLeft - scrollContainer.getBoundingClientRect().left
     }
   })
+
+  function updateScroll() {
+    const filteredHistoryElements = historyElements.filter((e) => e)
+    const lastElement = filteredHistoryElements[filteredHistoryElements.length - 1]
+    scrollContainer.scrollLeft = lastElement.offsetLeft - scrollContainer.getBoundingClientRect().left
+  }
 
   function handleSwipe(event: SwipeCustomEvent) {
     switch (event.detail.direction) {
@@ -114,16 +121,24 @@
     bind:this={scrollContainer}
     use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
     onswipe={handleSwipe}
+    onscroll={updateScroll}
   >
     {#each pages as page, i}
       <div class="flex h-fit w-full shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
         {#if page.type === 'list'}
-          <PageList item={page} value={settings.readSetting(page.path).value} onnavigate={(t) => navigateToKey(t, i)} />
+          <PageList
+            item={page}
+            value={settings.readSetting(page.path).value}
+            onnavigate={(t) => navigateToKey(t, i)}
+            onchange={(v) => {
+              settings.writeSetting(path, v)
+            }}
+          />
         {:else}
           <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => navigateToKey(t, i)} />
         {/if}
       </div>
-      <div class="flex w-full shrink-0"></div>
     {/each}
+    <div class="flex w-full shrink-0"></div>
   </div>
 </div>

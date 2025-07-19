@@ -7,6 +7,7 @@
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
   import { settings } from '$lib/settings/store'
   import { get } from 'svelte/store'
+  import { createUUID } from '$lib/utils'
 
   type Item = {
     icon: typeof Icon
@@ -85,6 +86,7 @@
     const savedLocations = get(settings).data.locations
 
     const newLocation: (typeof savedLocations)[number] = {
+      id: createUUID(),
       name: item.label,
       latitude: item.coordinates.latitude,
       longitude: item.coordinates.longitude,

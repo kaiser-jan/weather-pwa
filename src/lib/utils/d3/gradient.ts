@@ -1,4 +1,5 @@
 import type { ColorStop } from '$lib/types/ui'
+import { createUUID } from '$lib/utils'
 import { interpolateColor } from '../ui'
 import type { Dimensions } from './types'
 
@@ -10,7 +11,7 @@ export function createGradientDefinition(options: {
 }) {
   const { svg, scaleY, stops, name } = options
 
-  const uuid = crypto?.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now()
+  const uuid = createUUID()
 
   const id = `gradient-${name}-${uuid}`
 

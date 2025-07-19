@@ -131,3 +131,8 @@ export function debounce<F extends (...args: any[]) => void>(callback: F, wait: 
 export function deepEqual(a: unknown, b: unknown): boolean {
   return JSON.stringify(a) === JSON.stringify(b)
 }
+
+export function createUUID() {
+  // NOTE: crypto.randomUUID is not available over http
+  return crypto?.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now()
+}

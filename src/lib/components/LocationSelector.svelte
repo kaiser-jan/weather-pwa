@@ -31,7 +31,7 @@
       coordinates.set(coords)
     } else if (selectedItemId.value === ITEM_ID_TEMPORARY) {
     } else {
-      const details = $settingLocations[selectedItemId.value]
+      const details = $settingLocations[Math.min(selectedItemId.value, $settingLocations.length - 1)]
       coordinates.set({ longitude: details.longitude, latitude: details.latitude, altitude: details.altitude })
     }
   })

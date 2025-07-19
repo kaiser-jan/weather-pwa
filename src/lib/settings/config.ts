@@ -43,6 +43,7 @@ import {
 import type { ColorStop } from '$lib/types/ui'
 
 type Location = {
+  id: string
   name: string
   icon: string
   longitude: number
