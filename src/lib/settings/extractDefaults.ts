@@ -15,10 +15,11 @@ export function extractDefaults(items: ConfigItem[]): Record<string, unknown> {
   function walk(config: ConfigItem[], path: string[] = []) {
     for (const item of config) {
       if ('visible' in item && item.visible) continue
+      if ('default' in item) {
+        assign([...path, item.id], item.default)
+      }
       if ('children' in item) {
         walk(item.children, [...path, item.id])
-      } else if ('default' in item) {
-        assign([...path, item.id], item.default)
       }
     }
   }

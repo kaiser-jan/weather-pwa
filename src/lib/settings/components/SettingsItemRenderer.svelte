@@ -6,17 +6,16 @@
   interface Props {
     path: string[]
     item: ConfigItem
+    onnavigate: (target: string) => void
   }
 
-  let { path, item }: Props = $props()
+  let { path, item, onnavigate }: Props = $props()
 
   const Component = getComponent(item.type)
 
   const initialSetting = settings.readSetting(path)
   let value = $state(initialSetting.value)
   let hasChanged = $state(initialSetting.changed ?? false)
-
-  console.log(path, value)
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -39,6 +38,7 @@
     <Component
       {item}
       {value}
+      {onnavigate}
       onchange={(v: any) => {
         settings.writeSetting(path, v)
         hasChanged = true
@@ -48,5 +48,6 @@
   {:else}
     {item.type}
     {item.id}
+    {value}
   {/if}
 </div>

@@ -30,7 +30,10 @@
       if (!coords) return
       coordinates.set(coords)
     } else if (selectedItemId.value === ITEM_ID_TEMPORARY) {
-    } else coordinates.set($settingLocations[selectedItemId.value])
+    } else {
+      const details = $settingLocations[selectedItemId.value]
+      coordinates.set({ longitude: details.longitude, latitude: details.latitude, altitude: details.altitude })
+    }
   })
 
   let useGeolocation = persistantState('use-geolocation', true)

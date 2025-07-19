@@ -28,10 +28,12 @@ import {
   ListIcon,
   MapPinIcon,
   PaletteIcon,
+  PencilLineIcon,
   PinIcon,
   PuzzleIcon,
   RulerIcon,
   SettingsIcon,
+  SmileIcon,
   SparklesIcon,
   SquareSplitHorizontalIcon,
   SquareSplitVerticalIcon,
@@ -130,9 +132,32 @@ export const settingsConfig = [
       {
         id: 'locations',
         label: 'Locations',
-        type: 'not-implemented',
+        type: 'list',
         icon: MapPinIcon,
+        nameProperty: 'name',
         default: [] as Location[],
+        children: [
+          {
+            id: 'name',
+            label: 'Name',
+            type: 'text',
+            icon: PencilLineIcon,
+            default: 'myname',
+          },
+          {
+            id: 'icon',
+            label: 'Icon',
+            type: 'select',
+            icon: SmileIcon,
+            default: 'map-pin',
+            options: ['home', 'briefcase', 'map-pin'],
+          },
+          // name: string
+          // icon: string
+          // longitude: number
+          // latitude: number
+          // altitude: number
+        ],
       },
       {
         id: 'forecast',

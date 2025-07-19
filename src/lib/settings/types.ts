@@ -71,8 +71,14 @@ export type SettingPage = BaseConfigItem & {
   type: 'page'
   children: ConfigItem[]
 }
+export type SettingList = BaseConfigItem & {
+  type: 'list'
+  default: Array<unknown>
+  nameProperty: string
+  children: ConfigItem[]
+}
 
-export type NestableSetting = SettingGroup | SettingPage
+export type NestableSetting = SettingGroup | SettingPage | SettingList
 
 export type ConfigItem = Setting | DescriptionBlock | NestableSetting
 

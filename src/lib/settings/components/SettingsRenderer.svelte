@@ -19,7 +19,7 @@
 {#each config as item}
   {@const path = [...parentPath, item.id]}
   {#if !item.visible || item.visible($settings)}
-    {#if item.type === 'page'}
+    {#if item.type === 'page' || item.type === 'list'}
       <Button variant="midground" onclick={() => onnavigate(item.id)} class="min-h-12 justify-between gap-3 text-base!">
         <item.icon />
         {item.label}
@@ -52,7 +52,7 @@
         <LockIcon />
       </div>
     {:else}
-      <SettingsItemRenderer path={[...parentPath, item.id]} {item} />
+      <SettingsItemRenderer path={[...parentPath, item.id]} {item} {onnavigate} />
     {/if}
   {/if}
 {/each}
