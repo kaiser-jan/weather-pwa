@@ -11,30 +11,10 @@
   }
 
   let { item, value, onchange, onnavigate }: Props = $props()
-
-  // HACK: vaul-svelte (drawer) and svelte-dnd-action have some weird conflict,
-  // where dragging causes the SettingsView to scroll back a page
-  // clicking the drawer first fixes it
-  let div: HTMLDivElement
-  onMount(() => {
-    div.focus()
-  })
-
-  function clickCenter(el: HTMLElement) {
-    const rect = el.getBoundingClientRect()
-    const x = rect.left + rect.width / 2
-    const y = rect.top + rect.height / 2
-    const options = { bubbles: true, cancelable: true, clientX: x, clientY: y }
-
-    el.dispatchEvent(new MouseEvent('mousedown', options))
-    el.dispatchEvent(new MouseEvent('mouseup', options))
-    el.dispatchEvent(new MouseEvent('click', options))
-  }
 </script>
 
 <div
   class="flex grow flex-col flex-nowrap gap-0 py-1"
-  bind:this={div}
   data-vaul-no-drag
   use:dragHandleZone={{
     items: value,

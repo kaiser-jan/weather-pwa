@@ -66,16 +66,15 @@
 
   $effect(() => {
     if (historyElements.length) {
-      const filteredHistoryElements = historyElements.filter((e) => e)
-      const lastElement = filteredHistoryElements[filteredHistoryElements.length - 1]
-      scrollContainer.scrollLeft = lastElement.offsetLeft - scrollContainer.getBoundingClientRect().left
+      updateScroll()
     }
   })
 
   function updateScroll() {
-    const filteredHistoryElements = historyElements.filter((e) => e)
-    const lastElement = filteredHistoryElements[filteredHistoryElements.length - 1]
-    scrollContainer.scrollLeft = lastElement.offsetLeft - scrollContainer.getBoundingClientRect().left
+    const gap = parseInt(getComputedStyle(scrollContainer).gap, 10)
+
+    scrollContainer.style.left =
+      -1 * path.length * (scrollContainer.parentElement!.getBoundingClientRect().width + gap) + 'px'
   }
 
   function handleSwipe(event: SwipeCustomEvent) {
@@ -116,29 +115,27 @@
   <!-- <br /> -->
   <!-- {pages.map((p) => p.path).join(';')} -->
 
-  <div
-    class="flex min-h-0 grow flex-row gap-6 overflow-x-hidden overflow-y-auto scroll-smooth"
-    bind:this={scrollContainer}
-    use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
-    onswipe={handleSwipe}
-    onscroll={updateScroll}
-  >
-    {#each pages as page, i}
-      <div class="flex h-fit w-full shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
-        {#if page.type === 'list'}
-          <PageList
-            item={page}
-            value={settings.readSetting(page.path).value}
-            onnavigate={(t) => navigateToKey(t, i)}
-            onchange={(v) => {
-              settings.writeSetting(path, v)
-            }}
-          />
-        {:else}
-          <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => navigateToKey(t, i)} />
-        {/if}
-      </div>
-    {/each}
-    <div class="flex w-full shrink-0"></div>
+  <div class="relative" use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })} onswipe={handleSwipe}>
+    <div
+      class="absolute flex w-full flex-row gap-6 transition-all duration-300 ease-in-out"
+      bind:this={scrollContainer}
+    >
+      {#each pages as page, i}
+        <div class="flex h-fit w-full shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
+          {#if page.type === 'list'}
+            <PageList
+              item={page}
+              value={settings.readSetting(page.path).value}
+              onnavigate={(t) => navigateToKey(t, i)}
+              onchange={(v) => {
+                settings.writeSetting(path, v)
+              }}
+            />
+          {:else}
+            <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => navigateToKey(t, i)} />
+          {/if}
+        </div>
+      {/each}
+    </div>
   </div>
 </div>

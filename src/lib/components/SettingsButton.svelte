@@ -15,7 +15,7 @@
     <LucideSettings />
   </Drawer.Trigger>
   <Drawer.Content class="h-full">
-    <div class="flex grow flex-col gap-4 overflow-y-hidden p-4">
+    <div class="flex grow flex-col gap-4 overflow-hidden p-4">
       <SettingsView config={settingsConfig} path={[]} />
       <h2 class="text-xl font-bold">PWA Options</h2>
       <PwaSettings />
