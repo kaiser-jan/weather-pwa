@@ -10,7 +10,9 @@ export function createGradientDefinition(options: {
 }) {
   const { svg, scaleY, stops, name } = options
 
-  const id = `gradient-${name}-${crypto.randomUUID()}`
+  const uuid = crypto?.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now()
+
+  const id = `gradient-${name}-${uuid}`
 
   const min = stops[0].value
   const max = stops[stops.length - 1].value
