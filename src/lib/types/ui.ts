@@ -44,6 +44,5 @@ export type LocationSelection =
 export interface ParameterDaySummaryProps {
   icon?: typeof Icon
   useTotalAsDomain?: boolean
-  items?: ('icon' | 'min' | 'max' | 'avg' | 'sum' | 'range-bar' | 'trend')[]
-  widthFraction: number
+  items?: ('icon' | 'min' | 'max' | 'avg' | 'sum' | 'range-bar' | 'trend' | 'precipitation-groups')[]
 }

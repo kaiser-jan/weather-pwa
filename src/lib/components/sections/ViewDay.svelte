@@ -21,6 +21,7 @@
   import { cn, toggle } from '$lib/utils'
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
   import NoticePrecipitation from '../weather/notices/NoticePrecipitation.svelte'
+  import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !$selectedDay) return false
@@ -52,8 +53,8 @@
 
   const parameterConfigs: Record<WeatherMetricKey, ParameterDaySummaryProps> = {
     temperature: { useTotalAsDomain: true },
+    precipitation_amount: { items: ['icon', 'precipitation-groups'] },
     relative_humidity: {},
-    precipitation_amount: { items: ['icon', 'sum'] },
     wind_speed: { items: ['icon', 'avg', 'max'] },
     pressure: { items: ['icon', 'avg', 'trend'] },
     cloud_coverage: { items: ['icon', 'avg'] },
@@ -142,15 +143,13 @@
 
       <div class="flex flex-row flex-wrap gap-2">
         {#each Object.entries(parameterConfigs) as [parameter, config]}
-          <!-- {#if parameter === 'precipitation_amount'} -->
-          <!-- <NoticePrecipitation always /> -->
           {#if $selectedDay?.summary[parameter as WeatherMetricKey]}
             <button
               class={cn(
                 'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
                 visibleSeries.value.includes(parameter) ? 'bg-midground' : '',
               )}
-              style={`width: ${config.items?.includes('range-bar') || !config.items ? 100 : 40}%`}
+              style={`width: ${!config.items || config.items?.includes('range-bar') || config.items?.includes('precipitation-groups') ? 100 : 40}%`}
               onclick={() => toggle(visibleSeries.value, parameter)}
             >
               <ParameterDaySummary {...config} {parameter} day={$selectedDay} />

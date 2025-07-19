@@ -10,20 +10,15 @@
   import FormattedMetric from '../FormattedMetric.svelte'
   import { cn } from '$lib/utils'
   import { generateCssRangeGradient } from '$lib/utils/ui'
+  import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
+  import PrecipitationGroup from './PrecipitationGroup.svelte'
 
   type Props = ParameterDaySummaryProps & {
     parameter: WeatherMetricKey
-    day: TimeBucket | null
+    day: TimeBucket
   }
 
-  let {
-    parameter,
-    icon,
-    items = ['icon', 'min', 'range-bar', 'max'],
-    day,
-    useTotalAsDomain,
-    widthFraction = 1,
-  }: Props = $props()
+  let { parameter, icon, items = ['icon', 'min', 'range-bar', 'max'], day, useTotalAsDomain }: Props = $props()
 
   const details = $derived<SeriesDetails>(CHART_SERIES_DETAILS[parameter] ?? { color: { tailwind: 'bg-text' } })
   const ParameterIcon = $derived(icon ?? details?.icon)
@@ -72,7 +67,11 @@
   {#if item === 'icon' && ParameterIcon}
     <ParameterIcon class="shrink-0" />
   {:else if item === 'min' || item === 'max' || item === 'avg' || item === 'sum'}
-    <FormattedMetric value={day?.summary[parameter][item]} {parameter} class="w-16" />
+    <FormattedMetric
+      value={day?.summary[parameter][item]}
+      {parameter}
+      class={items.includes('range-bar') ? 'w-16' : ''}
+    />
     {#if !items.includes('range-bar')}
       <div class="text-text-muted mt-1 text-xs leading-none">
         {item}
@@ -92,6 +91,17 @@
     {:else}
       <ArrowDownIcon />
     {/if}
+  {:else if item === 'precipitation-groups'}
+    {@const precipitationGroups = $precipitationGroupsStore.filter(
+      (g) => g.end > day.datetime && g.start <= day.datetime.plus(day.duration),
+    )}
+    <div class="flex flex-col gap-1">
+      {#each precipitationGroups as precipitationGroup}
+        <PrecipitationGroup {precipitationGroup} />
+      {:else}
+        <span class="text-text-muted"> No rain on this day! </span>
+      {/each}
+    </div>
   {:else}
     ...
   {/if}
