@@ -3,13 +3,14 @@
   import type { Coordinates } from '$lib/types/data'
   import { BookmarkIcon, ChevronRight, MapPinIcon, PinIcon, PinOffIcon, Trash2Icon, type Icon } from '@lucide/svelte'
   import { Button } from './ui/button'
-  import type { LocationSelection } from '$lib/types/ui'
+  import { ITEM_ID_GEOLOCATION, type LocationSelection } from '$lib/types/ui'
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
   import { settings } from '$lib/settings/store'
   import { get } from 'svelte/store'
   import { createUUID } from '$lib/utils'
 
   type Item = {
+    id: string
     icon: typeof Icon
     label: string
     sublabel: string
@@ -19,7 +20,7 @@
   interface Props {
     title: string
     onselect: (s: LocationSelection) => void
-    selectByIndex?: boolean
+    selectById?: boolean
     loading: boolean
     placeholderEmpty?: string
     placeholderNull?: string
@@ -31,7 +32,7 @@
   let {
     title,
     items,
-    selectByIndex,
+    selectById,
     onselect = $bindable(),
     loading,
     placeholderEmpty,
@@ -81,6 +82,10 @@
   }
 
   function saveLocation(item: Item) {
+    if (item.id === ITEM_ID_GEOLOCATION) {
+      item.coordinates = get(geolocationStore).position?.coords
+    }
+
     if (!item.coordinates) return
     // TODO: this is made to be forgotten when changing this setting
     const savedLocations = get(settings).data.locations
@@ -123,7 +128,7 @@
     <Button
       variant="ghost"
       class="flex h-fit! flex-row items-center justify-between gap-2 p-2 text-base"
-      onclick={() => onselect(selectByIndex ? { index } : { coordinates: item.coordinates })}
+      onclick={() => onselect(selectById ? { id: item.id } : { coordinates: item.coordinates })}
       {disabled}
     >
       <div class="flex min-w-0 flex-col">
@@ -159,7 +164,7 @@
               onclick={(e: PointerEvent) => {
                 e.preventDefault()
                 e.stopPropagation()
-                if (selectByIndex) deleteSavedLocation(item)
+                if (selectById) deleteSavedLocation(item)
               }}
             >
               <Trash2Icon />

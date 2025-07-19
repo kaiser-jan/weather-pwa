@@ -35,7 +35,7 @@ export interface CreatedSeriesDetails extends SeriesDetails {
 
 export type LocationSelection =
   | {
-      index: number
+      id: string
     }
   | {
       coordinates: Coordinates
@@ -46,3 +46,5 @@ export interface ParameterDaySummaryProps {
   useTotalAsDomain?: boolean
   items?: ('icon' | 'min' | 'max' | 'avg' | 'sum' | 'range-bar' | 'trend' | 'precipitation-groups')[]
 }
+export const ITEM_ID_GEOLOCATION = 'geolocation'
+export const ITEM_ID_TEMPORARY = 'search'

@@ -9,11 +9,9 @@
   import { iconMap } from '$lib/utils/icons'
   import { onMount } from 'svelte'
   import { coordinates } from '$lib/stores/location'
+  import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
 
   const geolocationDetails = geolocationStore.details
-
-  const ITEM_ID_GEOLOCATION = -1
-  const ITEM_ID_TEMPORARY = -2
 
   let selectedItemId = persistantState('selected-location-id', ITEM_ID_GEOLOCATION)
   const previouslySelectedCoordinates = persistantState<Coordinates | null>('selected-coordinates', null)
@@ -31,7 +29,8 @@
       coordinates.set(coords)
     } else if (selectedItemId.value === ITEM_ID_TEMPORARY) {
     } else {
-      const details = $settingLocations[Math.min(selectedItemId.value, $settingLocations.length - 1)]
+      const details = $settingLocations.find((l) => l.id === selectedItemId.value)
+      if (!details) return
       coordinates.set({ longitude: details.longitude, latitude: details.latitude, altitude: details.altitude })
     }
   })
@@ -70,13 +69,13 @@
   </div>
   <div class="bg-midground relative w-1 grow">
     <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
-      {#each $settingLocations as location, locationId}
+      {#each $settingLocations as location}
         <button
           class={[
             'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
-            selectedItemId.value === locationId ? 'bg-primary' : 'bg-foreground text-text-muted',
+            selectedItemId.value === location.id ? 'bg-primary' : 'bg-foreground text-text-muted',
           ]}
-          onclick={() => (selectedItemId.value = locationId)}
+          onclick={() => (selectedItemId.value = location.id)}
         >
           {#if location.icon}
             {@const Icon = iconMap[location.icon]}
@@ -94,9 +93,9 @@
     <LocationSearch
       active={selectedItemId.value === ITEM_ID_TEMPORARY}
       onselect={(s) => {
-        if ('index' in s) {
-          selectedItemId.value = s.index
-        } else {
+        if ('id' in s) {
+          selectedItemId.value = s.id
+        } else if ('coordinates' in s) {
           coordinates.set(s.coordinates)
           previouslySelectedCoordinates.value = s.coordinates
           selectedItemId.value = ITEM_ID_TEMPORARY

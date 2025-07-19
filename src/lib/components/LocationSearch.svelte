@@ -32,7 +32,7 @@
   import { readable } from 'svelte/store'
   import LocationList from './LocationList.svelte'
   import { reverseGeocoding } from '$lib/data/location'
-  import type { LocationSelection } from '$lib/types/ui'
+  import { ITEM_ID_GEOLOCATION, type LocationSelection } from '$lib/types/ui'
   import { persistantState } from '$lib/utils/state.svelte'
 
   const geolocationDetails = geolocationStore.details
@@ -151,13 +151,14 @@
           placeholderEmpty="Here should be your geolocation... :("
           items={[
             {
+              id: ITEM_ID_GEOLOCATION,
               icon: $geolocationDetails.icon,
               label: $geolocationDetails.label,
               sublabel: $geolocationAddress,
               coordinates: null,
             },
           ]}
-          selectByIndex
+          selectById
           {onselect}
           disabled={$geolocationStore.status !== 'active'}
         />
@@ -166,12 +167,13 @@
           title="Saved Locations"
           placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
           items={$savedLocations.map((l) => ({
+            id: l.id,
             icon: iconMap[l.icon],
             label: l.name,
             sublabel: null,
             coordinates: l,
           }))}
-          selectByIndex
+          selectById
           {onselect}
         />
 
