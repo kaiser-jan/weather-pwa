@@ -65,13 +65,18 @@
   </div>
 
   <div class={['z-10 flex flex-row items-center justify-center gap-4 transition-all', shrink ? 'mt-4' : 'mt-6']}>
-    <WeatherSymbol
-      className={[shrink ? 'size-16' : 'size-30', 'z-10 transition-all'].join(' ')}
-      derived={deriveWeatherSituationFromInstant(forecastCurrent)}
-      provided={forecastCurrent}
-      coordinates={$coordinates}
-      datetime={$NOW}
-    />
+    <div class={[shrink ? 'size-16' : 'size-30', 'relative z-10 grow-0 overflow-visible transition-all'].join(' ')}>
+      <div
+        class="from-background/20 absolute top-1/2 left-1/2 size-[150%] -translate-1/2 bg-radial to-transparent to-70%"
+      ></div>
+      <WeatherSymbol
+        derived={deriveWeatherSituationFromInstant(forecastCurrent)}
+        provided={forecastCurrent}
+        coordinates={$coordinates}
+        datetime={$NOW}
+        className="absolute inset-0"
+      />
+    </div>
     <!-- TODO: units -->
     <AsyncText
       class={[shrink ? 'text-4xl' : 'text-6xl', 'drop-shadow-c-md transition-all'].join(' ')}
