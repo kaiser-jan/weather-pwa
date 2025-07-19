@@ -24,7 +24,7 @@ export function handleInteraction(options: {
       pointerMode = 'x'
 
       options.onLongPress?.(event)
-    }, 100)
+    }, 200)
   })
 
   svg.on('touchmove', (event) => {
@@ -55,10 +55,19 @@ export function handleInteraction(options: {
   })
 
   svg.on('pointerleave', (event: PointerEvent) => {
-    pointerMode = null
+    setTimeout(() => {
+      pointerMode = null
+    }, 10)
+
     startX = null
     startY = null
     clearTimeout(pointerDownTimeout)
     options.onRelease?.(event)
+  })
+
+  svg.on('click', (event: PointerEvent) => {
+    if (pointerMode !== null) {
+      event.stopPropagation()
+    }
   })
 }

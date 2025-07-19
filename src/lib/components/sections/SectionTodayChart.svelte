@@ -8,6 +8,7 @@
   import WeatherChart from '../weather/WeatherChart.svelte'
   import ChartValuesDisplay from '../weather/ChartValuesDisplay.svelte'
   import { selectedDay } from '$lib/stores/selectedDay'
+  import { swipe } from 'svelte-gestures'
 
   interface Props {}
 
@@ -25,6 +26,12 @@
 <button
   class="bg-midground flex w-full flex-col flex-wrap justify-between gap-2 gap-x-4 gap-y-2 rounded-lg p-2"
   onclick={() => selectedDay.set(today)}
+  use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
+  onswipe={(e) => {
+    const tomorrow = $forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day').plus({ days: 1 })))
+    if (!tomorrow) return
+    if (e.detail.direction === 'left') selectedDay.set(tomorrow)
+  }}
 >
   <ParameterSelect bind:visible={visibleSeries.value} />
 
