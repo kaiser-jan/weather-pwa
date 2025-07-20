@@ -4,7 +4,7 @@
   import { slide } from 'svelte/transition'
   import ParameterValue from '../ParameterValue.svelte'
 
-  const settingsChart = settings.select((s) => s.sections.chart)
+  const settingsChart = settings.select((s) => s.sections.components.chart)
 
   interface Props {
     parameters: WeatherMetricKey[]

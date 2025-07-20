@@ -65,7 +65,7 @@ export function createYAxis(options: {
     .call(
       axisGenerator(scale)
         .tickFormat(format)
-        .tickSizeOuter(get(settings).sections.chart.axisUnits === 'replace' ? 0 : 6),
+        .tickSizeOuter(get(settings).sections.components.chart.axisUnits === 'replace' ? 0 : 6),
     )
     .classed('text-overlay', true)
     .call((g) => g.selectAll('.tick text').classed('text-text-muted', true))
@@ -81,7 +81,7 @@ export function createYAxis(options: {
     )
   }
 
-  if (get(settings).sections.chart.axisUnits === 'above') {
+  if (get(settings).sections.components.chart.axisUnits === 'above') {
     yAxis
       .append('text')
       .attr('x', 0)
@@ -91,7 +91,7 @@ export function createYAxis(options: {
       .text(options.unit)
   }
 
-  if (get(settings).sections.chart.axisUnits === 'replace') {
+  if (get(settings).sections.components.chart.axisUnits === 'replace') {
     yAxis
       .selectAll('.tick')
       .filter((_, i, nodes) => i === nodes.length - 1)

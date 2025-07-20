@@ -291,43 +291,7 @@ export const settingsConfig = [
           },
         ],
       },
-      {
-        id: 'chart',
-        label: 'Chart',
-        type: 'page',
-        icon: ChartLineIcon,
-        children: [
-          {
-            id: 'tooltip',
-            label: 'Show Tooltip',
-            type: 'boolean',
-            icon: BadgeInfoIcon,
-            default: false,
-          },
-          {
-            id: 'highlightExtrema',
-            label: 'Highlight Extrema',
-            type: 'boolean',
-            icon: ChevronsUpDownIcon,
-            default: true,
-          },
-          {
-            id: 'alwaysShowValuesDisplay',
-            label: 'Pin Value Display',
-            type: 'boolean',
-            icon: HashIcon,
-            default: true,
-          },
-          {
-            id: 'axisUnits',
-            label: 'Axis Unit Location',
-            type: 'select',
-            icon: ArrowUpAz,
-            options: ['inline', 'above', 'replace', 'off'] as const,
-            default: 'replace',
-          },
-        ],
-      },
+
       {
         id: 'upcoming',
         label: 'Upcoming',
@@ -361,10 +325,47 @@ export const settingsConfig = [
       },
       {
         id: 'components',
-        label: 'Compenents',
-        type: 'page',
+        label: 'Components',
+        type: 'group',
         icon: ComponentIcon,
         children: [
+          {
+            id: 'chart',
+            label: 'Chart',
+            type: 'page',
+            icon: ChartLineIcon,
+            children: [
+              {
+                id: 'tooltip',
+                label: 'Show Tooltip',
+                type: 'boolean',
+                icon: BadgeInfoIcon,
+                default: true,
+              },
+              {
+                id: 'highlightExtrema',
+                label: 'Highlight Extrema',
+                type: 'boolean',
+                icon: ChevronsUpDownIcon,
+                default: true,
+              },
+              {
+                id: 'alwaysShowValuesDisplay',
+                label: 'Pin Value Display',
+                type: 'boolean',
+                icon: HashIcon,
+                default: true,
+              },
+              {
+                id: 'axisUnits',
+                label: 'Axis Unit Location',
+                type: 'select',
+                icon: ArrowUpAz,
+                options: ['inline', 'above', 'replace', 'off'] as const,
+                default: 'replace',
+              },
+            ],
+          },
           {
             id: 'timelineBar',
             label: 'Timeline Bar',

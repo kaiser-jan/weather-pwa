@@ -44,7 +44,7 @@
   // move axis by half their line width to avoid overlap with content
   const LINE_CORRECTION = 0.5
 
-  const settingsChart = settings.select((s) => s.sections.chart)
+  const settingsChart = settings.select((s) => s.sections.components.chart)
 
   let highlightedTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | null>()
 
@@ -141,7 +141,7 @@
       const unit = getPreferredUnit(seriesKey, get(settings))
       const format = (d: number) =>
         autoFormatMetric(d, seriesKey, get(settings), {
-          hideUnit: get(settings).sections.chart.axisUnits !== 'inline',
+          hideUnit: get(settings).sections.components.chart.axisUnits !== 'inline',
         })
 
       const rangeY = [dimensions.height + dimensions.margin.top, margin.top]
