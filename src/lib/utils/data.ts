@@ -3,7 +3,8 @@ import { DateTime, type Duration } from 'luxon'
 
 export type TimeSeriesConfig<InKeyT extends string, OutKeyT extends string> =
   | { type: 'normal'; inKey: InKeyT; outKey: OutKeyT; multiplier?: number }
-  | { type: 'accumulated'; inKey: InKeyT; outKey: OutKeyT }
+  // accumulated value since start of the forecast until the timestamp -> the value of a TimePeriod depends on the following one
+  | { type: 'accumulated-until'; inKey: InKeyT; outKey: OutKeyT }
   | { type: 'vector'; xKey: InKeyT; yKey: InKeyT; outKeyLength: OutKeyT; outKeyAngle: OutKeyT }
 
 interface TimeValue {
@@ -39,9 +40,9 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
         const value = rawValue !== null ? rawValue * multiplier : null
         output[item.outKey].push({ datetime, duration, value })
       }
-      if (item.type === 'accumulated') {
+      if (item.type === 'accumulated-until') {
         const arr = values[item.inKey].data
-        const val = Math.max(0, (arr[i] ?? 0) - (arr[i - 1] ?? 0))
+        const val = Math.max(0, (arr[i + 1] ?? 0) - (arr[i] ?? 0))
         output[item.outKey].push({ datetime, duration, value: val })
       }
       if (item.type === 'vector') {
