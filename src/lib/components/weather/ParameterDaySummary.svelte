@@ -86,7 +86,7 @@
     />
   {:else if item === 'trend'}
     {@const values = day.multiseries[parameter]}
-    {#if values && values[0] < values[values.length]}
+    {#if values && values[0].value < values[values.length - 1].value}
       <ArrowUpIcon />
     {:else}
       <ArrowDownIcon />
