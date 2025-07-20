@@ -78,6 +78,7 @@
   }
 
   function handleSwipe(event: SwipeCustomEvent) {
+    console.info(event.detail.direction)
     switch (event.detail.direction) {
       case 'right':
         recentPath = $state.snapshot(path)
@@ -115,7 +116,7 @@
   <!-- <br /> -->
   <!-- {pages.map((p) => p.path).join(';')} -->
 
-  <div class="relative" use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })} onswipe={handleSwipe}>
+  <div class="relative grow" use:swipe={() => ({ timeframe: 300, minSwipeDistance: 30 })} onswipe={handleSwipe}>
     <div
       class="absolute flex w-full flex-row gap-6 transition-all duration-300 ease-in-out"
       bind:this={scrollContainer}
