@@ -64,7 +64,7 @@
 </script>
 
 <div
-  class={cn('bg-foreground relative h-full w-full overflow-hidden rounded-full', className)}
+  class={cn('bg-foreground relative h-full w-full shrink-0 overflow-hidden rounded-full', className)}
   bind:clientHeight={barHeight}
 >
   <div

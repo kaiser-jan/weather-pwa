@@ -39,7 +39,9 @@ import {
   SparklesIcon,
   SquareSplitHorizontalIcon,
   SquareSplitVerticalIcon,
+  SunIcon,
   ThermometerIcon,
+  ToggleRightIcon,
   UmbrellaIcon,
 } from '@lucide/svelte'
 import type { ColorStop } from '$lib/types/ui'
@@ -291,7 +293,21 @@ export const settingsConfig = [
           },
         ],
       },
-
+      {
+        id: 'today',
+        label: 'Today',
+        type: 'page',
+        icon: SunIcon,
+        children: [
+          {
+            id: 'showChartParameterSelect',
+            label: 'Show Chart Parameter Select',
+            type: 'boolean',
+            icon: ToggleRightIcon,
+            default: false,
+          },
+        ],
+      },
       {
         id: 'upcoming',
         label: 'Upcoming',
@@ -369,7 +385,7 @@ export const settingsConfig = [
           {
             id: 'timelineBar',
             label: 'Timeline Bar',
-            type: 'group',
+            type: 'page',
             icon: ChartNoAxesGanttIcon,
             children: [
               {
