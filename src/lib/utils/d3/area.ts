@@ -25,7 +25,6 @@ export function createArea(options: {
     .attr('stroke-width', 4)
     .attr('stroke-linecap', 'round')
     .attr('d', areaGenerator(dataB))
-    .attr('clip-path', 'url(#clip)')
 
   return area
 }

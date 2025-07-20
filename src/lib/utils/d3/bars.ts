@@ -31,7 +31,6 @@ export function createBars(options: {
     })
     .attr('y', (d) => scaleY(d.value))
     .attr('height', (d) => dimensions.height + dimensions.margin.top - scaleY(d.value))
-    .attr('clip-path', 'url(#clip)')
 
   return bars
 }

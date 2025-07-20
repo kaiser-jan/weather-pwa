@@ -28,9 +28,9 @@ export function createExtremaMarkers(options: {
     .each(function (d) {
       const x = scaleX(d.datetime)
       let dx = 0
-      const offset = 20
-      if (x <= offset) {
-        dx = x - offset
+      const offset = 10
+      if (x <= offset + dimensions.margin.left) {
+        dx = dimensions.margin.left + offset - x
       } else if (x >= dimensions.width + dimensions.margin.left - offset) {
         dx = dimensions.width + dimensions.margin.left - offset - x
       }

@@ -15,7 +15,7 @@
   import { settings } from '$lib/settings/store'
   import type { CreatedSeriesDetails, SeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
-  import { debounce } from '$lib/utils'
+  import { createUUID, debounce } from '$lib/utils'
   import { Skeleton } from '../ui/skeleton'
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
   import { get } from 'svelte/store'
@@ -176,6 +176,17 @@
           .attr('transform', `translate(${xOffset},${LINE_CORRECTION})`)
       }
 
+      const clipId = 'clip-' + createUUID()
+      svg
+        .append('defs')
+        .append('clipPath')
+        .attr('id', clipId)
+        .append('rect')
+        .attr('x', dimensions.margin.left)
+        .attr('y', dimensions.margin.top)
+        .attr('width', dimensions.width)
+        .attr('height', dimensions.height)
+
       function addDataRepresentation(
         seriesKey: string,
         seriesA: TimeSeries<number> | undefined,
@@ -202,6 +213,8 @@
         }
 
         dataRepresentation.classed([details.class].join(' '), true)
+
+        dataRepresentation.attr('clip-path', `url(#${clipId})`)
 
         const gradientColorStops = details.color?.gradient
           ? details.color.gradient
@@ -247,16 +260,6 @@
       .attr('height', dimensions.height)
       .classed('fill-midground', true)
       .attr('opacity', 0.7)
-
-    svg
-      .append('defs')
-      .append('clipPath')
-      .attr('id', 'clip')
-      .append('rect')
-      .attr('x', dimensions.margin.left)
-      .attr('y', dimensions.margin.top)
-      .attr('width', dimensions.width)
-      .attr('height', dimensions.height)
 
     const { updateXAxisPointer } = createAxisPointer({
       svg,

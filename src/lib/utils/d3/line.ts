@@ -24,7 +24,6 @@ export function createLine(options: {
     .attr('stroke-linecap', 'round')
     .attr('d', lineGenerator(data))
     .attr('fill', 'none')
-    .attr('clip-path', 'url(#clip)')
 
   return line
 }

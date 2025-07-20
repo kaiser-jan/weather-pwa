@@ -38,7 +38,7 @@
     resolutionX = Math.ceil(canvas.clientWidth / 4)
     resolutionY = Math.ceil(canvas.clientHeight / 4)
 
-    console.debug(`${resolutionX}x${resolutionY}`)
+    console.debug(`Rerendering sky simulation with ${resolutionX}x${resolutionY}`)
 
     const sun = SunCalc.getPosition(datetime.toJSDate(), coordinates.latitude, coordinates.longitude)
     const solarZenith = Math.PI / 2 - sun.altitude

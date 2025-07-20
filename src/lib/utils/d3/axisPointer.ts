@@ -66,6 +66,8 @@ export function createAxisPointer(options: {
       .attr('r', 4)
       .classed('stroke-midground fill-text-muted stroke-4', true)
       .attr('id', 'x-axis-pointer-circle-' + series.name)
+    // only adding to the first item for now
+    break
   }
 
   const tooltip = options.tooltip ? createTooltip({ svg, dimensions }) : null
@@ -123,6 +125,7 @@ export function createTooltip(options: {
     .attr('width', 200)
     .attr('height', 200)
     .style('pointer-events', 'none')
+    .attr('data-vaul-no-drag', '')
 
   const tooltip = fo
     .append('xhtml:div')

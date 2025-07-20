@@ -134,7 +134,7 @@
             startDateTime={$selectedDay.datetime}
             endDateTime={$selectedDay.datetime.plus($selectedDay.duration)}
             datetime={$NOW}
-            className="snap-center shrink-0 w-full h-[20vh]"
+            className="snap-center shrink-0 w-full h-[30vh]"
           />
         {:else}
           <Skeleton class="h-full w-full" />
