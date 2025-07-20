@@ -49,7 +49,11 @@
     The container would need to be inside the padding, meaning it shifts the scrollbar
     Also, wrapping it causes weird behaviour.
   -->
-  <ContainerCorners left="left-4" bottom="bottom-22" right="right-4" />
+  <ContainerCorners
+    left="left-4"
+    bottom="bottom-[calc(5.5rem_+min(env(safe-area-inset-bottom),2rem))]"
+    right="right-4"
+  />
   <div
     class="from-background/50 absolute right-0 bottom-22 left-0 flex h-8 flex-row gap-2 bg-gradient-to-t to-transparent"
   ></div>

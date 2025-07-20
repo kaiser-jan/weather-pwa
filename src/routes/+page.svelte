@@ -1,12 +1,16 @@
 <script lang="ts">
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
   import SectionOutlook from '$lib/components/sections/SectionOutlook.svelte'
+  import SectionTitle from '$lib/components/sections/SectionTitle.svelte'
   import SectionTodayChart from '$lib/components/sections/SectionTodayChart.svelte'
   import SectionUpcoming from '$lib/components/sections/SectionUpcoming.svelte'
   import ViewDay from '$lib/components/sections/ViewDay.svelte'
   import NoticePrecipitation from '$lib/components/weather/notices/NoticePrecipitation.svelte'
   import { settings } from '$lib/settings/store'
-  import type { DateTime } from 'luxon'
+  import { forecastStore } from '$lib/stores/data'
+  import { NOW } from '$lib/stores/now'
+  import { selectedDay } from '$lib/stores/selectedDay'
+  import { BinocularsIcon, CalendarDaysIcon, ChevronRightIcon, ClockIcon } from '@lucide/svelte'
 
   let scrollContainer = $state<HTMLElement>()
   let shrinkHeader = $state(false)
@@ -28,10 +32,18 @@
   <div class="flex flex-col gap-4 p-4" data-vaul-drawer-wrapper>
     <NoticePrecipitation />
 
+    <SectionTitle
+      title="Today"
+      icon={ClockIcon}
+      actionIcon={ChevronRightIcon}
+      onclick={() => selectedDay.set($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))) ?? null)}
+    />
     <SectionTodayChart />
 
+    <SectionTitle title="Upcoming" icon={CalendarDaysIcon} />
     <SectionUpcoming />
 
+    <SectionTitle title="Outlook" icon={BinocularsIcon} />
     <SectionOutlook />
   </div>
 

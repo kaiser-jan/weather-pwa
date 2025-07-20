@@ -26,6 +26,7 @@ import {
   HourglassIcon,
   LanguagesIcon,
   LayoutPanelTopIcon,
+  LetterTextIcon,
   ListIcon,
   MapPinIcon,
   MoveVerticalIcon,
@@ -345,6 +346,13 @@ export const settingsConfig = [
         type: 'group',
         icon: ComponentIcon,
         children: [
+          {
+            id: 'showSectionTitles',
+            label: 'Section Titles',
+            type: 'boolean',
+            icon: LetterTextIcon,
+            default: true,
+          },
           {
             id: 'chart',
             label: 'Chart',

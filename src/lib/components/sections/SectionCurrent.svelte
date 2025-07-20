@@ -44,7 +44,7 @@
 
 <div
   class={[
-    'top-0 z-50 flex w-full flex-col items-center justify-center overflow-hidden rounded-b-[1rem] bg-blue-950 p-[0.5rem] transition-all',
+    'top-0 z-50 flex w-full flex-col overflow-hidden rounded-b-[1rem] p-[0.5rem] transition-all',
     $settingCurrentSticky ? 'absolute' : 'relative',
   ]}
   style={`height: calc(min(4rem, env(safe-area-inset-top)) + ${shrink ? '10vh' : '25vh'})`}
