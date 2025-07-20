@@ -71,11 +71,13 @@ export type SettingPage = BaseConfigItem & {
   type: 'page'
   children: ConfigItem[]
 }
+type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+type OptionalProp<T, K extends PropertyKey> = T extends Record<K, any> ? Omit<T, K> & Partial<Pick<T, K>> : T
 export type SettingList = BaseConfigItem & {
   type: 'list'
   default: Array<unknown>
   nameProperty: string
-  children: ConfigItem[]
+  children: OptionalProp<ConfigItem, 'default'>[]
 }
 
 export type NestableSetting = SettingGroup | SettingPage | SettingList

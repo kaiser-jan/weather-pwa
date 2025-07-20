@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input'
   import type { NumberSetting } from '../types'
 
   interface Props {
@@ -10,4 +11,4 @@
   let { item, value, onchange }: Props = $props()
 </script>
 
-<input type="number" bind:value oninput={(e) => onchange((e.target as HTMLInputElement).value)} />
+<Input type="number" bind:value onblur={() => onchange(value)} min={item.min} max={item.max} step={item.step} />
