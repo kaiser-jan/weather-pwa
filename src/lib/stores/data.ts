@@ -13,11 +13,11 @@ import { subscribeNonImmediate } from '$lib/utils/state.svelte'
 const _isForecastLoading = writable(false)
 
 const { subscribe, set } = writable<Forecast | null>(null, () => {
-  const subscriptionCoordinates = subscribeNonImmediate(coordinates, update)
-  const subscriptionDatetime = subscribeNonImmediate(NOW, update)
+  const subscriptionCoordinates = subscribeNonImmediate(coordinates, () => update('coordinates'))
+  const subscriptionDatetime = subscribeNonImmediate(NOW, () => update('datetime'))
   const subscriptionDatasets = subscribeNonImmediate(
     settings.select((s) => s.data.datasets),
-    update,
+    () => update('datasets'),
   )
 
   return () => {
@@ -27,15 +27,15 @@ const { subscribe, set } = writable<Forecast | null>(null, () => {
   }
 })
 
-function update() {
-  console.debug('update')
+function update(cause: string) {
+  console.debug('update', cause)
   const _coordinates = get(coordinates)
   const datasetIds = get(settings).data.datasets
   const stream = get(settings).data.incrementalLoad
   updateWith(_coordinates, datasetIds, stream)
 }
 
-update()
+update('init')
 
 export const forecastStore = {
   subscribe,

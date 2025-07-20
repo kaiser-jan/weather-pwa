@@ -155,6 +155,7 @@ export const settingsConfig = [
             default: 'map-pin',
             options: ['home', 'briefcase', 'map-pin'],
           },
+          // NOTE: changing any of these will cause cache invalidation
           {
             id: 'latitude',
             label: 'Latitude (°)',

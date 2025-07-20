@@ -59,7 +59,7 @@
     {#await locationNamePromise then locationName}
       <span class="drop-shadow-c-md ml-1">{locationName}</span>
     {/await}
-    <button onclick={() => forecastStore.update()} class={['p-2', $isForecastLoading ? 'animate-spin' : '']}>
+    <button onclick={() => forecastStore.update('manual')} class={['p-2', $isForecastLoading ? 'animate-spin' : '']}>
       <RefreshCwIcon />
     </button>
   </div>

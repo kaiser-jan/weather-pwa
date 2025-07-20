@@ -37,7 +37,6 @@ function writeSetting(path: string[], value: any) {
   setDeep(settingsOverrides, path, value)
 
   settingsOverrides.update((s) => {
-    console.log(s)
     setDeep(s, path, value)
     return s
   })
@@ -70,7 +69,6 @@ function resetSetting(path: string[]) {
   settingsOverrides.update((s) => {
     // deleteDeep(s, path)
     setDeep(s, path, undefined)
-    console.log(s)
     return s
   })
 
