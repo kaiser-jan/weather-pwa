@@ -7,7 +7,6 @@
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
   import LocationSearch from './LocationSearch.svelte'
   import { iconMap } from '$lib/utils/icons'
-  import { onMount } from 'svelte'
   import { coordinates } from '$lib/stores/location'
   import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
 
@@ -15,10 +14,6 @@
 
   let selectedItemId = persistantState('selected-location-id', ITEM_ID_GEOLOCATION)
   const previouslySelectedCoordinates = persistantState<Coordinates | null>('selected-coordinates', null)
-
-  interface Props {}
-
-  let {}: Props = $props()
 
   const settingLocations = settings.select((s) => s.data.locations)
 
@@ -69,7 +64,7 @@
   </div>
   <div class="bg-midground relative w-1 grow">
     <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
-      {#each $settingLocations as location}
+      {#each $settingLocations as location (location.id)}
         <button
           class={[
             'flex size-10 min-w-fit items-center justify-center rounded-full px-3',

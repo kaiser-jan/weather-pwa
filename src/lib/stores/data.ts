@@ -1,4 +1,4 @@
-import { get, readable, readonly, writable } from 'svelte/store'
+import { get, readonly, writable } from 'svelte/store'
 import { combineMultiseriesToDailyForecast, forecastTotalFromDailyForecast } from '../data/utils'
 import { mergeMultivariateTimeSeries } from '../utils/data'
 import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/data'
@@ -120,7 +120,7 @@ type CachedForecast = {
   forecast: Forecast
 }
 
-export function luxonReviver(key: string, value: any): any {
+export function luxonReviver(key: string, value: unknown): unknown {
   if (typeof value === 'string') {
     if (key === 'datetime') {
       const dt = DateTime.fromISO(value)
@@ -141,7 +141,7 @@ function getCachedForecast(coordinates: Coordinates, datasets: readonly DatasetI
     const lastForecast = JSON.parse(lastForecastString, luxonReviver) as CachedForecast
     const isValid = deepEqual(coordinates, lastForecast.coordinates) && deepEqual(datasets, lastForecast.datasets)
     if (isValid) return lastForecast.forecast
-  } catch (error) {}
+  } catch {}
 
   return null
 }

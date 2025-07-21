@@ -1,7 +1,7 @@
 <script lang="ts">
   import { geolocationStore } from '$lib/stores/geolocation'
   import type { Coordinates } from '$lib/types/data'
-  import { BookmarkIcon, ChevronRight, MapPinIcon, PinIcon, PinOffIcon, Trash2Icon, type Icon } from '@lucide/svelte'
+  import { BookmarkIcon, ChevronRight, MapPinIcon, Trash2Icon, type Icon } from '@lucide/svelte'
   import { Button } from './ui/button'
   import { ITEM_ID_GEOLOCATION, type LocationSelection } from '$lib/types/ui'
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'

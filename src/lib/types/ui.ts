@@ -1,5 +1,5 @@
 import type { Icon, ThermometerIcon } from '@lucide/svelte'
-import type { Coordinates, TimeBucket, TimeSeries, WeatherMetricKey } from './data'
+import type { Coordinates, TimeSeries, WeatherMetricKey } from './data'
 
 export type ColorStop = { value: number; h: number; s: number; l: number }
 

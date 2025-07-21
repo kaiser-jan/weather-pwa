@@ -1,5 +1,5 @@
 import type { Coordinates, MultivariateTimeSeries } from '$lib/types/data'
-import type { Dataset, TimeseriesForecastGeoJsonSerializer } from '$lib/types/geosphere-at'
+import type { TimeseriesForecastGeoJsonSerializer } from '$lib/types/geosphere-at'
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
 import nowcast from './index'

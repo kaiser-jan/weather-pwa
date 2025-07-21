@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ChevronRightIcon, PencilIcon } from '@lucide/svelte'
+  import type { ListSetting } from '../types'
 
   interface Props {
     item: ListSetting
@@ -12,7 +13,7 @@
 </script>
 
 <div class="flex w-full flex-col gap-2 py-1">
-  {#each value as listItem, listIndex}
+  {#each value as listItem, listIndex (listIndex)}
     <button
       class="bg-foreground flex w-full flex-row items-center gap-2 rounded-md px-3 py-2"
       onclick={() => {

@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { Forecast, WeatherMetricKey } from '$lib/types/data'
   import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
-  import MathFraction from '$lib/components/MathFraction.svelte'
-  import { autoFormatMetric, getPreferredUnit } from '$lib/utils/units'
-  import { settings } from '$lib/settings/store'
   import FormattedMetric from '../FormattedMetric.svelte'
 
   interface Props {
@@ -29,7 +26,6 @@
 
 {#if current?.[details.datapoint] !== undefined}
   <span class="inline-flex items-center gap-[0.375rem]">
-    <!-- svelte-ignore element_invalid_self_closing_tag -->
     <details.icon />
 
     <FormattedMetric value={current[details.datapoint]} parameter={item} />

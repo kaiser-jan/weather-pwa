@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as ToggleGroup from '$lib/components/ui/toggle-group'
   import * as Popover from '$lib/components/ui/popover'
-  import { CheckIcon, EllipsisIcon, EyeIcon, EyeOffIcon, PinIcon, PinOffIcon } from '@lucide/svelte'
+  import { EllipsisIcon, EyeIcon, EyeOffIcon, PinIcon, PinOffIcon } from '@lucide/svelte'
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
   import { type WeatherMetricKey, WEATHER_METRIC_KEYS } from '$lib/types/data'
   import { Button } from '$lib/components/ui/button'
@@ -32,7 +32,7 @@
 
 <div class="flex h-fit w-full flex-row gap-2">
   <ToggleGroup.Root type="multiple" variant="outline" bind:value={visible} class="h-fit grow">
-    {#each pinned.value as parameter}
+    {#each pinned.value as parameter (parameter)}
       {@const details = CHART_SERIES_DETAILS[parameter]!}
       <ToggleGroup.Item value={parameter} class="grow">
         <details.icon />
@@ -42,7 +42,7 @@
 
   {#if temporary.length}
     <ToggleGroup.Root type="multiple" variant="outline" bind:value={visible}>
-      {#each temporary as parameter}
+      {#each temporary as parameter (parameter)}
         {@const details = CHART_SERIES_DETAILS[parameter]!}
         <ToggleGroup.Item value={parameter}>
           <details.icon />
@@ -58,7 +58,7 @@
       </Button>
     </Popover.Trigger>
     <Popover.Content class="flex w-fit flex-col gap-1 p-2">
-      {#each Object.entries(CHART_SERIES_DETAILS) as [parameter, parameterDetails]}
+      {#each Object.entries(CHART_SERIES_DETAILS) as [parameter, parameterDetails] (parameter)}
         {@const isActive = visible.includes(parameter)}
         {@const isPinned = pinned.value.includes(parameter)}
         <button

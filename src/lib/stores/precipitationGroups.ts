@@ -42,7 +42,7 @@ export const precipitationGroupsStore = derived(
           previousGroup.sporadic = true
         } else {
           // start a new group
-          groups.push({ start: timeBucket.datetime, amount: 0 } as any)
+          groups.push({ start: timeBucket.datetime, amount: 0 } as PrecipitationGroup)
         }
       }
 

@@ -4,7 +4,11 @@ import { cubicOut } from 'svelte/easing'
 import type { TransitionConfig } from 'svelte/transition'
 import { twMerge } from 'tailwind-merge'
 
-export type IgnoredInput = boolean | number | null | any[] | Record<never, any> | undefined
+export type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>
+    }
+  : T
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

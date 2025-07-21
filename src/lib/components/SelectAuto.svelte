@@ -23,7 +23,7 @@
   </Select.Trigger>
   <Select.Content>
     <Select.Group>
-      {#each items as item}
+      {#each items as item (item)}
         <Select.Item value={item} label={item}>{item}</Select.Item>
       {/each}
     </Select.Group>

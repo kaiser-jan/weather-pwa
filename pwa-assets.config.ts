@@ -1,11 +1,11 @@
 import { createAppleSplashScreens, defineConfig, minimal2023Preset, Preset } from '@vite-pwa/assets-generator/config'
 import { defu } from 'defu'
-import { IgnoredInput } from './src/lib/utils.ts'
+import { DeepPartial } from './src/lib/utils.ts'
 import { colors } from './tailwind.config.js'
 
 const PADDING = 0.3
 
-const presetOverrides: IgnoredInput | Partial<Preset> = {
+const presetOverrides: DeepPartial<Preset> = {
   transparent: {
     padding: PADDING,
   },
@@ -38,7 +38,7 @@ export default defineConfig({
   headLinkOptions: {
     preset: '2023',
   },
-  preset: defu(presetOverrides, minimal2023Preset),
+  preset: defu(presetOverrides, minimal2023Preset) as Preset,
 
   images: ['static/logo.svg'],
 })

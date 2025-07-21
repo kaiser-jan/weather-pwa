@@ -1,9 +1,7 @@
 // Based on [svelte-legos](https://github.com/ankurrsinghal/svelte-legos)
 
-import { reverseGeocoding } from '$lib/data/location'
-import type { PlaceOutput } from '$lib/types/nominatim'
 import { NavigationIcon, NavigationOffIcon, type Icon as IconType } from '@lucide/svelte'
-import { derived, readable, type Writable } from 'svelte/store'
+import { derived, readable } from 'svelte/store'
 
 type GeolocationStatus = 'unstarted' | 'unsupported' | 'requesting' | 'unpermitted' | 'loading' | 'error' | 'active'
 
@@ -114,6 +112,8 @@ const ERROR_LABELS: Record<number, string> = {
 } as const
 
 function getDetailsForState(g: GeolocationState): GeolocationStateDetails {
+  const error = g.error?.code as keyof typeof ERROR_LABELS | null
+
   switch (g.status) {
     case 'unstarted':
       return { icon: NavigationIcon, label: 'Inactive', class: 'opacity-50' }
@@ -123,7 +123,6 @@ function getDetailsForState(g: GeolocationState): GeolocationStateDetails {
     case 'unsupported':
     case 'unpermitted':
     case 'error':
-      const error = g.error?.code as keyof typeof ERROR_LABELS | null
       return { icon: NavigationOffIcon, label: error ? ERROR_LABELS[error] : 'Error' }
     case 'active':
       return { icon: NavigationIcon, label: 'Active' }

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { SelectSetting } from '../types'
+  import type { MultiSelectSetting } from '../types'
   import { Checkbox } from '$lib/components/ui/checkbox'
   import { Label } from '$lib/components/ui/label'
 
   interface Props {
-    item: SelectSetting
+    item: MultiSelectSetting
     value: string[]
     onchange: (v: string[]) => void
   }
@@ -13,7 +13,7 @@
 </script>
 
 <div class="flex flex-col gap-1">
-  {#each item.options as option}
+  {#each item.options as option (option)}
     <div class="flex flex-row items-center gap-2">
       <Checkbox
         id={option}

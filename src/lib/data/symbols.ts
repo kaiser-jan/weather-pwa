@@ -27,7 +27,7 @@ export function getWeatherIcon(s: WeatherSituation): string {
 
   if (s.precipitation) {
     const isDrizzle = s.intensity === 'drizzle' && s.precipitation === 'rain'
-    let precipitationString = isDrizzle ? ('drizzle' as 'rain') : s.precipitation
+    const precipitationString = isDrizzle ? ('drizzle' as 'rain') : s.precipitation
     if (s.cloudiness === 'partly') return `partly-cloudy${tF}-${precipitationString}`
     return precipitationString
   }
@@ -51,16 +51,10 @@ export function getWeatherIcon(s: WeatherSituation): string {
   return `clear${tF}`
 }
 
-export function deriveWeatherSituationFromInstant(
-  data: Partial<WeatherInstant> | null,
-  useSymbolData = true,
-): WeatherSituation | null {
-  if (!data) return null
-
+export function deriveWeatherSituationFromInstant(data: Partial<WeatherInstant>): WeatherSituation {
   const situation: WeatherSituation = {}
 
-  if (data.thunder_probability ? data.thunder_probability > 20 : data.symbol?.thunder && useSymbolData)
-    situation.thunder = true
+  if (data.thunder_probability && data.thunder_probability > 20) situation.thunder = true
 
   if (data.precipitation_amount) {
     // TODO: rain vs. snow

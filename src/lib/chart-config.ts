@@ -4,7 +4,6 @@ import {
   DropletIcon,
   GaugeIcon,
   ShieldIcon,
-  SoapDispenserDropletIcon,
   SunIcon,
   ThermometerIcon,
   UmbrellaIcon,

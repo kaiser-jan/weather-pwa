@@ -39,7 +39,7 @@
       {item}
       {value}
       {onnavigate}
-      onchange={(v: any) => {
+      onchange={(v: unknown) => {
         settings.writeSetting(path, v)
         hasChanged = true
         value = v

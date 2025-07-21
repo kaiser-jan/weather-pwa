@@ -4,7 +4,6 @@
     LucideCheckCircle,
     LucideCircleArrowDown,
     LucideCircleChevronDown,
-    LucideCircleDashed,
     LucideCircleEllipsis,
     LucideCircleFadingArrowUp,
     LucideCircleHelp,
@@ -113,7 +112,6 @@
   </Button>
   <div class="w-full"></div>
   <div class="inline-flex items-center gap-2">
-    <!-- svelte-ignore element_invalid_self_closing_tag -->
     <SWStateIcon />
     {capitalizeFirstChar(serviceWorkerState) ?? 'Unknown'}
   </div>

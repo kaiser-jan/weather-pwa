@@ -1,12 +1,13 @@
 import * as d3 from 'd3'
-import type { TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
 import type { Dimensions } from './types'
 import { DateTime } from 'luxon'
 import type { CreatedSeriesDetails } from '$lib/types/ui'
 import { mount } from 'svelte'
-import { autoFormatMetric, formatMetric, getPreferredUnit } from '../units'
+import { autoFormatMetric } from '../units'
 import { get } from 'svelte/store'
 import { settings } from '$lib/settings/store'
+import type { TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
+import type { Icon } from '@lucide/svelte'
 
 export function createAxisPointer(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
@@ -102,8 +103,8 @@ function getNearestPointAtDateTime(
 }
 
 // PERF: rendering the icons has a noticable performance impact
-let renderedIcons: Record<string, string> = {}
-function renderIcon(id: string, icon: any, size = 16): string {
+const renderedIcons: Record<string, string> = {}
+function renderIcon(id: string, icon: typeof Icon, size = 16): string {
   if (renderedIcons[id]) return renderedIcons[id]
 
   const container = document.createElement('div')

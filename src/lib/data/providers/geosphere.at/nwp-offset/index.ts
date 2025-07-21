@@ -1,6 +1,6 @@
 import type { Coordinates } from '$lib/types/data'
 import type { Dataset } from '$lib/types/data/providers'
-import { DateTime, Duration } from 'luxon'
+import { DateTime } from 'luxon'
 import { loadTimeseriesForecast } from '../nwp/timeseries-forecast'
 import nwp from '../nwp'
 

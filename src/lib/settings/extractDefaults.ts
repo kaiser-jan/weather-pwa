@@ -1,7 +1,7 @@
 import type { ConfigItem } from './types'
 
 export function extractDefaults(items: ConfigItem[]): Record<string, unknown> {
-  const result: any = {}
+  const result: Record<string, any> = {}
 
   function assign(path: string[], value: unknown) {
     let obj = result

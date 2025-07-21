@@ -8,34 +8,10 @@ import type {
 import type { TimeBucketSummary } from '$lib/types/data'
 import { DateTime, Duration } from 'luxon'
 
-export function mapNumbersToStatisticalSummaries<KeyT extends string>(
-  items: Partial<Record<KeyT, any>>[],
-): Record<KeyT, NumberSummary> {
-  // @ts-expect-error
-  let valuesMap: Record<KeyT, number[]> = {}
-  for (const item of items) {
-    for (const [key, value] of Object.entries(item)) {
-      if (typeof value !== 'number') continue
-      if (!(key in valuesMap)) valuesMap[key as KeyT] = []
-      valuesMap[key as KeyT].push(value as number)
-    }
-  }
-
-  // @ts-expect-error
-  let results: Record<KeyT, NumberSummary> = {}
-
-  for (const [key, values] of Object.entries(valuesMap)) {
-    results[key as KeyT] = calculateStatisticalNumberSummary(values as number[])
-  }
-
-  return results
-}
-
 export function combineStatisticalNumberSummaries<KeyT extends string>(
   items: Partial<Record<KeyT, Partial<NumberSummary>>>[],
 ): Record<KeyT, NumberSummary> {
-  // @ts-expect-error
-  let valuesMap: Record<KeyT, Partial<NumberSummary>[]> = {}
+  const valuesMap: Record<KeyT, Partial<NumberSummary>[]> = {} as Record<KeyT, Partial<NumberSummary>[]>
   for (const item of items) {
     for (const [key, value] of Object.entries(item)) {
       if (typeof value !== 'object' || value === null) continue
@@ -44,8 +20,7 @@ export function combineStatisticalNumberSummaries<KeyT extends string>(
     }
   }
 
-  // @ts-expect-error
-  let results: Record<KeyT, NumberSummary> = {}
+  const results: Record<KeyT, NumberSummary> = {} as Record<KeyT, NumberSummary>
 
   for (const [key, _values] of Object.entries(valuesMap)) {
     const values = _values as NumberSummary[]
@@ -161,7 +136,7 @@ function mapRecord<KeyT extends string, ItemT, TargetT>(
   return result
 }
 
-export function forecastTotalFromDailyForecast(daily: TimeBucketSummary[]): TimeBucketSummary | null {
+export function forecastTotalFromDailyForecast(daily: TimeBucketSummary[]): TimeBucketSummary {
   const total = combineStatisticalNumberSummaries(daily.map((d) => d.summary))
 
   const first = daily[0]

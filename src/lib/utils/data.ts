@@ -66,7 +66,7 @@ export function mergeMultivariateTimeSeries(
   multiseriesA: MultivariateTimeSeries,
   multiseriesB: MultivariateTimeSeries,
 ) {
-  let timeSeriesResult: MultivariateTimeSeries = {}
+  const timeSeriesResult: MultivariateTimeSeries = {}
 
   const keys = Array.from(new Set([...Object.keys(multiseriesA), ...Object.keys(multiseriesB)]))
 

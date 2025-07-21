@@ -39,7 +39,7 @@
 </script>
 
 {#if $settingCurrentSticky}
-  <div style={`height: calc(min(4rem, env(safe-area-inset-top)) + 25vh)`}></div>
+  <div style="height: calc(min(4rem, env(safe-area-inset-top)) + 25vh)"></div>
 {/if}
 
 <div
@@ -81,7 +81,7 @@
     <AsyncText
       class={[shrink ? 'text-4xl' : 'text-6xl', 'drop-shadow-c-md transition-all'].join(' ')}
       text={autoFormatMetric(forecastCurrent?.temperature, 'temperature', $settings)}
-      placeholder={'20°C'}
+      placeholder="20°C"
       loaded={forecastCurrent !== null}
     />
   </div>

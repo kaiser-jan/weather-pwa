@@ -1,7 +1,6 @@
 import type { ColorStop } from '$lib/types/ui'
 import { createUUID } from '$lib/utils'
 import { interpolateColor } from '../ui'
-import type { Dimensions } from './types'
 
 export function createGradientDefinition(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>

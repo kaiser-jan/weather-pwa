@@ -1,11 +1,11 @@
 <script lang="ts">
   import SettingsRenderer from './SettingsRenderer.svelte'
-  import type { ConfigItem, NestableSetting } from '../types'
+  import type { ConfigItem, NestableSetting, SettingPage } from '../types'
   import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js'
   import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
   import { settings } from '../store'
   import PageList from './pages/PageList.svelte'
-  import { HelpCircleIcon, SettingsIcon } from '@lucide/svelte'
+  import { SettingsIcon } from '@lucide/svelte'
 
   interface Props {
     path?: string[]
@@ -16,7 +16,7 @@
 
   let recentPath = $state<typeof path | null>(null)
 
-  type Page = NestableSetting & { path: string[] }
+  type Page = (NestableSetting | NestableSetting['children'][number]) & { path: string[] }
 
   let pages: Page[] = $derived.by(() => {
     let _pages: Page[] = [
@@ -32,17 +32,23 @@
 
     for (const [index, key] of path.entries()) {
       const lastPage = _pages[_pages.length - 1]
+      if (!('children' in lastPage)) {
+        return _pages
+      }
+
       let childPage = lastPage.children.find((p) => p.id === key)
 
       if (lastPage.type === 'list' && !isNaN(parseInt(key))) {
-        const values = settings.readSetting(path.slice(0, index)).value as any[]
-        const label = values && lastPage.nameProperty ? values[parseInt(key)][lastPage.nameProperty] : key
+        const values = settings.readSetting(path.slice(0, index)).value as Record<string, unknown>[]
+        const hasName = values && lastPage.nameProperty && lastPage.nameProperty in values[parseInt(key)]
+        let label = hasName ? (values[parseInt(key)][lastPage.nameProperty] as string) : key
 
+        // HACK: a list item has no setting definition so we make it a page so it displays its properties given by the parent
         childPage = {
           ...lastPage,
           label,
           type: 'page',
-        }
+        } as SettingPage
       }
 
       if (!childPage || !('children' in childPage)) {
@@ -95,7 +101,7 @@
 <div class="flex min-h-0 grow flex-col gap-4 overflow-x-visible">
   <Breadcrumb.Root>
     <Breadcrumb.List>
-      {#each pages as page, index}
+      {#each pages as page, index (page.id)}
         {#if index !== 0}
           <Breadcrumb.Separator />
         {/if}
@@ -121,7 +127,7 @@
       class="absolute flex w-full flex-row gap-6 transition-all duration-300 ease-in-out"
       bind:this={scrollContainer}
     >
-      {#each pages as page, i}
+      {#each pages as page, i (page.id)}
         <div class="flex h-fit w-full shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
           {#if page.type === 'list'}
             <PageList

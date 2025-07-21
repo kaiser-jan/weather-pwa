@@ -1,8 +1,7 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
   import type { TimeBucket, WeatherMetricKey } from '$lib/types/data'
-  import { autoFormatMetric } from '$lib/utils/units'
-  import { ArrowDownIcon, ArrowUpIcon, type Icon } from '@lucide/svelte'
+  import { ArrowDownIcon, ArrowUpIcon } from '@lucide/svelte'
   import NumberRangeBar from '../NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
   import type { ColorStop, ParameterDaySummaryProps, SeriesDetails } from '$lib/types/ui'
@@ -52,7 +51,7 @@
   })
 </script>
 
-{#each items as item}
+{#each items as item (item)}
   {#if details.color}
     <!-- NOTE: moving tailwind colors to css will make this easier -->
     <div
@@ -96,7 +95,7 @@
       (g) => g.end > day.datetime && g.start <= day.datetime.plus(day.duration),
     )}
     <div class="flex flex-col gap-1">
-      {#each precipitationGroups as precipitationGroup}
+      {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}
         <PrecipitationGroup {precipitationGroup} />
       {:else}
         <span class="text-text-muted"> No rain on this day! </span>

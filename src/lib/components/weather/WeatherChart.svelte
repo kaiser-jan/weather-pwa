@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { autoFormatMetric, convertToUnit, formatMetric, getPreferredUnit } from '../../utils/units'
+  import { autoFormatMetric, getPreferredUnit } from '../../utils/units'
   import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { onDestroy, onMount } from 'svelte'
   import * as d3 from 'd3'
@@ -13,7 +13,7 @@
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { settings } from '$lib/settings/store'
-  import type { CreatedSeriesDetails, SeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
+  import type { CreatedSeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
   import { createUUID, debounce } from '$lib/utils'
   import { Skeleton } from '../ui/skeleton'

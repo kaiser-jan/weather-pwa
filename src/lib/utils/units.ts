@@ -15,7 +15,13 @@ export function formatMetric(
   unit: Unit | null,
   options?: { showDecimal?: boolean; hideUnit?: boolean },
 ): string {
-  const showDecimal = options?.showDecimal !== undefined ? options.showDecimal : DECIMAL_RECOMMENDED_FOR.includes(unit)
+  const showDecimal =
+    options?.showDecimal !== undefined
+      ? options.showDecimal
+      : unit !== null
+        ? DECIMAL_RECOMMENDED_FOR.includes(unit)
+        : false
+
   const string = d3.format(showDecimal ? '.1f' : 'd')(value)
   // console.debug(value, unit, options, string)
   if (options?.hideUnit) return string

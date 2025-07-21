@@ -2,7 +2,7 @@ import { extractDefaults } from './extractDefaults'
 import { settingsConfig } from './config'
 import type { ConfigType } from './types'
 import { select } from '$lib/utils/stores'
-import { deleteDeep, getDeep, mergeDeep, setDeep } from './deep'
+import { getDeep, mergeDeep, setDeep } from './deep'
 import { writable, get } from 'svelte/store'
 
 type ConfigLiteral = typeof settingsConfig
@@ -27,7 +27,7 @@ export const settings = {
   resetSetting,
 }
 
-function writeSetting(path: string[], value: any) {
+function writeSetting(path: string[], value: unknown) {
   console.info(`Writing setting: ${path} = ${JSON.stringify(value)}`)
   settingsBaseStore.update((s) => {
     setDeep(s, path, value)

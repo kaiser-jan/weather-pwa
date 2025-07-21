@@ -1,4 +1,4 @@
-import type { WeatherSituation } from '../symbols.ts'
+import type { WeatherSituation } from '$lib/data/symbols'
 
 // prettier-ignore
 export const symbolToWeatherSituationMap: Record<number, WeatherSituation> = {

@@ -29,7 +29,7 @@
   {#if pwaAssetsHead.themeColor}
     <meta name="theme-color" content={pwaAssetsHead.themeColor.content} />
   {/if}
-  {#each pwaAssetsHead.links as link}
+  {#each pwaAssetsHead.links as link (link.href)}
     <link {...link} href={`${link.href}?v=${new Date(__DATE__).getTime()}`} />
   {/each}
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

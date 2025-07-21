@@ -5,8 +5,7 @@
   import { selectedDay } from '$lib/stores/selectedDay'
   import { DateTime } from 'luxon'
   import { Button } from '../ui/button'
-  import { ChevronLeft, ChevronRight, ThermometerIcon } from '@lucide/svelte'
-  import NumberRangeBar from '../NumberRangeBar.svelte'
+  import { ChevronLeft, ChevronRight } from '@lucide/svelte'
   import ParameterDaySummary from '../weather/ParameterDaySummary.svelte'
   import type { WeatherMetricKey } from '$lib/types/data'
   import type { ParameterDaySummaryProps } from '$lib/types/ui'
@@ -15,13 +14,9 @@
   import TimelineBar from '../TimelineBar.svelte'
   import { settings } from '$lib/settings/store'
   import { persistantState } from '$lib/utils/state.svelte'
-  import type { today } from '@internationalized/date'
   import { Skeleton } from '../ui/skeleton'
   import WeatherChart from '../weather/WeatherChart.svelte'
   import { cn, toggle } from '$lib/utils'
-  import { CHART_SERIES_DETAILS } from '$lib/chart-config'
-  import NoticePrecipitation from '../weather/notices/NoticePrecipitation.svelte'
-  import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !$selectedDay) return false
@@ -142,17 +137,18 @@
       </div>
 
       <div class="flex flex-row flex-wrap gap-2">
-        {#each Object.entries(parameterConfigs) as [parameter, config]}
-          {#if $selectedDay?.summary[parameter as WeatherMetricKey]}
+        {#each Object.entries(parameterConfigs) as [parameter, config] (parameter)}
+          {@const parameterTyped = parameter as WeatherMetricKey}
+          {#if $selectedDay?.summary[parameterTyped]}
             <button
               class={cn(
                 'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
-                visibleSeries.value.includes(parameter) ? 'bg-midground' : '',
+                visibleSeries.value.includes(parameterTyped) ? 'bg-midground' : '',
               )}
               style={`width: ${!config.items || config.items?.includes('range-bar') || config.items?.includes('precipitation-groups') ? 100 : 40}%`}
               onclick={() => toggle(visibleSeries.value, parameter)}
             >
-              <ParameterDaySummary {...config} {parameter} day={$selectedDay} />
+              <ParameterDaySummary {...config} parameter={parameterTyped} day={$selectedDay} />
             </button>
           {/if}
         {/each}

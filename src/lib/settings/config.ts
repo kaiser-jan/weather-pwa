@@ -1,20 +1,16 @@
 import { UNIT_OPTIONS, type Unit, type UnitDimension } from '$lib/units-config'
-import { DATASET_IDS, DATASETS, PROVIDERS, type DatasetId } from '$lib/data/providers'
-import type { ConfigItem, ConfigType } from './types'
+import { DATASET_IDS, DATASETS, type DatasetId } from '$lib/data/providers'
+import type { ConfigItem } from './types'
 import type { DateObjectUnits } from 'luxon'
 import {
   ArrowUpAz,
-  ArrowUpDownIcon,
   BadgeInfoIcon,
   BinocularsIcon,
-  BriefcaseIcon,
   CalculatorIcon,
   CalendarDaysIcon,
-  CalendarIcon,
   ChartLineIcon,
   ChartNoAxesGanttIcon,
   ChevronsUpDownIcon,
-  ChevronsUpIcon,
   ClockIcon,
   CloudSunIcon,
   ComponentIcon,
@@ -22,7 +18,6 @@ import {
   GlobeIcon,
   HashIcon,
   HighlighterIcon,
-  HomeIcon,
   HourglassIcon,
   LanguagesIcon,
   LayoutPanelTopIcon,
@@ -33,7 +28,6 @@ import {
   PaletteIcon,
   PencilLineIcon,
   PinIcon,
-  PuzzleIcon,
   RulerIcon,
   SettingsIcon,
   SmileIcon,

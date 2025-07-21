@@ -1,4 +1,4 @@
-import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/data'
+import type { Coordinates, MultivariateTimeSeries } from '$lib/types/data'
 import type { Dataset, Provider } from '$lib/types/data/providers'
 import nowcast from './geosphere.at/nowcast'
 import nwp from './geosphere.at/nwp'

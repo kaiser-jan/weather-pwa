@@ -25,7 +25,7 @@
   </Select.Trigger>
   <Select.Content>
     <Select.Group>
-      {#each item.options as option}
+      {#each item.options as option (option)}
         <Select.Item value={option} label={option}>{option}</Select.Item>
       {/each}
     </Select.Group>

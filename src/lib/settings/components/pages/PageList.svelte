@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { ChevronRightIcon, GripHorizontalIcon, PencilIcon } from '@lucide/svelte'
-  import { onMount } from 'svelte'
-  import { dndzone, dragHandle, dragHandleZone } from 'svelte-dnd-action'
+  import { ChevronRightIcon, GripHorizontalIcon } from '@lucide/svelte'
+  import { dragHandle, dragHandleZone } from 'svelte-dnd-action'
+  import type { ListSetting } from '$lib/settings/types'
 
   interface Props {
     item: ListSetting

@@ -1,19 +1,14 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
   import { NOW } from '$lib/stores/now'
-  import type { TimeBucket, WeatherMetricKey } from '$lib/types/data'
+  import type { WeatherMetricKey } from '$lib/types/data'
   import { persistantState } from '$lib/utils/state.svelte'
   import ParameterSelect from '../ParameterSelect.svelte'
   import { Skeleton } from '../ui/skeleton'
   import WeatherChart from '../weather/WeatherChart.svelte'
-  import ChartValuesDisplay from '../weather/ChartValuesDisplay.svelte'
   import { selectedDay } from '$lib/stores/selectedDay'
   import { swipe } from 'svelte-gestures'
   import { settings } from '$lib/settings/store'
-
-  interface Props {}
-
-  let {}: Props = $props()
 
   const today = $derived($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))))
 

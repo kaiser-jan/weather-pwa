@@ -1,14 +1,11 @@
-import { defu } from 'defu'
-import type { Coordinates, Forecast, MultivariateTimeSeries, WeatherInstant } from '$lib/types/data'
+import type { Coordinates, MultivariateTimeSeries, WeatherInstant } from '$lib/types/data'
 import type {
   ForecastTimeInstant as MetnoForecastTimeInstant,
   ForecastTimePeriod as MetnoForecastTimePeriod,
-  ForecastTimeStep as MetnoForecastTimeStep,
   MetjsonForecast,
 } from '$lib/types/metno'
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
-import type { Dataset } from '$lib/types/data/providers'
 import type { DatasetId } from '../..'
 
 export async function loadLocationforecast(coordinates: Coordinates) {
@@ -83,7 +80,7 @@ function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<Weathe
     temperature: instant.air_temperature,
     pressure: (instant.air_pressure_at_sea_level ?? 0) * 100, // convert from hPa to Pa
     relative_humidity: instant.relative_humidity,
-    uvi_clear_sky: (instant as any).ultraviolet_index_clear_sky,
+    uvi_clear_sky: (instant as { ultraviolet_index_clear_sky: number }).ultraviolet_index_clear_sky,
     cloud_coverage: instant.cloud_area_fraction,
     // cloud_coverage_low: instant.cloud_area_fraction_low,
     // cloud_coverage_medium: instant.cloud_area_fraction_medium,

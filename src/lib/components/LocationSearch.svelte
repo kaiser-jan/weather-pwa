@@ -27,7 +27,6 @@
   import { settings } from '$lib/settings/store'
   import { iconMap } from '$lib/utils/icons'
   import type { PlaceOutput } from '$lib/types/nominatim'
-  import type { Coordinates } from '$lib/types/data'
   import { geolocationStore } from '$lib/stores/geolocation'
   import { readable } from 'svelte/store'
   import LocationList from './LocationList.svelte'
@@ -180,7 +179,7 @@
         <LocationList
           title="Search Results"
           placeholderEmpty={`No results for "${search.value}".\nTry rephrasing your search!`}
-          placeholderNull={'Use the searchbar to show the weather at another location!'}
+          placeholderNull="Use the searchbar to show the weather at another location!"
           placeholderLoading={`Looking up "${search.value}"...`}
           loading={isLoading}
           items={results.value?.map((r) => ({

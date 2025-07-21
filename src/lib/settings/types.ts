@@ -6,7 +6,7 @@ export type VisibilityCallback = (ctx: Record<string, unknown>) => boolean
 type BaseConfigItem = {
   id: string
   label: string
-  icon: typeof Icon
+  icon?: typeof Icon
   visible?: VisibilityCallback
   disabled?: boolean
 }
@@ -51,6 +51,7 @@ export type DescriptionBlock = BaseConfigItem & {
 
 export type NotImplementedSetting = BaseConfigItem & {
   type: 'not-implemented'
+  default: any
 }
 
 export type Setting =
@@ -63,6 +64,7 @@ export type Setting =
 
 //
 
+type OptionalProp<T, K extends PropertyKey> = T extends Record<K, unknown> ? Omit<T, K> & Partial<Pick<T, K>> : T
 export type SettingGroup = BaseConfigItem & {
   type: 'group'
   children: ConfigItem[]
@@ -71,16 +73,14 @@ export type SettingPage = BaseConfigItem & {
   type: 'page'
   children: ConfigItem[]
 }
-type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
-type OptionalProp<T, K extends PropertyKey> = T extends Record<K, any> ? Omit<T, K> & Partial<Pick<T, K>> : T
-export type SettingList = BaseConfigItem & {
+export type ListSetting = BaseConfigItem & {
   type: 'list'
   default: Array<unknown>
   nameProperty: string
   children: OptionalProp<ConfigItem, 'default'>[]
 }
 
-export type NestableSetting = SettingGroup | SettingPage | SettingList
+export type NestableSetting = SettingGroup | SettingPage | ListSetting
 
 export type ConfigItem = Setting | DescriptionBlock | NestableSetting
 

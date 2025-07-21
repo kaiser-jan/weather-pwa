@@ -1,10 +1,9 @@
 <script lang="ts">
   import SettingsRenderer from './SettingsRenderer.svelte'
-  import { getComponent } from '../registry'
   import { settings } from '../store'
   import type { ConfigItem } from '../types'
   import Button from '$lib/components/ui/button/button.svelte'
-  import { ChevronRightIcon, LockIcon, RotateCcwIcon } from '@lucide/svelte'
+  import { ChevronRightIcon, LockIcon } from '@lucide/svelte'
   import SettingsItemRenderer from './SettingsItemRenderer.svelte'
 
   interface Props {
@@ -16,7 +15,7 @@
   let { path: parentPath, config, onnavigate }: Props = $props()
 </script>
 
-{#each config as item}
+{#each config as item (item.id)}
   {@const path = [...parentPath, item.id]}
   {#if !item.visible || item.visible($settings)}
     {#if item.type === 'page' || item.type === 'list'}

@@ -174,7 +174,7 @@
 {:else if style === 'blocks'}
   <div class={[parameter, 'absolute inset-0 flex flex-row justify-end']}>
     <div style={`width: ${distanceFromDatetimes(firstDatetime, startDatetime)}%;`}></div>
-    {#each getBlocksForSeries().entries() as [i, stop]}
+    {#each getBlocksForSeries().entries() as [i, stop] (i)}
       <div class={`flex h-full items-end justify-center ${i}`} style={`width: ${getWidthForSeriesItem(i)};`}>
         <div
           style={`

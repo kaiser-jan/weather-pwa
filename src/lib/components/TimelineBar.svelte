@@ -2,7 +2,6 @@
   import type { Coordinates, MultivariateTimeSeries, WeatherMetricKey } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { DateTime } from 'luxon'
-  import { onDestroy } from 'svelte'
   import TimelineBarLayer from './TimelineBarLayer.svelte'
   import Skeleton from './ui/skeleton/skeleton.svelte'
 
@@ -71,13 +70,13 @@
     class="stripe-pattern absolute top-0 bottom-0 z-10"
     style={`width: ${distanceFromDatetimes(NOW, startDatetime)}%; left: 0;`}
   ></div>
-  {#each marks as mark}
+  {#each marks as mark, i (i)}
     <div
       class="bg-foreground absolute -top-1 -bottom-1 z-10 w-[0.05rem] mix-blend-difference"
       style={`left: ${distanceFromDatetimes(mark, startDatetime)}%;`}
     ></div>
   {/each}
-  {#each parameters as parameter}
+  {#each parameters as parameter (parameter)}
     <!-- TODO: properly handle sun and moon -->
     {#if multiseries?.[parameter as keyof typeof multiseries]?.length || ['sun', 'moon'].includes(parameter)}
       <TimelineBarLayer

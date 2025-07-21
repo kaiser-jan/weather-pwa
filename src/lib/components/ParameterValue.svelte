@@ -3,7 +3,7 @@
   import { settings } from '$lib/settings/store'
   import type { WeatherMetricKey } from '$lib/types/data'
   import { cn } from '$lib/utils'
-  import { autoFormatMetric, formatMetric, getPreferredUnit } from '$lib/utils/units'
+  import { autoFormatMetric } from '$lib/utils/units'
 
   interface Props {
     parameter: WeatherMetricKey
