@@ -1,6 +1,6 @@
 import { get, readonly, writable } from 'svelte/store'
-import { combineMultiseriesToDailyForecast, forecastTotalFromDailyForecast } from '../data/utils'
-import { mergeMultivariateTimeSeries } from '../utils/data'
+import { combineMultiseriesToDailyForecast, forecastTotalFromDailyForecast } from '$lib/data/utils'
+import { mergeMultivariateTimeSeries } from '$lib/utils/data'
 import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/data'
 import { LOADERS, type DatasetId } from '$lib/data/providers'
 import { debounce, deepEqual } from '$lib/utils'

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { autoFormatMetric, getPreferredUnit } from '../../utils/units'
+  import { autoFormatMetric, getPreferredUnit } from '$lib/utils/units'
   import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { onDestroy, onMount } from 'svelte'
   import * as d3 from 'd3'
@@ -16,7 +16,7 @@
   import type { CreatedSeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
   import { createUUID, debounce } from '$lib/utils'
-  import { Skeleton } from '../ui/skeleton'
+  import { Skeleton } from '$lib/components/ui/skeleton'
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
   import { get } from 'svelte/store'
   import ChartValuesDisplay from './ChartValuesDisplay.svelte'

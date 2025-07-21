@@ -4,7 +4,7 @@ import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
 import nwp from './index'
 import { transformTimeSeries, type TimeSeriesConfig } from '$lib/utils/data'
-import type { DatasetId } from '../..'
+import type { DatasetId } from '$lib/data/providers'
 
 export const REQUESTED_WEATHER_PARAMETERS: string[] = [
   'cape',

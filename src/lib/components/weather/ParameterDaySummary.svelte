@@ -2,15 +2,15 @@
   import { settings } from '$lib/settings/store'
   import type { TimeBucket, WeatherMetricKey } from '$lib/types/data'
   import { ArrowDownIcon, ArrowUpIcon } from '@lucide/svelte'
-  import NumberRangeBar from '../NumberRangeBar.svelte'
+  import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
   import type { ColorStop, ParameterDaySummaryProps, SeriesDetails } from '$lib/types/ui'
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
-  import FormattedMetric from '../FormattedMetric.svelte'
+  import FormattedMetric from '$lib/components/FormattedMetric.svelte'
   import { cn } from '$lib/utils'
   import { generateCssRangeGradient } from '$lib/utils/ui'
   import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
-  import PrecipitationGroup from './PrecipitationGroup.svelte'
+  import PrecipitationGroup from '$lib/components/weather/PrecipitationGroup.svelte'
 
   type Props = ParameterDaySummaryProps & {
     parameter: WeatherMetricKey

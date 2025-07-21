@@ -5,7 +5,7 @@
   import { cn } from '$lib/utils'
   import { DateTime } from 'luxon'
   import SunCalc from 'suncalc'
-  import { Skeleton } from '../ui/skeleton'
+  import { Skeleton } from '$lib/components/ui/skeleton'
 
   interface Props {
     derived: WeatherSituation | null

@@ -2,7 +2,7 @@
   import { settings } from '$lib/settings/store'
   import type { TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
   import { slide } from 'svelte/transition'
-  import ParameterValue from '../ParameterValue.svelte'
+  import ParameterValue from '$lib/components/ParameterValue.svelte'
 
   const settingsChart = settings.select((s) => s.sections.components.chart)
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { UmbrellaIcon, UmbrellaOffIcon } from '@lucide/svelte'
   import { NOW } from '$lib/stores/now'
-  import PrecipitationGroup from '../PrecipitationGroup.svelte'
+  import PrecipitationGroup from '$lib/components/weather/PrecipitationGroup.svelte'
   import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
 
   interface Props {

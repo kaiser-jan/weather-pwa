@@ -6,7 +6,7 @@ import type {
 } from '$lib/types/metno'
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
-import type { DatasetId } from '../..'
+import type { DatasetId } from '$lib/data/providers'
 
 export async function loadLocationforecast(coordinates: Coordinates) {
   if (coordinates.altitude === null) throw new Error('Locationforecast from met.no requires an altitude!')

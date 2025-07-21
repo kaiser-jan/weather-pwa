@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Forecast, WeatherMetricKey } from '$lib/types/data'
   import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
-  import FormattedMetric from '../FormattedMetric.svelte'
+  import FormattedMetric from '$lib/components/FormattedMetric.svelte'
 
   interface Props {
     item: WeatherMetricKey

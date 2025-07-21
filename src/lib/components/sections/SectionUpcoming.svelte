@@ -1,13 +1,13 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
-  import TimelineBar from '../TimelineBar.svelte'
-  import { Skeleton } from '../ui/skeleton'
+  import TimelineBar from '$lib/components/TimelineBar.svelte'
+  import { Skeleton } from '$lib/components/ui/skeleton'
   import { interpolateColor } from '$lib/utils/ui'
   import { autoFormatMetric } from '$lib/utils/units'
   import { NOW } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
-  import NumberRangeBar from '../NumberRangeBar.svelte'
+  import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { selectedDay } from '$lib/stores/selectedDay'
 </script>
 

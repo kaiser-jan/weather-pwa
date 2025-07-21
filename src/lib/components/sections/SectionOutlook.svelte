@@ -2,8 +2,8 @@
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
   import { selectedDay } from '$lib/stores/selectedDay'
-  import NumberRangeBar from '../NumberRangeBar.svelte'
-  import { Skeleton } from '../ui/skeleton'
+  import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
+  import { Skeleton } from '$lib/components/ui/skeleton'
 </script>
 
 <div class="bg-midground flex flex-row overflow-y-auto rounded-md py-1.5">
