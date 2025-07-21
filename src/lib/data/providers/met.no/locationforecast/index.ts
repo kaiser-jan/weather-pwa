@@ -23,6 +23,8 @@ const meta: Dataset = {
   offset: null,
   interval: null,
   timespan: Duration.fromObject({ days: 10 }),
+  // TODO: this dataset has three distinct regions
+  spatialResolution: 9000,
   boundingBox: [
     { longitude: -180, latitude: -90 },
     { longitude: 180, latitude: 90 },

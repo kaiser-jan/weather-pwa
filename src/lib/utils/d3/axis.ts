@@ -2,6 +2,7 @@ import * as d3 from 'd3'
 import type { Dimensions } from './types'
 import { settings } from '$lib/settings/store'
 import { get } from 'svelte/store'
+import type { Unit } from '$lib/units-config'
 
 export function createXAxis<ScaleT extends d3.AxisDomain>(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
@@ -52,7 +53,7 @@ export function createYAxis(options: {
   scale: d3.AxisScale<number>
   side: 'right' | 'left'
   format: (d: number) => string
-  unit: string
+  unit: Unit | null
   addLines?: boolean
 }) {
   const { svg, dimensions, scale, format } = options

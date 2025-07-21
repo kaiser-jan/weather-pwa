@@ -59,8 +59,9 @@
     </Popover.Trigger>
     <Popover.Content class="flex w-fit flex-col gap-1 p-2">
       {#each Object.entries(CHART_SERIES_DETAILS) as [parameter, parameterDetails] (parameter)}
-        {@const isActive = visible.includes(parameter)}
-        {@const isPinned = pinned.value.includes(parameter)}
+        {@const parameterTyped = parameter as WeatherMetricKey}
+        {@const isActive = visible.includes(parameterTyped)}
+        {@const isPinned = pinned.value.includes(parameterTyped)}
         <button
           class={[
             'flex flex-row items-center gap-2 rounded-md px-2 py-1',
@@ -85,7 +86,7 @@
           <Button
             variant={isPinned ? 'secondary' : 'outline'}
             class="size-8 p-0"
-            onclick={(e: PointerEvent) => {
+            onclick={(e) => {
               e.stopPropagation()
               toggle(pinned.value, parameter)
               sortPinned()

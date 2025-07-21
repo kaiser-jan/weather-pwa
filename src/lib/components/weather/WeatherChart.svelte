@@ -13,7 +13,7 @@
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { settings } from '$lib/settings/store'
-  import type { CreatedSeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
+  import type { ColorStop, CreatedSeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
   import { createUUID, debounce } from '$lib/utils'
   import { Skeleton } from '$lib/components/ui/skeleton'
@@ -46,7 +46,7 @@
 
   const settingsChart = settings.select((s) => s.sections.components.chart)
 
-  let highlightedTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | null>()
+  let highlightedTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | undefined>()
 
   let container: HTMLDivElement
 
@@ -196,7 +196,8 @@
         if (!seriesA || !details) return
 
         let dataRepresentation: d3.Selection<any, any, any, undefined>
-        const color = details.color?.tailwind
+
+        const color = details.color && 'tailwind' in details.color ? details.color.tailwind : undefined
         switch (details.style) {
           case 'line':
             dataRepresentation = createLine({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
@@ -207,6 +208,7 @@
             if (color) dataRepresentation.classed(color.fill, true)
             break
           case 'area':
+            if (!seriesB) return
             dataRepresentation = createArea({ svg, dimensions, scaleX, scaleY, dataA: seriesA, dataB: seriesB }) //
             if (color) dataRepresentation.classed(color.fill, true)
             break
@@ -216,18 +218,19 @@
 
         dataRepresentation.attr('clip-path', `url(#${clipId})`)
 
-        const gradientColorStops = details.color?.gradient
-          ? details.color.gradient
-          : details.color?.gradientSetting
-            ? settings.readSetting(details.color.gradientSetting).value
-            : undefined
+        const gradientColorStops =
+          details.color && 'gradient' in details.color
+            ? details.color.gradient
+            : details.color && 'gradientSetting' in details.color
+              ? (settings.readSetting(details.color.gradientSetting).value as ColorStop[])
+              : undefined
 
         if (gradientColorStops) {
           const gradientId = createGradientDefinition({
             svg,
             scaleY,
             stops: gradientColorStops,
-            id: seriesKey,
+            name: seriesKey,
           })
 
           dataRepresentation.attr('stroke', `url(#${gradientId})`)
@@ -261,7 +264,7 @@
       .classed('fill-midground', true)
       .attr('opacity', 0.7)
 
-    const { updateXAxisPointer } = createAxisPointer({
+    const { updateXAxisPointer, hideXAxisPointer } = createAxisPointer({
       svg,
       dimensions,
       scaleX,
@@ -274,8 +277,8 @@
       const isManual = datetime !== null
 
       if (!isManual && !isToday) {
-        updateXAxisPointer(null, false)
-        highlightedTimeBucket = null
+        hideXAxisPointer()
+        highlightedTimeBucket = undefined
         return
       }
 
@@ -307,7 +310,13 @@
 
     selectDatetime(null)
 
-    container.replaceChildren(svg.node())
+    const node = svg.node()
+    if (!node) {
+      console.warn('D3 Weather Chart resulted in no node to add!')
+      return
+    }
+
+    container.replaceChildren(node)
   }
 
   function resizeChart() {

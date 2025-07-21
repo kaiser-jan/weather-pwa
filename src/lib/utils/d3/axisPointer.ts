@@ -18,13 +18,12 @@ export function createAxisPointer(options: {
 }) {
   const { svg, dimensions, scaleX, seriesList } = options
 
-  function updateXAxisPointer(datetime: DateTime | null, showTooltip = true) {
-    if (datetime === null) {
-      xAxisPointer.classed('hidden', true)
-      tooltip?.hideTooltip()
-      return
-    }
+  function hideXAxisPointer() {
+    xAxisPointer.classed('hidden', true)
+    tooltip?.hideTooltip()
+  }
 
+  function updateXAxisPointer(datetime: DateTime, showTooltip = true) {
     xAxisPointer.classed('hidden', false)
 
     const points = seriesList.map((m) => getNearestPointAtDateTime(datetime, m, scaleX)).filter((p) => p !== null)
@@ -77,6 +76,7 @@ export function createAxisPointer(options: {
 
   return {
     updateXAxisPointer,
+    hideXAxisPointer,
   }
 }
 

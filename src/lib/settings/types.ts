@@ -6,6 +6,7 @@ export type VisibilityCallback = (ctx: Record<string, unknown>) => boolean
 type BaseConfigItem = {
   id: string
   label: string
+  description?: string
   icon?: typeof Icon
   visible?: VisibilityCallback
   disabled?: boolean
@@ -51,7 +52,7 @@ export type DescriptionBlock = BaseConfigItem & {
 
 export type NotImplementedSetting = BaseConfigItem & {
   type: 'not-implemented'
-  default: any
+  default: unknown
 }
 
 export type Setting =

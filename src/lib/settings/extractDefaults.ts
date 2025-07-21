@@ -19,7 +19,11 @@ export function extractDefaults(items: ConfigItem[]): Record<string, unknown> {
         assign([...path, item.id], item.default)
       }
       if ('children' in item) {
-        walk(item.children, [...path, item.id])
+        walk(
+          // @ts-expect-error defaults not existing doesn't matter
+          item.children,
+          [...path, item.id],
+        )
       }
     }
   }

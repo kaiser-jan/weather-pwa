@@ -40,6 +40,7 @@ export const WEATHER_METRIC_KEYS = [
   'temperature_feel',
   'pressure',
   'relative_humidity',
+  'uvi',
   'uvi_clear_sky',
   'cloud_coverage',
   'fog',

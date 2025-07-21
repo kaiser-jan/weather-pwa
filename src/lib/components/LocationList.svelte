@@ -11,9 +11,9 @@
 
   type Item = {
     id: string
-    icon: typeof Icon
+    icon: typeof Icon | null
     label: string
-    sublabel: string
+    sublabel?: string
     coordinates?: Coordinates
   }
 
@@ -21,7 +21,7 @@
     title: string
     onselect: (s: LocationSelection) => void
     selectById?: boolean
-    loading: boolean
+    loading?: boolean
     placeholderEmpty?: string
     placeholderNull?: string
     placeholderLoading?: string
@@ -97,6 +97,7 @@
       longitude: item.coordinates.longitude,
       // TODO: icon: item.icon
       icon: 'map-pin',
+      altitude: null,
     }
     if (item.coordinates.altitude) newLocation.altitude = item.coordinates.altitude
     savedLocations.push(newLocation)
@@ -128,7 +129,15 @@
     <Button
       variant="ghost"
       class="flex h-fit! flex-row items-center justify-between gap-2 p-2 text-base"
-      onclick={() => onselect(selectById ? { id: item.id } : { coordinates: item.coordinates })}
+      onclick={() => {
+        if (selectById) {
+          onselect({ id: item.id })
+          return
+        }
+
+        if (!item.coordinates) return
+        onselect({ coordinates: item.coordinates })
+      }}
       {disabled}
     >
       <div class="flex min-w-0 flex-col">
@@ -151,6 +160,7 @@
               distanceMeters($geolocationStore.position.coords, {
                 latitude: item.coordinates.latitude,
                 longitude: item.coordinates.longitude,
+                altitude: null,
               }),
             )}
           </span>
@@ -161,7 +171,7 @@
               size="icon"
               variant="outline"
               class="size-8"
-              onclick={(e: PointerEvent) => {
+              onclick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 if (selectById) deleteSavedLocation(item)
@@ -174,7 +184,7 @@
               size="icon"
               variant="outline"
               class="size-8"
-              onclick={(e: PointerEvent) => {
+              onclick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 saveLocation(item)

@@ -44,8 +44,10 @@ export function calculateStatisticalNumberSummary(values: number[]): NumberSumma
   return {
     min: Math.min(...values),
     max: Math.max(...values),
+    // TODO: this needs to respect the duration of the TimePeriod
+    // e.g. for precipitation, we cant just add the mm/h when some TimePeriods are shorter!
     sum: _sum,
-    avg: _sum / values.length,
+    avg: sum(values) / values.length,
   }
 }
 

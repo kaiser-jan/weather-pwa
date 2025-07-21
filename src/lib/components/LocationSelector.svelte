@@ -26,7 +26,7 @@
     } else {
       const details = $settingLocations.find((l) => l.id === selectedItemId.value)
       if (!details) return
-      coordinates.set({ longitude: details.longitude, latitude: details.latitude, altitude: details.altitude })
+      coordinates.set({ longitude: details.longitude, latitude: details.latitude, altitude: details.altitude ?? null })
     }
   })
 

@@ -11,4 +11,4 @@
   let { item, value, onchange }: Props = $props()
 </script>
 
-<Input bind:value placeholder={item.placeholder} onblur={(e: InputEvent) => onchange(e.target.value)} />
+<Input bind:value placeholder={item.placeholder} onblur={(e) => onchange((e.target as HTMLInputElement).value)} />

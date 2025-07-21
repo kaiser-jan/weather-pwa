@@ -16,7 +16,7 @@
 
   let recentPath = $state<typeof path | null>(null)
 
-  type Page = (NestableSetting | NestableSetting['children'][number]) & { path: string[] }
+  type Page = NestableSetting & { path: string[] }
 
   let pages: Page[] = $derived.by(() => {
     let _pages: Page[] = [
@@ -36,7 +36,8 @@
         return _pages
       }
 
-      let childPage = lastPage.children.find((p) => p.id === key)
+      // the childPage could also be part of a ListSetting, which has no children
+      let childPage = lastPage.children.find((p) => p.id === key) as NestableSetting
 
       if (lastPage.type === 'list' && !isNaN(parseInt(key))) {
         const values = settings.readSetting(path.slice(0, index)).value as Record<string, unknown>[]
@@ -132,14 +133,14 @@
           {#if page.type === 'list'}
             <PageList
               item={page}
-              value={settings.readSetting(page.path).value}
-              onnavigate={(t) => navigateToKey(t, i)}
+              value={settings.readSetting(page.path).value as Record<string, unknown>[]}
+              onnavigate={(t) => navigateToKey(t)}
               onchange={(v) => {
                 settings.writeSetting(path, v)
               }}
             />
           {:else}
-            <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => navigateToKey(t, i)} />
+            <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => navigateToKey(t)} />
           {/if}
         </div>
       {/each}

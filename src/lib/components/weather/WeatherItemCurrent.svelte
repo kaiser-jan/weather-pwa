@@ -14,7 +14,7 @@
 
   const itemMap: Partial<Record<WeatherMetricKey, Details>> = {
     cloud_coverage: { icon: CloudIcon, datapoint: 'cloud_coverage' },
-    uvi: { icon: SunIcon, datapoint: 'uvi_clear_sky' },
+    uvi: { icon: SunIcon, datapoint: 'uvi' },
     wind_speed: { icon: WindIcon, datapoint: 'wind_speed' },
     precipitation_amount: { icon: DropletsIcon, datapoint: 'precipitation_amount' },
     pressure: { icon: GaugeIcon, datapoint: 'pressure' },
@@ -28,7 +28,7 @@
   <span class="inline-flex items-center gap-[0.375rem]">
     <details.icon />
 
-    <FormattedMetric value={current[details.datapoint]} parameter={item} />
+    <FormattedMetric value={current[details.datapoint]!} parameter={item} />
 
     {#if item === 'wind_speed' && current.wind_degrees}
       <Navigation2Icon

@@ -18,6 +18,7 @@ export const METRIC_DIMENSION: Record<WeatherMetricKey, UnitDimension | null> = 
   temperature_feel: 'temperature',
   pressure: 'pressure',
   relative_humidity: 'percentage',
+  uvi: null,
   uvi_clear_sky: null,
   cloud_coverage: 'percentage',
   fog: 'percentage',

@@ -19,11 +19,11 @@
 
   let { parameter, icon, items = ['icon', 'min', 'range-bar', 'max'], day, useTotalAsDomain }: Props = $props()
 
-  const details = $derived<SeriesDetails>(CHART_SERIES_DETAILS[parameter] ?? { color: { tailwind: 'bg-text' } })
+  const details = $derived<SeriesDetails | undefined>(CHART_SERIES_DETAILS[parameter])
   const ParameterIcon = $derived(icon ?? details?.icon)
 
   const domain = $derived.by(() => {
-    if (useTotalAsDomain || !day) return $forecastStore?.total?.summary[parameter]
+    if (useTotalAsDomain || !day || !details) return $forecastStore?.total?.summary[parameter]
 
     const summary = day.summary[parameter]
     const min = details.domain.min.findLast((t) => t <= summary.min * 0.9) ?? details.domain.min[0]
@@ -33,7 +33,7 @@
   })
 
   const colorStyle = $derived.by(() => {
-    if (!details.color || !domain) return ''
+    if (!details?.color || !domain) return ''
     // if ('tailwind' in details.color) return details.color.tailwind.bg
 
     let gradientColorStops: ColorStop[] | null = null
@@ -52,7 +52,7 @@
 </script>
 
 {#each items as item (item)}
-  {#if details.color}
+  {#if details?.color}
     <!-- NOTE: moving tailwind colors to css will make this easier -->
     <div
       class={cn(
@@ -80,7 +80,10 @@
     <NumberRangeBar
       total={domain}
       instance={day?.summary[parameter]}
-      color={parameter === 'temperature' ? parameter : details.color?.tailwind?.bg}
+      color={parameter === 'temperature'
+        ? parameter
+        : // @ts-expect-error if it doesn't exist undefined is fine
+          details?.color?.tailwind?.bg}
       className="h-2"
     />
   {:else if item === 'trend'}

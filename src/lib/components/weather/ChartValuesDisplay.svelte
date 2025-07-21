@@ -8,7 +8,7 @@
 
   interface Props {
     parameters: WeatherMetricKey[]
-    highlightedTimeBucket: Record<WeatherMetricKey, TimeSeriesNumberEntry> | null
+    highlightedTimeBucket: Record<WeatherMetricKey, TimeSeriesNumberEntry> | undefined
   }
 
   const { parameters, highlightedTimeBucket }: Props = $props()

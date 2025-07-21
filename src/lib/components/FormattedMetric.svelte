@@ -8,7 +8,7 @@
   interface Props {
     value: number
     parameter: WeatherMetricKey
-    class: string
+    class?: string
   }
 
   let { value, parameter, class: className }: Props = $props()

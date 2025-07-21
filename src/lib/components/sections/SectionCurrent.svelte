@@ -70,17 +70,17 @@
         class="from-background/20 absolute top-1/2 left-1/2 size-[150%] -translate-1/2 bg-radial to-transparent to-70%"
       ></div>
       <WeatherSymbol
-        derived={deriveWeatherSituationFromInstant(forecastCurrent)}
-        provided={forecastCurrent}
+        derived={forecastCurrent ? deriveWeatherSituationFromInstant(forecastCurrent) : null}
         coordinates={$coordinates}
         datetime={$NOW}
         className="absolute inset-0"
       />
     </div>
-    <!-- TODO: units -->
     <AsyncText
       class={[shrink ? 'text-4xl' : 'text-6xl', 'drop-shadow-c-md transition-all'].join(' ')}
-      text={autoFormatMetric(forecastCurrent?.temperature, 'temperature', $settings)}
+      text={forecastCurrent?.temperature
+        ? autoFormatMetric(forecastCurrent.temperature, 'temperature', $settings)
+        : undefined}
       placeholder="20°C"
       loaded={forecastCurrent !== null}
     />

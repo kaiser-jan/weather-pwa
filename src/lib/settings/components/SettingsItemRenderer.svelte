@@ -1,11 +1,11 @@
 <script lang="ts">
   import { getComponent } from '../registry'
   import { settings } from '../store'
-  import type { ConfigItem } from '../types'
+  import type { Setting } from '../types'
 
   interface Props {
     path: string[]
-    item: ConfigItem
+    item: Setting
     onnavigate: (target: string) => void
   }
 

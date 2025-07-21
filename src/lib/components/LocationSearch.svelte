@@ -31,7 +31,7 @@
   import { readable } from 'svelte/store'
   import LocationList from './LocationList.svelte'
   import { reverseGeocoding } from '$lib/data/location'
-  import { ITEM_ID_GEOLOCATION, type LocationSelection } from '$lib/types/ui'
+  import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY, type LocationSelection } from '$lib/types/ui'
   import { persistantState } from '$lib/utils/state.svelte'
 
   const geolocationDetails = geolocationStore.details
@@ -148,13 +148,14 @@
         <LocationList
           title="Geolocation"
           placeholderEmpty="Here should be your geolocation... :("
+          loading={$geolocationStore.status === 'loading'}
           items={[
             {
               id: ITEM_ID_GEOLOCATION,
               icon: $geolocationDetails.icon,
-              label: $geolocationDetails.label,
-              sublabel: $geolocationAddress,
-              coordinates: null,
+              label: $geolocationDetails.label ?? '',
+              sublabel: $geolocationAddress ?? '',
+              coordinates: undefined,
             },
           ]}
           selectById
@@ -169,7 +170,7 @@
             id: l.id,
             icon: iconMap[l.icon],
             label: l.name,
-            sublabel: null,
+            sublabel: undefined,
             coordinates: l,
           }))}
           selectById
@@ -183,12 +184,14 @@
           placeholderLoading={`Looking up "${search.value}"...`}
           loading={isLoading}
           items={results.value?.map((r) => ({
-            icon: classIconMap[r.category ?? r.class],
+            id: ITEM_ID_TEMPORARY,
+            icon: classIconMap[r.category ?? r.class ?? ''],
             label: r.name !== '' ? r.name : typeToString(r.type),
             sublabel: r.display_name,
             coordinates: {
               latitude: parseFloat(r?.lat),
               longitude: parseFloat(r?.lon),
+              altitude: null,
             },
           })) ?? null}
           {onselect}

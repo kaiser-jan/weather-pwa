@@ -3,7 +3,6 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 import { colors } from './tailwind.config'
-import process from 'node:process'
 
 // const generateSW = true
 
@@ -48,7 +47,7 @@ export default defineConfig({
       },
       devOptions: {
         enabled: true,
-        suppressWarnings: process.env.SUPPRESS_WARNING === 'true',
+        suppressWarnings: false,
         type: 'module',
         navigateFallback: '/',
       },

@@ -40,14 +40,12 @@ import {
   UmbrellaIcon,
 } from '@lucide/svelte'
 import type { ColorStop } from '$lib/types/ui'
+import type { Coordinates } from '$lib/types/data'
 
-type Location = {
+type Location = Coordinates & {
   id: string
   name: string
   icon: string
-  longitude: number
-  latitude: number
-  altitude: number
 }
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {

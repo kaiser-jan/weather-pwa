@@ -9,7 +9,7 @@
     onchange: (v: string[]) => void
   }
 
-  let { item, value = $bindable(), onchange }: Props = $props()
+  let { item, value, onchange }: Props = $props()
 </script>
 
 <div class="flex flex-col gap-1">

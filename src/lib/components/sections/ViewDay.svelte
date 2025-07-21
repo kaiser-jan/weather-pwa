@@ -46,7 +46,7 @@
     selectedDay.set(target)
   }
 
-  const parameterConfigs: Record<WeatherMetricKey, ParameterDaySummaryProps> = {
+  const parameterConfigs: Partial<Record<WeatherMetricKey, ParameterDaySummaryProps>> = {
     temperature: { useTotalAsDomain: true },
     precipitation_amount: { items: ['icon', 'precipitation-groups'] },
     relative_humidity: {},
@@ -88,72 +88,74 @@
   }
 >
   <Drawer.Content class="">
-    <div
-      class="flex h-full flex-col gap-4 overflow-y-auto p-4"
-      use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
-      onswipe={handleSwipe}
-    >
-      <header class="flex justify-between gap-4 text-xl font-bold">
-        <Button size="icon" variant="outline" onclick={() => navigateBy(-1)} disabled={currentIndex === 0}>
-          <ChevronLeft />
-        </Button>
-        <Button variant={isToday ? 'outline' : 'secondary'} class="grow" onclick={navigateToToday}>
-          {dayLabel}
-        </Button>
-        <Button
-          size="icon"
-          variant="outline"
-          onclick={() => navigateBy(1)}
-          disabled={currentIndex === $forecastStore?.daily.length - 1}
-        >
-          <ChevronRight />
-        </Button>
-      </header>
+    {#if $selectedDay}
+      <div
+        class="flex h-full flex-col gap-4 overflow-y-auto p-4"
+        use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
+        onswipe={handleSwipe}
+      >
+        <header class="flex justify-between gap-4 text-xl font-bold">
+          <Button size="icon" variant="outline" onclick={() => navigateBy(-1)} disabled={currentIndex === 0}>
+            <ChevronLeft />
+          </Button>
+          <Button variant={isToday ? 'outline' : 'secondary'} class="grow" onclick={navigateToToday}>
+            {dayLabel}
+          </Button>
+          <Button
+            size="icon"
+            variant="outline"
+            onclick={() => navigateBy(1)}
+            disabled={currentIndex === $forecastStore!.daily.length - 1}
+          >
+            <ChevronRight />
+          </Button>
+        </header>
 
-      <TimelineBar
-        multiseries={$selectedDay?.multiseries}
-        startDatetime={$selectedDay?.datetime.startOf('day')}
-        endDatetime={$selectedDay?.datetime.endOf('day')}
-        parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-        marks={$settings.sections.components.timelineBar.marks.map((m) => $selectedDay?.datetime.set(m))}
-        coordinates={$coordinates}
-        datetime={$NOW}
-        className="h-2"
-      />
+        <TimelineBar
+          multiseries={$selectedDay.multiseries}
+          startDatetime={$selectedDay.datetime.startOf('day')}
+          endDatetime={$selectedDay.datetime.endOf('day')}
+          parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
+          marks={$settings.sections.components.timelineBar.marks.map((m) => $selectedDay.datetime.set(m))}
+          coordinates={$coordinates}
+          datetime={$NOW}
+          className="h-2"
+        />
 
-      <div class="bg-midground flex h-fit flex-col gap-2 rounded-lg p-2" data-vaul-no-drag>
-        {#if $selectedDay}
-          <WeatherChart
-            multiseries={$selectedDay.multiseries}
-            visibleSeries={visibleSeries.value}
-            startDateTime={$selectedDay.datetime}
-            endDateTime={$selectedDay.datetime.plus($selectedDay.duration)}
-            datetime={$NOW}
-            className="snap-center shrink-0 w-full h-[30vh]"
-          />
-        {:else}
-          <Skeleton class="h-full w-full" />
-        {/if}
-      </div>
-
-      <div class="flex flex-row flex-wrap gap-2">
-        {#each Object.entries(parameterConfigs) as [parameter, config] (parameter)}
-          {@const parameterTyped = parameter as WeatherMetricKey}
-          {#if $selectedDay?.summary[parameterTyped]}
-            <button
-              class={cn(
-                'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
-                visibleSeries.value.includes(parameterTyped) ? 'bg-midground' : '',
-              )}
-              style={`width: ${!config.items || config.items?.includes('range-bar') || config.items?.includes('precipitation-groups') ? 100 : 40}%`}
-              onclick={() => toggle(visibleSeries.value, parameter)}
-            >
-              <ParameterDaySummary {...config} parameter={parameterTyped} day={$selectedDay} />
-            </button>
+        <div class="bg-midground flex h-fit flex-col gap-2 rounded-lg p-2" data-vaul-no-drag>
+          {#if $selectedDay}
+            <WeatherChart
+              multiseries={$selectedDay.multiseries}
+              visibleSeries={visibleSeries.value}
+              startDateTime={$selectedDay.datetime}
+              endDateTime={$selectedDay.datetime.plus($selectedDay.duration)}
+              datetime={$NOW}
+              className="snap-center shrink-0 w-full h-[30vh]"
+            />
+          {:else}
+            <Skeleton class="h-full w-full" />
           {/if}
-        {/each}
+        </div>
+
+        <div class="flex flex-row flex-wrap gap-2">
+          {#each Object.entries(parameterConfigs) as [parameter, config] (parameter)}
+            {@const parameterTyped = parameter as WeatherMetricKey}
+            {#if $selectedDay.summary[parameterTyped]}
+              <button
+                class={cn(
+                  'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
+                  visibleSeries.value.includes(parameterTyped) ? 'bg-midground' : '',
+                )}
+                style={`width: ${!config.items || config.items?.includes('range-bar') || config.items?.includes('precipitation-groups') ? 100 : 40}%`}
+                onclick={() => toggle(visibleSeries.value, parameter)}
+              >
+                <ParameterDaySummary {...config} parameter={parameterTyped} day={$selectedDay} />
+              </button>
+            {/if}
+          {/each}
+        </div>
       </div>
-    </div>
-    <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
+      <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
+    {/if}
   </Drawer.Content>
 </Drawer.Root>

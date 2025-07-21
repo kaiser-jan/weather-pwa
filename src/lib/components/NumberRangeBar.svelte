@@ -5,14 +5,15 @@
   import { cn } from '$lib/utils'
 
   interface Props {
-    total: Pick<NumberSummary, 'min' | 'max'>
+    total: Pick<NumberSummary, 'min' | 'max'> | undefined
     instance: NumberSummary
+    // TODO: rework color prop
     color: 'clouds' | 'temperature' | string
     className: string
-    vertical: boolean
+    vertical?: boolean
   }
 
-  const { total, instance, color, className, vertical }: Props = $props()
+  const { total = { min: 0, max: 1 }, instance, color, className, vertical }: Props = $props()
 
   const start = $derived(scale(instance.min))
   const end = $derived(100 - scale(instance.max))
