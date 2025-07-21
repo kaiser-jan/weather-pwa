@@ -32,8 +32,7 @@
 
   let useGeolocation = persistantState('use-geolocation', true)
 
-  // TODO: properly handle data when switching location
-  // TODO: add a placeholder page when geolocation is unavailable
+  // TODO: add a placeholder page when geolocation is unavailable or no location is selected
 
   geolocationStore.subscribe((g) => {
     if (!useGeolocation.value || !g.position) return
@@ -84,7 +83,6 @@
     <div class="to-midground absolute top-0 right-0 h-full w-6 bg-gradient-to-r from-transparent"></div>
   </div>
   <div class="bg-midground flex flex-row gap-2 rounded-r-full p-2">
-    <!-- TODO: always use geolocation -->
     <LocationSearch
       active={selectedItemId.value === ITEM_ID_TEMPORARY}
       onselect={(s) => {

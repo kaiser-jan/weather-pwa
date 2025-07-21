@@ -31,7 +31,7 @@
   const fovY = 80
   const fovYOffset = 90 - fovY
 
-  // TODO: conider using a glsl shader for performance
+  // TODO: conider using a glsl shader (which renders only on request) for performance
   function updateCanvas() {
     if (!canvas) return
 

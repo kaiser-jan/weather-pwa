@@ -14,7 +14,6 @@ import {
 import type { WeatherMetricKey } from './types/data'
 import type { SeriesDetails } from './types/ui'
 
-// TODO: reactive settings
 export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetails>> = {
   temperature: {
     label: 'Temperature',
@@ -96,9 +95,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetail
     unit: 'hPa',
     scaleOnRight: false,
   },
-  // TODO: uvi_clear_sky provides no value
-  // consider calculating it ourselves and involving the cloud coverage
-  //
   // uvi_clear_sky: {
   //   domain: [0, 12],
   //   style: 'line',

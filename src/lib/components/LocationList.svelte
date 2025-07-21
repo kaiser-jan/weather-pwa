@@ -95,7 +95,7 @@
       name: item.label,
       latitude: item.coordinates.latitude,
       longitude: item.coordinates.longitude,
-      // TODO: icon: item.icon
+      // TODO: use the icon from the search result
       icon: 'map-pin',
       altitude: null,
     }

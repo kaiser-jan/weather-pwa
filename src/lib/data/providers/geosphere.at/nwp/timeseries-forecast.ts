@@ -78,7 +78,7 @@ export async function loadTimeseriesForecast(coordinates: Coordinates, offset = 
       transformed.pressure[i].value = convertSurfacePressureToSeaLevel(pressure, coordinates.altitude!, temperature)
     })
   } else {
-    // TODO: how can we handle this better? using an api like open-elevation means selfhosting the api
+    // TODO: how can we handle this better? using an api like open-elevation means selfhosting the api or paying
     console.warn('No altitude available, cannot convert surface pressure to sea level pressure!')
   }
 

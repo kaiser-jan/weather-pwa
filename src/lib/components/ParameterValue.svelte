@@ -23,7 +23,6 @@
   {#if value === undefined}
     <span>-</span>
   {:else if !showZeroIcon}
-    <!-- TODO: proper formatting -->
     <span class="whitespace-nowrap">
       {autoFormatMetric(value, parameter, $settings)}
     </span>

@@ -24,8 +24,6 @@
   }
 </script>
 
-<!-- TODO: add data-vaul-drawer-wrapper -->
-
 <main class="grow overflow-x-hidden overflow-y-auto scroll-smooth" bind:this={scrollContainer} onscroll={onScroll}>
   <SectionCurrent shrink={shrinkHeader} />
 

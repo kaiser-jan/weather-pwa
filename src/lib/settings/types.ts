@@ -1,6 +1,6 @@
 import type { Icon } from '@lucide/svelte'
 
-// TODO: settings type
+// TODO: pass the settings type as ctx
 export type VisibilityCallback = (ctx: Record<string, unknown>) => boolean
 
 type BaseConfigItem = {

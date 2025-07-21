@@ -26,7 +26,7 @@ export type WeatherInstant = Partial<Record<WeatherMetricKey, number>>
 export type MultivariateTimeSeries = Partial<Record<WeatherMetricKey, TimeSeries<number>>>
 export type MultivariateTimeSeriesTimeBucket = TimePeriod & { series: MultivariateTimeSeries }
 
-// TODO: conider uing number values for datetime and duration as those have a considerable performance impact
+// TODO: conider using number values for datetime and duration as those have a considerable performance impact
 export type TimeSeries<T> = (TimePeriod & { value: T })[]
 export type TimeSeriesNumberEntry = TimeSeries<number>[number]
 

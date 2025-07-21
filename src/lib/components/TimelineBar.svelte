@@ -37,10 +37,7 @@
 
   let barHeight = $state<number>(0)
 
-  // TODO: make this configurable in the parameter list
-  // style: gradient | color | size
-  // color: fluent | steps | constant
-  // TODO: consider adding a threshold
+  // TODO: consider making this configurable by the user
   const parameterStyleMap: Record<Parameter, 'gradient' | 'blocks'> = {
     cloud_coverage: 'gradient',
     precipitation_amount: 'blocks',

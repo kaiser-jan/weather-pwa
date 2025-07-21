@@ -105,7 +105,7 @@
 
   // https://en.wikipedia.org/wiki/Precipitation_types#Intensity
   // TODO: extract to config
-  // TODO: create a test scale for adapting the colors
+  // TODO: create a playground for adapting the colors
   const RAIN_CATEGORIES: {
     threshold: number // mm
     color: string // hsla

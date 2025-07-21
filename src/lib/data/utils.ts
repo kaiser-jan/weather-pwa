@@ -57,7 +57,6 @@ export function sum(numbers: (number | undefined)[]): number {
     .reduce((accumulator, current) => accumulator + current, 0)
 }
 
-// TODO: consider completely omitting incomplete days
 export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): MultivariateTimeSeriesTimeBucket[] {
   const groupedMap: Record<string, MultivariateTimeSeriesTimeBucket> = {}
 
@@ -110,6 +109,8 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
     if (isIncomplete) return false
     return true
   })
+
+  console.warn(`${groupedCompleteOnly.length} vs ${grouped.length}`)
 
   return groupedCompleteOnly
 }

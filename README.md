@@ -16,8 +16,9 @@ https://github.com/huntabyte/vaul-svelte/issues/123
 
 ##### iOS not re-rendering background color when data attribute changes
 
-FIX: translate-z-0
+Encountered with the shadcn-svelte toggle.
 https://stackoverflow.com/questions/17967307/css-by-data-attribute-will-not-refresh-repaint
+fix: translate-z-0
 
 ##### iOS SVG Foreign Object bugs
 

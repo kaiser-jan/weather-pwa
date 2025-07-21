@@ -79,7 +79,6 @@ export function deriveWeatherSituationFromInstant(data: Partial<WeatherInstant>)
   return situation
 }
 
-// TODO: derive data from symbols
 export function deriveWeatherSituationFromPeriod(data: TimeBucketSummary): WeatherSituation {
   const { summary } = data
 

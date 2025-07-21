@@ -22,7 +22,6 @@ const presetOverrides: DeepPartial<Preset> = {
     },
   },
 
-  // TODO: currently does not work?
   appleSplashScreens: createAppleSplashScreens({
     padding: PADDING + 0.2,
     resizeOptions: { background: colors.background, fit: 'contain' },

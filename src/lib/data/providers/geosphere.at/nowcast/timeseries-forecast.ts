@@ -24,7 +24,6 @@ export async function loadTimeseriesForecast(coordinates: Coordinates, offset = 
   url.searchParams.set('start', DateTime.now().startOf('day').toISO())
   url.searchParams.set('forecast_offset', offset.toString())
 
-  // TODO: this will fill up local storage with data from different locations
   const data = await useCache('geosphere.at_nowcast-v1-15min-1km' as DatasetId, { coordinates, offset }, async () => {
     const response = await fetch(url.toString())
     // TODO: handle api errors and do not store those

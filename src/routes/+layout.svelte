@@ -40,7 +40,7 @@
 <div
   class="bg-background relative flex h-dvh w-dvw flex-col overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]"
 >
-  <!-- TODO: how to handle the default page requiring full height? -->
+  <!-- NOTE: this was only removed because the SectionCurrent should expand to the top -->
   <!-- <div class="h-[env(safe-area-inset-top)] shrink-0"></div> -->
   {@render children()}
 
