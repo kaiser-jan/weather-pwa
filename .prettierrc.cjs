@@ -1,10 +1,10 @@
 module.exports = {
-	endOfLine: 'auto',
-	singleQuote: true,
-	semi: false,
-	tabWidth: 2,
-	useTabs: false,
-	printWidth: 120,
-	plugins: ['prettier-plugin-svelte', 'prettier-plugin-tailwindcss'],
-	overrides: [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
+  endOfLine: 'auto',
+  singleQuote: true,
+  semi: false,
+  tabWidth: 2,
+  useTabs: false,
+  printWidth: 120,
+  plugins: ['prettier-plugin-svelte', 'prettier-plugin-tailwindcss'],
+  overrides: [{ files: '*.svelte', options: { parser: 'svelte' } }],
 }

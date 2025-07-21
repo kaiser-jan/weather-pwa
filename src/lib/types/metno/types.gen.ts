@@ -4,867 +4,950 @@
  * Forecast timeseries
  */
 export type Forecast = {
-    meta: {
-        units: ForecastUnits;
-        /**
-         * Update time for this forecast
-         */
-        updated_at: string;
-    };
-    timeseries: Array<ForecastTimeStep>;
-};
+  meta: {
+    units: ForecastUnits
+    /**
+     * Update time for this forecast
+     */
+    updated_at: string
+  }
+  timeseries: Array<ForecastTimeStep>
+}
 
 /**
  * Summary of weather conditions.
  */
 export type ForecastSummary = {
-    symbol_code: WeatherSymbol;
-};
+  symbol_code: WeatherSymbol
+}
 
 /**
  * Weather parameters valid for a specific point in time.
  */
 export type ForecastTimeInstant = {
-    /**
-     * Air pressure at sea level
-     */
-    air_pressure_at_sea_level?: number;
-    /**
-     * Air temperature
-     */
-    air_temperature?: number;
-    /**
-     * Amount of sky covered by clouds.
-     */
-    cloud_area_fraction?: number;
-    /**
-     * Amount of sky covered by clouds at high elevation.
-     */
-    cloud_area_fraction_high?: number;
-    /**
-     * Amount of sky covered by clouds at low elevation.
-     */
-    cloud_area_fraction_low?: number;
-    /**
-     * Amount of sky covered by clouds at medium elevation.
-     */
-    cloud_area_fraction_medium?: number;
-    /**
-     * Dew point temperature at sea level
-     */
-    dew_point_temperature?: number;
-    /**
-     * Amount of area covered by fog.
-     */
-    fog_area_fraction?: number;
-    /**
-     * Amount of humidity in the air.
-     */
-    relative_humidity?: number;
-    /**
-     * The direction wind is coming from, in degrees clockwise from North
-     */
-    wind_from_direction?: number;
-    /**
-     * Speed of wind
-     */
-    wind_speed?: number;
-    /**
-     * Speed of wind gust
-     */
-    wind_speed_of_gust?: number;
-};
+  /**
+   * Air pressure at sea level
+   */
+  air_pressure_at_sea_level?: number
+  /**
+   * Air temperature
+   */
+  air_temperature?: number
+  /**
+   * Amount of sky covered by clouds.
+   */
+  cloud_area_fraction?: number
+  /**
+   * Amount of sky covered by clouds at high elevation.
+   */
+  cloud_area_fraction_high?: number
+  /**
+   * Amount of sky covered by clouds at low elevation.
+   */
+  cloud_area_fraction_low?: number
+  /**
+   * Amount of sky covered by clouds at medium elevation.
+   */
+  cloud_area_fraction_medium?: number
+  /**
+   * Dew point temperature at sea level
+   */
+  dew_point_temperature?: number
+  /**
+   * Amount of area covered by fog.
+   */
+  fog_area_fraction?: number
+  /**
+   * Amount of humidity in the air.
+   */
+  relative_humidity?: number
+  /**
+   * The direction wind is coming from, in degrees clockwise from North
+   */
+  wind_from_direction?: number
+  /**
+   * Speed of wind
+   */
+  wind_speed?: number
+  /**
+   * Speed of wind gust
+   */
+  wind_speed_of_gust?: number
+}
 
 /**
  * Weather parameters valid for a specified time period.
  */
 export type ForecastTimePeriod = {
-    /**
-     * Maximum air temperature in period
-     */
-    air_temperature_max?: number;
-    /**
-     * Minimum air temperature in period
-     */
-    air_temperature_min?: number;
-    /**
-     * Best estimate for amount of precipitation for this period
-     */
-    precipitation_amount?: number;
-    /**
-     * Maximum amount of precipitation for this period
-     */
-    precipitation_amount_max?: number;
-    /**
-     * Minimum amount of precipitation for this period
-     */
-    precipitation_amount_min?: number;
-    /**
-     * Probability of any precipitation coming for this period
-     */
-    probability_of_precipitation?: number;
-    /**
-     * Probability of any thunder coming for this period
-     */
-    probability_of_thunder?: number;
-    /**
-     * Maximum ultraviolet index if sky is clear
-     */
-    ultraviolet_index_clear_sky_max?: number;
-};
+  /**
+   * Maximum air temperature in period
+   */
+  air_temperature_max?: number
+  /**
+   * Minimum air temperature in period
+   */
+  air_temperature_min?: number
+  /**
+   * Best estimate for amount of precipitation for this period
+   */
+  precipitation_amount?: number
+  /**
+   * Maximum amount of precipitation for this period
+   */
+  precipitation_amount_max?: number
+  /**
+   * Minimum amount of precipitation for this period
+   */
+  precipitation_amount_min?: number
+  /**
+   * Probability of any precipitation coming for this period
+   */
+  probability_of_precipitation?: number
+  /**
+   * Probability of any thunder coming for this period
+   */
+  probability_of_thunder?: number
+  /**
+   * Maximum ultraviolet index if sky is clear
+   */
+  ultraviolet_index_clear_sky_max?: number
+}
 
 /**
  * Forecast for a specific time step
  */
 export type ForecastTimeStep = {
+  /**
+   * Forecast for a specific time
+   */
+  data: {
     /**
-     * Forecast for a specific time
+     * Parameters which applies to this exact point in time
      */
-    data: {
-        /**
-         * Parameters which applies to this exact point in time
-         */
-        instant: {
-            details?: ForecastTimeInstant;
-        };
-        /**
-         * Parameters with validity times over twelve hours. Will not exist for all time steps.
-         */
-        next_12_hours?: {
-            details: ForecastTimePeriod;
-            summary: ForecastSummary;
-        };
-        /**
-         * Parameters with validity times over one hour. Will not exist for all time steps.
-         */
-        next_1_hours?: {
-            details: ForecastTimePeriod;
-            summary: ForecastSummary;
-        };
-        /**
-         * Parameters with validity times over six hours. Will not exist for all time steps.
-         */
-        next_6_hours?: {
-            details: ForecastTimePeriod;
-            summary: ForecastSummary;
-        };
-    };
+    instant: {
+      details?: ForecastTimeInstant
+    }
     /**
-     * The time these forecast values are valid for. Timestamp in format YYYY-MM-DDThh:mm:ssZ (ISO 8601)
+     * Parameters with validity times over twelve hours. Will not exist for all time steps.
      */
-    time: string;
-};
+    next_12_hours?: {
+      details: ForecastTimePeriod
+      summary: ForecastSummary
+    }
+    /**
+     * Parameters with validity times over one hour. Will not exist for all time steps.
+     */
+    next_1_hours?: {
+      details: ForecastTimePeriod
+      summary: ForecastSummary
+    }
+    /**
+     * Parameters with validity times over six hours. Will not exist for all time steps.
+     */
+    next_6_hours?: {
+      details: ForecastTimePeriod
+      summary: ForecastSummary
+    }
+  }
+  /**
+   * The time these forecast values are valid for. Timestamp in format YYYY-MM-DDThh:mm:ssZ (ISO 8601)
+   */
+  time: string
+}
 
 export type ForecastUnits = {
-    air_pressure_at_sea_level?: string;
-    air_temperature?: string;
-    air_temperature_max?: string;
-    air_temperature_min?: string;
-    cloud_area_fraction?: string;
-    cloud_area_fraction_high?: string;
-    cloud_area_fraction_low?: string;
-    cloud_area_fraction_medium?: string;
-    dew_point_temperature?: string;
-    fog_area_fraction?: string;
-    precipitation_amount?: string;
-    precipitation_amount_max?: string;
-    precipitation_amount_min?: string;
-    probability_of_precipitation?: string;
-    probability_of_thunder?: string;
-    relative_humidity?: string;
-    ultraviolet_index_clear_sky_max?: string;
-    wind_from_direction?: string;
-    wind_speed?: string;
-    wind_speed_of_gust?: string;
-};
+  air_pressure_at_sea_level?: string
+  air_temperature?: string
+  air_temperature_max?: string
+  air_temperature_min?: string
+  cloud_area_fraction?: string
+  cloud_area_fraction_high?: string
+  cloud_area_fraction_low?: string
+  cloud_area_fraction_medium?: string
+  dew_point_temperature?: string
+  fog_area_fraction?: string
+  precipitation_amount?: string
+  precipitation_amount_max?: string
+  precipitation_amount_min?: string
+  probability_of_precipitation?: string
+  probability_of_thunder?: string
+  relative_humidity?: string
+  ultraviolet_index_clear_sky_max?: string
+  wind_from_direction?: string
+  wind_speed?: string
+  wind_speed_of_gust?: string
+}
 
 /**
  * GeoJSON Forecast Timeseries
  */
 export type MetjsonForecast = {
-    geometry: PointGeometry;
-    properties: Forecast;
-    type: 'Feature';
-};
+  geometry: PointGeometry
+  properties: Forecast
+  type: 'Feature'
+}
 
 /**
  * GeoJSON point type
  */
 export type PointGeometry = {
-    /**
-     * [longitude, latitude, altitude]. All numbers in decimal.
-     */
-    coordinates: Array<number>;
-    type: 'Point';
-};
+  /**
+   * [longitude, latitude, altitude]. All numbers in decimal.
+   */
+  coordinates: Array<number>
+  type: 'Point'
+}
 
 /**
  * A identifier that sums up the weather condition for this time period, see documentation.
  */
-export type WeatherSymbol = 'clearsky_day' | 'clearsky_night' | 'clearsky_polartwilight' | 'fair_day' | 'fair_night' | 'fair_polartwilight' | 'lightssnowshowersandthunder_day' | 'lightssnowshowersandthunder_night' | 'lightssnowshowersandthunder_polartwilight' | 'lightsnowshowers_day' | 'lightsnowshowers_night' | 'lightsnowshowers_polartwilight' | 'heavyrainandthunder' | 'heavysnowandthunder' | 'rainandthunder' | 'heavysleetshowersandthunder_day' | 'heavysleetshowersandthunder_night' | 'heavysleetshowersandthunder_polartwilight' | 'heavysnow' | 'heavyrainshowers_day' | 'heavyrainshowers_night' | 'heavyrainshowers_polartwilight' | 'lightsleet' | 'heavyrain' | 'lightrainshowers_day' | 'lightrainshowers_night' | 'lightrainshowers_polartwilight' | 'heavysleetshowers_day' | 'heavysleetshowers_night' | 'heavysleetshowers_polartwilight' | 'lightsleetshowers_day' | 'lightsleetshowers_night' | 'lightsleetshowers_polartwilight' | 'snow' | 'heavyrainshowersandthunder_day' | 'heavyrainshowersandthunder_night' | 'heavyrainshowersandthunder_polartwilight' | 'snowshowers_day' | 'snowshowers_night' | 'snowshowers_polartwilight' | 'fog' | 'snowshowersandthunder_day' | 'snowshowersandthunder_night' | 'snowshowersandthunder_polartwilight' | 'lightsnowandthunder' | 'heavysleetandthunder' | 'lightrain' | 'rainshowersandthunder_day' | 'rainshowersandthunder_night' | 'rainshowersandthunder_polartwilight' | 'rain' | 'lightsnow' | 'lightrainshowersandthunder_day' | 'lightrainshowersandthunder_night' | 'lightrainshowersandthunder_polartwilight' | 'heavysleet' | 'sleetandthunder' | 'lightrainandthunder' | 'sleet' | 'lightssleetshowersandthunder_day' | 'lightssleetshowersandthunder_night' | 'lightssleetshowersandthunder_polartwilight' | 'lightsleetandthunder' | 'partlycloudy_day' | 'partlycloudy_night' | 'partlycloudy_polartwilight' | 'sleetshowersandthunder_day' | 'sleetshowersandthunder_night' | 'sleetshowersandthunder_polartwilight' | 'rainshowers_day' | 'rainshowers_night' | 'rainshowers_polartwilight' | 'snowandthunder' | 'sleetshowers_day' | 'sleetshowers_night' | 'sleetshowers_polartwilight' | 'cloudy' | 'heavysnowshowersandthunder_day' | 'heavysnowshowersandthunder_night' | 'heavysnowshowersandthunder_polartwilight' | 'heavysnowshowers_day' | 'heavysnowshowers_night' | 'heavysnowshowers_polartwilight';
+export type WeatherSymbol =
+  | 'clearsky_day'
+  | 'clearsky_night'
+  | 'clearsky_polartwilight'
+  | 'fair_day'
+  | 'fair_night'
+  | 'fair_polartwilight'
+  | 'lightssnowshowersandthunder_day'
+  | 'lightssnowshowersandthunder_night'
+  | 'lightssnowshowersandthunder_polartwilight'
+  | 'lightsnowshowers_day'
+  | 'lightsnowshowers_night'
+  | 'lightsnowshowers_polartwilight'
+  | 'heavyrainandthunder'
+  | 'heavysnowandthunder'
+  | 'rainandthunder'
+  | 'heavysleetshowersandthunder_day'
+  | 'heavysleetshowersandthunder_night'
+  | 'heavysleetshowersandthunder_polartwilight'
+  | 'heavysnow'
+  | 'heavyrainshowers_day'
+  | 'heavyrainshowers_night'
+  | 'heavyrainshowers_polartwilight'
+  | 'lightsleet'
+  | 'heavyrain'
+  | 'lightrainshowers_day'
+  | 'lightrainshowers_night'
+  | 'lightrainshowers_polartwilight'
+  | 'heavysleetshowers_day'
+  | 'heavysleetshowers_night'
+  | 'heavysleetshowers_polartwilight'
+  | 'lightsleetshowers_day'
+  | 'lightsleetshowers_night'
+  | 'lightsleetshowers_polartwilight'
+  | 'snow'
+  | 'heavyrainshowersandthunder_day'
+  | 'heavyrainshowersandthunder_night'
+  | 'heavyrainshowersandthunder_polartwilight'
+  | 'snowshowers_day'
+  | 'snowshowers_night'
+  | 'snowshowers_polartwilight'
+  | 'fog'
+  | 'snowshowersandthunder_day'
+  | 'snowshowersandthunder_night'
+  | 'snowshowersandthunder_polartwilight'
+  | 'lightsnowandthunder'
+  | 'heavysleetandthunder'
+  | 'lightrain'
+  | 'rainshowersandthunder_day'
+  | 'rainshowersandthunder_night'
+  | 'rainshowersandthunder_polartwilight'
+  | 'rain'
+  | 'lightsnow'
+  | 'lightrainshowersandthunder_day'
+  | 'lightrainshowersandthunder_night'
+  | 'lightrainshowersandthunder_polartwilight'
+  | 'heavysleet'
+  | 'sleetandthunder'
+  | 'lightrainandthunder'
+  | 'sleet'
+  | 'lightssleetshowersandthunder_day'
+  | 'lightssleetshowersandthunder_night'
+  | 'lightssleetshowersandthunder_polartwilight'
+  | 'lightsleetandthunder'
+  | 'partlycloudy_day'
+  | 'partlycloudy_night'
+  | 'partlycloudy_polartwilight'
+  | 'sleetshowersandthunder_day'
+  | 'sleetshowersandthunder_night'
+  | 'sleetshowersandthunder_polartwilight'
+  | 'rainshowers_day'
+  | 'rainshowers_night'
+  | 'rainshowers_polartwilight'
+  | 'snowandthunder'
+  | 'sleetshowers_day'
+  | 'sleetshowers_night'
+  | 'sleetshowers_polartwilight'
+  | 'cloudy'
+  | 'heavysnowshowersandthunder_day'
+  | 'heavysnowshowersandthunder_night'
+  | 'heavysnowshowersandthunder_polartwilight'
+  | 'heavysnowshowers_day'
+  | 'heavysnowshowers_night'
+  | 'heavysnowshowers_polartwilight'
 
 export type GetChangelogData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/changelog';
-};
+  body?: never
+  path?: never
+  query?: never
+  url: '/changelog'
+}
 
 export type GetChangelogResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
+  /**
+   * OK
+   */
+  200: unknown
+}
 
 export type GetClassicData = {
-    body?: never;
-    path?: never;
-    query: {
-        /**
-         * Whole meters above sea level
-         */
-        altitude?: number;
-        /**
-         * Latitude
-         */
-        lat: number;
-        /**
-         * Longitude
-         */
-        lon: number;
-    };
-    url: '/classic';
-};
+  body?: never
+  path?: never
+  query: {
+    /**
+     * Whole meters above sea level
+     */
+    altitude?: number
+    /**
+     * Latitude
+     */
+    lat: number
+    /**
+     * Longitude
+     */
+    lon: number
+  }
+  url: '/classic'
+}
 
 export type GetClassicErrors = {
-    /**
-     * 400 Bad Request
-     */
-    400: Blob | File;
-    /**
-     * 401 Unauthorized
-     */
-    401: Blob | File;
-    /**
-     * 403 Forbidden
-     */
-    403: Blob | File;
-    /**
-     * 404 Not Found
-     */
-    404: Blob | File;
-    /**
-     * 422 Unprocessable Entity
-     */
-    422: Blob | File;
-    /**
-     * 429 Too Many Requests
-     */
-    429: Blob | File;
-    /**
-     * 500 Internal Server Error
-     */
-    500: Blob | File;
-    /**
-     * 502 Bad Gateway
-     */
-    502: Blob | File;
-    /**
-     * 503 Service Unavailable
-     */
-    503: Blob | File;
-    /**
-     * 504 Gateway Timeout
-     */
-    504: Blob | File;
-};
+  /**
+   * 400 Bad Request
+   */
+  400: Blob | File
+  /**
+   * 401 Unauthorized
+   */
+  401: Blob | File
+  /**
+   * 403 Forbidden
+   */
+  403: Blob | File
+  /**
+   * 404 Not Found
+   */
+  404: Blob | File
+  /**
+   * 422 Unprocessable Entity
+   */
+  422: Blob | File
+  /**
+   * 429 Too Many Requests
+   */
+  429: Blob | File
+  /**
+   * 500 Internal Server Error
+   */
+  500: Blob | File
+  /**
+   * 502 Bad Gateway
+   */
+  502: Blob | File
+  /**
+   * 503 Service Unavailable
+   */
+  503: Blob | File
+  /**
+   * 504 Gateway Timeout
+   */
+  504: Blob | File
+}
 
-export type GetClassicError = GetClassicErrors[keyof GetClassicErrors];
+export type GetClassicError = GetClassicErrors[keyof GetClassicErrors]
 
 export type GetClassicResponses = {
-    /**
-     * Success
-     */
-    200: Blob | File;
-    /**
-     * 204 No Content
-     */
-    204: Blob | File;
-};
+  /**
+   * Success
+   */
+  200: Blob | File
+  /**
+   * 204 No Content
+   */
+  204: Blob | File
+}
 
-export type GetClassicResponse = GetClassicResponses[keyof GetClassicResponses];
+export type GetClassicResponse = GetClassicResponses[keyof GetClassicResponses]
 
 export type GetClassicByFormatData = {
-    body?: never;
-    path: {
-        /**
-         * format code (file extension)
-         */
-        format: 'xml';
-    };
-    query: {
-        /**
-         * Whole meters above sea level
-         */
-        altitude?: number;
-        /**
-         * Latitude
-         */
-        lat: number;
-        /**
-         * Longitude
-         */
-        lon: number;
-    };
-    url: '/classic.{format}';
-};
+  body?: never
+  path: {
+    /**
+     * format code (file extension)
+     */
+    format: 'xml'
+  }
+  query: {
+    /**
+     * Whole meters above sea level
+     */
+    altitude?: number
+    /**
+     * Latitude
+     */
+    lat: number
+    /**
+     * Longitude
+     */
+    lon: number
+  }
+  url: '/classic.{format}'
+}
 
 export type GetClassicByFormatErrors = {
-    /**
-     * 400 Bad Request
-     */
-    400: Blob | File;
-    /**
-     * 401 Unauthorized
-     */
-    401: Blob | File;
-    /**
-     * 403 Forbidden
-     */
-    403: Blob | File;
-    /**
-     * 404 Not Found
-     */
-    404: Blob | File;
-    /**
-     * 422 Unprocessable Entity
-     */
-    422: Blob | File;
-    /**
-     * 429 Too Many Requests
-     */
-    429: Blob | File;
-    /**
-     * 500 Internal Server Error
-     */
-    500: Blob | File;
-    /**
-     * 502 Bad Gateway
-     */
-    502: Blob | File;
-    /**
-     * 503 Service Unavailable
-     */
-    503: Blob | File;
-    /**
-     * 504 Gateway Timeout
-     */
-    504: Blob | File;
-};
+  /**
+   * 400 Bad Request
+   */
+  400: Blob | File
+  /**
+   * 401 Unauthorized
+   */
+  401: Blob | File
+  /**
+   * 403 Forbidden
+   */
+  403: Blob | File
+  /**
+   * 404 Not Found
+   */
+  404: Blob | File
+  /**
+   * 422 Unprocessable Entity
+   */
+  422: Blob | File
+  /**
+   * 429 Too Many Requests
+   */
+  429: Blob | File
+  /**
+   * 500 Internal Server Error
+   */
+  500: Blob | File
+  /**
+   * 502 Bad Gateway
+   */
+  502: Blob | File
+  /**
+   * 503 Service Unavailable
+   */
+  503: Blob | File
+  /**
+   * 504 Gateway Timeout
+   */
+  504: Blob | File
+}
 
-export type GetClassicByFormatError = GetClassicByFormatErrors[keyof GetClassicByFormatErrors];
+export type GetClassicByFormatError = GetClassicByFormatErrors[keyof GetClassicByFormatErrors]
 
 export type GetClassicByFormatResponses = {
-    /**
-     * Success
-     */
-    200: Blob | File;
-    /**
-     * 204 No Content
-     */
-    204: Blob | File;
-};
+  /**
+   * Success
+   */
+  200: Blob | File
+  /**
+   * 204 No Content
+   */
+  204: Blob | File
+}
 
-export type GetClassicByFormatResponse = GetClassicByFormatResponses[keyof GetClassicByFormatResponses];
+export type GetClassicByFormatResponse = GetClassicByFormatResponses[keyof GetClassicByFormatResponses]
 
 export type GetCompactData = {
-    body?: never;
-    path?: never;
-    query: {
-        /**
-         * Whole meters above sea level
-         */
-        altitude?: number;
-        /**
-         * Latitude
-         */
-        lat: number;
-        /**
-         * Longitude
-         */
-        lon: number;
-    };
-    url: '/compact';
-};
+  body?: never
+  path?: never
+  query: {
+    /**
+     * Whole meters above sea level
+     */
+    altitude?: number
+    /**
+     * Latitude
+     */
+    lat: number
+    /**
+     * Longitude
+     */
+    lon: number
+  }
+  url: '/compact'
+}
 
 export type GetCompactErrors = {
-    /**
-     * 400 Bad Request
-     */
-    400: unknown;
-    /**
-     * 401 Unauthorized
-     */
-    401: unknown;
-    /**
-     * 403 Forbidden
-     */
-    403: unknown;
-    /**
-     * 404 Not Found
-     */
-    404: unknown;
-    /**
-     * 422 Unprocessable Entity
-     */
-    422: unknown;
-    /**
-     * 429 Too Many Requests
-     */
-    429: unknown;
-    /**
-     * 500 Internal Server Error
-     */
-    500: unknown;
-    /**
-     * 502 Bad Gateway
-     */
-    502: unknown;
-    /**
-     * 503 Service Unavailable
-     */
-    503: unknown;
-    /**
-     * 504 Gateway Timeout
-     */
-    504: unknown;
-};
+  /**
+   * 400 Bad Request
+   */
+  400: unknown
+  /**
+   * 401 Unauthorized
+   */
+  401: unknown
+  /**
+   * 403 Forbidden
+   */
+  403: unknown
+  /**
+   * 404 Not Found
+   */
+  404: unknown
+  /**
+   * 422 Unprocessable Entity
+   */
+  422: unknown
+  /**
+   * 429 Too Many Requests
+   */
+  429: unknown
+  /**
+   * 500 Internal Server Error
+   */
+  500: unknown
+  /**
+   * 502 Bad Gateway
+   */
+  502: unknown
+  /**
+   * 503 Service Unavailable
+   */
+  503: unknown
+  /**
+   * 504 Gateway Timeout
+   */
+  504: unknown
+}
 
 export type GetCompactResponses = {
-    /**
-     * Success
-     */
-    200: MetjsonForecast;
-    /**
-     * 204 No Content
-     */
-    204: unknown;
-};
+  /**
+   * Success
+   */
+  200: MetjsonForecast
+  /**
+   * 204 No Content
+   */
+  204: unknown
+}
 
-export type GetCompactResponse = GetCompactResponses[keyof GetCompactResponses];
+export type GetCompactResponse = GetCompactResponses[keyof GetCompactResponses]
 
 export type GetCompactByFormatData = {
-    body?: never;
-    path: {
-        /**
-         * format code (file extension)
-         */
-        format: 'json';
-    };
-    query: {
-        /**
-         * Whole meters above sea level
-         */
-        altitude?: number;
-        /**
-         * Latitude
-         */
-        lat: number;
-        /**
-         * Longitude
-         */
-        lon: number;
-    };
-    url: '/compact.{format}';
-};
+  body?: never
+  path: {
+    /**
+     * format code (file extension)
+     */
+    format: 'json'
+  }
+  query: {
+    /**
+     * Whole meters above sea level
+     */
+    altitude?: number
+    /**
+     * Latitude
+     */
+    lat: number
+    /**
+     * Longitude
+     */
+    lon: number
+  }
+  url: '/compact.{format}'
+}
 
 export type GetCompactByFormatErrors = {
-    /**
-     * 400 Bad Request
-     */
-    400: unknown;
-    /**
-     * 401 Unauthorized
-     */
-    401: unknown;
-    /**
-     * 403 Forbidden
-     */
-    403: unknown;
-    /**
-     * 404 Not Found
-     */
-    404: unknown;
-    /**
-     * 422 Unprocessable Entity
-     */
-    422: unknown;
-    /**
-     * 429 Too Many Requests
-     */
-    429: unknown;
-    /**
-     * 500 Internal Server Error
-     */
-    500: unknown;
-    /**
-     * 502 Bad Gateway
-     */
-    502: unknown;
-    /**
-     * 503 Service Unavailable
-     */
-    503: unknown;
-    /**
-     * 504 Gateway Timeout
-     */
-    504: unknown;
-};
+  /**
+   * 400 Bad Request
+   */
+  400: unknown
+  /**
+   * 401 Unauthorized
+   */
+  401: unknown
+  /**
+   * 403 Forbidden
+   */
+  403: unknown
+  /**
+   * 404 Not Found
+   */
+  404: unknown
+  /**
+   * 422 Unprocessable Entity
+   */
+  422: unknown
+  /**
+   * 429 Too Many Requests
+   */
+  429: unknown
+  /**
+   * 500 Internal Server Error
+   */
+  500: unknown
+  /**
+   * 502 Bad Gateway
+   */
+  502: unknown
+  /**
+   * 503 Service Unavailable
+   */
+  503: unknown
+  /**
+   * 504 Gateway Timeout
+   */
+  504: unknown
+}
 
 export type GetCompactByFormatResponses = {
-    /**
-     * Success
-     */
-    200: MetjsonForecast;
-    /**
-     * 204 No Content
-     */
-    204: unknown;
-};
+  /**
+   * Success
+   */
+  200: MetjsonForecast
+  /**
+   * 204 No Content
+   */
+  204: unknown
+}
 
-export type GetCompactByFormatResponse = GetCompactByFormatResponses[keyof GetCompactByFormatResponses];
+export type GetCompactByFormatResponse = GetCompactByFormatResponses[keyof GetCompactByFormatResponses]
 
 export type GetCompleteData = {
-    body?: never;
-    path?: never;
-    query: {
-        /**
-         * Whole meters above sea level
-         */
-        altitude?: number;
-        /**
-         * Latitude
-         */
-        lat: number;
-        /**
-         * Longitude
-         */
-        lon: number;
-    };
-    url: '/complete';
-};
+  body?: never
+  path?: never
+  query: {
+    /**
+     * Whole meters above sea level
+     */
+    altitude?: number
+    /**
+     * Latitude
+     */
+    lat: number
+    /**
+     * Longitude
+     */
+    lon: number
+  }
+  url: '/complete'
+}
 
 export type GetCompleteErrors = {
-    /**
-     * 400 Bad Request
-     */
-    400: unknown;
-    /**
-     * 401 Unauthorized
-     */
-    401: unknown;
-    /**
-     * 403 Forbidden
-     */
-    403: unknown;
-    /**
-     * 404 Not Found
-     */
-    404: unknown;
-    /**
-     * 422 Unprocessable Entity
-     */
-    422: unknown;
-    /**
-     * 429 Too Many Requests
-     */
-    429: unknown;
-    /**
-     * 500 Internal Server Error
-     */
-    500: unknown;
-    /**
-     * 502 Bad Gateway
-     */
-    502: unknown;
-    /**
-     * 503 Service Unavailable
-     */
-    503: unknown;
-    /**
-     * 504 Gateway Timeout
-     */
-    504: unknown;
-};
+  /**
+   * 400 Bad Request
+   */
+  400: unknown
+  /**
+   * 401 Unauthorized
+   */
+  401: unknown
+  /**
+   * 403 Forbidden
+   */
+  403: unknown
+  /**
+   * 404 Not Found
+   */
+  404: unknown
+  /**
+   * 422 Unprocessable Entity
+   */
+  422: unknown
+  /**
+   * 429 Too Many Requests
+   */
+  429: unknown
+  /**
+   * 500 Internal Server Error
+   */
+  500: unknown
+  /**
+   * 502 Bad Gateway
+   */
+  502: unknown
+  /**
+   * 503 Service Unavailable
+   */
+  503: unknown
+  /**
+   * 504 Gateway Timeout
+   */
+  504: unknown
+}
 
 export type GetCompleteResponses = {
-    /**
-     * Success
-     */
-    200: MetjsonForecast;
-    /**
-     * 204 No Content
-     */
-    204: unknown;
-};
+  /**
+   * Success
+   */
+  200: MetjsonForecast
+  /**
+   * 204 No Content
+   */
+  204: unknown
+}
 
-export type GetCompleteResponse = GetCompleteResponses[keyof GetCompleteResponses];
+export type GetCompleteResponse = GetCompleteResponses[keyof GetCompleteResponses]
 
 export type GetCompleteByFormatData = {
-    body?: never;
-    path: {
-        /**
-         * format code (file extension)
-         */
-        format: 'json';
-    };
-    query: {
-        /**
-         * Whole meters above sea level
-         */
-        altitude?: number;
-        /**
-         * Latitude
-         */
-        lat: number;
-        /**
-         * Longitude
-         */
-        lon: number;
-    };
-    url: '/complete.{format}';
-};
+  body?: never
+  path: {
+    /**
+     * format code (file extension)
+     */
+    format: 'json'
+  }
+  query: {
+    /**
+     * Whole meters above sea level
+     */
+    altitude?: number
+    /**
+     * Latitude
+     */
+    lat: number
+    /**
+     * Longitude
+     */
+    lon: number
+  }
+  url: '/complete.{format}'
+}
 
 export type GetCompleteByFormatErrors = {
-    /**
-     * 400 Bad Request
-     */
-    400: unknown;
-    /**
-     * 401 Unauthorized
-     */
-    401: unknown;
-    /**
-     * 403 Forbidden
-     */
-    403: unknown;
-    /**
-     * 404 Not Found
-     */
-    404: unknown;
-    /**
-     * 422 Unprocessable Entity
-     */
-    422: unknown;
-    /**
-     * 429 Too Many Requests
-     */
-    429: unknown;
-    /**
-     * 500 Internal Server Error
-     */
-    500: unknown;
-    /**
-     * 502 Bad Gateway
-     */
-    502: unknown;
-    /**
-     * 503 Service Unavailable
-     */
-    503: unknown;
-    /**
-     * 504 Gateway Timeout
-     */
-    504: unknown;
-};
+  /**
+   * 400 Bad Request
+   */
+  400: unknown
+  /**
+   * 401 Unauthorized
+   */
+  401: unknown
+  /**
+   * 403 Forbidden
+   */
+  403: unknown
+  /**
+   * 404 Not Found
+   */
+  404: unknown
+  /**
+   * 422 Unprocessable Entity
+   */
+  422: unknown
+  /**
+   * 429 Too Many Requests
+   */
+  429: unknown
+  /**
+   * 500 Internal Server Error
+   */
+  500: unknown
+  /**
+   * 502 Bad Gateway
+   */
+  502: unknown
+  /**
+   * 503 Service Unavailable
+   */
+  503: unknown
+  /**
+   * 504 Gateway Timeout
+   */
+  504: unknown
+}
 
 export type GetCompleteByFormatResponses = {
-    /**
-     * Success
-     */
-    200: MetjsonForecast;
-    /**
-     * 204 No Content
-     */
-    204: unknown;
-};
+  /**
+   * Success
+   */
+  200: MetjsonForecast
+  /**
+   * 204 No Content
+   */
+  204: unknown
+}
 
-export type GetCompleteByFormatResponse = GetCompleteByFormatResponses[keyof GetCompleteByFormatResponses];
+export type GetCompleteByFormatResponse = GetCompleteByFormatResponses[keyof GetCompleteByFormatResponses]
 
 export type GetHealthzData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/healthz';
-};
+  body?: never
+  path?: never
+  query?: never
+  url: '/healthz'
+}
 
 export type GetHealthzResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
+  /**
+   * OK
+   */
+  200: unknown
+}
 
 export type GetLocationsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/locations';
-};
+  body?: never
+  path?: never
+  query?: never
+  url: '/locations'
+}
 
 export type GetLocationsResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
+  /**
+   * OK
+   */
+  200: unknown
+}
 
 export type GetSchemaData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/schema';
-};
+  body?: never
+  path?: never
+  query?: never
+  url: '/schema'
+}
 
 export type GetSchemaResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
+  /**
+   * OK
+   */
+  200: unknown
+}
 
 export type GetStatusData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/status';
-};
+  body?: never
+  path?: never
+  query?: never
+  url: '/status'
+}
 
 export type GetStatusErrors = {
-    /**
-     * 400 Bad Request
-     */
-    400: unknown;
-    /**
-     * 401 Unauthorized
-     */
-    401: unknown;
-    /**
-     * 403 Forbidden
-     */
-    403: unknown;
-    /**
-     * 404 Not Found
-     */
-    404: unknown;
-    /**
-     * 422 Unprocessable Entity
-     */
-    422: unknown;
-    /**
-     * 429 Too Many Requests
-     */
-    429: unknown;
-    /**
-     * 500 Internal Server Error
-     */
-    500: unknown;
-    /**
-     * 502 Bad Gateway
-     */
-    502: unknown;
-    /**
-     * 503 Service Unavailable
-     */
-    503: unknown;
-    /**
-     * 504 Gateway Timeout
-     */
-    504: unknown;
-};
+  /**
+   * 400 Bad Request
+   */
+  400: unknown
+  /**
+   * 401 Unauthorized
+   */
+  401: unknown
+  /**
+   * 403 Forbidden
+   */
+  403: unknown
+  /**
+   * 404 Not Found
+   */
+  404: unknown
+  /**
+   * 422 Unprocessable Entity
+   */
+  422: unknown
+  /**
+   * 429 Too Many Requests
+   */
+  429: unknown
+  /**
+   * 500 Internal Server Error
+   */
+  500: unknown
+  /**
+   * 502 Bad Gateway
+   */
+  502: unknown
+  /**
+   * 503 Service Unavailable
+   */
+  503: unknown
+  /**
+   * 504 Gateway Timeout
+   */
+  504: unknown
+}
 
 export type GetStatusResponses = {
-    /**
-     * Success
-     */
-    200: string;
-    /**
-     * 204 No Content
-     */
-    204: unknown;
-};
+  /**
+   * Success
+   */
+  200: string
+  /**
+   * 204 No Content
+   */
+  204: unknown
+}
 
-export type GetStatusResponse = GetStatusResponses[keyof GetStatusResponses];
+export type GetStatusResponse = GetStatusResponses[keyof GetStatusResponses]
 
 export type GetStatusByFormatData = {
-    body?: never;
-    path: {
-        /**
-         * format code (file extension)
-         */
-        format: 'json';
-    };
-    query?: never;
-    url: '/status.{format}';
-};
+  body?: never
+  path: {
+    /**
+     * format code (file extension)
+     */
+    format: 'json'
+  }
+  query?: never
+  url: '/status.{format}'
+}
 
 export type GetStatusByFormatErrors = {
-    /**
-     * 400 Bad Request
-     */
-    400: unknown;
-    /**
-     * 401 Unauthorized
-     */
-    401: unknown;
-    /**
-     * 403 Forbidden
-     */
-    403: unknown;
-    /**
-     * 404 Not Found
-     */
-    404: unknown;
-    /**
-     * 422 Unprocessable Entity
-     */
-    422: unknown;
-    /**
-     * 429 Too Many Requests
-     */
-    429: unknown;
-    /**
-     * 500 Internal Server Error
-     */
-    500: unknown;
-    /**
-     * 502 Bad Gateway
-     */
-    502: unknown;
-    /**
-     * 503 Service Unavailable
-     */
-    503: unknown;
-    /**
-     * 504 Gateway Timeout
-     */
-    504: unknown;
-};
+  /**
+   * 400 Bad Request
+   */
+  400: unknown
+  /**
+   * 401 Unauthorized
+   */
+  401: unknown
+  /**
+   * 403 Forbidden
+   */
+  403: unknown
+  /**
+   * 404 Not Found
+   */
+  404: unknown
+  /**
+   * 422 Unprocessable Entity
+   */
+  422: unknown
+  /**
+   * 429 Too Many Requests
+   */
+  429: unknown
+  /**
+   * 500 Internal Server Error
+   */
+  500: unknown
+  /**
+   * 502 Bad Gateway
+   */
+  502: unknown
+  /**
+   * 503 Service Unavailable
+   */
+  503: unknown
+  /**
+   * 504 Gateway Timeout
+   */
+  504: unknown
+}
 
 export type GetStatusByFormatResponses = {
-    /**
-     * Success
-     */
-    200: string;
-    /**
-     * 204 No Content
-     */
-    204: unknown;
-};
+  /**
+   * Success
+   */
+  200: string
+  /**
+   * 204 No Content
+   */
+  204: unknown
+}
 
-export type GetStatusByFormatResponse = GetStatusByFormatResponses[keyof GetStatusByFormatResponses];
+export type GetStatusByFormatResponse = GetStatusByFormatResponses[keyof GetStatusByFormatResponses]
 
 export type ClientOptions = {
-    baseUrl: 'https://api.met.no/weatherapi/locationforecast/2.0' | (string & {});
-};
+  baseUrl: 'https://api.met.no/weatherapi/locationforecast/2.0' | (string & {})
+}

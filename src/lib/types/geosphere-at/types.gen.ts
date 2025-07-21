@@ -3,1485 +3,1481 @@
 /**
  * Bundesland
  */
-export type Bundesland = 'Burgenland' | 'Kärnten' | 'Niederösterreich' | 'Oberösterreich' | 'Salzburg' | 'Steiermark' | 'Tirol' | 'Vorarlberg' | 'Wien';
+export type Bundesland =
+  | 'Burgenland'
+  | 'Kärnten'
+  | 'Niederösterreich'
+  | 'Oberösterreich'
+  | 'Salzburg'
+  | 'Steiermark'
+  | 'Tirol'
+  | 'Vorarlberg'
+  | 'Wien'
 
 /**
  * Dataset
  */
 export type Dataset = {
-    type: EndpointType;
-    mode: EndpointMode;
-    /**
-     * Response Formats
-     */
-    response_formats: Array<OutputFormat>;
-    /**
-     * Url
-     */
-    url: string;
-};
+  type: EndpointType
+  mode: EndpointMode
+  /**
+   * Response Formats
+   */
+  response_formats: Array<OutputFormat>
+  /**
+   * Url
+   */
+  url: string
+}
 
 /**
  * EndpointMode
  */
-export type EndpointMode = 'historical' | 'current' | 'forecast';
+export type EndpointMode = 'historical' | 'current' | 'forecast'
 
 /**
  * EndpointType
  */
-export type EndpointType = 'grid' | 'timeseries' | 'station';
+export type EndpointType = 'grid' | 'timeseries' | 'station'
 
 /**
  * FrequencyStep
  */
 export type FrequencyStep = {
-    /**
-     * From Index
-     */
-    from_index: number;
-    /**
-     * To Index
-     */
-    to_index: number;
-    /**
-     * Frequency
-     */
-    frequency: string;
-    /**
-     * Step Offset
-     */
-    step_offset: string;
-};
+  /**
+   * From Index
+   */
+  from_index: number
+  /**
+   * To Index
+   */
+  to_index: number
+  /**
+   * Frequency
+   */
+  frequency: string
+  /**
+   * Step Offset
+   */
+  step_offset: string
+}
 
 /**
  * GeoJSONFeature
  */
 export type GeoJsonFeature = {
-    /**
-     * Type
-     */
-    type?: 'Feature';
-    geometry: GeoJsonPoint;
-    properties: GeoJsonFeatureProperties;
-};
+  /**
+   * Type
+   */
+  type?: 'Feature'
+  geometry: GeoJsonPoint
+  properties: GeoJsonFeatureProperties
+}
 
 /**
  * GeoJSONFeatureParameter
  */
 export type GeoJsonFeatureParameter = {
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Unit
-     */
-    unit: string;
-    /**
-     * Data
-     */
-    data: Array<number | null>;
-};
+  /**
+   * Name
+   */
+  name: string
+  /**
+   * Unit
+   */
+  unit: string
+  /**
+   * Data
+   */
+  data: Array<number | null>
+}
 
 /**
  * GeoJSONFeatureProperties
  */
 export type GeoJsonFeatureProperties = {
-    /**
-     * Parameters
-     */
-    parameters: {
-        [key: string]: GeoJsonFeatureParameter;
-    };
-};
+  /**
+   * Parameters
+   */
+  parameters: {
+    [key: string]: GeoJsonFeatureParameter
+  }
+}
 
 /**
  * GeoJSONPoint
  */
 export type GeoJsonPoint = {
-    /**
-     * Type
-     */
-    type?: 'Point';
-    /**
-     * Coordinates
-     * Point coordinates are in x, y order (easting, northing for projected coordinates, longitude, and latitude for geographic coordinates)
-     */
-    coordinates: [
-        number,
-        number
-    ];
-};
+  /**
+   * Type
+   */
+  type?: 'Point'
+  /**
+   * Coordinates
+   * Point coordinates are in x, y order (easting, northing for projected coordinates, longitude, and latitude for geographic coordinates)
+   */
+  coordinates: [number, number]
+}
 
 /**
  * GridForecastGeoJSONSerializer
  */
 export type GridForecastGeoJsonSerializer = {
-    /**
-     * Reference Time
-     */
-    reference_time: unknown;
-    /**
-     * Media Type
-     */
-    media_type?: 'application/json';
-    /**
-     * Type
-     */
-    type?: 'FeatureCollection';
-    /**
-     * Version
-     */
-    version: string;
-    /**
-     * Timestamps
-     * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
-     */
-    timestamps: Array<unknown>;
-    /**
-     * Features
-     */
-    features: Array<GeoJsonFeature>;
-    /**
-     * Filename
-     */
-    filename?: string | null;
-    /**
-     * Bbox
-     */
-    bbox: [
-        number,
-        number,
-        number,
-        number
-    ];
-};
+  /**
+   * Reference Time
+   */
+  reference_time: unknown
+  /**
+   * Media Type
+   */
+  media_type?: 'application/json'
+  /**
+   * Type
+   */
+  type?: 'FeatureCollection'
+  /**
+   * Version
+   */
+  version: string
+  /**
+   * Timestamps
+   * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
+   */
+  timestamps: Array<unknown>
+  /**
+   * Features
+   */
+  features: Array<GeoJsonFeature>
+  /**
+   * Filename
+   */
+  filename?: string | null
+  /**
+   * Bbox
+   */
+  bbox: [number, number, number, number]
+}
 
 /**
  * GridForecastMetadataModel
  */
 export type GridForecastMetadataModel = {
-    /**
-     * Title
-     */
-    title: string;
-    /**
-     * Parameters
-     */
-    parameters: Array<ParameterMetadataModel>;
-    /**
-     * Frequency
-     */
-    frequency: Array<FrequencyStep> | string;
-    /**
-     * Type
-     */
-    type: string;
-    /**
-     * Mode
-     */
-    mode: string;
-    /**
-     * Response Formats
-     */
-    response_formats: Array<string>;
-    /**
-     * Last Forecast Reftime
-     */
-    last_forecast_reftime?: unknown | null;
-    /**
-     * Max Forecast Offset
-     */
-    max_forecast_offset?: number | null;
-    /**
-     * Available Forecast Reftimes
-     */
-    available_forecast_reftimes: Array<unknown>;
-    /**
-     * Forecast Length
-     */
-    forecast_length?: number | null;
-    /**
-     * Bbox
-     */
-    bbox: [
-        number,
-        number,
-        number,
-        number
-    ];
-    /**
-     * Bbox Outer
-     */
-    bbox_outer: [
-        number,
-        number,
-        number,
-        number
-    ];
-    /**
-     * Spatial Resolution M
-     */
-    spatial_resolution_m: number;
-    /**
-     * Crs
-     */
-    crs: string;
-    /**
-     * Grid Bounds
-     */
-    grid_bounds: [
-        number,
-        number,
-        number,
-        number
-    ];
-};
+  /**
+   * Title
+   */
+  title: string
+  /**
+   * Parameters
+   */
+  parameters: Array<ParameterMetadataModel>
+  /**
+   * Frequency
+   */
+  frequency: Array<FrequencyStep> | string
+  /**
+   * Type
+   */
+  type: string
+  /**
+   * Mode
+   */
+  mode: string
+  /**
+   * Response Formats
+   */
+  response_formats: Array<string>
+  /**
+   * Last Forecast Reftime
+   */
+  last_forecast_reftime?: unknown | null
+  /**
+   * Max Forecast Offset
+   */
+  max_forecast_offset?: number | null
+  /**
+   * Available Forecast Reftimes
+   */
+  available_forecast_reftimes: Array<unknown>
+  /**
+   * Forecast Length
+   */
+  forecast_length?: number | null
+  /**
+   * Bbox
+   */
+  bbox: [number, number, number, number]
+  /**
+   * Bbox Outer
+   */
+  bbox_outer: [number, number, number, number]
+  /**
+   * Spatial Resolution M
+   */
+  spatial_resolution_m: number
+  /**
+   * Crs
+   */
+  crs: string
+  /**
+   * Grid Bounds
+   */
+  grid_bounds: [number, number, number, number]
+}
 
 /**
  * GridGeoJSONSerializer
  */
 export type GridGeoJsonSerializer = {
-    /**
-     * Media Type
-     */
-    media_type?: 'application/json';
-    /**
-     * Type
-     */
-    type?: 'FeatureCollection';
-    /**
-     * Version
-     */
-    version: string;
-    /**
-     * Timestamps
-     * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
-     */
-    timestamps: Array<unknown>;
-    /**
-     * Features
-     */
-    features: Array<GeoJsonFeature>;
-    /**
-     * Filename
-     */
-    filename?: string | null;
-    /**
-     * Bbox
-     */
-    bbox: [
-        number,
-        number,
-        number,
-        number
-    ];
-};
+  /**
+   * Media Type
+   */
+  media_type?: 'application/json'
+  /**
+   * Type
+   */
+  type?: 'FeatureCollection'
+  /**
+   * Version
+   */
+  version: string
+  /**
+   * Timestamps
+   * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
+   */
+  timestamps: Array<unknown>
+  /**
+   * Features
+   */
+  features: Array<GeoJsonFeature>
+  /**
+   * Filename
+   */
+  filename?: string | null
+  /**
+   * Bbox
+   */
+  bbox: [number, number, number, number]
+}
 
 /**
  * GridHistoricalMetadataModel
  */
 export type GridHistoricalMetadataModel = {
-    /**
-     * Title
-     */
-    title: string;
-    /**
-     * Parameters
-     */
-    parameters: Array<ParameterMetadataModel>;
-    /**
-     * Frequency
-     */
-    frequency: Array<FrequencyStep> | string;
-    /**
-     * Type
-     */
-    type: string;
-    /**
-     * Mode
-     */
-    mode: string;
-    /**
-     * Response Formats
-     */
-    response_formats: Array<string>;
-    /**
-     * Start Time
-     */
-    start_time: unknown;
-    /**
-     * End Time
-     */
-    end_time: unknown;
-    /**
-     * Bbox
-     */
-    bbox: [
-        number,
-        number,
-        number,
-        number
-    ];
-    /**
-     * Bbox Outer
-     */
-    bbox_outer: [
-        number,
-        number,
-        number,
-        number
-    ];
-    /**
-     * Spatial Resolution M
-     */
-    spatial_resolution_m: number;
-    /**
-     * Crs
-     */
-    crs: string;
-    /**
-     * Grid Bounds
-     */
-    grid_bounds: [
-        number,
-        number,
-        number,
-        number
-    ];
-};
+  /**
+   * Title
+   */
+  title: string
+  /**
+   * Parameters
+   */
+  parameters: Array<ParameterMetadataModel>
+  /**
+   * Frequency
+   */
+  frequency: Array<FrequencyStep> | string
+  /**
+   * Type
+   */
+  type: string
+  /**
+   * Mode
+   */
+  mode: string
+  /**
+   * Response Formats
+   */
+  response_formats: Array<string>
+  /**
+   * Start Time
+   */
+  start_time: unknown
+  /**
+   * End Time
+   */
+  end_time: unknown
+  /**
+   * Bbox
+   */
+  bbox: [number, number, number, number]
+  /**
+   * Bbox Outer
+   */
+  bbox_outer: [number, number, number, number]
+  /**
+   * Spatial Resolution M
+   */
+  spatial_resolution_m: number
+  /**
+   * Crs
+   */
+  crs: string
+  /**
+   * Grid Bounds
+   */
+  grid_bounds: [number, number, number, number]
+}
 
 /**
  * HTTPValidationError
  */
 export type HttpValidationError = {
-    /**
-     * Detail
-     */
-    detail?: Array<ValidationError>;
-};
+  /**
+   * Detail
+   */
+  detail?: Array<ValidationError>
+}
 
 /**
  * IdType
  */
-export type IdType = 'Synop' | 'Klima';
+export type IdType = 'Synop' | 'Klima'
 
 /**
  * MDType
  */
-export type MdType = 'stations' | 'parameters';
+export type MdType = 'stations' | 'parameters'
 
 /**
  * OutputFormat
  */
-export type OutputFormat = 'geojson' | 'netcdf' | 'csv';
+export type OutputFormat = 'geojson' | 'netcdf' | 'csv'
 
 /**
  * ParameterMetadataModel
  */
 export type ParameterMetadataModel = {
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Long Name
-     */
-    long_name: string;
-    /**
-     * Desc
-     */
-    desc: string;
-    /**
-     * Unit
-     */
-    unit: string;
-};
+  /**
+   * Name
+   */
+  name: string
+  /**
+   * Long Name
+   */
+  long_name: string
+  /**
+   * Desc
+   */
+  desc: string
+  /**
+   * Unit
+   */
+  unit: string
+}
 
 /**
  * StationCurrentMetadataModel
  */
 export type StationCurrentMetadataModel = {
-    /**
-     * Title
-     */
-    title: string;
-    /**
-     * Parameters
-     */
-    parameters: Array<ParameterMetadataModel>;
-    /**
-     * Frequency
-     */
-    frequency: Array<FrequencyStep> | string;
-    /**
-     * Type
-     */
-    type: string;
-    /**
-     * Mode
-     */
-    mode: string;
-    /**
-     * Response Formats
-     */
-    response_formats: Array<string>;
-    /**
-     * Time
-     */
-    time: unknown;
-    /**
-     * Stations
-     */
-    stations: Array<StationMetadata>;
-    id_type: IdType;
-};
+  /**
+   * Title
+   */
+  title: string
+  /**
+   * Parameters
+   */
+  parameters: Array<ParameterMetadataModel>
+  /**
+   * Frequency
+   */
+  frequency: Array<FrequencyStep> | string
+  /**
+   * Type
+   */
+  type: string
+  /**
+   * Mode
+   */
+  mode: string
+  /**
+   * Response Formats
+   */
+  response_formats: Array<string>
+  /**
+   * Time
+   */
+  time: unknown
+  /**
+   * Stations
+   */
+  stations: Array<StationMetadata>
+  id_type: IdType
+}
 
 /**
  * StationFilterEndpointMode
  */
-export type StationFilterEndpointMode = 'historical' | 'current';
+export type StationFilterEndpointMode = 'historical' | 'current'
 
 /**
  * StationFilterResponseDto
  */
 export type StationFilterResponseDto = {
-    /**
-     * Num Stations Total
-     */
-    num_stations_total: number;
-    /**
-     * Num Stations Matching
-     */
-    num_stations_matching: number;
-    /**
-     * Matching Stations
-     */
-    matching_stations: Array<StationMetadataDto>;
-};
+  /**
+   * Num Stations Total
+   */
+  num_stations_total: number
+  /**
+   * Num Stations Matching
+   */
+  num_stations_matching: number
+  /**
+   * Matching Stations
+   */
+  matching_stations: Array<StationMetadataDto>
+}
 
 /**
  * StationGeoJSONFeature
  */
 export type StationGeoJsonFeature = {
-    /**
-     * Type
-     */
-    type?: 'Feature';
-    geometry: GeoJsonPoint;
-    properties: StationGeoJsonProperties;
-};
+  /**
+   * Type
+   */
+  type?: 'Feature'
+  geometry: GeoJsonPoint
+  properties: StationGeoJsonProperties
+}
 
 /**
  * StationGeoJSONProperties
  */
 export type StationGeoJsonProperties = {
-    /**
-     * Parameters
-     */
-    parameters: {
-        [key: string]: GeoJsonFeatureParameter;
-    };
-    /**
-     * Station
-     */
-    station: string;
-};
+  /**
+   * Parameters
+   */
+  parameters: {
+    [key: string]: GeoJsonFeatureParameter
+  }
+  /**
+   * Station
+   */
+  station: string
+}
 
 /**
  * StationGeoJSONSerializer
  */
 export type StationGeoJsonSerializer = {
-    /**
-     * Media Type
-     */
-    media_type?: 'application/json';
-    /**
-     * Type
-     */
-    type?: 'FeatureCollection';
-    /**
-     * Version
-     */
-    version: string;
-    /**
-     * Timestamps
-     * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
-     */
-    timestamps: Array<unknown>;
-    /**
-     * Features
-     */
-    features: Array<StationGeoJsonFeature>;
-    /**
-     * Filename
-     */
-    filename?: string | null;
-};
+  /**
+   * Media Type
+   */
+  media_type?: 'application/json'
+  /**
+   * Type
+   */
+  type?: 'FeatureCollection'
+  /**
+   * Version
+   */
+  version: string
+  /**
+   * Timestamps
+   * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
+   */
+  timestamps: Array<unknown>
+  /**
+   * Features
+   */
+  features: Array<StationGeoJsonFeature>
+  /**
+   * Filename
+   */
+  filename?: string | null
+}
 
 /**
  * StationHistoricalMetadataModel
  */
 export type StationHistoricalMetadataModel = {
-    /**
-     * Title
-     */
-    title: string;
-    /**
-     * Parameters
-     */
-    parameters: Array<ParameterMetadataModel>;
-    /**
-     * Frequency
-     */
-    frequency: Array<FrequencyStep> | string;
-    /**
-     * Type
-     */
-    type: string;
-    /**
-     * Mode
-     */
-    mode: string;
-    /**
-     * Response Formats
-     */
-    response_formats: Array<string>;
-    /**
-     * Start Time
-     */
-    start_time: unknown;
-    /**
-     * End Time
-     */
-    end_time: unknown;
-    /**
-     * Stations
-     */
-    stations: Array<StationMetadata>;
-    id_type: IdType;
-};
+  /**
+   * Title
+   */
+  title: string
+  /**
+   * Parameters
+   */
+  parameters: Array<ParameterMetadataModel>
+  /**
+   * Frequency
+   */
+  frequency: Array<FrequencyStep> | string
+  /**
+   * Type
+   */
+  type: string
+  /**
+   * Mode
+   */
+  mode: string
+  /**
+   * Response Formats
+   */
+  response_formats: Array<string>
+  /**
+   * Start Time
+   */
+  start_time: unknown
+  /**
+   * End Time
+   */
+  end_time: unknown
+  /**
+   * Stations
+   */
+  stations: Array<StationMetadata>
+  id_type: IdType
+}
 
 /**
  * StationMetadata
  */
 export type StationMetadata = {
-    type: StationMetadataType;
-    /**
-     * Id
-     */
-    id: string;
-    /**
-     * Group Id
-     */
-    group_id?: string | null;
-    /**
-     * Name
-     */
-    name: string;
-    state?: Bundesland | null;
-    /**
-     * Lat
-     */
-    lat: number;
-    /**
-     * Lon
-     */
-    lon: number;
-    /**
-     * Altitude
-     */
-    altitude?: number | null;
-    /**
-     * Valid From
-     */
-    valid_from: unknown;
-    /**
-     * Valid To
-     */
-    valid_to: unknown;
-    /**
-     * Has Sunshine
-     */
-    has_sunshine?: boolean | null;
-    /**
-     * Has Global Radiation
-     */
-    has_global_radiation?: boolean | null;
-    /**
-     * Is Active
-     */
-    is_active?: boolean | null;
-};
+  type: StationMetadataType
+  /**
+   * Id
+   */
+  id: string
+  /**
+   * Group Id
+   */
+  group_id?: string | null
+  /**
+   * Name
+   */
+  name: string
+  state?: Bundesland | null
+  /**
+   * Lat
+   */
+  lat: number
+  /**
+   * Lon
+   */
+  lon: number
+  /**
+   * Altitude
+   */
+  altitude?: number | null
+  /**
+   * Valid From
+   */
+  valid_from: unknown
+  /**
+   * Valid To
+   */
+  valid_to: unknown
+  /**
+   * Has Sunshine
+   */
+  has_sunshine?: boolean | null
+  /**
+   * Has Global Radiation
+   */
+  has_global_radiation?: boolean | null
+  /**
+   * Is Active
+   */
+  is_active?: boolean | null
+}
 
 /**
  * StationMetadataDto
  */
 export type StationMetadataDto = {
-    type: StationMetadataType;
-    /**
-     * Id
-     */
-    id: string;
-    /**
-     * Name
-     */
-    name: string;
-    state?: Bundesland | null;
-    /**
-     * Lat
-     */
-    lat: number;
-    /**
-     * Lon
-     */
-    lon: number;
-    /**
-     * Altitude
-     */
-    altitude?: number | null;
-    /**
-     * Valid From
-     */
-    valid_from: string;
-    /**
-     * Valid To
-     */
-    valid_to: string;
-    /**
-     * Has Sunshine
-     */
-    has_sunshine?: boolean | null;
-    /**
-     * Has Global Radiation
-     */
-    has_global_radiation?: boolean | null;
-    /**
-     * Is Active
-     */
-    is_active?: boolean | null;
-    /**
-     * Sub Stations
-     * List of sub-stations of this station. Only populated if type == COMBINED.
-     */
-    sub_stations?: Array<StationMetadataDto>;
-    /**
-     * Matches
-     */
-    matches?: boolean;
-};
+  type: StationMetadataType
+  /**
+   * Id
+   */
+  id: string
+  /**
+   * Name
+   */
+  name: string
+  state?: Bundesland | null
+  /**
+   * Lat
+   */
+  lat: number
+  /**
+   * Lon
+   */
+  lon: number
+  /**
+   * Altitude
+   */
+  altitude?: number | null
+  /**
+   * Valid From
+   */
+  valid_from: string
+  /**
+   * Valid To
+   */
+  valid_to: string
+  /**
+   * Has Sunshine
+   */
+  has_sunshine?: boolean | null
+  /**
+   * Has Global Radiation
+   */
+  has_global_radiation?: boolean | null
+  /**
+   * Is Active
+   */
+  is_active?: boolean | null
+  /**
+   * Sub Stations
+   * List of sub-stations of this station. Only populated if type == COMBINED.
+   */
+  sub_stations?: Array<StationMetadataDto>
+  /**
+   * Matches
+   */
+  matches?: boolean
+}
 
 /**
  * StationMetadataType
  */
-export type StationMetadataType = 'COMBINED' | 'SUB_STATION' | 'INDIVIDUAL';
+export type StationMetadataType = 'COMBINED' | 'SUB_STATION' | 'INDIVIDUAL'
 
 /**
  * TimeseriesForecastGeoJSONSerializer
  */
 export type TimeseriesForecastGeoJsonSerializer = {
-    /**
-     * Reference Time
-     */
-    reference_time: unknown;
-    /**
-     * Media Type
-     */
-    media_type?: 'application/json';
-    /**
-     * Type
-     */
-    type?: 'FeatureCollection';
-    /**
-     * Version
-     */
-    version: string;
-    /**
-     * Timestamps
-     * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
-     */
-    timestamps: Array<unknown>;
-    /**
-     * Features
-     */
-    features: Array<GeoJsonFeature>;
-    /**
-     * Filename
-     */
-    filename?: string | null;
-};
+  /**
+   * Reference Time
+   */
+  reference_time: unknown
+  /**
+   * Media Type
+   */
+  media_type?: 'application/json'
+  /**
+   * Type
+   */
+  type?: 'FeatureCollection'
+  /**
+   * Version
+   */
+  version: string
+  /**
+   * Timestamps
+   * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
+   */
+  timestamps: Array<unknown>
+  /**
+   * Features
+   */
+  features: Array<GeoJsonFeature>
+  /**
+   * Filename
+   */
+  filename?: string | null
+}
 
 /**
  * TimeseriesGeoJSONSerializer
  */
 export type TimeseriesGeoJsonSerializer = {
-    /**
-     * Media Type
-     */
-    media_type?: 'application/json';
-    /**
-     * Type
-     */
-    type?: 'FeatureCollection';
-    /**
-     * Version
-     */
-    version: string;
-    /**
-     * Timestamps
-     * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
-     */
-    timestamps: Array<unknown>;
-    /**
-     * Features
-     */
-    features: Array<GeoJsonFeature>;
-    /**
-     * Filename
-     */
-    filename?: string | null;
-};
+  /**
+   * Media Type
+   */
+  media_type?: 'application/json'
+  /**
+   * Type
+   */
+  type?: 'FeatureCollection'
+  /**
+   * Version
+   */
+  version: string
+  /**
+   * Timestamps
+   * Format: *YYYY-MM-DDThh:mm:ss±hh:mm*
+   */
+  timestamps: Array<unknown>
+  /**
+   * Features
+   */
+  features: Array<GeoJsonFeature>
+  /**
+   * Filename
+   */
+  filename?: string | null
+}
 
 /**
  * ValidationError
  */
 export type ValidationError = {
-    /**
-     * Location
-     */
-    loc: Array<string | number>;
-    /**
-     * Message
-     */
-    msg: string;
-    /**
-     * Error Type
-     */
-    type: string;
-};
+  /**
+   * Location
+   */
+  loc: Array<string | number>
+  /**
+   * Message
+   */
+  msg: string
+  /**
+   * Error Type
+   */
+  type: string
+}
 
 export type ViewAndFilterAllAvailableDatasetsDatasetsGetData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Type
-         */
-        type?: EndpointType | null;
-        /**
-         * Mode
-         */
-        mode?: EndpointMode | null;
-    };
-    url: '/datasets';
-};
+  body?: never
+  path?: never
+  query?: {
+    /**
+     * Type
+     */
+    type?: EndpointType | null
+    /**
+     * Mode
+     */
+    mode?: EndpointMode | null
+  }
+  url: '/datasets'
+}
 
 export type ViewAndFilterAllAvailableDatasetsDatasetsGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type ViewAndFilterAllAvailableDatasetsDatasetsGetError = ViewAndFilterAllAvailableDatasetsDatasetsGetErrors[keyof ViewAndFilterAllAvailableDatasetsDatasetsGetErrors];
+export type ViewAndFilterAllAvailableDatasetsDatasetsGetError =
+  ViewAndFilterAllAvailableDatasetsDatasetsGetErrors[keyof ViewAndFilterAllAvailableDatasetsDatasetsGetErrors]
 
 export type ViewAndFilterAllAvailableDatasetsDatasetsGetResponses = {
-    /**
-     * Response View And Filter All Available Datasets Datasets Get
-     * Successful Response
-     */
-    200: {
-        [key: string]: Dataset;
-    };
-};
+  /**
+   * Response View And Filter All Available Datasets Datasets Get
+   * Successful Response
+   */
+  200: {
+    [key: string]: Dataset
+  }
+}
 
-export type ViewAndFilterAllAvailableDatasetsDatasetsGetResponse = ViewAndFilterAllAvailableDatasetsDatasetsGetResponses[keyof ViewAndFilterAllAvailableDatasetsDatasetsGetResponses];
+export type ViewAndFilterAllAvailableDatasetsDatasetsGetResponse =
+  ViewAndFilterAllAvailableDatasetsDatasetsGetResponses[keyof ViewAndFilterAllAvailableDatasetsDatasetsGetResponses]
 
 export type HistoricalGridMetadataGridHistoricalResourceIdMetadataGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query?: never;
-    url: '/grid/historical/{resource_id}/metadata';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query?: never
+  url: '/grid/historical/{resource_id}/metadata'
+}
 
 export type HistoricalGridMetadataGridHistoricalResourceIdMetadataGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type HistoricalGridMetadataGridHistoricalResourceIdMetadataGetError = HistoricalGridMetadataGridHistoricalResourceIdMetadataGetErrors[keyof HistoricalGridMetadataGridHistoricalResourceIdMetadataGetErrors];
+export type HistoricalGridMetadataGridHistoricalResourceIdMetadataGetError =
+  HistoricalGridMetadataGridHistoricalResourceIdMetadataGetErrors[keyof HistoricalGridMetadataGridHistoricalResourceIdMetadataGetErrors]
 
 export type HistoricalGridMetadataGridHistoricalResourceIdMetadataGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: GridHistoricalMetadataModel;
-};
+  /**
+   * Successful Response
+   */
+  200: GridHistoricalMetadataModel
+}
 
-export type HistoricalGridMetadataGridHistoricalResourceIdMetadataGetResponse = HistoricalGridMetadataGridHistoricalResourceIdMetadataGetResponses[keyof HistoricalGridMetadataGridHistoricalResourceIdMetadataGetResponses];
+export type HistoricalGridMetadataGridHistoricalResourceIdMetadataGetResponse =
+  HistoricalGridMetadataGridHistoricalResourceIdMetadataGetResponses[keyof HistoricalGridMetadataGridHistoricalResourceIdMetadataGetResponses]
 
 export type HistoricalGridParameterMetadataCsvGridHistoricalResourceIdMetadataParametersGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query?: {
-        /**
-         * Filename
-         * Filename without file extension
-         */
-        filename?: string | null;
-    };
-    url: '/grid/historical/{resource_id}/metadata/parameters';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query?: {
+    /**
+     * Filename
+     * Filename without file extension
+     */
+    filename?: string | null
+  }
+  url: '/grid/historical/{resource_id}/metadata/parameters'
+}
 
 export type HistoricalGridParameterMetadataCsvGridHistoricalResourceIdMetadataParametersGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type HistoricalGridParameterMetadataCsvGridHistoricalResourceIdMetadataParametersGetError = HistoricalGridParameterMetadataCsvGridHistoricalResourceIdMetadataParametersGetErrors[keyof HistoricalGridParameterMetadataCsvGridHistoricalResourceIdMetadataParametersGetErrors];
+export type HistoricalGridParameterMetadataCsvGridHistoricalResourceIdMetadataParametersGetError =
+  HistoricalGridParameterMetadataCsvGridHistoricalResourceIdMetadataParametersGetErrors[keyof HistoricalGridParameterMetadataCsvGridHistoricalResourceIdMetadataParametersGetErrors]
 
 export type HistoricalGridParameterMetadataCsvGridHistoricalResourceIdMetadataParametersGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
+  /**
+   * Successful Response
+   */
+  200: unknown
+}
 
 export type HistoricalGridDataGridHistoricalResourceIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query: {
-        /**
-         * Parameters
-         * At least one parameter has to be specified.
-         */
-        parameters: Array<string>;
-        /**
-         * Start
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        start: string;
-        /**
-         * End
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        end: string;
-        /**
-         * Bbox
-         * Supply in format *south,west,north,east*
-         */
-        bbox: string;
-        output_format?: OutputFormat;
-        /**
-         * Filename
-         * Filename without file extension
-         */
-        filename?: string | null;
-    };
-    url: '/grid/historical/{resource_id}';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query: {
+    /**
+     * Parameters
+     * At least one parameter has to be specified.
+     */
+    parameters: Array<string>
+    /**
+     * Start
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    start: string
+    /**
+     * End
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    end: string
+    /**
+     * Bbox
+     * Supply in format *south,west,north,east*
+     */
+    bbox: string
+    output_format?: OutputFormat
+    /**
+     * Filename
+     * Filename without file extension
+     */
+    filename?: string | null
+  }
+  url: '/grid/historical/{resource_id}'
+}
 
 export type HistoricalGridDataGridHistoricalResourceIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type HistoricalGridDataGridHistoricalResourceIdGetError = HistoricalGridDataGridHistoricalResourceIdGetErrors[keyof HistoricalGridDataGridHistoricalResourceIdGetErrors];
+export type HistoricalGridDataGridHistoricalResourceIdGetError =
+  HistoricalGridDataGridHistoricalResourceIdGetErrors[keyof HistoricalGridDataGridHistoricalResourceIdGetErrors]
 
 export type HistoricalGridDataGridHistoricalResourceIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: GridGeoJsonSerializer;
-};
+  /**
+   * Successful Response
+   */
+  200: GridGeoJsonSerializer
+}
 
-export type HistoricalGridDataGridHistoricalResourceIdGetResponse = HistoricalGridDataGridHistoricalResourceIdGetResponses[keyof HistoricalGridDataGridHistoricalResourceIdGetResponses];
+export type HistoricalGridDataGridHistoricalResourceIdGetResponse =
+  HistoricalGridDataGridHistoricalResourceIdGetResponses[keyof HistoricalGridDataGridHistoricalResourceIdGetResponses]
 
 export type GridForecastMetadataGridForecastResourceIdMetadataGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query?: never;
-    url: '/grid/forecast/{resource_id}/metadata';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query?: never
+  url: '/grid/forecast/{resource_id}/metadata'
+}
 
 export type GridForecastMetadataGridForecastResourceIdMetadataGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type GridForecastMetadataGridForecastResourceIdMetadataGetError = GridForecastMetadataGridForecastResourceIdMetadataGetErrors[keyof GridForecastMetadataGridForecastResourceIdMetadataGetErrors];
+export type GridForecastMetadataGridForecastResourceIdMetadataGetError =
+  GridForecastMetadataGridForecastResourceIdMetadataGetErrors[keyof GridForecastMetadataGridForecastResourceIdMetadataGetErrors]
 
 export type GridForecastMetadataGridForecastResourceIdMetadataGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: GridForecastMetadataModel;
-};
+  /**
+   * Successful Response
+   */
+  200: GridForecastMetadataModel
+}
 
-export type GridForecastMetadataGridForecastResourceIdMetadataGetResponse = GridForecastMetadataGridForecastResourceIdMetadataGetResponses[keyof GridForecastMetadataGridForecastResourceIdMetadataGetResponses];
+export type GridForecastMetadataGridForecastResourceIdMetadataGetResponse =
+  GridForecastMetadataGridForecastResourceIdMetadataGetResponses[keyof GridForecastMetadataGridForecastResourceIdMetadataGetResponses]
 
 export type GridForecastDataGridForecastResourceIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query: {
-        /**
-         * Parameters
-         * At least one parameter has to be specified.
-         */
-        parameters: Array<string>;
-        /**
-         * Bbox
-         * Supply in format *south,west,north,east*
-         */
-        bbox: string;
-        /**
-         * Forecast Offset
-         * This parameter allows to access historical forecasts. If this parameter is not set the most recently created forecast is returned. If an integer value is given an older forecast is returned, where value is the 'age' of the forecast. 0 is the most recent forecast, 1 is the second to last forecast, and so on.
-         */
-        forecast_offset?: number;
-        /**
-         * Start
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        start?: string;
-        /**
-         * End
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        end?: string;
-        output_format?: OutputFormat;
-        /**
-         * Filename
-         * Filename without file extension
-         */
-        filename?: string | null;
-    };
-    url: '/grid/forecast/{resource_id}';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query: {
+    /**
+     * Parameters
+     * At least one parameter has to be specified.
+     */
+    parameters: Array<string>
+    /**
+     * Bbox
+     * Supply in format *south,west,north,east*
+     */
+    bbox: string
+    /**
+     * Forecast Offset
+     * This parameter allows to access historical forecasts. If this parameter is not set the most recently created forecast is returned. If an integer value is given an older forecast is returned, where value is the 'age' of the forecast. 0 is the most recent forecast, 1 is the second to last forecast, and so on.
+     */
+    forecast_offset?: number
+    /**
+     * Start
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    start?: string
+    /**
+     * End
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    end?: string
+    output_format?: OutputFormat
+    /**
+     * Filename
+     * Filename without file extension
+     */
+    filename?: string | null
+  }
+  url: '/grid/forecast/{resource_id}'
+}
 
 export type GridForecastDataGridForecastResourceIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type GridForecastDataGridForecastResourceIdGetError = GridForecastDataGridForecastResourceIdGetErrors[keyof GridForecastDataGridForecastResourceIdGetErrors];
+export type GridForecastDataGridForecastResourceIdGetError =
+  GridForecastDataGridForecastResourceIdGetErrors[keyof GridForecastDataGridForecastResourceIdGetErrors]
 
 export type GridForecastDataGridForecastResourceIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: GridForecastGeoJsonSerializer;
-};
+  /**
+   * Successful Response
+   */
+  200: GridForecastGeoJsonSerializer
+}
 
-export type GridForecastDataGridForecastResourceIdGetResponse = GridForecastDataGridForecastResourceIdGetResponses[keyof GridForecastDataGridForecastResourceIdGetResponses];
+export type GridForecastDataGridForecastResourceIdGetResponse =
+  GridForecastDataGridForecastResourceIdGetResponses[keyof GridForecastDataGridForecastResourceIdGetResponses]
 
 export type HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query?: never;
-    url: '/timeseries/historical/{resource_id}/metadata';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query?: never
+  url: '/timeseries/historical/{resource_id}/metadata'
+}
 
 export type HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetError = HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetErrors[keyof HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetErrors];
+export type HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetError =
+  HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetErrors[keyof HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetErrors]
 
 export type HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: GridHistoricalMetadataModel;
-};
+  /**
+   * Successful Response
+   */
+  200: GridHistoricalMetadataModel
+}
 
-export type HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetResponse = HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetResponses[keyof HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetResponses];
+export type HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetResponse =
+  HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetResponses[keyof HistoricalTimeseriesMetadataTimeseriesHistoricalResourceIdMetadataGetResponses]
 
 export type HistoricalTimeseriesTimeseriesHistoricalResourceIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query: {
-        /**
-         * Parameters
-         * At least one parameter has to be specified.
-         */
-        parameters: Array<string>;
-        /**
-         * Start
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        start: string;
-        /**
-         * End
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        end: string;
-        /**
-         * Lat Lon
-         * Strings of 'LAT,LON'.
-         */
-        lat_lon: Array<string>;
-        output_format?: OutputFormat;
-        /**
-         * Filename
-         * Filename without file extension
-         */
-        filename?: string | null;
-    };
-    url: '/timeseries/historical/{resource_id}';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query: {
+    /**
+     * Parameters
+     * At least one parameter has to be specified.
+     */
+    parameters: Array<string>
+    /**
+     * Start
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    start: string
+    /**
+     * End
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    end: string
+    /**
+     * Lat Lon
+     * Strings of 'LAT,LON'.
+     */
+    lat_lon: Array<string>
+    output_format?: OutputFormat
+    /**
+     * Filename
+     * Filename without file extension
+     */
+    filename?: string | null
+  }
+  url: '/timeseries/historical/{resource_id}'
+}
 
 export type HistoricalTimeseriesTimeseriesHistoricalResourceIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type HistoricalTimeseriesTimeseriesHistoricalResourceIdGetError = HistoricalTimeseriesTimeseriesHistoricalResourceIdGetErrors[keyof HistoricalTimeseriesTimeseriesHistoricalResourceIdGetErrors];
+export type HistoricalTimeseriesTimeseriesHistoricalResourceIdGetError =
+  HistoricalTimeseriesTimeseriesHistoricalResourceIdGetErrors[keyof HistoricalTimeseriesTimeseriesHistoricalResourceIdGetErrors]
 
 export type HistoricalTimeseriesTimeseriesHistoricalResourceIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: TimeseriesGeoJsonSerializer;
-};
+  /**
+   * Successful Response
+   */
+  200: TimeseriesGeoJsonSerializer
+}
 
-export type HistoricalTimeseriesTimeseriesHistoricalResourceIdGetResponse = HistoricalTimeseriesTimeseriesHistoricalResourceIdGetResponses[keyof HistoricalTimeseriesTimeseriesHistoricalResourceIdGetResponses];
+export type HistoricalTimeseriesTimeseriesHistoricalResourceIdGetResponse =
+  HistoricalTimeseriesTimeseriesHistoricalResourceIdGetResponses[keyof HistoricalTimeseriesTimeseriesHistoricalResourceIdGetResponses]
 
 export type TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query?: never;
-    url: '/timeseries/forecast/{resource_id}/metadata';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query?: never
+  url: '/timeseries/forecast/{resource_id}/metadata'
+}
 
 export type TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetError = TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetErrors[keyof TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetErrors];
+export type TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetError =
+  TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetErrors[keyof TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetErrors]
 
 export type TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: GridForecastMetadataModel;
-};
+  /**
+   * Successful Response
+   */
+  200: GridForecastMetadataModel
+}
 
-export type TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetResponse = TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetResponses[keyof TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetResponses];
+export type TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetResponse =
+  TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetResponses[keyof TimeseriesForecastMetadataTimeseriesForecastResourceIdMetadataGetResponses]
 
 export type TimeseriesForecastTimeseriesForecastResourceIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query: {
-        /**
-         * Parameters
-         * At least one parameter has to be specified.
-         */
-        parameters: Array<string>;
-        /**
-         * Lat Lon
-         * Strings of 'LAT,LON'.
-         */
-        lat_lon: Array<string>;
-        /**
-         * Forecast Offset
-         * This parameter allows to access historical forecasts. If this parameter is not set the most recently created forecast is returned. If an integer value is given an older forecast is returned, where value is the 'age' of the forecast. 0 is the most recent forecast, 1 is the second to last forecast, and so on.
-         */
-        forecast_offset?: number;
-        /**
-         * Start
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        start?: string;
-        /**
-         * End
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        end?: string;
-        output_format?: OutputFormat;
-        /**
-         * Filename
-         * Filename without file extension
-         */
-        filename?: string | null;
-    };
-    url: '/timeseries/forecast/{resource_id}';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query: {
+    /**
+     * Parameters
+     * At least one parameter has to be specified.
+     */
+    parameters: Array<string>
+    /**
+     * Lat Lon
+     * Strings of 'LAT,LON'.
+     */
+    lat_lon: Array<string>
+    /**
+     * Forecast Offset
+     * This parameter allows to access historical forecasts. If this parameter is not set the most recently created forecast is returned. If an integer value is given an older forecast is returned, where value is the 'age' of the forecast. 0 is the most recent forecast, 1 is the second to last forecast, and so on.
+     */
+    forecast_offset?: number
+    /**
+     * Start
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    start?: string
+    /**
+     * End
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    end?: string
+    output_format?: OutputFormat
+    /**
+     * Filename
+     * Filename without file extension
+     */
+    filename?: string | null
+  }
+  url: '/timeseries/forecast/{resource_id}'
+}
 
 export type TimeseriesForecastTimeseriesForecastResourceIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type TimeseriesForecastTimeseriesForecastResourceIdGetError = TimeseriesForecastTimeseriesForecastResourceIdGetErrors[keyof TimeseriesForecastTimeseriesForecastResourceIdGetErrors];
+export type TimeseriesForecastTimeseriesForecastResourceIdGetError =
+  TimeseriesForecastTimeseriesForecastResourceIdGetErrors[keyof TimeseriesForecastTimeseriesForecastResourceIdGetErrors]
 
 export type TimeseriesForecastTimeseriesForecastResourceIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: TimeseriesForecastGeoJsonSerializer;
-};
+  /**
+   * Successful Response
+   */
+  200: TimeseriesForecastGeoJsonSerializer
+}
 
-export type TimeseriesForecastTimeseriesForecastResourceIdGetResponse = TimeseriesForecastTimeseriesForecastResourceIdGetResponses[keyof TimeseriesForecastTimeseriesForecastResourceIdGetResponses];
+export type TimeseriesForecastTimeseriesForecastResourceIdGetResponse =
+  TimeseriesForecastTimeseriesForecastResourceIdGetResponses[keyof TimeseriesForecastTimeseriesForecastResourceIdGetResponses]
 
 export type FilterStationsStationModeResourceIdFilterGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-        mode: StationFilterEndpointMode;
-    };
-    query?: {
-        /**
-         * Id
-         * Restricts output to stations that have one of the given ids.
-         */
-        id?: Array<string>;
-        /**
-         * Name
-         * Restricts output to stations whose name contains one of the given strings.
-         */
-        name?: Array<string>;
-        /**
-         * State
-         * Restricts output to stations who are located in one of the given states
-         */
-        state?: Array<Bundesland>;
-        /**
-         * Start Date
-         * Supply in format: *YYYY-MM-DD* or *YYYY-MM-DDTHH:mm*
-         */
-        start_date?: string;
-        /**
-         * End Date
-         * Supply in format: *YYYY-MM-DD* or *YYYY-MM-DDTHH:mm*
-         */
-        end_date?: string;
-        /**
-         * Min Altitude
-         * Physical unit is *m*
-         */
-        min_altitude?: number;
-        /**
-         * Max Altitude
-         * Physical unit is *m*
-         */
-        max_altitude?: number | null;
-        /**
-         * Has Sunshine
-         */
-        has_sunshine?: boolean;
-        /**
-         * Has Global Radiation
-         */
-        has_global_radiation?: boolean;
-        /**
-         * Is Active
-         */
-        is_active?: boolean;
-    };
-    url: '/station/{mode}/{resource_id}/filter';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+    mode: StationFilterEndpointMode
+  }
+  query?: {
+    /**
+     * Id
+     * Restricts output to stations that have one of the given ids.
+     */
+    id?: Array<string>
+    /**
+     * Name
+     * Restricts output to stations whose name contains one of the given strings.
+     */
+    name?: Array<string>
+    /**
+     * State
+     * Restricts output to stations who are located in one of the given states
+     */
+    state?: Array<Bundesland>
+    /**
+     * Start Date
+     * Supply in format: *YYYY-MM-DD* or *YYYY-MM-DDTHH:mm*
+     */
+    start_date?: string
+    /**
+     * End Date
+     * Supply in format: *YYYY-MM-DD* or *YYYY-MM-DDTHH:mm*
+     */
+    end_date?: string
+    /**
+     * Min Altitude
+     * Physical unit is *m*
+     */
+    min_altitude?: number
+    /**
+     * Max Altitude
+     * Physical unit is *m*
+     */
+    max_altitude?: number | null
+    /**
+     * Has Sunshine
+     */
+    has_sunshine?: boolean
+    /**
+     * Has Global Radiation
+     */
+    has_global_radiation?: boolean
+    /**
+     * Is Active
+     */
+    is_active?: boolean
+  }
+  url: '/station/{mode}/{resource_id}/filter'
+}
 
 export type FilterStationsStationModeResourceIdFilterGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type FilterStationsStationModeResourceIdFilterGetError = FilterStationsStationModeResourceIdFilterGetErrors[keyof FilterStationsStationModeResourceIdFilterGetErrors];
+export type FilterStationsStationModeResourceIdFilterGetError =
+  FilterStationsStationModeResourceIdFilterGetErrors[keyof FilterStationsStationModeResourceIdFilterGetErrors]
 
 export type FilterStationsStationModeResourceIdFilterGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: StationFilterResponseDto;
-};
+  /**
+   * Successful Response
+   */
+  200: StationFilterResponseDto
+}
 
-export type FilterStationsStationModeResourceIdFilterGetResponse = FilterStationsStationModeResourceIdFilterGetResponses[keyof FilterStationsStationModeResourceIdFilterGetResponses];
+export type FilterStationsStationModeResourceIdFilterGetResponse =
+  FilterStationsStationModeResourceIdFilterGetResponses[keyof FilterStationsStationModeResourceIdFilterGetResponses]
 
 export type HistoricalStationMetadataStationHistoricalResourceIdMetadataGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query?: never;
-    url: '/station/historical/{resource_id}/metadata';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query?: never
+  url: '/station/historical/{resource_id}/metadata'
+}
 
 export type HistoricalStationMetadataStationHistoricalResourceIdMetadataGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type HistoricalStationMetadataStationHistoricalResourceIdMetadataGetError = HistoricalStationMetadataStationHistoricalResourceIdMetadataGetErrors[keyof HistoricalStationMetadataStationHistoricalResourceIdMetadataGetErrors];
+export type HistoricalStationMetadataStationHistoricalResourceIdMetadataGetError =
+  HistoricalStationMetadataStationHistoricalResourceIdMetadataGetErrors[keyof HistoricalStationMetadataStationHistoricalResourceIdMetadataGetErrors]
 
 export type HistoricalStationMetadataStationHistoricalResourceIdMetadataGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: StationHistoricalMetadataModel;
-};
+  /**
+   * Successful Response
+   */
+  200: StationHistoricalMetadataModel
+}
 
-export type HistoricalStationMetadataStationHistoricalResourceIdMetadataGetResponse = HistoricalStationMetadataStationHistoricalResourceIdMetadataGetResponses[keyof HistoricalStationMetadataStationHistoricalResourceIdMetadataGetResponses];
+export type HistoricalStationMetadataStationHistoricalResourceIdMetadataGetResponse =
+  HistoricalStationMetadataStationHistoricalResourceIdMetadataGetResponses[keyof HistoricalStationMetadataStationHistoricalResourceIdMetadataGetResponses]
 
 export type HistoricalStationMetadataCsvStationHistoricalResourceIdMetadataMdtypeGetData = {
-    body?: never;
-    path: {
-        mdtype: MdType;
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query?: {
-        /**
-         * Filename
-         * Filename without file extension
-         */
-        filename?: string | null;
-    };
-    url: '/station/historical/{resource_id}/metadata/{mdtype}';
-};
+  body?: never
+  path: {
+    mdtype: MdType
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query?: {
+    /**
+     * Filename
+     * Filename without file extension
+     */
+    filename?: string | null
+  }
+  url: '/station/historical/{resource_id}/metadata/{mdtype}'
+}
 
 export type HistoricalStationMetadataCsvStationHistoricalResourceIdMetadataMdtypeGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type HistoricalStationMetadataCsvStationHistoricalResourceIdMetadataMdtypeGetError = HistoricalStationMetadataCsvStationHistoricalResourceIdMetadataMdtypeGetErrors[keyof HistoricalStationMetadataCsvStationHistoricalResourceIdMetadataMdtypeGetErrors];
+export type HistoricalStationMetadataCsvStationHistoricalResourceIdMetadataMdtypeGetError =
+  HistoricalStationMetadataCsvStationHistoricalResourceIdMetadataMdtypeGetErrors[keyof HistoricalStationMetadataCsvStationHistoricalResourceIdMetadataMdtypeGetErrors]
 
 export type HistoricalStationMetadataCsvStationHistoricalResourceIdMetadataMdtypeGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
+  /**
+   * Successful Response
+   */
+  200: unknown
+}
 
 export type HistoricalStationDataStationHistoricalResourceIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query: {
-        /**
-         * Parameters
-         * At least one parameter has to be specified.
-         */
-        parameters: Array<string>;
-        /**
-         * Start
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        start: string;
-        /**
-         * End
-         * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
-         */
-        end: string;
-        /**
-         * Station Ids
-         * At least one station id has to be specified.
-         */
-        station_ids: Array<string>;
-        output_format?: OutputFormat;
-        /**
-         * Filename
-         * Filename without file extension
-         */
-        filename?: string | null;
-    };
-    url: '/station/historical/{resource_id}';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query: {
+    /**
+     * Parameters
+     * At least one parameter has to be specified.
+     */
+    parameters: Array<string>
+    /**
+     * Start
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    start: string
+    /**
+     * End
+     * Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.
+     */
+    end: string
+    /**
+     * Station Ids
+     * At least one station id has to be specified.
+     */
+    station_ids: Array<string>
+    output_format?: OutputFormat
+    /**
+     * Filename
+     * Filename without file extension
+     */
+    filename?: string | null
+  }
+  url: '/station/historical/{resource_id}'
+}
 
 export type HistoricalStationDataStationHistoricalResourceIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type HistoricalStationDataStationHistoricalResourceIdGetError = HistoricalStationDataStationHistoricalResourceIdGetErrors[keyof HistoricalStationDataStationHistoricalResourceIdGetErrors];
+export type HistoricalStationDataStationHistoricalResourceIdGetError =
+  HistoricalStationDataStationHistoricalResourceIdGetErrors[keyof HistoricalStationDataStationHistoricalResourceIdGetErrors]
 
 export type HistoricalStationDataStationHistoricalResourceIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: StationGeoJsonSerializer;
-};
+  /**
+   * Successful Response
+   */
+  200: StationGeoJsonSerializer
+}
 
-export type HistoricalStationDataStationHistoricalResourceIdGetResponse = HistoricalStationDataStationHistoricalResourceIdGetResponses[keyof HistoricalStationDataStationHistoricalResourceIdGetResponses];
+export type HistoricalStationDataStationHistoricalResourceIdGetResponse =
+  HistoricalStationDataStationHistoricalResourceIdGetResponses[keyof HistoricalStationDataStationHistoricalResourceIdGetResponses]
 
 export type CurrentStationMetadataStationCurrentResourceIdMetadataGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query?: never;
-    url: '/station/current/{resource_id}/metadata';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query?: never
+  url: '/station/current/{resource_id}/metadata'
+}
 
 export type CurrentStationMetadataStationCurrentResourceIdMetadataGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type CurrentStationMetadataStationCurrentResourceIdMetadataGetError = CurrentStationMetadataStationCurrentResourceIdMetadataGetErrors[keyof CurrentStationMetadataStationCurrentResourceIdMetadataGetErrors];
+export type CurrentStationMetadataStationCurrentResourceIdMetadataGetError =
+  CurrentStationMetadataStationCurrentResourceIdMetadataGetErrors[keyof CurrentStationMetadataStationCurrentResourceIdMetadataGetErrors]
 
 export type CurrentStationMetadataStationCurrentResourceIdMetadataGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: StationCurrentMetadataModel;
-};
+  /**
+   * Successful Response
+   */
+  200: StationCurrentMetadataModel
+}
 
-export type CurrentStationMetadataStationCurrentResourceIdMetadataGetResponse = CurrentStationMetadataStationCurrentResourceIdMetadataGetResponses[keyof CurrentStationMetadataStationCurrentResourceIdMetadataGetResponses];
+export type CurrentStationMetadataStationCurrentResourceIdMetadataGetResponse =
+  CurrentStationMetadataStationCurrentResourceIdMetadataGetResponses[keyof CurrentStationMetadataStationCurrentResourceIdMetadataGetResponses]
 
 export type CurrentStationDataStationCurrentResourceIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Resource Id
-         * ID of dataset
-         */
-        resource_id: string;
-    };
-    query: {
-        /**
-         * Parameters
-         * At least one parameter has to be specified.
-         */
-        parameters: Array<string>;
-        /**
-         * Station Ids
-         * At least one station id has to be specified.
-         */
-        station_ids: Array<string>;
-        output_format?: OutputFormat;
-        /**
-         * Filename
-         * Filename without file extension
-         */
-        filename?: string | null;
-    };
-    url: '/station/current/{resource_id}';
-};
+  body?: never
+  path: {
+    /**
+     * Resource Id
+     * ID of dataset
+     */
+    resource_id: string
+  }
+  query: {
+    /**
+     * Parameters
+     * At least one parameter has to be specified.
+     */
+    parameters: Array<string>
+    /**
+     * Station Ids
+     * At least one station id has to be specified.
+     */
+    station_ids: Array<string>
+    output_format?: OutputFormat
+    /**
+     * Filename
+     * Filename without file extension
+     */
+    filename?: string | null
+  }
+  url: '/station/current/{resource_id}'
+}
 
 export type CurrentStationDataStationCurrentResourceIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError
+}
 
-export type CurrentStationDataStationCurrentResourceIdGetError = CurrentStationDataStationCurrentResourceIdGetErrors[keyof CurrentStationDataStationCurrentResourceIdGetErrors];
+export type CurrentStationDataStationCurrentResourceIdGetError =
+  CurrentStationDataStationCurrentResourceIdGetErrors[keyof CurrentStationDataStationCurrentResourceIdGetErrors]
 
 export type CurrentStationDataStationCurrentResourceIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: StationGeoJsonSerializer;
-};
+  /**
+   * Successful Response
+   */
+  200: StationGeoJsonSerializer
+}
 
-export type CurrentStationDataStationCurrentResourceIdGetResponse = CurrentStationDataStationCurrentResourceIdGetResponses[keyof CurrentStationDataStationCurrentResourceIdGetResponses];
+export type CurrentStationDataStationCurrentResourceIdGetResponse =
+  CurrentStationDataStationCurrentResourceIdGetResponses[keyof CurrentStationDataStationCurrentResourceIdGetResponses]
 
 export type ClientOptions = {
-    baseUrl: `${string}://${string}/v1` | (string & {});
-};
+  baseUrl: `${string}://${string}/v1` | (string & {})
+}

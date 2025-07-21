@@ -93,7 +93,7 @@
   updateServiceWorkerStateWatcher()
 </script>
 
-<div class="flex flex-row gap-2 shrink-0">
+<div class="flex shrink-0 flex-row gap-2">
   <Button variant="outline" size="icon" onclick={() => (window.location.href = 'https://auth.kjan.dev')}>
     <LucideLockKeyhole />
   </Button>

@@ -126,7 +126,7 @@
         className="h-2"
       />
 
-      <div class="bg-midground flex h-fit flex-col gap-2 rounded-lg p-2">
+      <div class="bg-midground flex h-fit flex-col gap-2 rounded-lg p-2" data-vaul-no-drag>
         {#if $selectedDay}
           <WeatherChart
             multiseries={$selectedDay.multiseries}
