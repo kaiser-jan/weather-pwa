@@ -1,4 +1,5 @@
 import type { Icon } from '@lucide/svelte'
+import type { Readable } from 'svelte/store'
 
 // TODO: pass the settings type as ctx
 export type VisibilityCallback = (ctx: Record<string, unknown>) => boolean
@@ -9,7 +10,7 @@ type BaseConfigItem = {
   description?: string
   icon?: typeof Icon
   visible?: VisibilityCallback
-  disabled?: boolean
+  disabled?: boolean | Readable<boolean>
 }
 
 export type TextSetting = BaseConfigItem & {
@@ -45,14 +46,27 @@ export type NumberSetting = BaseConfigItem & {
   step?: number
 }
 
-export type DescriptionBlock = BaseConfigItem & {
+export type StaticDescription = BaseConfigItem & {
   type: 'description'
   text: string
 }
 
+export type StaticSpacer = BaseConfigItem & {
+  type: 'spacer'
+}
+export type StaticValue = BaseConfigItem & {
+  type: 'value'
+  value: string
+}
+export type StaticAction = BaseConfigItem & {
+  type: 'action'
+  action: () => Promise<unknown> | unknown | void
+  enabled?: Readable<true>
+}
+
 export type NotImplementedSetting = BaseConfigItem & {
   type: 'not-implemented'
-  default: unknown
+  default?: unknown
 }
 
 export type Setting =
@@ -62,6 +76,8 @@ export type Setting =
   | BooleanSetting
   | NumberSetting
   | NotImplementedSetting
+
+type Static = StaticDescription | StaticValue | StaticAction
 
 //
 
@@ -83,7 +99,7 @@ export type ListSetting = BaseConfigItem & {
 
 export type NestableSetting = SettingGroup | SettingPage | ListSetting
 
-export type ConfigItem = Setting | DescriptionBlock | NestableSetting
+export type ConfigItem = Setting | Static | NestableSetting
 
 //
 

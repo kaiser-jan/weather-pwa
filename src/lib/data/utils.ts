@@ -110,8 +110,6 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
     return true
   })
 
-  console.warn(`${groupedCompleteOnly.length} vs ${grouped.length}`)
-
   return groupedCompleteOnly
 }
 

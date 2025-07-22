@@ -2,6 +2,8 @@ import { DateTime } from 'luxon'
 import { writable } from 'svelte/store'
 
 export const NOW = writable(DateTime.now(), () => {
+  let minuteChangeTimeout: ReturnType<typeof setTimeout> | undefined = undefined
+
   function updateNow() {
     NOW.set(DateTime.now())
   }
@@ -16,7 +18,7 @@ export const NOW = writable(DateTime.now(), () => {
   }
   function scheduleNextMinuteChange() {
     const millisecondsUntilNextMinute = 60 * 1000 - DateTime.now().second * 1000 - DateTime.now().millisecond
-    setTimeout(onMinuteChange, millisecondsUntilNextMinute)
+    minuteChangeTimeout = setTimeout(onMinuteChange, millisecondsUntilNextMinute)
   }
 
   document.addEventListener('visibilitychange', onVisibilityChange)
@@ -24,6 +26,7 @@ export const NOW = writable(DateTime.now(), () => {
   scheduleNextMinuteChange()
 
   return () => {
+    clearTimeout(minuteChangeTimeout)
     document.removeEventListener('visibilitychange', onVisibilityChange)
   }
 })

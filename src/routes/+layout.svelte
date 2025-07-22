@@ -67,4 +67,18 @@
   <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
 </div>
 
-<Toaster />
+<Toaster
+  position="bottom-center"
+  toastOptions={{
+    unstyled: true,
+    classes: {
+      toast:
+        'bg-background border-foreground border-2 flex flex-row flex-wrap gap-2 items-center rounded-lg p-3 text-sm',
+      title: 'text-text font-semibold flex flex-row gap-2',
+      description: 'text-text-muted italic',
+      actionButton: 'bg-foreground rounded-md p-2 h-8 flex items-center',
+      cancelButton: 'border-foreground border-2 rounded-md p-2 h-8 flex items-center',
+      closeButton: 'bg-purple-500',
+    },
+  }}
+/>

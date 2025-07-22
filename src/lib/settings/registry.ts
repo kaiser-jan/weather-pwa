@@ -5,6 +5,7 @@ import NumberInput from './components/NumberInput.svelte'
 import MultiSelectInput from './components/MultiSelectInput.svelte'
 import ListInput from './components/ListInput.svelte'
 import TextInput from './components/TextInput.svelte'
+import ValueStatic from './components/static/ValueStatic.svelte'
 
 // TODO: refine this type; derive from the settings types
 type SettingComponent = Component<
@@ -25,7 +26,7 @@ const registry: Record<string, SettingComponent> = {
   number: NumberInput,
   list: ListInput,
   text: TextInput,
-  // description: DescriptionBlock,
+  value: ValueStatic,
 }
 
 export function getComponent(type: string): SettingComponent {

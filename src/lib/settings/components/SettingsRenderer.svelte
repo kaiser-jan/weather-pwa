@@ -5,6 +5,7 @@
   import Button from '$lib/components/ui/button/button.svelte'
   import { ChevronRightIcon, LockIcon } from '@lucide/svelte'
   import SettingsItemRenderer from './SettingsItemRenderer.svelte'
+  import ItemAction from './items/ItemAction.svelte'
 
   interface Props {
     path: string[]
@@ -39,7 +40,11 @@
         />
       </section>
     {:else if item.type === 'description'}
-      <p>{item.text}</p>
+      <p class="bg-midground text-text-muted rounded-md px-3 py-2">{@html item.text}</p>
+    {:else if item.type === 'spacer'}
+      <div></div>
+    {:else if item.type === 'action'}
+      <ItemAction {item} />
     {:else if item.type === 'not-implemented'}
       <div
         class="bg-disabled text-disabled-foreground flex min-h-12 items-center justify-between gap-2 rounded-md px-4"

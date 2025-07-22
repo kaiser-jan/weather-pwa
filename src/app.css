@@ -53,8 +53,12 @@ body {
   user-select: none;
   -webkit-user-select: none;
 
+  --color-text: hsl(220, 8%, 98%);
   --color-background: hsl(220, 50%, 5%);
   --color-foreground: hsl(220, 20%, 20%);
+  --color-popover: var(--color-background);
+  --color-popover-foreground: var(--color-text);
+  --color-border: var(--color-foreground);
 }
 
 .lucide-icon {

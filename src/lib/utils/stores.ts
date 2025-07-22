@@ -1,5 +1,5 @@
 import { deepEqual } from '$lib/utils'
-import type { Readable } from 'svelte/store'
+import { readable, type Readable } from 'svelte/store'
 
 export function select<T, U>(
   store: Readable<T>,
@@ -19,4 +19,17 @@ export function select<T, U>(
       })
     },
   }
+}
+
+export function isStore<T = unknown>(value: unknown): value is { subscribe: (run: (value: T) => void) => unknown } {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'subscribe' in value &&
+    typeof (value as any).subscribe === 'function'
+  )
+}
+
+export function toReadable<T>(value: T | Readable<T>): Readable<T> {
+  return isStore(value) ? (value as Readable<T>) : readable(value as T)
 }
