@@ -6,14 +6,15 @@
 
   interface Props {
     precipitationGroup: PrecipitationGroup
+    isRestOfDayOnly?: boolean
   }
 
-  let { precipitationGroup }: Props = $props()
+  let { precipitationGroup, isRestOfDayOnly }: Props = $props()
 </script>
 
 <div class="flex flex-row items-center justify-between gap-2">
   <span class="inline-flex items-center gap-1">
-    {#if precipitationGroup.start > $NOW}
+    {#if precipitationGroup.start > $NOW || !isRestOfDayOnly}
       {formatRelativeDatetime(precipitationGroup.start, { omitDate: true })}
     {/if}
     <ArrowRightIcon class="text-text-muted" />

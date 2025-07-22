@@ -51,7 +51,7 @@
   -->
   <ContainerCorners
     left="left-4"
-    bottom="bottom-[calc(5.5rem_+min(env(safe-area-inset-bottom),2rem))]"
+    bottom="bottom-[calc(5.5rem_+min(env(safe-area-inset-bottom),1rem))]"
     right="right-4"
   />
   <div
@@ -64,7 +64,7 @@
   </div>
 
   <!-- HACK: the safe area on iOS is quite large -->
-  <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
+  <div class="h-[env(safe-area-inset-bottom)] max-h-[1rem] shrink-0"></div>
 </div>
 
 <Toaster

@@ -21,7 +21,7 @@
     <UmbrellaIcon />
     <div class="flex grow flex-col gap-1">
       {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}
-        <PrecipitationGroup {precipitationGroup} />
+        <PrecipitationGroup {precipitationGroup} isRestOfDayOnly />
       {/each}
     </div>
   </div>
