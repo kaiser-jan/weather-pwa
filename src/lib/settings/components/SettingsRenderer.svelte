@@ -35,7 +35,7 @@
           config={item.children}
           {path}
           onnavigate={() => {
-            throw new Error('onnavigate not implemented on group')
+            onnavigate(item.id)
           }}
         />
       </section>
