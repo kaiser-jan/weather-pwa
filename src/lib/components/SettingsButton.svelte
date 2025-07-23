@@ -14,7 +14,7 @@
     <LucideSettings />
   </Drawer.Trigger>
   <Drawer.Content class="h-full">
-    <div class="flex grow flex-col gap-4 overflow-hidden p-4">
+    <div class="flex grow flex-col gap-4 overflow-hidden">
       <SettingsView config={settingsConfig} path={[]} />
       <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
     </div>

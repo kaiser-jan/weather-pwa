@@ -87,7 +87,7 @@
   </div>
 
   <div
-    class="bg-background z-10 mt-auto flex h-10 w-full flex-row justify-between gap-4 overflow-hidden rounded-[0.5rem] px-3 py-2 transition-all"
+    class="bg-background z-10 mt-auto flex h-10 w-full shrink-0 flex-row justify-between gap-4 overflow-hidden rounded-[0.5rem] px-3 py-2 transition-all"
     class:h-0!={shrink}
     class:p-0!={shrink}
     class:opacity-0={shrink}

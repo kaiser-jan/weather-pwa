@@ -19,7 +19,7 @@
 {#each config as item (item.id)}
   {@const path = [...parentPath, item.id]}
   {#if !item.visible || item.visible($settings)}
-    {#if item.type === 'page' || item.type === 'list'}
+    {#if item.type === 'page' || item.type === 'list' || item.type === 'changelog'}
       <Button variant="midground" onclick={() => onnavigate(item.id)} class="min-h-12 justify-between gap-3 text-base!">
         <item.icon />
         {item.label}

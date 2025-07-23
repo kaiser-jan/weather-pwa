@@ -143,7 +143,7 @@ export const settingsConfig = [
           },
           {
             id: 'changelog',
-            type: 'not-implemented',
+            type: 'changelog',
             label: 'Changelog',
             icon: HistoryIcon,
           },

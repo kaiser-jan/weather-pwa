@@ -56,7 +56,7 @@ export type StaticSpacer = BaseConfigItem & {
 }
 export type StaticValue = BaseConfigItem & {
   type: 'value'
-  value: string
+  value: string | Readable<string>
 }
 export type StaticAction = BaseConfigItem & {
   type: 'action'
@@ -96,10 +96,13 @@ export type ListSetting = BaseConfigItem & {
   nameProperty: string
   children: OptionalProp<ConfigItem, 'default'>[]
 }
+export type PageChangelog = BaseConfigItem & {
+  type: 'changelog'
+}
 
 export type NestableSetting = SettingGroup | SettingPage | ListSetting
 
-export type ConfigItem = Setting | Static | NestableSetting
+export type ConfigItem = Setting | Static | NestableSetting | PageChangelog
 
 //
 

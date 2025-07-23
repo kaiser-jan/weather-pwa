@@ -6,6 +6,7 @@
   import { settings } from '../store'
   import PageList from './pages/PageList.svelte'
   import { SettingsIcon } from '@lucide/svelte'
+  import PageChangelog from './pages/PageChangelog.svelte'
 
   interface Props {
     path?: string[]
@@ -38,6 +39,12 @@
 
       // the childPage could also be part of a ListSetting, which has no children
       let childPage = lastPage.children.find((p) => p.id === key) as NestableSetting
+
+      // HACK:
+      //  TODO: this needs to be generalized
+      if (childPage.type === 'changelog') {
+        childPage = { ...lastPage, type: 'changelog', id: 'changelog', label: 'Changelog' }
+      }
 
       if (lastPage.type === 'list' && !isNaN(parseInt(key))) {
         const values = settings.readSetting(path.slice(0, index)).value as Record<string, unknown>[]
@@ -99,7 +106,7 @@
   }
 </script>
 
-<div class="flex min-h-0 grow flex-col gap-4 overflow-x-visible">
+<div class="flex min-h-0 grow flex-col gap-4 overflow-x-visible p-4 pb-0">
   <Breadcrumb.Root>
     <Breadcrumb.List>
       {#each pages as page, index (page.id)}
@@ -125,11 +132,14 @@
 
   <div class="relative grow" use:swipe={() => ({ timeframe: 300, minSwipeDistance: 30 })} onswipe={handleSwipe}>
     <div
-      class="absolute flex w-full flex-row gap-6 transition-all duration-300 ease-in-out"
+      class="absolute flex h-full w-full flex-row gap-6 transition-all duration-300 ease-in-out"
       bind:this={scrollContainer}
     >
       {#each pages as page, i (page.id)}
-        <div class="flex h-fit w-full shrink-0 flex-col gap-2 overflow-hidden" bind:this={historyElements[i]}>
+        <div
+          class="flex h-full w-full shrink-0 flex-col gap-2 overflow-hidden overflow-y-auto"
+          bind:this={historyElements[i]}
+        >
           {#if page.type === 'list'}
             <PageList
               item={page}
@@ -139,6 +149,8 @@
                 settings.writeSetting(path, v)
               }}
             />
+          {:else if page.type === 'changelog'}
+            <PageChangelog />
           {:else}
             <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => navigateToKey(t)} />
           {/if}
