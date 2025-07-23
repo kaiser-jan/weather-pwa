@@ -80,6 +80,7 @@ export async function loadTimeseriesForecast(coordinates: Coordinates, offset = 
   } else {
     // TODO: how can we handle this better? using an api like open-elevation means selfhosting the api or paying
     console.warn('No altitude available, cannot convert surface pressure to sea level pressure!')
+    delete transformed['pressure']
   }
 
   return transformed

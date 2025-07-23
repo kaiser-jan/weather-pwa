@@ -11,6 +11,7 @@ import { NOW } from './now'
 import { subscribeNonImmediate } from '$lib/utils/state.svelte'
 
 const _isForecastLoading = writable(false)
+let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
 const { subscribe, set } = writable<Forecast | null>(null, () => {
   const subscriptionCoordinates = subscribeNonImmediate(coordinates, () => update('coordinates'))
@@ -62,24 +63,37 @@ function updateWith(coordinates: Coordinates, datasets: readonly DatasetId[], st
   }
 
   const loaders = datasets.map((d) => LOADERS[d])
-  const parts: (MultivariateTimeSeries | null)[] = Array(datasets.length).fill(null)
-  const debouncedUpdate = debounce(() => updateForecast(parts), 100)
+  const parts: (MultivariateTimeSeries | null | false)[] = Array(datasets.length).fill(null)
+  const debouncedUpdate = debounce(() => updateForecast(parts), 500)
 
   for (const [loaderIndex, loader] of loaders.entries()) {
     loader(coordinates)
       .then((r) => {
         parts[loaderIndex] = r
-        const isComplete = parts.filter((p) => p !== null).length === loaders.length
-        if (stream || isComplete) debouncedUpdate()
-        if (isComplete) onLoadingDone()
       })
       .catch((e) => {
         console.warn(`Loading dataset ${datasets[loaderIndex]} failed!\n${e}`)
+        parts[loaderIndex] = false
+      })
+      .finally(() => {
+        updateIfComplete()
       })
   }
 
-  function updateForecast(partsRaw: (MultivariateTimeSeries | null)[]) {
-    const parts = partsRaw.filter((p) => p !== null)
+  function updateIfComplete() {
+    const isComplete = parts.filter((p) => p !== null).length === loaders.length
+    if (stream || isComplete) debouncedUpdate()
+    if (isComplete) onLoadingDone()
+  }
+
+  clearTimeout(loadTimeout)
+  loadTimeout = setTimeout(() => {
+    console.warn('Timed out while loading complete forecast, updating anyway!')
+    debouncedUpdate()
+  }, 15_000)
+
+  function updateForecast(partsRaw: (MultivariateTimeSeries | null | false)[]) {
+    const parts = partsRaw.filter((p) => p !== null && p !== false)
 
     if (parts.length === 0) {
       set(null)

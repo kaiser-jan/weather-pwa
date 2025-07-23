@@ -8,7 +8,7 @@ type CacheEntry<T, P> = {
   updatedAt: string
 }
 
-const MAX_ENTRIES = 5
+const MAX_ENTRIES = 10
 
 function getEntries<T, P>(key: string): CacheEntry<T, P>[] | null {
   try {
