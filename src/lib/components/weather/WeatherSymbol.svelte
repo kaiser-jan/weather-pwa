@@ -51,6 +51,6 @@
 <div class={cn(className)}>
   <img src={icon?.path} alt={icon?.name} onload={() => (loaded = true)} />
   {#if !loaded}
-    <Skeleton class="size-full" />
+    <Skeleton class="size-full rounded-full" />
   {/if}
 </div>

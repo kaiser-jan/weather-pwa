@@ -51,9 +51,6 @@ export type StaticDescription = BaseConfigItem & {
   text: string
 }
 
-export type StaticSpacer = BaseConfigItem & {
-  type: 'spacer'
-}
 export type StaticValue = BaseConfigItem & {
   type: 'value'
   value: string | Readable<string> | (() => Promise<string>)

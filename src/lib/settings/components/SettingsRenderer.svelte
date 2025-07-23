@@ -41,8 +41,6 @@
       </section>
     {:else if item.type === 'description'}
       <p class="bg-midground text-text-muted rounded-md px-3 py-2">{@html item.text}</p>
-    {:else if item.type === 'spacer'}
-      <div></div>
     {:else if item.type === 'action'}
       <ItemAction {item} />
     {:else if item.type === 'not-implemented'}

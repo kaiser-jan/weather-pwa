@@ -56,6 +56,7 @@ import type { Coordinates } from '$lib/types/data'
 import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import type { Changelog } from '$lib/types/changelog'
+import { iconMap } from '$lib/utils/icons'
 
 type Location = Coordinates & {
   id: string
@@ -212,7 +213,7 @@ export const settingsConfig = [
             type: 'select',
             icon: SmileIcon,
             default: 'map-pin',
-            options: ['home', 'briefcase', 'map-pin'],
+            options: Object.keys(iconMap),
           },
           // NOTE: changing any of these will cause cache invalidation
           {

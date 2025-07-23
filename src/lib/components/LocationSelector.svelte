@@ -9,6 +9,7 @@
   import { iconMap } from '$lib/utils/icons'
   import { coordinates } from '$lib/stores/location'
   import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
+  import { SearchIcon } from '@lucide/svelte'
 
   const geolocationDetails = geolocationStore.details
 
@@ -79,7 +80,7 @@
       {/if}
     </button>
   </div>
-  <div class="bg-midground relative w-1 grow">
+  <div class="bg-midground relative shrink grow">
     <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
       {#each $settingLocations as location (location.id)}
         <button
@@ -96,6 +97,10 @@
             {location.name}
           {/if}
         </button>
+      {:else}
+        <span class="text-sm text-text-muted h-10 line-clamp-2 w-fit grow">
+          Pin a location from <SearchIcon class="inline" /> search!
+        </span>
       {/each}
     </div>
     <div class="to-midground absolute top-0 right-0 h-full w-6 bg-gradient-to-r from-transparent"></div>

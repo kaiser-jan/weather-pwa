@@ -42,7 +42,7 @@
 
       // HACK:
       //  TODO: this needs to be generalized
-      if (childPage.type === 'changelog') {
+      if (childPage?.type === 'changelog') {
         childPage = { ...lastPage, type: 'changelog', id: 'changelog', label: 'Changelog' }
       }
 
@@ -54,6 +54,7 @@
         // HACK: a list item has no setting definition so we make it a page so it displays its properties given by the parent
         childPage = {
           ...lastPage,
+          id: key,
           label,
           type: 'page',
         } as SettingPage

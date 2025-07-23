@@ -83,7 +83,10 @@ function updateWith(coordinates: Coordinates, datasets: readonly DatasetId[], st
   function updateIfComplete() {
     const isComplete = parts.filter((p) => p !== null).length === loaders.length
     if (stream || isComplete) debouncedUpdate()
-    if (isComplete) onLoadingDone()
+    if (isComplete) {
+      onLoadingDone()
+      clearTimeout(loadTimeout)
+    }
   }
 
   clearTimeout(loadTimeout)

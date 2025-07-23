@@ -103,6 +103,9 @@
     savedLocations.push(newLocation)
 
     settings.writeSetting(['data', 'locations'], savedLocations)
+
+    // select it
+    onselect(newLocation)
   }
 </script>
 

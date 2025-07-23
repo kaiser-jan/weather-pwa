@@ -44,6 +44,6 @@
       />
     </button>
   {:else}
-    <Skeleton class="h-full w-full" />
+    <Skeleton class="h-[25vh] w-full" />
   {/if}
 </div>
