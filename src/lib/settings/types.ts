@@ -56,7 +56,7 @@ export type StaticSpacer = BaseConfigItem & {
 }
 export type StaticValue = BaseConfigItem & {
   type: 'value'
-  value: string | Readable<string>
+  value: string | Readable<string> | (() => Promise<string>)
 }
 export type StaticAction = BaseConfigItem & {
   type: 'action'

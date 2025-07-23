@@ -55,6 +55,7 @@ import type { ColorStop } from '$lib/types/ui'
 import type { Coordinates } from '$lib/types/data'
 import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
+import type { Changelog } from '$lib/types/changelog'
 
 type Location = Coordinates & {
   id: string
@@ -117,7 +118,13 @@ export const settingsConfig = [
             type: 'value',
             label: 'App Version',
             icon: GitCommitVerticalIcon,
-            value: 'beta',
+            value: async () => {
+              const module = await import('changelog.json')
+              const data = module.default as Changelog
+              const latestRelease = data.releases[0]
+              if (!latestRelease) return 'unversioned'
+              return latestRelease.version
+            },
           },
           {
             id: 'sw',

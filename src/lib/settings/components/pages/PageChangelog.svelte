@@ -19,7 +19,7 @@
       <Accordion.Content>
         {#each release.commitGroups as commitGroup, j (j)}
           <div class="flex flex-col gap-2">
-            <h2 class="text-xl font-bold">
+            <h2 class="text-lg font-bold">
               {commitGroup.title}
               <!-- {commitGroup.type} -->
             </h2>

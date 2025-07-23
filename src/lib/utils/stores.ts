@@ -30,6 +30,24 @@ export function isStore<T = unknown>(value: unknown): value is { subscribe: (run
   )
 }
 
-export function toReadable<T>(value: T | Readable<T>): Readable<T> {
-  return isStore(value) ? (value as Readable<T>) : readable(value as T)
+type AsyncFn<T> = () => Promise<T>
+export function toReadable<T>(value: T | Readable<T> | AsyncFn<T>): Readable<T> {
+  if (isStore(value)) {
+    return value
+  }
+
+  if (typeof value === 'function') {
+    const fn = value as AsyncFn<T>
+    return readable<T>(undefined as any, (set) => {
+      let cancelled = false
+      fn().then((res) => {
+        if (!cancelled) set(res)
+      })
+      return () => {
+        cancelled = true
+      }
+    })
+  }
+
+  return readable(value as T)
 }
