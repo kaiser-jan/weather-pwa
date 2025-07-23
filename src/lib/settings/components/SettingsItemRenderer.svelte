@@ -19,8 +19,9 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
+<button
   class="bg-midground relative flex min-h-12 flex-wrap items-center justify-between gap-x-3 gap-y-1 overflow-hidden rounded-md px-4 py-2"
+  onclick={() => item.action?.()}
   ondblclick={() => {
     value = settings.resetSetting(path)
     hasChanged = false
@@ -50,4 +51,4 @@
     {item.id}
     {value}
   {/if}
-</div>
+</button>

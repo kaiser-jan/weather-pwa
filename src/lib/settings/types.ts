@@ -11,6 +11,7 @@ type BaseConfigItem = {
   icon?: typeof Icon
   visible?: VisibilityCallback
   disabled?: boolean | Readable<boolean>
+  action?: () => any
 }
 
 export type TextSetting = BaseConfigItem & {
