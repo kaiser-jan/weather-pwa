@@ -17,18 +17,36 @@
 
   const settingLocations = settings.select((s) => s.data.locations)
 
-  $effect(() => {
-    if (selectedItemId.value === ITEM_ID_GEOLOCATION) {
+  $effect(() => onSelectionUpdate(selectedItemId.value))
+
+  function onSelectionUpdate(id: string) {
+    if (id === ITEM_ID_GEOLOCATION) {
       const coords = get(geolocationStore).position?.coords
       if (!coords) return
       coordinates.set(coords)
-    } else if (selectedItemId.value === ITEM_ID_TEMPORARY) {
+    } else if (id === ITEM_ID_TEMPORARY) {
+      // pass, the coordinates were already set
     } else {
-      const details = $settingLocations.find((l) => l.id === selectedItemId.value)
-      if (!details) return
-      coordinates.set({ longitude: details.longitude, latitude: details.latitude, altitude: details.altitude ?? null })
+      let details = $settingLocations.find((l) => l.id === id)
+      if (details) {
+        coordinates.set({
+          longitude: details.longitude,
+          latitude: details.latitude,
+          altitude: details.altitude ?? null,
+        })
+        return
+      }
+
+      // select the first saved location if the current one was deleted
+      const firstItem = $settingLocations[0]
+      if (firstItem && firstItem.id !== selectedItemId.value) {
+        selectedItemId.value = firstItem.id
+      } else {
+        selectedItemId.value = ITEM_ID_GEOLOCATION
+      }
+      return
     }
-  })
+  }
 
   let useGeolocation = persistantState('use-geolocation', true)
 
