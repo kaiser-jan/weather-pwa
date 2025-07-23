@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.0.0...v1.1.0) (2025-07-23)
+
+
+### Features
+
+* **onboarding:** prompt for location selection ([2445aa8](https://github.com/kaiser-jan/weather-pwa/commit/2445aa808973b3a19669ca3774ae7e2b7aff184c))
+
 # 1.0.0 (2025-07-23)
 
 
