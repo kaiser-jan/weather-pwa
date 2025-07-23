@@ -50,50 +50,50 @@
   style={`height: calc(min(4rem, env(safe-area-inset-top)) + ${shrink ? '10vh' : '25vh'})`}
 >
   <SkySimulation class="absolute inset-0 z-0" coordinates={$coordinates} turbidity={4} datetime={$NOW} />
+  <div class="relative shrink grow">
+    <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
 
-  <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
+    <div class="text-text absolute inset-0 bottom-auto inline-flex w-full items-center justify-between text-xs">
+      {#await locationNamePromise then locationName}
+        <span class="drop-shadow-c-md ml-1">{locationName}</span>
+      {/await}
+      <button onclick={() => forecastStore.update('manual')} class={['p-2', $isForecastLoading ? 'animate-spin' : '']}>
+        <RefreshCwIcon />
+      </button>
+    </div>
 
-  <div
-    class="text-text absolute top-[min(4rem,_env(safe-area-inset-top))] right-0 left-0 z-10 inline-flex w-full items-center justify-between p-1 text-xs"
-  >
-    {#await locationNamePromise then locationName}
-      <span class="drop-shadow-c-md ml-1">{locationName}</span>
-    {/await}
-    <button onclick={() => forecastStore.update('manual')} class={['p-2', $isForecastLoading ? 'animate-spin' : '']}>
-      <RefreshCwIcon />
-    </button>
-  </div>
-
-  <div class={['z-10 flex flex-row items-center justify-center gap-4 transition-all', shrink ? 'mt-4' : 'mt-6']}>
-    <div class={[shrink ? 'size-16' : 'size-30', 'relative z-10 grow-0 overflow-visible transition-all'].join(' ')}>
-      <div
-        class="from-background/20 absolute top-1/2 left-1/2 size-[150%] -translate-1/2 bg-radial to-transparent to-70%"
-      ></div>
-      <WeatherSymbol
-        derived={forecastCurrent ? deriveWeatherSituationFromInstant(forecastCurrent) : null}
-        coordinates={$coordinates}
-        datetime={$NOW}
-        className="absolute inset-0"
+    <div
+      class="inset-0 flex h-full w-full flex-row items-center justify-center gap-4 transition-all"
+      class:mt-1={shrink}
+    >
+      <div class={[shrink ? 'size-16' : 'size-30', 'relative grow-0 overflow-visible transition-all'].join(' ')}>
+        <div
+          class="from-background/20 absolute top-1/2 left-1/2 size-[150%] -translate-1/2 bg-radial to-transparent to-70%"
+        ></div>
+        <WeatherSymbol
+          derived={forecastCurrent ? deriveWeatherSituationFromInstant(forecastCurrent) : null}
+          coordinates={$coordinates}
+          datetime={$NOW}
+          className="absolute inset-0"
+        />
+      </div>
+      <AsyncText
+        class={[shrink ? 'text-4xl' : 'text-6xl', 'drop-shadow-c-md transition-all'].join(' ')}
+        text={forecastCurrent?.temperature
+          ? autoFormatMetric(forecastCurrent.temperature, 'temperature', $settings)
+          : undefined}
+        placeholder="20°C"
+        loaded={forecastCurrent !== null}
       />
     </div>
-    <AsyncText
-      class={[shrink ? 'text-4xl' : 'text-6xl', 'drop-shadow-c-md transition-all'].join(' ')}
-      text={forecastCurrent?.temperature
-        ? autoFormatMetric(forecastCurrent.temperature, 'temperature', $settings)
-        : undefined}
-      placeholder="20°C"
-      loaded={forecastCurrent !== null}
-    />
-  </div>
 
-  <div
-    class="bg-background z-10 mt-auto flex h-10 w-full shrink-0 flex-row justify-between gap-4 overflow-hidden rounded-[0.5rem] px-3 py-2 transition-all"
-    class:h-0!={shrink}
-    class:p-0!={shrink}
-    class:opacity-0={shrink}
-  >
-    {#each ITEMS_CURRENT as item}
-      <WeatherItemCurrent {item} current={forecastCurrent} />
-    {/each}
+    <div
+      class="bg-background absolute inset-0 top-auto flex h-10 w-full shrink-0 flex-row justify-between gap-4 overflow-hidden rounded-[0.5rem] px-3 py-2 transition-all"
+      class:opacity-0={shrink}
+    >
+      {#each ITEMS_CURRENT as item}
+        <WeatherItemCurrent {item} current={forecastCurrent} />
+      {/each}
+    </div>
   </div>
 </div>
