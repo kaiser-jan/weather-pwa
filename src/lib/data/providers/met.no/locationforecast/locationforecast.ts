@@ -9,7 +9,12 @@ import { DateTime, Duration } from 'luxon'
 import type { DatasetId } from '$lib/data/providers'
 
 export async function loadLocationforecast(coordinates: Coordinates) {
-  if (coordinates.altitude === null) throw new Error('Locationforecast from met.no requires an altitude!')
+  if (coordinates.altitude === null) {
+    console.warn(
+      'Model met.no locationforecast should be provided an altitude!\n' +
+        'The coarse ground model will be used, which will lead to inaccuracies!',
+    )
+  }
 
   const url = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete.json')
   url.searchParams.set('lat', coordinates.latitude.toString())
