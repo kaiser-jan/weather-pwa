@@ -1,7 +1,7 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
-  import { selectedDay } from '$lib/stores/selectedDay'
+  import { selectedDay } from '$lib/stores/ui'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
 </script>

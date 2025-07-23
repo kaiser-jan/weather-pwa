@@ -63,7 +63,7 @@ export default defineConfig({
     }),
   ],
   preview: {
-    allowedHosts: ['weather.kjan.dev'],
+    allowedHosts: ['weather.kjan.dev', 'weather-beta.kjan.dev', 'weather-live.kjan.dev'],
   },
   optimizeDeps: {
     exclude: ['bits-ui'],

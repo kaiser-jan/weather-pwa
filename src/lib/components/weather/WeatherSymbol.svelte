@@ -10,7 +10,7 @@
   interface Props {
     derived: WeatherSituation | null
     provided?: WeatherSituation | null
-    coordinates: Coordinates | undefined
+    coordinates: Coordinates | null
     className: string
     datetime: DateTime
   }

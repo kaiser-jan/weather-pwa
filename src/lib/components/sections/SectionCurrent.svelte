@@ -50,9 +50,9 @@
   style={`height: calc(min(4rem, env(safe-area-inset-top)) + ${shrink ? '10vh' : '25vh'})`}
 >
   <SkySimulation class="absolute inset-0 z-0" coordinates={$coordinates} turbidity={4} datetime={$NOW} />
-  <div class="relative shrink grow">
-    <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
+  <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
 
+  <div class="relative shrink grow">
     <div class="text-text absolute inset-0 bottom-auto inline-flex w-full items-center justify-between text-xs">
       {#await locationNamePromise then locationName}
         <span class="drop-shadow-c-md ml-1">{locationName}</span>

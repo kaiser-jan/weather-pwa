@@ -8,7 +8,7 @@
   import { NOW } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
-  import { selectedDay } from '$lib/stores/selectedDay'
+  import { selectedDay } from '$lib/stores/ui'
 </script>
 
 <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">

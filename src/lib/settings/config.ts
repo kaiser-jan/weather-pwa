@@ -1,6 +1,7 @@
 import { UNIT_OPTIONS, type Unit, type UnitDimension } from '$lib/units-config'
 import { DATASET_IDS, DATASETS, type DatasetId } from '$lib/data/providers'
 import type { ConfigItem } from './types'
+import type { Location } from '$lib/types/ui'
 import type { DateObjectUnits } from 'luxon'
 import {
   ArrowUpAz,
@@ -62,12 +63,6 @@ import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import type { Changelog } from '$lib/types/changelog'
 import { iconMap } from '$lib/utils/icons'
-
-type Location = Coordinates & {
-  id: string
-  name: string
-  icon: string
-}
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   temperature: '°C',

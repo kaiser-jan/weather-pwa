@@ -46,12 +46,12 @@ function readSetting(path: string[]) {
   console.debug(`Reading setting: ${path}`)
   const valueOverride = getDeep(get(settingsOverrides), path)
   if (valueOverride !== undefined) {
-    console.log(`Read changed setting: ${path} = ${JSON.stringify(valueOverride)}`)
+    console.debug(`Read changed setting: ${path} = ${JSON.stringify(valueOverride)}`)
     return { value: valueOverride, changed: true }
   }
 
   const value = getDeep(get(settingsBaseStore), path)
-  console.log(`Read default setting: ${path} = ${JSON.stringify(value)}`)
+  console.debug(`Read default setting: ${path} = ${JSON.stringify(value)}`)
 
   return { value: value, changed: false }
 }

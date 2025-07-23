@@ -51,6 +51,7 @@
         "semantic-release-json-changelog-generator": "^1.0.2",
         "svelte": "^5.35.6",
         "svelte-check": "^4.2.2",
+        "svelte-persisted-store": "^0.12.0",
         "svelte-sonner": "^1.0.5",
         "tailwindcss": "^4.1.11",
         "typescript": "^5.8.3",
@@ -1766,6 +1767,8 @@
     "svelte-eslint-parser": ["svelte-eslint-parser@1.2.0", "", { "dependencies": { "eslint-scope": "^8.2.0", "eslint-visitor-keys": "^4.0.0", "espree": "^10.0.0", "postcss": "^8.4.49", "postcss-scss": "^4.0.9", "postcss-selector-parser": "^7.0.0" }, "peerDependencies": { "svelte": "^3.37.0 || ^4.0.0 || ^5.0.0" }, "optionalPeers": ["svelte"] }, "sha512-mbPtajIeuiyU80BEyGvwAktBeTX7KCr5/0l+uRGLq1dafwRNrjfM5kHGJScEBlPG3ipu6dJqfW/k0/fujvIEVw=="],
 
     "svelte-gestures": ["svelte-gestures@5.1.4", "", {}, "sha512-gfSO/GqWLu9nRMCz12jqdyA0+NTsojYcIBcRqZjwWrpQbqMXr0zWPFpZBtzfYbRHtuFxZImMZp9MrVaFCYbhDg=="],
+
+    "svelte-persisted-store": ["svelte-persisted-store@0.12.0", "", { "peerDependencies": { "svelte": "^3.48.0 || ^4 || ^5" } }, "sha512-BdBQr2SGSJ+rDWH8/aEV5GthBJDapVP0GP3fuUCA7TjYG5ctcB+O9Mj9ZC0+Jo1oJMfZUd1y9H68NFRR5MyIJA=="],
 
     "svelte-sonner": ["svelte-sonner@1.0.5", "", { "dependencies": { "runed": "^0.28.0" }, "peerDependencies": { "svelte": "^5.0.0" } }, "sha512-9dpGPFqKb/QWudYqGnEz93vuY+NgCEvyNvxoCLMVGw6sDN/3oVeKV1xiEirW2E1N3vJEyj5imSBNOGltQHA7mg=="],
 

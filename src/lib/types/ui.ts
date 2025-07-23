@@ -33,14 +33,6 @@ export interface CreatedSeriesDetails extends SeriesDetails {
   data: TimeSeries<number>
 }
 
-export type LocationSelection =
-  | {
-      id: string
-    }
-  | {
-      coordinates: Coordinates
-    }
-
 export interface ParameterDaySummaryProps {
   icon?: typeof Icon
   useTotalAsDomain?: boolean
@@ -48,3 +40,9 @@ export interface ParameterDaySummaryProps {
 }
 export const ITEM_ID_GEOLOCATION = 'geolocation'
 export const ITEM_ID_TEMPORARY = 'search'
+
+export type Location = Coordinates & {
+  id: string
+  name: string
+  icon: string
+}

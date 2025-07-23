@@ -21,6 +21,8 @@ const { subscribe, set } = writable<Forecast | null>(null, () => {
     () => update('datasets'),
   )
 
+  update('init')
+
   return () => {
     subscriptionCoordinates()
     subscriptionDatetime()
@@ -33,10 +35,12 @@ function update(cause: string) {
   const _coordinates = get(coordinates)
   const datasetIds = get(settings).data.datasets
   const stream = get(settings).data.incrementalLoad
+  if (!_coordinates) {
+    console.warn('Cannot update, no coordinates!')
+    return
+  }
   updateWith(_coordinates, datasetIds, stream)
 }
-
-update('init')
 
 export const forecastStore = {
   subscribe,
@@ -53,6 +57,7 @@ function onLoadingDone() {
 }
 
 function updateWith(coordinates: Coordinates, datasets: readonly DatasetId[], stream = true) {
+  console.info('Loading data...')
   onLoadingStart()
   set(null)
 

@@ -118,7 +118,6 @@
           <Breadcrumb.Link
             onclick={() => {
               recentPath = $state.snapshot(path)
-              console.log(page.path)
               path = page.path
             }}>{page.label}</Breadcrumb.Link
           >

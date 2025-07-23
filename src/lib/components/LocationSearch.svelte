@@ -31,28 +31,22 @@
   import { readable } from 'svelte/store'
   import LocationList from './LocationList.svelte'
   import { reverseGeocoding } from '$lib/data/location'
-  import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY, type LocationSelection } from '$lib/types/ui'
+  import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
   import { persistantState } from '$lib/utils/state.svelte'
+  import { selectedLocation, showLocationSearch } from '$lib/stores/ui'
 
   const geolocationDetails = geolocationStore.details
 
   interface Props {
     active: boolean
-    onselect: (s: LocationSelection) => void
   }
 
-  let { active, onselect: _onselect = $bindable() }: Props = $props()
+  let { active }: Props = $props()
 
-  function onselect(s: LocationSelection) {
-    isOpen = false
-    _onselect(s)
-  }
-
-  let isOpen = $state(false)
   let isLoading = $state(false)
 
   $effect(() => {
-    if (isOpen) geolocationStore.start()
+    if ($showLocationSearch) geolocationStore.start()
   })
 
   const savedLocations = settings.select((s) => s.data.locations)
@@ -128,7 +122,7 @@
   }
 </script>
 
-<Drawer.Root bind:open={isOpen}>
+<Drawer.Root bind:open={$showLocationSearch}>
   <!-- bind:open={isOpen} -->
   <Drawer.Trigger
     class={cn(
@@ -156,25 +150,28 @@
               label: $geolocationDetails.label ?? '',
               sublabel: $geolocationAddress ?? '',
               coordinates: undefined,
+              select: () => {
+                selectedLocation.set({ type: 'geolocation' })
+                showLocationSearch.set(false)
+              },
             },
           ]}
-          selectById
-          {onselect}
-          disabled={$geolocationStore.status !== 'active'}
         />
 
         <LocationList
           title="Saved Locations"
           placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
-          items={$savedLocations.map((l) => ({
-            id: l.id,
-            icon: iconMap[l.icon],
-            label: l.name,
+          items={$savedLocations.map((location) => ({
+            id: location.id,
+            icon: iconMap[location.icon],
+            label: location.name,
             sublabel: undefined,
-            coordinates: l,
+            coordinates: location,
+            select: () => {
+              selectedLocation.set({ type: 'saved', location })
+              showLocationSearch.set(false)
+            },
           }))}
-          selectById
-          {onselect}
         />
 
         <LocationList
@@ -193,8 +190,18 @@
               longitude: parseFloat(r?.lon),
               altitude: null,
             },
+            select: () => {
+              selectedLocation.set({
+                type: 'search',
+                coordinates: {
+                  latitude: parseFloat(r?.lat),
+                  longitude: parseFloat(r?.lon),
+                  altitude: null,
+                },
+              })
+              showLocationSearch.set(false)
+            },
           })) ?? null}
-          {onselect}
         />
       </div>
 

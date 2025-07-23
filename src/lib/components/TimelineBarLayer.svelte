@@ -10,7 +10,7 @@
     style: 'gradient' | 'blocks'
     startDatetime: DateTime
     endDatetime: DateTime
-    coordinates?: Coordinates
+    coordinates: Coordinates | null
     barHeight: number
     distanceFromDatetimes: (d: DateTime, d1?: DateTime) => number | undefined
   }

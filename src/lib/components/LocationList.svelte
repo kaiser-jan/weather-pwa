@@ -3,11 +3,12 @@
   import type { Coordinates } from '$lib/types/data'
   import { BookmarkIcon, ChevronRight, MapPinIcon, Trash2Icon, type Icon } from '@lucide/svelte'
   import { Button } from './ui/button'
-  import { ITEM_ID_GEOLOCATION, type LocationSelection } from '$lib/types/ui'
+  import { ITEM_ID_GEOLOCATION, type Location } from '$lib/types/ui'
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
   import { settings } from '$lib/settings/store'
   import { get } from 'svelte/store'
   import { createUUID } from '$lib/utils'
+  import { selectedLocation } from '$lib/stores/ui'
 
   type Item = {
     id: string
@@ -15,12 +16,11 @@
     label: string
     sublabel?: string
     coordinates?: Coordinates
+    select: () => void
   }
 
   interface Props {
     title: string
-    onselect: (s: LocationSelection) => void
-    selectById?: boolean
     loading?: boolean
     placeholderEmpty?: string
     placeholderNull?: string
@@ -29,17 +29,7 @@
     items: Item[] | null
   }
 
-  let {
-    title,
-    items,
-    selectById,
-    onselect = $bindable(),
-    loading,
-    placeholderEmpty,
-    placeholderLoading,
-    placeholderNull,
-    disabled,
-  }: Props = $props()
+  let { title, items, loading, placeholderEmpty, placeholderLoading, placeholderNull, disabled }: Props = $props()
 
   function distanceMeters(a: Coordinates | null, b: Coordinates | null): number | null {
     if (!a || !b) return null
@@ -90,7 +80,7 @@
     // TODO: this is made to be forgotten when changing this setting
     const savedLocations = get(settings).data.locations
 
-    const newLocation: (typeof savedLocations)[number] = {
+    const newLocation: Location = {
       id: createUUID(),
       name: item.label,
       latitude: item.coordinates.latitude,
@@ -105,7 +95,7 @@
     settings.writeSetting(['data', 'locations'], savedLocations)
 
     // select it
-    onselect(newLocation)
+    selectedLocation.set({ type: 'saved', location: { ...newLocation } })
   }
 </script>
 
@@ -132,15 +122,7 @@
     <Button
       variant="ghost"
       class="flex h-fit! flex-row items-center justify-between gap-2 p-2 text-base"
-      onclick={() => {
-        if (selectById) {
-          onselect({ id: item.id })
-          return
-        }
-
-        if (!item.coordinates) return
-        onselect({ coordinates: item.coordinates })
-      }}
+      onclick={item.select}
       {disabled}
     >
       <div class="flex min-w-0 flex-col">
@@ -177,7 +159,7 @@
               onclick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
-                if (selectById) deleteSavedLocation(item)
+                deleteSavedLocation(item)
               }}
             >
               <Trash2Icon />

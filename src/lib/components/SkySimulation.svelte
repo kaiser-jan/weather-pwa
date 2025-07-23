@@ -13,7 +13,7 @@
 
   interface Props {
     class: string
-    coordinates: Coordinates
+    coordinates: Coordinates | null
     turbidity: number
     datetime: DateTime
   }
@@ -40,7 +40,7 @@
 
     console.debug(`Rerendering sky simulation with ${resolutionX}x${resolutionY}`)
 
-    const sun = SunCalc.getPosition(datetime.toJSDate(), coordinates.latitude, coordinates.longitude)
+    const sun = SunCalc.getPosition(datetime.toJSDate(), coordinates?.latitude ?? 0, coordinates?.longitude ?? 0)
     const solarZenith = Math.PI / 2 - sun.altitude
     const solarAzimuth = sun.azimuth
 

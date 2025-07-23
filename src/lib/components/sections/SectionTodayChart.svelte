@@ -6,7 +6,7 @@
   import ParameterSelect from '$lib/components/ParameterSelect.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
-  import { selectedDay } from '$lib/stores/selectedDay'
+  import { selectedDay } from '$lib/stores/ui'
   import { swipe } from 'svelte-gestures'
   import { settings } from '$lib/settings/store'
 

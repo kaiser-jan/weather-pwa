@@ -1,75 +1,27 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
-  import type { Coordinates } from '$lib/types/data'
   import { geolocationStore } from '$lib/stores/geolocation'
-  import { persistantState } from '$lib/utils/state.svelte'
-  import { get } from 'svelte/store'
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
   import LocationSearch from './LocationSearch.svelte'
   import { iconMap } from '$lib/utils/icons'
-  import { coordinates } from '$lib/stores/location'
-  import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
   import { SearchIcon } from '@lucide/svelte'
+  import { selectedLocation } from '$lib/stores/ui'
 
   const geolocationDetails = geolocationStore.details
 
-  let selectedItemId = persistantState('selected-location-id', ITEM_ID_GEOLOCATION)
-  const previouslySelectedCoordinates = persistantState<Coordinates | null>('selected-coordinates', null)
-
   const settingLocations = settings.select((s) => s.data.locations)
-
-  $effect(() => onSelectionUpdate(selectedItemId.value))
-
-  function onSelectionUpdate(id: string) {
-    if (id === ITEM_ID_GEOLOCATION) {
-      const coords = get(geolocationStore).position?.coords
-      if (!coords) return
-      coordinates.set(coords)
-    } else if (id === ITEM_ID_TEMPORARY) {
-      // pass, the coordinates were already set
-    } else {
-      let details = $settingLocations.find((l) => l.id === id)
-      if (details) {
-        coordinates.set({
-          longitude: details.longitude,
-          latitude: details.latitude,
-          altitude: details.altitude ?? null,
-        })
-        return
-      }
-
-      // select the first saved location if the current one was deleted
-      const firstItem = $settingLocations[0]
-      if (firstItem && firstItem.id !== selectedItemId.value) {
-        selectedItemId.value = firstItem.id
-      } else {
-        selectedItemId.value = ITEM_ID_GEOLOCATION
-      }
-      return
-    }
-  }
-
-  let useGeolocation = persistantState('use-geolocation', true)
-
-  // TODO: add a placeholder page when geolocation is unavailable or no location is selected
-
-  geolocationStore.subscribe((g) => {
-    if (!useGeolocation.value || !g.position) return
-    if (selectedItemId.value === ITEM_ID_GEOLOCATION) coordinates.set(g.position.coords)
-    // loadForecastData()
-  })
 </script>
 
-<div class="flex grow flex-row items-center gap-1">
+<div class="flex shrink grow flex-row items-center gap-1">
   <div class="bg-midground flex flex-row gap-2 rounded-l-full p-2">
     <button
       class={[
         'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
-        selectedItemId.value === ITEM_ID_GEOLOCATION ? 'bg-primary' : 'bg-foreground text-text-d',
+        $selectedLocation?.type === 'geolocation' ? 'bg-primary' : 'bg-foreground text-text-d',
       ]}
       onclick={() => {
-        geolocationStore.refresh()
-        selectedItemId.value = ITEM_ID_GEOLOCATION
+        if ($selectedLocation?.type === 'geolocation') geolocationStore.refresh()
+        else selectedLocation?.set({ type: 'geolocation' })
       }}
     >
       {#if $geolocationDetails.icon}
@@ -80,15 +32,17 @@
       {/if}
     </button>
   </div>
-  <div class="bg-midground relative shrink grow">
+  <div class="bg-midground relative w-0 grow">
     <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
       {#each $settingLocations as location (location.id)}
         <button
           class={[
             'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
-            selectedItemId.value === location.id ? 'bg-primary' : 'bg-foreground text-text-muted',
+            $selectedLocation?.type === 'saved' && $selectedLocation.location.id === location.id
+              ? 'bg-primary'
+              : 'bg-foreground text-text-muted',
           ]}
-          onclick={() => (selectedItemId.value = location.id)}
+          onclick={() => selectedLocation.set({ type: 'saved', location })}
         >
           {#if location.icon}
             {@const Icon = iconMap[location.icon]}
@@ -106,17 +60,6 @@
     <div class="to-midground absolute top-0 right-0 h-full w-6 bg-gradient-to-r from-transparent"></div>
   </div>
   <div class="bg-midground flex flex-row gap-2 rounded-r-full p-2">
-    <LocationSearch
-      active={selectedItemId.value === ITEM_ID_TEMPORARY}
-      onselect={(s) => {
-        if ('id' in s) {
-          selectedItemId.value = s.id
-        } else if ('coordinates' in s) {
-          coordinates.set(s.coordinates)
-          previouslySelectedCoordinates.value = s.coordinates
-          selectedItemId.value = ITEM_ID_TEMPORARY
-        }
-      }}
-    />
+    <LocationSearch active={$selectedLocation?.type === 'search'} />
   </div>
 </div>

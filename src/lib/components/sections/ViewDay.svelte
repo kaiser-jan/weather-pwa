@@ -2,7 +2,7 @@
   import * as Drawer from '$lib/components/ui/drawer'
   import { forecastStore } from '$lib/stores/data'
   import { NOW } from '$lib/stores/now'
-  import { selectedDay } from '$lib/stores/selectedDay'
+  import { selectedDay } from '$lib/stores/ui'
   import { DateTime } from 'luxon'
   import { Button } from '$lib/components/ui/button'
   import { ChevronLeft, ChevronRight } from '@lucide/svelte'
