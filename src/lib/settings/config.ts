@@ -121,7 +121,7 @@ export const settingsConfig = [
             value: async () => {
               const module = await import('changelog.json')
               const data = module.default as Changelog
-              const latestRelease = data.releases[0]
+              const latestRelease = data.releases?.[0]
               if (!latestRelease) return 'unversioned'
               return latestRelease.version
             },
