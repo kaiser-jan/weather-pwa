@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+      - beta
+
+  workflow_dispatch:
+
+permissions:
+  contents: read # for checkout
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      # id-token: write # to enable use of OIDC for npm provenance
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - name: Install Bun
+        run: curl -fsSL https://bun.sh/install | bash
+      - name: Add Bun to PATH
+        run: echo "$HOME/.bun/bin" >> $GITHUB_PATH
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic # Need an `id` for output variables
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # NOTE: this is required as otherwise the changelog has the new entry twice somehow
+      - name: Checkout new tagged release
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.semantic.outputs.next_release }}
+      - name: Reinstall dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Repo CI Setup
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: bun run setup:ci
+      - name: Build
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: bun run build
+
+      - name: Deploy
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: pages deploy build
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

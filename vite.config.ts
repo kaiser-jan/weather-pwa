@@ -10,6 +10,11 @@ export default defineConfig({
   define: {
     __DATE__: `'${new Date().toISOString()}'`,
   },
+  server: {
+    fs: {
+      allow: ['./changelog.json'],
+    },
+  },
   plugins: [
     tailwindcss(),
     sveltekit(),
@@ -65,6 +70,6 @@ export default defineConfig({
     include: ['svelte-sonner', 'style-to-object'],
   },
   ssr: {
-    noExternal: ['bits-ui', 'svelte-toolbelt', 'style-to-object'],
+    noExternal: true,
   },
 })
