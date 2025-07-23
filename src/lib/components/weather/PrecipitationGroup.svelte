@@ -26,6 +26,7 @@
     <span class="text-text-muted text-sm italic">sporadic</span>
   {/if}
   <!-- TODO: color based on intensity -->
-  <span class="text-blue-200">{precipitationGroup.amount.toFixed(1)}mm</span>
+  <!-- TODO: units -->
+  <span class="text-blue-200">{precipitationGroup.amount.toFixed(precipitationGroup.amount < 0.1 ? 2 : 1)}mm</span>
   <!-- TODO: consider mini chart -->
 </div>
