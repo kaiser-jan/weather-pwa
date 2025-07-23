@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation'
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
   import SectionOutlook from '$lib/components/sections/SectionOutlook.svelte'
   import SectionTitle from '$lib/components/sections/SectionTitle.svelte'
@@ -8,8 +9,9 @@
   import NoticePrecipitation from '$lib/components/weather/notices/NoticePrecipitation.svelte'
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
+  import { coordinates } from '$lib/stores/location'
   import { NOW } from '$lib/stores/now'
-  import { selectedDay } from '$lib/stores/selectedDay'
+  import { selectedDay } from '$lib/stores/ui'
   import { BinocularsIcon, CalendarDaysIcon, ChevronRightIcon, ClockIcon } from '@lucide/svelte'
 
   let scrollContainer = $state<HTMLElement>()
@@ -21,6 +23,10 @@
     if (!scrollContainer) return
     scroll = scrollContainer.scrollTop ?? 0
     shrinkHeader = $settingCurrentSticky && scroll > scrollContainer.clientHeight * 0.1
+  }
+
+  if ($coordinates === null) {
+    goto('/setup')
   }
 </script>
 

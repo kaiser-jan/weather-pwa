@@ -19,7 +19,7 @@
     "openapi:metno": "bunx @hey-api/openapi-ts -i https://api.met.no/weatherapi/locationforecast/2.0/swagger -o src/lib/types/metno -p '@hey-api/typescript'",
     "openapi:geosphere-at": "bunx @hey-api/openapi-ts -i https://dataset.api.hub.geosphere.at/v1/openapi.json  -o src/lib/types/geosphere-at -p '@hey-api/typescript'",
     "install:meteocons": "git clone https://github.com/basmilius/weather-icons .local/meteocons || (cd .local/meteocons && git pull) && mkdir -p static/weather-symbols && cp -r .local/meteocons/production/fill/svg-static static/weather-symbols/meteocons-fill-static && cp -r .local/meteocons/production/fill/svg static/weather-symbols/meteocons-fill-animated",
-    "setup:dev": "bun run install:meteocons && bun run openapi:metno && bun run openapi:geosphere-at",
+    "setup:dev": "bun run setup:ci && bun run openapi:metno && bun run openapi:geosphere-at",
     "setup:ci": "bun run install:meteocons && bun run generate-pwa-assets"
   },
   "devDependencies": {

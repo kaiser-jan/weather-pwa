@@ -39,18 +39,18 @@
 </script>
 
 {#if $settingCurrentSticky}
-  <div style="height: calc(min(4rem, env(safe-area-inset-top)) + 25vh)"></div>
+  <div style="height: calc(min(2rem, env(safe-area-inset-top)) + 25vh)"></div>
 {/if}
 
 <div
   class={[
-    'bg-midground top-0 z-50 flex w-full flex-col overflow-hidden rounded-b-[1rem] p-[0.5rem] transition-all',
+    'bg-midground top-0 z-50 flex min-h-20 w-full flex-col overflow-hidden rounded-b-[1rem] p-[0.5rem] transition-all',
     $settingCurrentSticky ? 'absolute' : 'relative',
   ]}
-  style={`height: calc(min(4rem, env(safe-area-inset-top)) + ${shrink ? '10vh' : '25vh'})`}
+  style={`height: calc(min(2rem, env(safe-area-inset-top)) + ${shrink ? '10vh' : '25vh'})`}
 >
   <SkySimulation class="absolute inset-0 z-0" coordinates={$coordinates} turbidity={4} datetime={$NOW} />
-  <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
+  <div class="shrink-0" style="height: min(2rem,env(safe-area-inset-top))"></div>
 
   <div class="relative shrink grow">
     <div class="text-text absolute inset-0 bottom-auto inline-flex w-full items-center justify-between text-xs">
@@ -64,9 +64,11 @@
 
     <div
       class="inset-0 flex h-full w-full flex-row items-center justify-center gap-4 transition-all"
-      class:mt-1={shrink}
+      class:mt-1.5={shrink}
     >
-      <div class={[shrink ? 'size-16' : 'size-30', 'relative grow-0 overflow-visible transition-all'].join(' ')}>
+      <div
+        class={[shrink ? 'size-16' : 'size-30', 'relative shrink-0 grow-0 overflow-visible transition-all'].join(' ')}
+      >
         <div
           class="from-background/20 absolute top-1/2 left-1/2 size-[150%] -translate-1/2 bg-radial to-transparent to-70%"
         ></div>
@@ -90,6 +92,8 @@
     <div
       class="bg-background absolute inset-0 top-auto flex h-10 w-full shrink-0 flex-row justify-between gap-4 overflow-hidden rounded-[0.5rem] px-3 py-2 transition-all"
       class:opacity-0={shrink}
+      class:h-0!={shrink}
+      class:p-0!={shrink}
     >
       {#each ITEMS_CURRENT as item}
         <WeatherItemCurrent {item} current={forecastCurrent} />

@@ -20,7 +20,7 @@
     endDatetime: DateTime
     datetime: DateTime
     marks?: DateTime[]
-    coordinates?: Coordinates
+    coordinates: Coordinates | null
     className: string
   }
 
