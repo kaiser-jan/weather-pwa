@@ -1,0 +1,961 @@
+{
+  "releases": [
+    {
+      "version": "1.0.0",
+      "date": "2025-07-23",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "10ff595f33a629f7665594288a559f2272c2b303",
+              "subject": "chart tooltip always visible on safari",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/10ff595f33a629f7665594288a559f2272c2b303"
+            },
+            {
+              "hash": "2e8f69d01f30fc089bfc98bcc8e1e004d4561619",
+              "subject": "ensure values display shows values from the same day",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2e8f69d01f30fc089bfc98bcc8e1e004d4561619"
+            },
+            {
+              "hash": "43300a420a773c943c2241011d32b01fe2ce08f9",
+              "subject": "perform unit conversion everywhere",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/43300a420a773c943c2241011d32b01fe2ce08f9"
+            },
+            {
+              "hash": "eb708190ef3faa415697640617a2dbf62e70cdd6",
+              "subject": "separate scrolling and moving axis pointer",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/eb708190ef3faa415697640617a2dbf62e70cdd6"
+            },
+            {
+              "hash": "330f3344d2b2befc991df77a3aa9405fd803ea8f",
+              "subject": "tooltip and value display show/hide",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/330f3344d2b2befc991df77a3aa9405fd803ea8f"
+            },
+            {
+              "hash": "5b72ee2648fef574115871071ab05f67211fbe4f",
+              "subject": "tooltip clipping into edge on first use",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5b72ee2648fef574115871071ab05f67211fbe4f"
+            },
+            {
+              "hash": "dd238f4d20dc492e94c7c5fe0b028a963eb7d917",
+              "subject": "unit conversion for domain",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/dd238f4d20dc492e94c7c5fe0b028a963eb7d917"
+            },
+            {
+              "hash": "309f76d62e2ff517a2fa1736501ea0606d32f54a",
+              "subject": "various chart related fixes",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/309f76d62e2ff517a2fa1736501ea0606d32f54a"
+            },
+            {
+              "hash": "5e237e5f9f917fc48c57688558acf4305d6cfc8f",
+              "subject": "x axis range",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5e237e5f9f917fc48c57688558acf4305d6cfc8f"
+            },
+            {
+              "hash": "16f7221420c020e2e694c643007968ea74fdf065",
+              "subject": "conflict due to circular import",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/16f7221420c020e2e694c643007968ea74fdf065"
+            },
+            {
+              "hash": "2a896cbea02964591eb60662d6c856dfd4bc4e1d",
+              "subject": "crypto.randomUUID not available over http",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2a896cbea02964591eb60662d6c856dfd4bc4e1d"
+            },
+            {
+              "hash": "8f9baf6ad3934698135b0fcd02e32337a1a7286e",
+              "subject": "allow current time bucket for precipitation start datetime",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/8f9baf6ad3934698135b0fcd02e32337a1a7286e"
+            },
+            {
+              "hash": "f298499b8bed42310f8e457fe60341cbf74d749f",
+              "subject": "better adapt to smaller screens",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f298499b8bed42310f8e457fe60341cbf74d749f"
+            },
+            {
+              "hash": "7541cbdb09bde88b59e59f0b3f7a38f7e0940836",
+              "subject": "correct precipitation start and end datetimes",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/7541cbdb09bde88b59e59f0b3f7a38f7e0940836"
+            },
+            {
+              "hash": "c45a8172d4ec3dd05e35d88d2e87eacec0ecfa7b",
+              "subject": "correctly derive current from hourly",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c45a8172d4ec3dd05e35d88d2e87eacec0ecfa7b"
+            },
+            {
+              "hash": "2ce9c67879748b149872dc6f2af00e021479aa28",
+              "subject": "accumulated values incorrectly shifted to next timebucket",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2ce9c67879748b149872dc6f2af00e021479aa28"
+            },
+            {
+              "hash": "d6142fafb50216aa17cbc71d754c139846e9136a",
+              "subject": "actually use cached complete forecast",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d6142fafb50216aa17cbc71d754c139846e9136a"
+            },
+            {
+              "hash": "0a503689902f1b0245a4cf3932af92f354ccd0db",
+              "subject": "cut overlap when splitting multiseries to days",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0a503689902f1b0245a4cf3932af92f354ccd0db"
+            },
+            {
+              "hash": "ebef0afe8642d5685e7db89bb13764efcce09827",
+              "subject": "parse dummy location as float",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ebef0afe8642d5685e7db89bb13764efcce09827"
+            },
+            {
+              "hash": "ab60875da1cd8481d3c852985817b960267fbb33",
+              "subject": "always show precipitation group start",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ab60875da1cd8481d3c852985817b960267fbb33"
+            },
+            {
+              "hash": "6fa63ca6aa916d1d1b287f39dd219185302d52e3",
+              "subject": "trend direction not working",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6fa63ca6aa916d1d1b287f39dd219185302d52e3"
+            },
+            {
+              "hash": "56bd6665b67eb80d21bb116b178bd5a73e540485",
+              "subject": "no load after startup due to incorrect store access",
+              "scope": "geolocation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/56bd6665b67eb80d21bb116b178bd5a73e540485"
+            },
+            {
+              "hash": "9c2b12a984247402abadc2dcabfc3c381539f3b0",
+              "subject": "only request when actually in use",
+              "scope": "geolocation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/9c2b12a984247402abadc2dcabfc3c381539f3b0"
+            },
+            {
+              "hash": "c87590f70d4e133e0a0533e57a1722035e529042",
+              "subject": "convert surface pressure to sea level",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c87590f70d4e133e0a0533e57a1722035e529042"
+            },
+            {
+              "hash": "313f75b019e7f7e35b7a05bc52b64f683294add8",
+              "subject": "correct forecast response validity duration",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/313f75b019e7f7e35b7a05bc52b64f683294add8"
+            },
+            {
+              "hash": "6a0eeea600d0b32b1f07344d13718751ff9bdde5",
+              "subject": "hourly accumulated precipitation",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6a0eeea600d0b32b1f07344d13718751ff9bdde5"
+            },
+            {
+              "hash": "6c91504e909bef7565beb1a078de4bb81253ee21",
+              "subject": "incorrect precipitation amount calculation",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6c91504e909bef7565beb1a078de4bb81253ee21"
+            },
+            {
+              "hash": "72b6af4fab601b232b4e404be4e2df2f75b442ea",
+              "subject": "no data if nwp with offset fails",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/72b6af4fab601b232b4e404be4e2df2f75b442ea"
+            },
+            {
+              "hash": "f2886d8717d8b1a605969484d9cc4d07de8b764a",
+              "subject": "precipitation decumulation breaks with 0",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f2886d8717d8b1a605969484d9cc4d07de8b764a"
+            },
+            {
+              "hash": "05e8a08a645b57cdb457d4f4699b472bc11f98ad",
+              "subject": "respect max offset",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/05e8a08a645b57cdb457d4f4699b472bc11f98ad"
+            },
+            {
+              "hash": "700d0b78db39cb400e28d4dede033c13d98e3328",
+              "subject": "add fallbacks if a location is deleted",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/700d0b78db39cb400e28d4dede033c13d98e3328"
+            },
+            {
+              "hash": "08e0ed8f7a4d792ade25d5c1c9a65c83ce7d554f",
+              "subject": "fix search drawer on iOS",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/08e0ed8f7a4d792ade25d5c1c9a65c83ce7d554f"
+            },
+            {
+              "hash": "2f2e3c99e88ecf8d1f4e196aff6849fc82b3c9d2",
+              "subject": "use unique id for saved locations",
+              "scope": "locations",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2f2e3c99e88ecf8d1f4e196aff6849fc82b3c9d2"
+            },
+            {
+              "hash": "77f8c6d6881dcc5f4918f2c6b7355461224d3a2d",
+              "subject": "allow omitting altitude",
+              "scope": "met.no",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/77f8c6d6881dcc5f4918f2c6b7355461224d3a2d"
+            },
+            {
+              "hash": "6c125c73d052189af9200470d61135235f50e260",
+              "subject": "change cloud coverage to percentage",
+              "scope": "met.no",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6c125c73d052189af9200470d61135235f50e260"
+            },
+            {
+              "hash": "2304305c26c029775a4803dddd121375ccfffeee",
+              "subject": "combine timeperiod data independent of period length",
+              "scope": "met.no",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2304305c26c029775a4803dddd121375ccfffeee"
+            },
+            {
+              "hash": "4755568d29b50afd79fc2f0c29c5bde35ed5351d",
+              "subject": "correctly parse expires header for cache expiry",
+              "scope": "met.no",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4755568d29b50afd79fc2f0c29c5bde35ed5351d"
+            },
+            {
+              "hash": "b494529f9ea78c6f982e8bd28533248ad1ba78e9",
+              "subject": "safari bug with map to array conversion",
+              "scope": "met.no",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b494529f9ea78c6f982e8bd28533248ad1ba78e9"
+            },
+            {
+              "hash": "3d7c96ab85657de8af618c2453ed07b18184ff3a",
+              "subject": "migrate select component",
+              "scope": "provider",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3d7c96ab85657de8af618c2453ed07b18184ff3a"
+            },
+            {
+              "hash": "ac3f45efd03d434664ba580b9aa5f58884a0469d",
+              "subject": "properly reactive data when switching providers",
+              "scope": "providers",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ac3f45efd03d434664ba580b9aa5f58884a0469d"
+            },
+            {
+              "hash": "d1731fe35fd84be758b20e765b6661383edb0e66",
+              "subject": "make buttons clickable again",
+              "scope": "pwa",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d1731fe35fd84be758b20e765b6661383edb0e66"
+            },
+            {
+              "hash": "67b12419e2a196bd1a7cc4d3795cb5ebc674b859",
+              "subject": "update datetime and data when app becomes visible",
+              "scope": "reactivity",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/67b12419e2a196bd1a7cc4d3795cb5ebc674b859"
+            },
+            {
+              "hash": "71e66b264c20535ba8c57bcbf4501e802856706a",
+              "subject": "fallback version if no changelog present",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/71e66b264c20535ba8c57bcbf4501e802856706a"
+            },
+            {
+              "hash": "6bd73dbe34bd435d853d4aaa878aadf41963c5d0",
+              "subject": "navigating to settings in groups broken",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6bd73dbe34bd435d853d4aaa878aadf41963c5d0"
+            },
+            {
+              "hash": "4dc33ae43791ecf644631c2f88490f37da8cbec1",
+              "subject": "proper equality check when using select subscription",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4dc33ae43791ecf644631c2f88490f37da8cbec1"
+            },
+            {
+              "hash": "47f784131babf078732573145fe2cc2e19372c69",
+              "subject": "select reactivity broken due to change detection",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/47f784131babf078732573145fe2cc2e19372c69"
+            },
+            {
+              "hash": "ba6eee975efc7b7dfc618d07eca6ec55b1cc901f",
+              "subject": "swipe nav broken due to zero height container",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ba6eee975efc7b7dfc618d07eca6ec55b1cc901f"
+            },
+            {
+              "hash": "fdff951c00a14959120a62ef446590b21ba9f3e9",
+              "subject": "remove possible race condition",
+              "scope": "symbol",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/fdff951c00a14959120a62ef446590b21ba9f3e9"
+            },
+            {
+              "hash": "31c5b397364c4236347169c592852221fdb836bd",
+              "subject": "correct some symbol names",
+              "scope": "symbols",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/31c5b397364c4236347169c592852221fdb836bd"
+            },
+            {
+              "hash": "ef8e1d9d32bf2cad15939afb6ec94574eba6bb66",
+              "subject": "blocks shifted by incorrect datetime calculation",
+              "scope": "timeline-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ef8e1d9d32bf2cad15939afb6ec94574eba6bb66"
+            },
+            {
+              "hash": "85c81d6e2c26ba957d6c15d268f70c67b0390a7b",
+              "subject": "limit items to endDatetime",
+              "scope": "timeline-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/85c81d6e2c26ba957d6c15d268f70c67b0390a7b"
+            },
+            {
+              "hash": "3c2670fcc7d68247eda50c0aa0d4b0b1a374127f",
+              "subject": "remove empty block at end of day",
+              "scope": "timeline-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3c2670fcc7d68247eda50c0aa0d4b0b1a374127f"
+            },
+            {
+              "hash": "3010943e0215bba1d8492cd733990cb9080c80f7",
+              "subject": "show more decimal places for precipitation groups",
+              "scope": "units",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3010943e0215bba1d8492cd733990cb9080c80f7"
+            },
+            {
+              "hash": "b7ee17e115bab98ab7d14c42849e0fe0de5bc4e3",
+              "subject": "various small improvements",
+              "scope": "ux",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b7ee17e115bab98ab7d14c42849e0fe0de5bc4e3"
+            }
+          ]
+        },
+        {
+          "title": "Features",
+          "type": "feat",
+          "commits": [
+            {
+              "hash": "0ce5c1d00568cfc660c93d9055fb782b7dea46e5",
+              "subject": "add loading skeleton",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0ce5c1d00568cfc660c93d9055fb782b7dea46e5"
+            },
+            {
+              "hash": "8281ab222ddec54df1937638e9db8cf87ff5ed3e",
+              "subject": "add cape, cin and grad",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/8281ab222ddec54df1937638e9db8cf87ff5ed3e"
+            },
+            {
+              "hash": "f046d0970f05464f099a146d13ff4b17c12ac6c3",
+              "subject": "add inline highlighted parameter values",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f046d0970f05464f099a146d13ff4b17c12ac6c3"
+            },
+            {
+              "hash": "f28c60595c2461e2ede6e72ab03faf06ce0797d2",
+              "subject": "add neighboring values to daily multiseries",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f28c60595c2461e2ede6e72ab03faf06ce0797d2"
+            },
+            {
+              "hash": "1f44801e1088381f7e68ac16743839aa024bd0ab",
+              "subject": "add option to highlight extrema",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1f44801e1088381f7e68ac16743839aa024bd0ab"
+            },
+            {
+              "hash": "9ca03b2a8a16125ac19664a3a42e1ecd6b1ed018",
+              "subject": "add options for y axis unit placement",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/9ca03b2a8a16125ac19664a3a42e1ecd6b1ed018"
+            },
+            {
+              "hash": "a7cea0e00a80bdcda6c7bea31c6d892219000078",
+              "subject": "add parameter icons to tooltip",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a7cea0e00a80bdcda6c7bea31c6d892219000078"
+            },
+            {
+              "hash": "1307f3a3b6964e20d969d8cce5ee4c1a750d85f8",
+              "subject": "add precipitation amount bar chart",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1307f3a3b6964e20d969d8cce5ee4c1a750d85f8"
+            },
+            {
+              "hash": "3326f13683092a5b442109bcd20b83172c2922e2",
+              "subject": "add remaining common parameters",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3326f13683092a5b442109bcd20b83172c2922e2"
+            },
+            {
+              "hash": "166dcc5449adcfb248c804ef2bde460889efc817",
+              "subject": "allow parameters to display multiple series",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/166dcc5449adcfb248c804ef2bde460889efc817"
+            },
+            {
+              "hash": "85152c667887d5343209e58762d2aad90fdaccda",
+              "subject": "auto-select domain per parameter based on extent",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/85152c667887d5343209e58762d2aad90fdaccda"
+            },
+            {
+              "hash": "00da6b0928bfeedcc74243da774a1f07cbd73a13",
+              "subject": "basic temperature chart using d3",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/00da6b0928bfeedcc74243da774a1f07cbd73a13"
+            },
+            {
+              "hash": "74b92ceee33f48705ebd73888bf98e3edee613ea",
+              "subject": "calculate offsets to support multiple y axis",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/74b92ceee33f48705ebd73888bf98e3edee613ea"
+            },
+            {
+              "hash": "bfdca17242de03b4ab3a5360379203caab4c1c4f",
+              "subject": "display highlighted values in header",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/bfdca17242de03b4ab3a5360379203caab4c1c4f"
+            },
+            {
+              "hash": "5679df0eabf24cd872969ead7e95568cb5ccc33b",
+              "subject": "display highlighted values in header",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5679df0eabf24cd872969ead7e95568cb5ccc33b"
+            },
+            {
+              "hash": "22291e8092011e60bb8a8fb06424422188952e3b",
+              "subject": "improve axis pointer interaction",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/22291e8092011e60bb8a8fb06424422188952e3b"
+            },
+            {
+              "hash": "ffc71c48955b438c3f24a460ca353bcb425a4e7d",
+              "subject": "make chart day label scroll to current day on click",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ffc71c48955b438c3f24a460ca353bcb425a4e7d"
+            },
+            {
+              "hash": "7255db72e876bfb1470cff356d8594e280410241",
+              "subject": "parameter selection pinning and overflow popover",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/7255db72e876bfb1470cff356d8594e280410241"
+            },
+            {
+              "hash": "ef9c973ad9f86ad1aa8d553912be31b80efa109d",
+              "subject": "swipe through daily charts",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ef9c973ad9f86ad1aa8d553912be31b80efa109d"
+            },
+            {
+              "hash": "4971b33a15a74264afa23c381b416c37d0b6672d",
+              "subject": "toggle visibility of each parameter",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4971b33a15a74264afa23c381b416c37d0b6672d"
+            },
+            {
+              "hash": "7a4d5b93bf9171e2f035d05f7402326c08cd3556",
+              "subject": "tooltip positioning",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/7a4d5b93bf9171e2f035d05f7402326c08cd3556"
+            },
+            {
+              "hash": "30af0908202b22efc1c77e31942abb5fa81522ae",
+              "subject": "x axis pointer with tooltip",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/30af0908202b22efc1c77e31942abb5fa81522ae"
+            },
+            {
+              "hash": "31d2bd24bff3062efb68a7fff599d5991ef1490c",
+              "subject": "add value-scaled dots for wind",
+              "scope": "color-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/31d2bd24bff3062efb68a7fff599d5991ef1490c"
+            },
+            {
+              "hash": "b14476b4ecd96b657319f1facf9467b2b7ff4f1a",
+              "subject": "rework to date-based display",
+              "scope": "color-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b14476b4ecd96b657319f1facf9467b2b7ff4f1a"
+            },
+            {
+              "hash": "b291df21f96d44ac208f449346db2a1c6cd39f6d",
+              "subject": "show rain in categories",
+              "scope": "color-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b291df21f96d44ac208f449346db2a1c6cd39f6d"
+            },
+            {
+              "hash": "9ec142f0b54e4546f71c63824958aee38f72b5e5",
+              "subject": "option to omit TimelineBar for incomplete days",
+              "scope": "config",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/9ec142f0b54e4546f71c63824958aee38f72b5e5"
+            },
+            {
+              "hash": "2ba5b466ef394316628eb66298a2e1bdebf1061c",
+              "subject": "add pressure and relative humidity",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2ba5b466ef394316628eb66298a2e1bdebf1061c"
+            },
+            {
+              "hash": "0ff4cd85ade03eb13bdfddbe7fe841d37d6cec69",
+              "subject": "add radial gradient behind symbol for contrast",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0ff4cd85ade03eb13bdfddbe7fe841d37d6cec69"
+            },
+            {
+              "hash": "394483d2e955e2fe36ee8a8216d7ba8945eca647",
+              "subject": "show precipitation start or end datetime",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/394483d2e955e2fe36ee8a8216d7ba8945eca647"
+            },
+            {
+              "hash": "b2a1637641fe9ff71c8c109347ae41d70066ffeb",
+              "subject": "slightly adapt to changes",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b2a1637641fe9ff71c8c109347ae41d70066ffeb"
+            },
+            {
+              "hash": "bf61c7b74e4b7d374e65e1575757c72fa50430c0",
+              "subject": "stick to top and shrink on scroll",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/bf61c7b74e4b7d374e65e1575757c72fa50430c0"
+            },
+            {
+              "hash": "50b75ba7fb50154145343bbb824df9d8d21ba8f8",
+              "subject": "style basic current info",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/50b75ba7fb50154145343bbb824df9d8d21ba8f8"
+            },
+            {
+              "hash": "1bf2bf7984a9a244e907a31c51c8bbd7f17ac19f",
+              "subject": "add option to use temperature range bar over color dots",
+              "scope": "daily",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1bf2bf7984a9a244e907a31c51c8bbd7f17ac19f"
+            },
+            {
+              "hash": "a47ed07b8ec0714ff793f9b1e8e500b9e2a0a15f",
+              "subject": "omit incomplete days derived from hourly",
+              "scope": "daily",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a47ed07b8ec0714ff793f9b1e8e500b9e2a0a15f"
+            },
+            {
+              "hash": "ff24857733ecef0fdb469dad8a85bea082033182",
+              "subject": "fetch and process forecast from met.no",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ff24857733ecef0fdb469dad8a85bea082033182"
+            },
+            {
+              "hash": "0d661caf02b680bffce8f527c4108a2a84453636",
+              "subject": "limit cached responses per dataset",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0d661caf02b680bffce8f527c4108a2a84453636"
+            },
+            {
+              "hash": "a627b4766361bab5bb9ddc64da5885a1abbe3247",
+              "subject": "loading based on datasets config option",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a627b4766361bab5bb9ddc64da5885a1abbe3247"
+            },
+            {
+              "hash": "15ff5b30c6d5f7c2aa1f3844d62a5a52062e512c",
+              "subject": "still show data if models fail to load",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/15ff5b30c6d5f7c2aa1f3844d62a5a52062e512c"
+            },
+            {
+              "hash": "39ecd746dd0edf4bd3e4c98346803357f0ba7720",
+              "subject": "stream in loaded datasets in increments",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/39ecd746dd0edf4bd3e4c98346803357f0ba7720"
+            },
+            {
+              "hash": "7f6e181fa2bb405f151de0758fc7a778a44befe6",
+              "subject": "use cached forecast while loading from api",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/7f6e181fa2bb405f151de0758fc7a778a44befe6"
+            },
+            {
+              "hash": "59dbb2813b35400f353d806a814f9ea2286c572e",
+              "subject": "add precipitation groups",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/59dbb2813b35400f353d806a814f9ea2286c572e"
+            },
+            {
+              "hash": "654b772b6230d5cb70c8fc575cd472e3d54e32b3",
+              "subject": "add timeline bar",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/654b772b6230d5cb70c8fc575cd472e3d54e32b3"
+            },
+            {
+              "hash": "5e777f0f47b1ff09d4179b0bddfb17761a6d144a",
+              "subject": "allow swiping today chart to open tomorrow details",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5e777f0f47b1ff09d4179b0bddfb17761a6d144a"
+            },
+            {
+              "hash": "04fba2f83f302070c232fea20b732d05095e8de8",
+              "subject": "basic day view drawer with chart and value range bars",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/04fba2f83f302070c232fea20b732d05095e8de8"
+            },
+            {
+              "hash": "fc15c3b8862337fe6b253150d6f5bbbaf77a2bb2",
+              "subject": "slightly improve how parameters are displayed",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/fc15c3b8862337fe6b253150d6f5bbbaf77a2bb2"
+            },
+            {
+              "hash": "d839fa79dd4aa9e15ea44dc98d0b780a03409d94",
+              "subject": "use parameter summaries as chart parameter selection",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d839fa79dd4aa9e15ea44dc98d0b780a03409d94"
+            },
+            {
+              "hash": "4e5e242b86c3609ad0d53ec36fb08bfd16993f1b",
+              "subject": "geolocation state indicator",
+              "scope": "geolocation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4e5e242b86c3609ad0d53ec36fb08bfd16993f1b"
+            },
+            {
+              "hash": "99931bc4f86610a690de33560cc34493d4af836d",
+              "subject": "add nowcast",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/99931bc4f86610a690de33560cc34493d4af836d"
+            },
+            {
+              "hash": "076368aa58ae9dbc273f63ce72bd368b2bbb53da",
+              "subject": "include passed hours from current forecast",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/076368aa58ae9dbc273f63ce72bd368b2bbb53da"
+            },
+            {
+              "hash": "fdbca076fc4dee233d8a1bb84605f15174370cde",
+              "subject": "load old forecast to fill in today's hourly",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/fdbca076fc4dee233d8a1bb84605f15174370cde"
+            },
+            {
+              "hash": "ec1846ff5ed83209739520919fca43693a2dc233",
+              "subject": "parallel api calls",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ec1846ff5ed83209739520919fca43693a2dc233"
+            },
+            {
+              "hash": "18bf1542cd9957b9a191ada4e1d3ad2ad0bbafd8",
+              "subject": "day color bar cloud_coverage and precipitation",
+              "scope": "hourly",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/18bf1542cd9957b9a191ada4e1d3ad2ad0bbafd8"
+            },
+            {
+              "hash": "9d0c5b2f843c2e521d31a46f81d9222f6ac61cd0",
+              "subject": "hourly temperature color bar",
+              "scope": "hourly",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/9d0c5b2f843c2e521d31a46f81d9222f6ac61cd0"
+            },
+            {
+              "hash": "b056967f53c2803c701dedb9e5f028c3ff0172ca",
+              "subject": "add placeholders for search results",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b056967f53c2803c701dedb9e5f028c3ff0172ca"
+            },
+            {
+              "hash": "459bccd1132a8df906d9ce905e6a6f9ba5a6555e",
+              "subject": "location preset selector",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/459bccd1132a8df906d9ce905e6a6f9ba5a6555e"
+            },
+            {
+              "hash": "b257b862784d34f79d52429807f42869080c621b",
+              "subject": "location search and selection",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b257b862784d34f79d52429807f42869080c621b"
+            },
+            {
+              "hash": "449bcd44aef90bf8dd6829757cb2961172d2d3c1",
+              "subject": "reverse geocoding and location refresh",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/449bcd44aef90bf8dd6829757cb2961172d2d3c1"
+            },
+            {
+              "hash": "7bad5f5e79d7ec111573248315370a9a439bbee9",
+              "subject": "make lat lon and altitude editable",
+              "scope": "locations",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/7bad5f5e79d7ec111573248315370a9a439bbee9"
+            },
+            {
+              "hash": "783308439fcbb314ef67cb437f8859928ae9502e",
+              "subject": "saving and unsaving locations",
+              "scope": "locations",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/783308439fcbb314ef67cb437f8859928ae9502e"
+            },
+            {
+              "hash": "c28b5a4a690ac194c0ddca44fb547992afb86d66",
+              "subject": "process data to daily",
+              "scope": "met.no",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c28b5a4a690ac194c0ddca44fb547992afb86d66"
+            },
+            {
+              "hash": "35be8b6a06903111e7f1dc38d53f8f39a49a4ca2",
+              "subject": "use time periods of all lengths",
+              "scope": "met.no",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/35be8b6a06903111e7f1dc38d53f8f39a49a4ca2"
+            },
+            {
+              "hash": "51b45db85506006bd34ba90483e4194f90bfd932",
+              "subject": "add precipitation notice",
+              "scope": "notices",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/51b45db85506006bd34ba90483e4194f90bfd932"
+            },
+            {
+              "hash": "ff8696f2273e7088bfa2c06f97d9a38ece6ebbed",
+              "subject": "make rain optional, fix to 7 days",
+              "scope": "outlook",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ff8696f2273e7088bfa2c06f97d9a38ece6ebbed"
+            },
+            {
+              "hash": "9c22760976a24e9efd5d8078f746a60a494a4a8f",
+              "subject": "group sporadic precipitation in notice",
+              "scope": "precipitation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/9c22760976a24e9efd5d8078f746a60a494a4a8f"
+            },
+            {
+              "hash": "c7611f84b96045693b7bfde6e08418bb31264df6",
+              "subject": "forecast based on 60-hour model",
+              "scope": "provider-geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c7611f84b96045693b7bfde6e08418bb31264df6"
+            },
+            {
+              "hash": "f5aa58bcb07d85892b92b91f87a3808514ca2c67",
+              "subject": "allow instant based data for daily",
+              "scope": "provider-met.no",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f5aa58bcb07d85892b92b91f87a3808514ca2c67"
+            },
+            {
+              "hash": "ff38b19083a86612d7a8f06b7a304cfaa59ddb14",
+              "subject": "persist provider selection",
+              "scope": "provider",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ff38b19083a86612d7a8f06b7a304cfaa59ddb14"
+            },
+            {
+              "hash": "4f32b3ed79c8562a4e5f466ee5a9ef64fc6dc3dc",
+              "subject": "provider select",
+              "scope": "providers",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4f32b3ed79c8562a4e5f466ee5a9ef64fc6dc3dc"
+            },
+            {
+              "hash": "cc2c21ab3d864adb75320897187760a79d632a13",
+              "subject": "rework structure and add response caching",
+              "scope": "providers",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/cc2c21ab3d864adb75320897187760a79d632a13"
+            },
+            {
+              "hash": "6cb59f22e88ad9c6eeb3f7fbe5c51db4d5e441d9",
+              "subject": "add styled pwa options",
+              "scope": "pwa",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6cb59f22e88ad9c6eeb3f7fbe5c51db4d5e441d9"
+            },
+            {
+              "hash": "b3ed6e71ef5d1b1cd0d52fd001dbd0c584971773",
+              "subject": "reactive service worker state",
+              "scope": "pwa",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b3ed6e71ef5d1b1cd0d52fd001dbd0c584971773"
+            },
+            {
+              "hash": "f181b91b94244b1ef2427a095b8b8ee577dd40f9",
+              "subject": "use one global current datetime",
+              "scope": "reactivity",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f181b91b94244b1ef2427a095b8b8ee577dd40f9"
+            },
+            {
+              "hash": "9da7d576462f30eb90c6dd0265f442006df7f9eb",
+              "subject": "add daily outlook section",
+              "scope": "sections",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/9da7d576462f30eb90c6dd0265f442006df7f9eb"
+            },
+            {
+              "hash": "5093e5f42cf58ceaa3e87bd469b387ff532cbc08",
+              "subject": "optional section titles",
+              "scope": "sections",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5093e5f42cf58ceaa3e87bd469b387ff532cbc08"
+            },
+            {
+              "hash": "b1dad39037212a41090e6ff0020132d08de21bbf",
+              "subject": "add about.author section",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b1dad39037212a41090e6ff0020132d08de21bbf"
+            },
+            {
+              "hash": "f786090847da7f5ce26015a2e495464e9c7ebbad",
+              "subject": "add basic list support for locations",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f786090847da7f5ce26015a2e495464e9c7ebbad"
+            },
+            {
+              "hash": "2abe652cbfe437db69bcb83952c23954ad586113",
+              "subject": "add changelog",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2abe652cbfe437db69bcb83952c23954ad586113"
+            },
+            {
+              "hash": "e5332ec9a363637e51b5b50a69631446dbf67f2a",
+              "subject": "add icons",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e5332ec9a363637e51b5b50a69631446dbf67f2a"
+            },
+            {
+              "hash": "465f1fe47f0ddd1f2da57df54ad0ae4491cdffe8",
+              "subject": "add version page for updating etc",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/465f1fe47f0ddd1f2da57df54ad0ae4491cdffe8"
+            },
+            {
+              "hash": "794ef8d647d4a2a120118ea85dc6f1617743a2b0",
+              "subject": "allow subscribing only to a part of the settings",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/794ef8d647d4a2a120118ea85dc6f1617743a2b0"
+            },
+            {
+              "hash": "b3312ce710fa4d2c8e787a5ea1747b385303c176",
+              "subject": "basic list reorder support for locations",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b3312ce710fa4d2c8e787a5ea1747b385303c176"
+            },
+            {
+              "hash": "4c80d32a58ca9dc8160b104fbcd235d900f1e9ea",
+              "subject": "clean up ui",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4c80d32a58ca9dc8160b104fbcd235d900f1e9ea"
+            },
+            {
+              "hash": "1788b35a6c97a814aac46aaddafe9aa3f520e9bc",
+              "subject": "config-based settings ui basic values",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1788b35a6c97a814aac46aaddafe9aa3f520e9bc"
+            },
+            {
+              "hash": "c033130a201ac481979feaeb94f72fdfc96e11fe",
+              "subject": "display current version",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c033130a201ac481979feaeb94f72fdfc96e11fe"
+            },
+            {
+              "hash": "7a8f3c0182d98b283987efef39afb4cf9de8f0f1",
+              "subject": "multiselect for datasets",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/7a8f3c0182d98b283987efef39afb4cf9de8f0f1"
+            },
+            {
+              "hash": "a63ebdb67628b694844459e60c4f94b19364ff6a",
+              "subject": "swipe forward/back navigation",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a63ebdb67628b694844459e60c4f94b19364ff6a"
+            },
+            {
+              "hash": "10a74cc12661c7cf0cc6a1a429b84b1821a85730",
+              "subject": "use absolute position instead of scroll for pages",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/10a74cc12661c7cf0cc6a1a429b84b1821a85730"
+            },
+            {
+              "hash": "5ccfba0abbe3d62e87bda3394aad9badb29692bd",
+              "subject": "write changed settings to localStorage",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5ccfba0abbe3d62e87bda3394aad9badb29692bd"
+            },
+            {
+              "hash": "425d8d1fcc20d4d1759bd1b7631fa4dd299b87d7",
+              "subject": "implement sun based sky rendering",
+              "scope": "sky",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/425d8d1fcc20d4d1759bd1b7631fa4dd299b87d7"
+            },
+            {
+              "hash": "f30597e56f7d97d9758b6ede95ee08ffc9312b85",
+              "subject": "current weather symbol with intermediate decoupling layer",
+              "scope": "symbol",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f30597e56f7d97d9758b6ede95ee08ffc9312b85"
+            },
+            {
+              "hash": "ec39a38b0c6d69338f1314804c2a1d21d3ed3d68",
+              "subject": "add option for animated meteocons",
+              "scope": "symbols",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ec39a38b0c6d69338f1314804c2a1d21d3ed3d68"
+            },
+            {
+              "hash": "cac70506d53067e46d0b6f28c1acf2814b3b6f1d",
+              "subject": "derive weather situations from forecast",
+              "scope": "symbols",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/cac70506d53067e46d0b6f28c1acf2814b3b6f1d"
+            },
+            {
+              "hash": "87e9ec022d6878318a598cc33cc90e9b9454cace",
+              "subject": "use day/night variants",
+              "scope": "symbols",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/87e9ec022d6878318a598cc33cc90e9b9454cace"
+            },
+            {
+              "hash": "e191063642ea4f8ed92b6937076d3d54402318df",
+              "subject": "temperature range gradient",
+              "scope": "temperature",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e191063642ea4f8ed92b6937076d3d54402318df"
+            },
+            {
+              "hash": "7a7f2d864693602f634890855a117ad53b619dff",
+              "subject": "add timestamp marks option",
+              "scope": "timeline-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/7a7f2d864693602f634890855a117ad53b619dff"
+            },
+            {
+              "hash": "a03768fe01e8dd860626d133f989efcfb53cf055",
+              "subject": "add uvi parameter",
+              "scope": "timeline-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a03768fe01e8dd860626d133f989efcfb53cf055"
+            },
+            {
+              "hash": "515b9d93472716b4f2125ef7456ee7de8a3d33ed",
+              "subject": "approximate sun and moon light",
+              "scope": "timeline-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/515b9d93472716b4f2125ef7456ee7de8a3d33ed"
+            },
+            {
+              "hash": "d2ec38de40f88c2859b83372d602ac29e5aed237",
+              "subject": "show passed hours and mark them accordingly",
+              "scope": "timeline-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d2ec38de40f88c2859b83372d602ac29e5aed237"
+            },
+            {
+              "hash": "eeddf3db570199e2bad0d4499f2c1ed4aeeeb442",
+              "subject": "add option to hide chart parameter select",
+              "scope": "today",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/eeddf3db570199e2bad0d4499f2c1ed4aeeeb442"
+            },
+            {
+              "hash": "3ac06ed86e7f086e6536f1580ee3877bfed5ae36",
+              "subject": "allow some units to prefer showing decimals",
+              "scope": "units",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3ac06ed86e7f086e6536f1580ee3877bfed5ae36"
+            },
+            {
+              "hash": "d79568fda432d7d2c6e90a46697453d6000348bd",
+              "subject": "basic unit options and conversion",
+              "scope": "units",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d79568fda432d7d2c6e90a46697453d6000348bd"
+            }
+          ]
+        },
+        {
+          "title": "Performance Improvements",
+          "type": "perf",
+          "commits": [
+            {
+              "hash": "4c01f0c30c56994cea84589a6fc22b9834e7b064",
+              "subject": "reduce date calculations during merge",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4c01f0c30c56994cea84589a6fc22b9834e7b064"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
