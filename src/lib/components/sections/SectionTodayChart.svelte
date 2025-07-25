@@ -12,7 +12,7 @@
 
   const today = $derived($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))))
 
-  let visibleSeries = persistantState<WeatherMetricKey[]>('chart-parameters-visible', [
+  let visibleSeries = persistantState<WeatherMetricKey[]>('section-today-chart-parameters', [
     'temperature',
     'precipitation_amount',
     'cloud_coverage',

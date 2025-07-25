@@ -69,7 +69,7 @@
     }
   }
 
-  let visibleSeries = persistantState<WeatherMetricKey[]>('chart-parameters-visible', [
+  let visibleSeries = persistantState<WeatherMetricKey[]>('view-day-chart-parameters', [
     'temperature',
     'precipitation_amount',
     'cloud_coverage',
