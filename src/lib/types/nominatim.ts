@@ -3,6 +3,7 @@ interface Address {
   house_number?: string
   neighbourhood?: string
   road?: string
+  hamlet?: string
   suburb?: string
   village?: string
   town?: string

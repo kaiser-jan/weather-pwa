@@ -55,7 +55,7 @@
   <div class="relative shrink grow">
     <div class="text-text absolute inset-0 bottom-auto inline-flex w-full items-center justify-between text-xs">
       {#await locationNamePromise then locationName}
-        <span class="drop-shadow-c-md ml-1">{locationName}</span>
+        <span class="drop-shadow-c-md ml-1 line-clamp-1">{locationName}</span>
       {/await}
       <button onclick={() => forecastStore.update('manual')} class={['p-2', $isForecastLoading ? 'animate-spin' : '']}>
         <RefreshCwIcon />
