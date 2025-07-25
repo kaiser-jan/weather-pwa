@@ -45,8 +45,7 @@
           onclick={() => selectedLocation.set({ type: 'saved', location })}
         >
           {#if location.icon}
-            {@const Icon = iconMap[location.icon]}
-            <Icon />
+            <svelte:component this={iconMap[location.icon]} />
           {:else}
             {location.name}
           {/if}
