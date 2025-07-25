@@ -97,7 +97,7 @@
           <Button size="icon" variant="outline" onclick={() => navigateBy(-1)} disabled={currentIndex === 0}>
             <ChevronLeft />
           </Button>
-          <Button variant={isToday ? 'outline' : 'secondary'} class="grow" onclick={navigateToToday}>
+          <Button variant={isToday ? 'ghost' : 'outline'} class="grow" onclick={navigateToToday}>
             {dayLabel}
           </Button>
           <Button
