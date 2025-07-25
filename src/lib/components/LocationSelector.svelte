@@ -5,7 +5,7 @@
   import LocationSearch from './LocationSearch.svelte'
   import { iconMap } from '$lib/utils/icons'
   import { SearchIcon } from '@lucide/svelte'
-  import { selectedLocation } from '$lib/stores/ui'
+  import { selectedLocation, showLocationSearch } from '$lib/stores/ui'
 
   const geolocationDetails = geolocationStore.details
 
@@ -33,29 +33,34 @@
     </button>
   </div>
   <div class="bg-midground relative w-0 grow">
-    <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
-      {#each $settingLocations as location (location.id)}
-        <button
-          class={[
-            'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
-            $selectedLocation?.type === 'saved' && $selectedLocation.location.id === location.id
-              ? 'bg-primary'
-              : 'bg-foreground text-text-muted',
-          ]}
-          onclick={() => selectedLocation.set({ type: 'saved', location })}
-        >
-          {#if location.icon}
-            <svelte:component this={iconMap[location.icon]} />
-          {:else}
-            {location.name}
-          {/if}
-        </button>
-      {:else}
-        <span class="text-sm text-text-muted h-10 line-clamp-2 w-fit grow">
-          Pin a location from <SearchIcon class="inline" /> search!
-        </span>
-      {/each}
-    </div>
+    {#if $settingLocations.length}
+      <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
+        {#each $settingLocations as location (location.id)}
+          <button
+            class={[
+              'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
+              $selectedLocation?.type === 'saved' && $selectedLocation.location.id === location.id
+                ? 'bg-primary'
+                : 'bg-foreground text-text-muted',
+            ]}
+            onclick={() => selectedLocation.set({ type: 'saved', location })}
+          >
+            {#if location.icon}
+              <svelte:component this={iconMap[location.icon]} />
+            {:else}
+              {location.name}
+            {/if}
+          </button>
+        {/each}
+      </div>
+    {:else}
+      <button
+        class="text-text-muted line-clamp-2 flex h-14 w-fit grow flex-row items-center gap-2 p-2 px-3 text-sm"
+        onclick={() => showLocationSearch.set(true)}
+      >
+        Pin a location from <SearchIcon class="inline" /> search!
+      </button>
+    {/if}
     <div class="to-midground absolute top-0 right-0 h-full w-6 bg-gradient-to-r from-transparent"></div>
   </div>
   <div class="bg-midground flex flex-row gap-2 rounded-r-full p-2">
