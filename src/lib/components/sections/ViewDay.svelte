@@ -87,11 +87,13 @@
   <Drawer.Content class="">
     {#if $selectedDay}
       <div
-        class="flex h-full flex-col gap-4 overflow-y-auto p-4"
+        class="bg-background relative flex h-full flex-col gap-4 overflow-y-auto p-4 pt-0"
         use:swipe={() => ({ touchAction: 'pan-y' })}
         onswipe={handleSwipe}
       >
-        <header class="flex justify-between gap-4 text-xl font-bold">
+        <!-- BUG: the sticky header causes a 1px height w-full line, which bleeds through the siblings scrolled below  -->
+        <!-- it was tried to e.g. put an absolute position element on top, but nothing seems to help -->
+        <header class="bg-background/80 sticky top-0 z-10 -mb-2 flex justify-between gap-4 py-4 text-xl font-bold">
           <Button size="icon" variant="outline" onclick={() => navigateBy(-1)} disabled={currentIndex === 0}>
             <ChevronLeft />
           </Button>
