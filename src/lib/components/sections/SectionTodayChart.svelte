@@ -27,7 +27,7 @@
   {#if today}
     <button
       onclick={() => selectedDay.set(today)}
-      use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
+      use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30, touchAction: 'pan-y' })}
       onswipe={(e) => {
         const tomorrow = $forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day').plus({ days: 1 })))
         if (!tomorrow) return
