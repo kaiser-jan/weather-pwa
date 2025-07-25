@@ -7,6 +7,7 @@
   import LocationSelector from '$lib/components/LocationSelector.svelte'
   import SettingsButton from '$lib/components/SettingsButton.svelte'
   import ContainerCorners from '$lib/components/ContainerCorners.svelte'
+  import { Portal } from 'bits-ui'
 
   let { children } = $props()
 
@@ -67,18 +68,20 @@
   <div class="h-[env(safe-area-inset-bottom)] max-h-[1rem] shrink-0"></div>
 </div>
 
-<Toaster
-  position="bottom-center"
-  toastOptions={{
-    unstyled: true,
-    classes: {
-      toast:
-        'bg-background border-foreground border-2 flex flex-row flex-wrap gap-2 items-center rounded-lg p-3 text-sm',
-      title: 'text-text font-semibold flex flex-row gap-2',
-      description: 'text-text-muted italic',
-      actionButton: 'bg-foreground rounded-md p-2 h-8 flex items-center',
-      cancelButton: 'border-foreground border-2 rounded-md p-2 h-8 flex items-center',
-      closeButton: 'bg-purple-500',
-    },
-  }}
-/>
+<Portal to="html">
+  <Toaster
+    position="bottom-center"
+    toastOptions={{
+      unstyled: true,
+      classes: {
+        toast:
+          'bg-background border-foreground border-2 flex flex-row flex-wrap gap-2 items-center rounded-lg p-3 text-sm z-[1000] touch-auto',
+        title: 'text-text font-semibold flex flex-row gap-2',
+        description: 'text-text-muted italic',
+        actionButton: 'bg-foreground rounded-md p-2 h-8 flex items-center hover:bg-primary',
+        cancelButton: 'border-foreground border-2 rounded-md p-2 h-8 flex items-center',
+        closeButton: 'bg-purple-500',
+      },
+    }}
+  />
+</Portal>
