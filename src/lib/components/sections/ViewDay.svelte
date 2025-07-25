@@ -66,9 +66,6 @@
       case 'left':
         navigateBy(1)
         break
-      case 'top':
-        navigateToToday()
-        break
     }
   }
 
@@ -91,7 +88,7 @@
     {#if $selectedDay}
       <div
         class="flex h-full flex-col gap-4 overflow-y-auto p-4"
-        use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30 })}
+        use:swipe={() => ({ touchAction: 'pan-y' })}
         onswipe={handleSwipe}
       >
         <header class="flex justify-between gap-4 text-xl font-bold">
