@@ -21,7 +21,12 @@
     <UmbrellaIcon />
     <div class="flex grow flex-col gap-1">
       {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}
-        <PrecipitationGroup {precipitationGroup} isRestOfDayOnly />
+        <PrecipitationGroup
+          {precipitationGroup}
+          isRestOfDayOnly
+          startDatetime={$NOW.startOf('day')}
+          endDatetime={$NOW.endOf('day')}
+        />
       {/each}
     </div>
   </div>

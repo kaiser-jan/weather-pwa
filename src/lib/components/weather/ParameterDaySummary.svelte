@@ -95,11 +95,15 @@
     {/if}
   {:else if item === 'precipitation-groups'}
     {@const precipitationGroups = $precipitationGroupsStore.filter(
-      (g) => g.end > day.datetime && g.start <= day.datetime.plus(day.duration),
+      (g) => g.end > day.datetime && g.start < day.datetime.plus(day.duration),
     )}
     <div class="flex flex-col gap-1">
       {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}
-        <PrecipitationGroup {precipitationGroup} />
+        <PrecipitationGroup
+          {precipitationGroup}
+          startDatetime={day.datetime}
+          endDatetime={day.datetime.plus(day.duration)}
+        />
       {:else}
         <span class="text-text-muted"> No rain on this day! </span>
       {/each}

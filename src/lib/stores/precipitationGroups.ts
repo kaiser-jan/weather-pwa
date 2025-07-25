@@ -46,13 +46,8 @@ export const precipitationGroupsStore = derived(
         }
       }
 
-      // ensure precipitation from the past is omitted
       const currentGroup = groups[groups.length - 1]
-      if (timeBucket.datetime < now) {
-        currentGroup.amount = timeBucket.value
-      } else {
-        currentGroup.amount += timeBucket.value
-      }
+      currentGroup.amount += timeBucket.value
     }
 
     return groups
