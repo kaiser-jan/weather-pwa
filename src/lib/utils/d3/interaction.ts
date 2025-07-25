@@ -40,12 +40,13 @@ export function handleInteraction(options: {
     } else if (!pointerMode) {
       const dx = Math.abs(event.clientX - startX)
       const dy = Math.abs(event.clientY - startY)
-      pointerMode = dx > dy ? 'x' : 'y'
+      if (dx + dy > 20) pointerMode = dx > dy ? 'x' : 'y'
 
-      if (dx > 3) {
-        pointerMode = 'swipe-x'
-        options.onSwipeX?.(event)
-      }
+      // TODO: reimplement swiping: use distance and time requirement
+      // if () {
+      //   pointerMode = 'swipe-x'
+      //   options.onSwipeX?.(event)
+      // }
     }
 
     if (pointerMode === 'x') {

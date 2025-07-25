@@ -294,7 +294,8 @@
     handleInteraction({
       svg,
       onLongPress: (e) => {
-        const datetime = DateTime.fromMillis(scaleX.invert(e.clientX).getTime())
+        const [px] = d3.pointer(e)
+        const datetime = DateTime.fromMillis(scaleX.invert(px).getTime())
         selectDatetime(datetime)
       },
       onScrollX: (e) => {
