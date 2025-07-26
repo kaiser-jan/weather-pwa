@@ -143,12 +143,17 @@
               <button
                 class={cn(
                   'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
-                  visibleSeries.value.includes(parameterTyped) ? 'bg-midground' : '',
+                  visibleSeries.value.includes(parameterTyped) ? 'bg-midground border-midground' : '',
                 )}
                 style={`width: ${!config.items || config.items?.includes('range-bar') || config.items?.includes('precipitation-groups') ? 100 : 40}%`}
                 onclick={() => toggle(visibleSeries.value, parameter)}
               >
-                <ParameterDaySummary {...config} parameter={parameterTyped} day={$selectedDay} />
+                <ParameterDaySummary
+                  {...config}
+                  parameter={parameterTyped}
+                  day={$selectedDay}
+                  selected={visibleSeries.value.includes(parameterTyped)}
+                />
               </button>
             {/if}
           {/each}

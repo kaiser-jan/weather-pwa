@@ -15,9 +15,17 @@
   type Props = ParameterDaySummaryProps & {
     parameter: WeatherMetricKey
     day: TimeBucket
+    selected: boolean
   }
 
-  let { parameter, icon, items = ['icon', 'min', 'range-bar', 'max'], day, useTotalAsDomain }: Props = $props()
+  let {
+    parameter,
+    icon,
+    items = ['icon', 'min', 'range-bar', 'max'],
+    day,
+    useTotalAsDomain,
+    selected,
+  }: Props = $props()
 
   const details = $derived<SeriesDetails | undefined>(CHART_SERIES_DETAILS[parameter])
   const ParameterIcon = $derived(icon ?? details?.icon)
@@ -51,18 +59,25 @@
   })
 </script>
 
-{#each items as item (item)}
-  {#if details?.color}
-    <!-- NOTE: moving tailwind colors to css will make this easier -->
+{#if details?.color}
+  <!-- NOTE: moving tailwind colors to css will make this easier -->
+  <div
+    class={cn('absolute left-0 h-full w-1', 'tailwind' in details.color ? details.color.tailwind?.bg : 'bg-foreground')}
+    style={colorStyle}
+  ></div>
+
+  {#if selected}
     <div
       class={cn(
-        'absolute left-0 h-full w-1',
+        'absolute -top-4 right-0 h-10 w-4 -rotate-45',
         'tailwind' in details.color ? details.color.tailwind?.bg : 'bg-foreground',
       )}
       style={colorStyle}
     ></div>
   {/if}
+{/if}
 
+{#each items as item (item)}
   {#if item === 'icon' && ParameterIcon}
     <ParameterIcon class="shrink-0" />
   {:else if item === 'min' || item === 'max' || item === 'avg' || item === 'sum'}
@@ -105,7 +120,7 @@
           endDatetime={day.datetime.plus(day.duration)}
         />
       {:else}
-        <span class="text-text-muted"> No rain on this day! </span>
+        <span class="text-text-muted">No rain on this day!</span>
       {/each}
     </div>
   {:else}
