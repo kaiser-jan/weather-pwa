@@ -7,6 +7,7 @@ import type {
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
 import type { DatasetId } from '$lib/data/providers'
+import { mergeMultivariateTimeSeries } from '$lib/utils/data'
 
 export async function loadLocationforecast(coordinates: Coordinates) {
   if (coordinates.altitude === null) {
@@ -31,9 +32,12 @@ export async function loadLocationforecast(coordinates: Coordinates) {
     return { data, expires }
   })
 
-  const multiseries: MultivariateTimeSeries = {}
-
-  function addData(data: Partial<WeatherInstant>, datetime: DateTime, duration: Duration) {
+  function addData(
+    multiseries: MultivariateTimeSeries,
+    data: Partial<WeatherInstant>,
+    datetime: DateTime,
+    duration: Duration,
+  ) {
     for (const key of Object.keys(data)) {
       const keyTyped = key as keyof typeof multiseries
 
@@ -49,6 +53,10 @@ export async function loadLocationforecast(coordinates: Coordinates) {
   }
 
   const timeseries = data.properties.timeseries
+  const multiseriesInstants: MultivariateTimeSeries = {}
+  const multiseries1Hours: MultivariateTimeSeries = {}
+  const multiseries6Hours: MultivariateTimeSeries = {}
+  const multiseries12Hours: MultivariateTimeSeries = {}
 
   for (let timeStepIndex = 0; timeStepIndex < timeseries.length; timeStepIndex++) {
     const lastTimeStep = timeseries[timeStepIndex - 1]
@@ -63,21 +71,39 @@ export async function loadLocationforecast(coordinates: Coordinates) {
           ? datetime.diff(DateTime.fromISO(lastTimeStep?.time))
           : Duration.fromObject({ hour: 1 })
 
-      addData(transformTimeInstant(timeStep.data.instant.details), datetime, duration)
+      addData(multiseriesInstants, transformTimeInstant(timeStep.data.instant.details), datetime, duration)
     }
 
     if (timeStep.data.next_1_hours?.details) {
-      addData(transformTimePeriod(timeStep.data.next_1_hours.details), datetime, Duration.fromObject({ hour: 1 }))
+      addData(
+        multiseries1Hours,
+        transformTimePeriod(timeStep.data.next_1_hours.details),
+        datetime,
+        Duration.fromObject({ hour: 1 }),
+      )
     }
     if (timeStep.data.next_6_hours?.details) {
-      addData(transformTimePeriod(timeStep.data.next_6_hours.details), datetime, Duration.fromObject({ hour: 6 }))
+      addData(
+        multiseries6Hours,
+        transformTimePeriod(timeStep.data.next_6_hours.details),
+        datetime,
+        Duration.fromObject({ hour: 6 }),
+      )
     }
     if (timeStep.data.next_12_hours?.details) {
-      addData(transformTimePeriod(timeStep.data.next_12_hours.details), datetime, Duration.fromObject({ hour: 12 }))
+      addData(
+        multiseries12Hours,
+        transformTimePeriod(timeStep.data.next_12_hours.details),
+        datetime,
+        Duration.fromObject({ hour: 12 }),
+      )
     }
   }
 
-  return multiseries
+  return mergeMultivariateTimeSeries(
+    multiseriesInstants,
+    mergeMultivariateTimeSeries(multiseries1Hours, mergeMultivariateTimeSeries(multiseries6Hours, multiseries12Hours)),
+  )
 }
 
 function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<WeatherInstant> {
