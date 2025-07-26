@@ -4,7 +4,7 @@ import { DateTime, type Duration } from 'luxon'
 export type TimeSeriesConfig<InKeyT extends string, OutKeyT extends string> =
   | { type: 'normal'; inKey: InKeyT; outKey: OutKeyT; multiplier?: number }
   // accumulated value since start of the forecast until the timestamp -> the value of a TimePeriod depends on the following one
-  | { type: 'accumulated-until'; inKey: InKeyT; outKey: OutKeyT }
+  | { type: 'accumulated-until'; inKey: InKeyT; outKey: OutKeyT; asDeltaPer?: Duration }
   | { type: 'vector'; xKey: InKeyT; yKey: InKeyT; outKeyLength: OutKeyT; outKeyAngle: OutKeyT }
 
 interface TimeValue {
@@ -42,8 +42,15 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
       }
       if (item.type === 'accumulated-until') {
         const arr = values[item.inKey].data
-        const val = Math.max(0, (arr[i + 1] ?? 0) - (arr[i] ?? 0))
-        output[item.outKey].push({ datetime, duration, value: val })
+        let value = Math.max(0, (arr[i + 1] ?? 0) - (arr[i] ?? 0))
+        // convert e.g. mm of rain in this timebucket to mm/h (with 1 hour as asDeltaPer)
+        if (item.asDeltaPer) {
+          const factor = item.asDeltaPer.toMillis() / duration.toMillis()
+          console.log('*', factor, duration.toMillis() / 1000 / 3600)
+
+          value *= factor
+        }
+        output[item.outKey].push({ datetime, duration, value: value })
       }
       if (item.type === 'vector') {
         const vx = values[item.xKey].data[i]

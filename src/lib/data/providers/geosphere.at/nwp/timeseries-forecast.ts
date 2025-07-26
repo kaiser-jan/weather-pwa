@@ -51,7 +51,12 @@ export async function loadTimeseriesForecast(coordinates: Coordinates, offset = 
     { outKey: 'temperature', inKey: 't2m', type: 'normal' },
     { outKey: 'temperature_min', inKey: 'mnt2m', type: 'normal' },
     { outKey: 'temperature_max', inKey: 'mxt2m', type: 'normal' },
-    { outKey: 'precipitation_amount', inKey: 'rr_acc', type: 'accumulated-until' },
+    {
+      outKey: 'precipitation_amount',
+      inKey: 'rr_acc',
+      type: 'accumulated-until',
+      asDeltaPer: Duration.fromObject({ hours: 1 }),
+    },
     { outKey: 'relative_humidity', inKey: 'rh2m', type: 'normal' },
     { outKey: 'pressure', inKey: 'sp', type: 'normal' },
     { outKey: 'cloud_coverage', inKey: 'tcc', type: 'normal', multiplier: 100 },

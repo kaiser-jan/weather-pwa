@@ -40,7 +40,7 @@ export async function loadTimeseriesForecast(coordinates: Coordinates, offset = 
   const configs: TimeSeriesConfig<(typeof REQUESTED_WEATHER_PARAMETERS)[number], keyof MultivariateTimeSeries>[] = [
     { outKey: 'temperature', inKey: 't2m', type: 'normal' },
     { outKey: 'relative_humidity', inKey: 'rh2m', type: 'normal' },
-    { outKey: 'precipitation_amount', inKey: 'rr', type: 'normal' },
+    { outKey: 'precipitation_amount', inKey: 'rr', type: 'normal', multiplier: 4 }, // * 4 to go from mm/15min to mm/h
     { outKey: 'wind_speed', inKey: 'ff', type: 'normal' },
     { outKey: 'wind_degrees', inKey: 'dd', type: 'normal' },
     { outKey: 'wind_speed_gust', inKey: 'fx', type: 'normal' },

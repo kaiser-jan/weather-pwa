@@ -77,7 +77,7 @@ export async function loadLocationforecast(coordinates: Coordinates) {
     if (timeStep.data.next_1_hours?.details) {
       addData(
         multiseries1Hours,
-        transformTimePeriod(timeStep.data.next_1_hours.details),
+        transformTimePeriod(timeStep.data.next_1_hours.details, Duration.fromObject({ hour: 1 })),
         datetime,
         Duration.fromObject({ hour: 1 }),
       )
@@ -85,7 +85,7 @@ export async function loadLocationforecast(coordinates: Coordinates) {
     if (timeStep.data.next_6_hours?.details) {
       addData(
         multiseries6Hours,
-        transformTimePeriod(timeStep.data.next_6_hours.details),
+        transformTimePeriod(timeStep.data.next_6_hours.details, Duration.fromObject({ hour: 6 })),
         datetime,
         Duration.fromObject({ hour: 6 }),
       )
@@ -93,7 +93,7 @@ export async function loadLocationforecast(coordinates: Coordinates) {
     if (timeStep.data.next_12_hours?.details) {
       addData(
         multiseries12Hours,
-        transformTimePeriod(timeStep.data.next_12_hours.details),
+        transformTimePeriod(timeStep.data.next_12_hours.details, Duration.fromObject({ hour: 12 })),
         datetime,
         Duration.fromObject({ hour: 12 }),
       )
@@ -123,10 +123,12 @@ function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<Weathe
   }
 }
 
-function transformTimePeriod(period: MetnoForecastTimePeriod): Partial<WeatherInstant> {
+function transformTimePeriod(period: MetnoForecastTimePeriod, duration: Duration): Partial<WeatherInstant> {
+  const toHourFactor = (60 * 60 * 1000) / duration.toMillis()
   return {
     uvi_clear_sky: period.ultraviolet_index_clear_sky_max,
-    precipitation_amount: period.precipitation_amount,
+    // mm | expected precipitation amount for period
+    precipitation_amount: period.precipitation_amount ? period.precipitation_amount * toHourFactor : undefined,
     precipitation_probability: period.probability_of_precipitation,
     thunder_probability: period.probability_of_thunder,
   }
