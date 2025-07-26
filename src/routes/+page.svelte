@@ -11,7 +11,7 @@
   import { forecastStore } from '$lib/stores/data'
   import { coordinates } from '$lib/stores/location'
   import { NOW } from '$lib/stores/now'
-  import { selectedDay } from '$lib/stores/ui'
+  import { dayView } from '$lib/stores/ui'
   import { BinocularsIcon, CalendarDaysIcon, ChevronRightIcon, ClockIcon } from '@lucide/svelte'
 
   let scrollContainer = $state<HTMLElement>()
@@ -40,7 +40,7 @@
       title="Today"
       icon={ClockIcon}
       actionIcon={ChevronRightIcon}
-      onclick={() => selectedDay.set($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))) ?? null)}
+      onclick={() => dayView.open($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))) ?? null)}
     />
     <SectionTodayChart />
 

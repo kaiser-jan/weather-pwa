@@ -8,15 +8,14 @@
   import { SettingsIcon } from '@lucide/svelte'
   import PageChangelog from './pages/PageChangelog.svelte'
   import { onMount, tick } from 'svelte'
+  import { pushState, replaceState } from '$app/navigation'
+  import { page } from '$app/state'
 
   interface Props {
-    path?: string[]
     config: ConfigItem[]
   }
 
-  let { path = $bindable([]), config }: Props = $props()
-
-  let recentPath = $state<typeof path | null>(null)
+  let { config }: Props = $props()
 
   type Page = NestableSetting & { path: string[] }
 
@@ -32,7 +31,9 @@
       },
     ]
 
-    for (const [index, key] of path.entries()) {
+    if (!page.state.settingsPath) page.state.settingsPath = []
+
+    for (const [index, key] of page.state.settingsPath.entries()) {
       const lastPage = _pages[_pages.length - 1]
       if (!('children' in lastPage)) {
         return _pages
@@ -48,7 +49,7 @@
       }
 
       if (lastPage.type === 'list' && !isNaN(parseInt(key))) {
-        const values = settings.readSetting(path.slice(0, index)).value as Record<string, unknown>[]
+        const values = settings.readSetting(page.state.settingsPath.slice(0, index)).value as Record<string, unknown>[]
         const hasName = values && lastPage.nameProperty && lastPage.nameProperty in values[parseInt(key)]
         let label = hasName ? (values[parseInt(key)][lastPage.nameProperty] as string) : key
 
@@ -62,19 +63,19 @@
       }
 
       if (!childPage || !('children' in childPage)) {
-        console.warn(`Path ${path} could not be traversed, as ${key} does not contain items.`)
+        console.warn(`Path ${page.state.settingsPath} could not be traversed, as ${key} does not contain items.`)
         continue
       }
 
-      _pages.push({ ...childPage, path: path.slice(0, index + 1) })
+      _pages.push({ ...childPage, path: page.state.settingsPath.slice(0, index + 1) })
     }
 
     return _pages
   })
 
   function navigateToKey(key: string) {
-    path = [...path, key]
-    recentPath = null
+    const newPath = [...page.state.settingsPath, key]
+    pushState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
   }
 
   let scrollContainer: HTMLDivElement
@@ -89,18 +90,16 @@
   function updateScroll() {
     const gap = parseInt(getComputedStyle(scrollContainer).gap, 10)
     scrollContainer.style.left =
-      -1 * path.length * (scrollContainer.parentElement!.getBoundingClientRect().width + gap) + 'px'
+      -1 * page.state.settingsPath.length * (scrollContainer.parentElement!.getBoundingClientRect().width + gap) + 'px'
   }
 
   function handleSwipe(event: SwipeCustomEvent) {
     switch (event.detail.direction) {
       case 'right':
-        recentPath = $state.snapshot(path)
-        path.pop()
+        history.back()
         break
       case 'left':
-        if (recentPath) path = recentPath
-        recentPath = null
+        history.forward()
         break
     }
   }
@@ -114,16 +113,26 @@
 <div class="flex min-h-0 grow flex-col gap-4 overflow-x-visible p-4 pb-0">
   <Breadcrumb.Root>
     <Breadcrumb.List>
-      {#each pages as page, index (page.id)}
+      {#each pages as settingsPage, index (settingsPage.id)}
         {#if index !== 0}
           <Breadcrumb.Separator />
         {/if}
         <Breadcrumb.Item>
           <Breadcrumb.Link
             onclick={() => {
-              recentPath = $state.snapshot(path)
-              path = page.path
-            }}>{page.label}</Breadcrumb.Link
+              const currentLength = page.state.settingsPath.length
+              const targetLength = settingsPage.path.length
+              const moveBackBy = currentLength - targetLength
+              for (let i = 0; i < moveBackBy; i++) {
+                history.back()
+              }
+
+              // or should we store only the old path in the forward history, and omit the skipped items?
+              // const recentPath = $state.snapshot(page.state.settingsPath)
+              // replaceState('', { ...page.state, settingsPath: settingsPage.path })
+              // pushState('', { ...page.state, settingsPath: $state.snapshot(recentPath) })
+              // history.back()
+            }}>{settingsPage.label}</Breadcrumb.Link
           >
         </Breadcrumb.Item>
       {/each}
@@ -143,24 +152,28 @@
       class="absolute flex h-full w-full flex-row gap-6 transition-all duration-300 ease-in-out"
       bind:this={scrollContainer}
     >
-      {#each pages as page, i (page.id)}
+      {#each pages as settingsPage, i (settingsPage.id)}
         <div
           class="flex h-full w-full shrink-0 flex-col gap-2 overflow-hidden overflow-y-auto"
           bind:this={historyElements[i]}
         >
-          {#if page.type === 'list'}
+          {#if settingsPage.type === 'list'}
             <PageList
-              item={page}
-              value={settings.readSetting(page.path).value as Record<string, unknown>[]}
+              item={settingsPage}
+              value={settings.readSetting(settingsPage.path).value as Record<string, unknown>[]}
               onnavigate={(t) => navigateToKey(t)}
               onchange={(v) => {
-                settings.writeSetting(path, v)
+                settings.writeSetting(page.state.settingsPath, v)
               }}
             />
-          {:else if page.type === 'changelog'}
+          {:else if settingsPage.type === 'changelog'}
             <PageChangelog />
           {:else}
-            <SettingsRenderer config={page.children} path={path.slice(0, i)} onnavigate={(t) => navigateToKey(t)} />
+            <SettingsRenderer
+              config={settingsPage.children}
+              path={page.state.settingsPath.slice(0, i)}
+              onnavigate={(t) => navigateToKey(t)}
+            />
           {/if}
         </div>
       {/each}

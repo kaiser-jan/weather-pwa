@@ -8,12 +8,12 @@
   import { NOW } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
-  import { selectedDay } from '$lib/stores/ui'
+  import { dayView } from '$lib/stores/ui'
 </script>
 
 <div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
   {#each $forecastStore?.daily.slice(0, 3) ?? [] as day (day.datetime)}
-    <button class="inline-flex flex-row items-center justify-between gap-3" onclick={() => selectedDay.set(day)}>
+    <button class="inline-flex flex-row items-center justify-between gap-3" onclick={() => dayView.open(day)}>
       <span class="w-[3ch]">{day.datetime.toFormat('ccc')}</span>
 
       <div class="flex grow gap-2">

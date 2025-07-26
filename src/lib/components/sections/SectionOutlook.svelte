@@ -1,16 +1,16 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
-  import { selectedDay } from '$lib/stores/ui'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
+  import { dayView } from '$lib/stores/ui'
 </script>
 
 <div class="bg-midground flex flex-row overflow-y-auto rounded-md py-1.5">
   {#each $forecastStore?.daily ?? [] as day (day.datetime)}
     <button
       class="flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1"
-      onclick={() => selectedDay.set(day)}
+      onclick={() => dayView.open(day)}
     >
       <span>{day.datetime.toFormat('ccc')}</span>
 

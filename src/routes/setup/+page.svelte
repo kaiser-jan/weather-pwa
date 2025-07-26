@@ -2,8 +2,8 @@
   import { goto } from '$app/navigation'
   import { Button } from '$lib/components/ui/button'
   import { geolocationStore } from '$lib/stores/geolocation'
-  import { coordinates } from '$lib/stores/location'
-  import { selectedLocation, showLocationSearch } from '$lib/stores/ui'
+  import { coordinates, selectedLocation } from '$lib/stores/location'
+  import { locationSearch } from '$lib/stores/ui'
   import { NavigationIcon, SearchIcon } from '@lucide/svelte'
   import { onMount } from 'svelte'
 
@@ -32,7 +32,7 @@
       <NavigationIcon /> Use current location
     </Button>
     or
-    <Button class="text-base" onclick={() => showLocationSearch.set(true)}>
+    <Button class="text-base" onclick={locationSearch.show}>
       <SearchIcon /> Search a location
     </Button>
   </section>

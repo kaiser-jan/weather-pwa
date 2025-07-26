@@ -5,7 +5,8 @@
   import LocationSearch from './LocationSearch.svelte'
   import { iconMap } from '$lib/utils/icons'
   import { SearchIcon } from '@lucide/svelte'
-  import { selectedLocation, showLocationSearch } from '$lib/stores/ui'
+  import { locationSearch } from '$lib/stores/ui'
+  import { selectedLocation } from '$lib/stores/location'
 
   const geolocationDetails = geolocationStore.details
 
@@ -56,7 +57,7 @@
     {:else}
       <button
         class="text-text-muted line-clamp-2 flex h-14 w-fit grow flex-row items-center gap-2 p-2 px-3 text-sm"
-        onclick={() => showLocationSearch.set(true)}
+        onclick={locationSearch.show}
       >
         Pin a location from <SearchIcon class="inline" /> search!
       </button>

@@ -1,51 +1,76 @@
-import { settings } from '$lib/settings/store'
 import type { Coordinates, TimeBucket } from '$lib/types/data'
-import type { Location } from '$lib/types/ui'
-import { get, writable } from 'svelte/store'
-import { persisted } from 'svelte-persisted-store'
+import { page } from '$app/state'
+import { pushState } from '$app/navigation'
+import { forecastStore } from './data'
+import { get } from 'svelte/store'
+import { DateTime } from 'luxon'
 
-type LocationSelection =
-  | { type: 'saved'; location: Location }
-  | { type: 'geolocation' }
-  | { type: 'search'; coordinates: Coordinates }
+export const locationSearch = {
+  hide: () => history.back(),
+  show: () => pushState('', { ...page.state, showLocationSearch: true }),
+}
 
-export const selectedLocation = persisted<LocationSelection | null>('selected-location', null, {
-  // some safety for parsing - maybe consider zod
-  beforeRead: (previous) => {
-    if (!previous) return null
-
-    switch (previous.type) {
-      case 'geolocation':
-        return { type: 'geolocation' }
-      case 'search':
-        return { type: 'search', coordinates: previous.coordinates }
-      case 'saved':
-        return getLocationSaved(previous.location.id)
-      default:
-        return getLocationFallback()
-    }
+export const dayView = {
+  _selectedOnOpen: null as DateTime | null,
+  hide: async () => {
+    popUntil((s) => !s.selectedDayDatetime)
   },
-})
+  // consider always setting today as root
+  // selectRecursive: (target: TimeBucket | null) => {
+  //   if (!target || !get(forecastStore)?.daily) return
+  //   for (const day of get(forecastStore)!.daily) {
+  //     dayView._select(day)
+  //     if (day.datetime.toISO() === target.datetime.toISO()) return
+  //   }
+  // },
+  open: (target: TimeBucket | null) => {
+    if (!target) return
+    dayView._selectedOnOpen = target.datetime
+    dayView.select(target)
+  },
+  select: (target: TimeBucket) => {
+    pushState('', { ...page.state, selectedDayDatetime: target.datetime.toISO() })
+  },
+  previous: () => {
+    if (!page.state.selectedDayDatetime) return
 
-function getLocationSaved(id: string): LocationSelection {
-  const settingLocations = get(settings).data.locations
-  let location = settingLocations.find((l) => l.id === id)
-  if (location) {
-    return { type: 'saved', location }
-  }
+    const isAfterInitial =
+      !dayView._selectedOnOpen || DateTime.fromISO(page.state.selectedDayDatetime) > dayView._selectedOnOpen
+    if (isAfterInitial) {
+      history.back()
+      return
+    }
 
-  return getLocationFallback()
+    const forecast = get(forecastStore)
+    if (!forecast) return
+    const currentIndex = forecast.daily.findIndex((d) => d.datetime.toISO() === page.state.selectedDayDatetime!)
+    dayView.select(forecast.daily[currentIndex - 1])
+  },
+  next: () => {
+    if (!page.state.selectedDayDatetime) return
+
+    const isBeforeInitial =
+      !dayView._selectedOnOpen || DateTime.fromISO(page.state.selectedDayDatetime) < dayView._selectedOnOpen
+    if (isBeforeInitial) {
+      history.back()
+      return
+    }
+
+    const forecast = get(forecastStore)
+    if (!forecast) return
+    const currentIndex = forecast.daily.findIndex((d) => d.datetime.toISO() === page.state.selectedDayDatetime!)
+    dayView.select(forecast.daily[currentIndex + 1])
+  },
 }
 
-function getLocationFallback(): LocationSelection {
-  const settingLocations = get(settings).data.locations
-  const firstLocation = settingLocations[0]
-  if (firstLocation) {
-    return { type: 'saved', location: firstLocation }
-  } else {
-    return { type: 'geolocation' }
+function popUntil(condition: (state: typeof page.state) => boolean) {
+  const handler = () => {
+    if (!page.state || condition(page.state)) {
+      window.removeEventListener('popstate', handler)
+    } else {
+      history.back()
+    }
   }
+  window.addEventListener('popstate', handler)
+  history.back()
 }
-
-export const selectedDay = writable<TimeBucket | null>(null)
-export const showLocationSearch = writable<boolean>(false)

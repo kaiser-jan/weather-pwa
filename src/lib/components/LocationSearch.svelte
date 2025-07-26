@@ -33,7 +33,9 @@
   import { reverseGeocoding } from '$lib/data/location'
   import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
   import { persistantState } from '$lib/utils/state.svelte'
-  import { selectedLocation, showLocationSearch } from '$lib/stores/ui'
+  import { selectedLocation } from '$lib/stores/location'
+  import { page } from '$app/state'
+  import { locationSearch } from '$lib/stores/ui'
 
   const geolocationDetails = geolocationStore.details
 
@@ -46,7 +48,7 @@
   let isLoading = $state(false)
 
   $effect(() => {
-    if ($showLocationSearch) geolocationStore.start()
+    if (page.state.showLocationSearch) geolocationStore.start()
   })
 
   const savedLocations = settings.select((s) => s.data.locations)
@@ -122,9 +124,23 @@
     const itemsUppercase = items.map((i) => i.charAt(0).toUpperCase() + i.slice(1))
     return itemsUppercase.join(' ')
   }
+
+  const geolocationItem = $derived({
+    id: ITEM_ID_GEOLOCATION,
+    icon: $geolocationDetails.icon,
+    label: $geolocationDetails.label ?? '',
+    sublabel: $geolocationAddress ?? '',
+    coordinates: undefined,
+    select: () => {
+      selectedLocation.set({ type: 'geolocation' })
+      locationSearch.hide()
+    },
+  })
 </script>
 
-<Drawer.Root bind:open={$showLocationSearch}>
+<Drawer.Root
+  bind:open={() => page.state.showLocationSearch ?? false, (o) => (o ? locationSearch.show() : locationSearch.hide())}
+>
   <!-- bind:open={isOpen} -->
   <Drawer.Trigger
     class={cn(
@@ -143,21 +159,10 @@
       <div class="flex grow flex-col gap-4 overflow-y-auto">
         <LocationList
           title="Geolocation"
+          placeholderLoading="Loading your geolocation..."
           placeholderEmpty="Here should be your geolocation... :("
           loading={$geolocationStore.status === 'loading'}
-          items={[
-            {
-              id: ITEM_ID_GEOLOCATION,
-              icon: $geolocationDetails.icon,
-              label: $geolocationDetails.label ?? '',
-              sublabel: $geolocationAddress ?? '',
-              coordinates: undefined,
-              select: () => {
-                selectedLocation.set({ type: 'geolocation' })
-                showLocationSearch.set(false)
-              },
-            },
-          ]}
+          items={$geolocationStore.status === 'loading' ? [] : [geolocationItem]}
         />
 
         <LocationList
@@ -171,7 +176,7 @@
             coordinates: location,
             select: () => {
               selectedLocation.set({ type: 'saved', location })
-              showLocationSearch.set(false)
+              locationSearch.hide()
             },
           }))}
         />
@@ -201,7 +206,7 @@
                   altitude: null,
                 },
               })
-              showLocationSearch.set(false)
+              locationSearch.hide()
             },
           })) ?? null}
         />

@@ -6,9 +6,9 @@
   import ParameterSelect from '$lib/components/ParameterSelect.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
-  import { selectedDay } from '$lib/stores/ui'
   import { swipe } from 'svelte-gestures'
   import { settings } from '$lib/settings/store'
+  import { dayView } from '$lib/stores/ui'
 
   const today = $derived($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))))
 
@@ -26,12 +26,12 @@
 
   {#if today}
     <button
-      onclick={() => selectedDay.set(today)}
+      onclick={() => dayView.open(today)}
       use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30, touchAction: 'pan-y' })}
       onswipe={(e) => {
         const tomorrow = $forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day').plus({ days: 1 })))
         if (!tomorrow) return
-        if (e.detail.direction === 'left') selectedDay.set(tomorrow)
+        if (e.detail.direction === 'left') dayView.open(tomorrow)
       }}
     >
       <WeatherChart
