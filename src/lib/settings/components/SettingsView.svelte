@@ -7,6 +7,7 @@
   import PageList from './pages/PageList.svelte'
   import { SettingsIcon } from '@lucide/svelte'
   import PageChangelog from './pages/PageChangelog.svelte'
+  import { onMount, tick } from 'svelte'
 
   interface Props {
     path?: string[]
@@ -87,13 +88,11 @@
 
   function updateScroll() {
     const gap = parseInt(getComputedStyle(scrollContainer).gap, 10)
-
     scrollContainer.style.left =
       -1 * path.length * (scrollContainer.parentElement!.getBoundingClientRect().width + gap) + 'px'
   }
 
   function handleSwipe(event: SwipeCustomEvent) {
-    console.info(event.detail.direction)
     switch (event.detail.direction) {
       case 'right':
         recentPath = $state.snapshot(path)
@@ -105,6 +104,11 @@
         break
     }
   }
+
+  onMount(() => {
+    window.addEventListener('resize', updateScroll)
+    return () => window.removeEventListener('resize', updateScroll)
+  })
 </script>
 
 <div class="flex min-h-0 grow flex-col gap-4 overflow-x-visible p-4 pb-0">
@@ -130,7 +134,11 @@
   <!-- <br /> -->
   <!-- {pages.map((p) => p.path).join(';')} -->
 
-  <div class="relative grow" use:swipe={() => ({ timeframe: 300, minSwipeDistance: 30 })} onswipe={handleSwipe}>
+  <div
+    class="relative grow"
+    use:swipe={() => ({ timeframe: 300, minSwipeDistance: 30, touchAction: 'pan-y' })}
+    onswipe={handleSwipe}
+  >
     <div
       class="absolute flex h-full w-full flex-row gap-6 transition-all duration-300 ease-in-out"
       bind:this={scrollContainer}

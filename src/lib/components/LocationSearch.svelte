@@ -116,6 +116,8 @@
   })
 
   function typeToString(label: string) {
+    // https://wiki.openstreetmap.org/wiki/Key:building
+    if (label === 'yes') return 'Building'
     const items = label.split('_')
     const itemsUppercase = items.map((i) => i.charAt(0).toUpperCase() + i.slice(1))
     return itemsUppercase.join(' ')
