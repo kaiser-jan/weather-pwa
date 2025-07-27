@@ -2,44 +2,20 @@
   import { Button, buttonVariants } from '$lib/components/ui/button'
   import * as Drawer from '$lib/components/ui/drawer'
   import { Input } from '$lib/components/ui/input'
-  import { cn, debounce } from '$lib/utils'
-  import {
-    AlertCircleIcon,
-    BinocularsIcon,
-    BuildingIcon,
-    CarIcon,
-    ChevronLeftIcon,
-    DumbbellIcon,
-    HammerIcon,
-    type Icon as IconType,
-    LandmarkIcon,
-    LayersIcon,
-    LeafIcon,
-    MapPinIcon,
-    MapPinnedIcon,
-    MountainIcon,
-    PlaneIcon,
-    SearchIcon,
-    StoreIcon,
-    TrainIcon,
-    WavesIcon,
-    XIcon,
-  } from '@lucide/svelte'
+  import { cn } from '$lib/utils'
+  import { ChevronLeftIcon, MapPinnedIcon, SearchIcon, XIcon } from '@lucide/svelte'
   import { settings } from '$lib/settings/store'
   import { iconMap } from '$lib/utils/icons'
-  import type { PlaceOutput } from '$lib/types/nominatim'
   import { geolocationStore } from '$lib/stores/geolocation'
   import { readable } from 'svelte/store'
   import LocationList from './LocationList.svelte'
   import { reverseGeocoding } from '$lib/data/location'
-  import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
-  import { persistantState } from '$lib/utils/state.svelte'
+  import { ITEM_ID_GEOLOCATION } from '$lib/types/ui'
   import { selectedLocation } from '$lib/stores/location'
   import { page } from '$app/state'
   import { locationSearch } from '$lib/stores/ui'
-  import { pushState, replaceState } from '$app/navigation'
-  import { onMount } from 'svelte'
   import { popUntil } from '$lib/utils'
+  import LocationSearchResults from './LocationSearchResults.svelte'
 
   const geolocationDetails = geolocationStore.details
 
@@ -49,109 +25,14 @@
 
   let { active }: Props = $props()
 
-  let isLoading = $state(false)
-
   $effect(() => {
     if (page.state.showLocationSearch) geolocationStore.start()
   })
 
-  const savedLocations = settings.select((s) => s.data.locations)
-
-  // https://gist.githubusercontent.com/seeebiii/d929a2ee2601791554d315f212164ed6/raw/poi_nominatim.json
-  export const classIconMap: Record<string, typeof IconType> = {
-    boundary: MapPinIcon,
-    historic: LandmarkIcon,
-    shop: StoreIcon,
-    natural: LeafIcon,
-    man_made: HammerIcon,
-    amenity: BuildingIcon,
-    waterway: WavesIcon,
-    mountain_pass: MountainIcon,
-    emergency: AlertCircleIcon,
-    tourism: BinocularsIcon,
-    building: BuildingIcon,
-    landuse: LayersIcon,
-    place: MapPinIcon,
-    railway: TrainIcon,
-    highway: CarIcon,
-    leisure: DumbbellIcon,
-    aeroway: PlaneIcon,
-  }
-
   let currentQuery = $state<string | null>(page.state.locationQuery)
-  let currentResults = $state<PlaceOutput[] | null>(null)
-  const cachedResults = persistantState<{ query: string; results: PlaceOutput[] }[]>(
-    'cache-location-search-results',
-    [],
-  )
+  let searchNow = $state<() => void>(() => {})
 
-  const debouncedLoadResults = debounce(loadNewResults, 1000)
-
-  onMount(() => {
-    const handler = async () => {
-      currentQuery = page.state.locationQuery
-      currentResults = await loadResults()
-    }
-    window.addEventListener('popstate', handler)
-
-    return () => window.removeEventListener('popstate', handler)
-  })
-
-  function saveToHistory() {
-    // consider saving each search as an history entry
-    if (page.state.locationQuery) {
-      replaceState('', { ...page.state, locationQuery: $state.snapshot(currentQuery) })
-    } else {
-      pushState('', { ...page.state, locationQuery: $state.snapshot(currentQuery) })
-    }
-  }
-
-  async function loadNewResults() {
-    if (!currentQuery || currentQuery === null) return
-
-    isLoading = true
-    saveToHistory()
-    currentResults = await loadResults()
-    isLoading = false
-  }
-
-  async function tryLoadCachedResults(newQuery: string) {
-    const cached = cachedResults.value.find((c) => c.query === newQuery)
-    if (!cached) return
-    currentResults = cached.results
-    currentQuery = newQuery
-    saveToHistory()
-  }
-
-  async function loadResults() {
-    // create a copy to keep during async calls
-    const query = $state.snapshot(page.state.locationQuery)
-    if (!query || query === '') return null
-
-    const cache = cachedResults.value.find((c) => c.query === query)
-    if (cache) {
-      return cache.results
-    }
-
-    console.log(`Searching for "${query}"...`)
-    const url = new URL('https://nominatim.openstreetmap.org/search')
-    url.searchParams.append('limit', '10')
-    url.searchParams.append('q', query!)
-    url.searchParams.append('format', 'json')
-    // url.searchParams.append('layer', ['address', 'poi', 'manmade'].join(','))
-    // url.searchParams.append('featureType', ['city', 'settlement'].join(','))
-    // countrycodes https://nominatim.org/release-docs/develop/api/Search/#result-restriction
-    const response = await fetch(url.toString())
-    const newResults = await response.json()
-    console.debug(newResults)
-
-    if (!newResults) return null
-    const MAX_ENTRIES = 10
-    cachedResults.value.unshift({ query: query!, results: newResults })
-    if (cachedResults.value.length > MAX_ENTRIES) cachedResults.value.length = MAX_ENTRIES
-
-    return newResults
-  }
+  const savedLocations = settings.select((s) => s.data.locations)
 
   const geolocationAddress = readable<string | null>(null, (set) => {
     const unsubscribe = geolocationStore.subscribe(async (g) => {
@@ -169,14 +50,6 @@
 
     return unsubscribe
   })
-
-  function typeToString(label: string) {
-    // https://wiki.openstreetmap.org/wiki/Key:building
-    if (label === 'yes') return 'Building'
-    const items = label.split('_')
-    const itemsUppercase = items.map((i) => i.charAt(0).toUpperCase() + i.slice(1))
-    return itemsUppercase.join(' ')
-  }
 
   const geolocationItem = $derived({
     id: ITEM_ID_GEOLOCATION,
@@ -224,34 +97,7 @@
             </span>
           </button>
           <div class="flex grow flex-col gap-4 overflow-y-auto">
-            <LocationList
-              placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
-              placeholderNull="Search will start when you finish typing."
-              placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
-              loading={isLoading}
-              items={currentResults?.map((r) => ({
-                id: ITEM_ID_TEMPORARY,
-                icon: classIconMap[r.category ?? r.class ?? ''],
-                label: r.name !== '' ? r.name : typeToString(r.type),
-                sublabel: r.display_name,
-                coordinates: {
-                  latitude: parseFloat(r?.lat),
-                  longitude: parseFloat(r?.lon),
-                  altitude: null,
-                },
-                select: () => {
-                  selectedLocation.set({
-                    type: 'search',
-                    coordinates: {
-                      latitude: parseFloat(r?.lat),
-                      longitude: parseFloat(r?.lon),
-                      altitude: null,
-                    },
-                  })
-                  locationSearch.hide()
-                },
-              })) ?? null}
-            />
+            <LocationSearchResults bind:liveQuery={currentQuery} bind:searchNow />
           </div>
         </div>
       {:else}
@@ -265,8 +111,7 @@
               title="Geolocation"
               placeholderLoading="Loading your geolocation..."
               placeholderEmpty="Here should be your geolocation... :("
-              loading={$geolocationStore.status === 'loading'}
-              items={$geolocationStore.status === 'loading' ? [] : [geolocationItem]}
+              items={[geolocationItem]}
             />
 
             <LocationList
@@ -292,12 +137,8 @@
         <Input
           placeholder="Search any location..."
           bind:value={currentQuery}
-          oninput={(e) => {
-            debouncedLoadResults()
-            tryLoadCachedResults((e.target as HTMLInputElement).value)
-          }}
           onkeypress={(e) => {
-            if (e.key === 'Enter') loadNewResults()
+            if (e.key === 'Enter') searchNow()
           }}
           class="h-12"
         />

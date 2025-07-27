@@ -8,7 +8,7 @@ import { popUntil } from '$lib/utils'
 
 export const locationSearch = {
   hide: () => history.back(),
-  show: () => pushState('', { ...page.state, showLocationSearch: true }),
+  show: () => pushState('', { ...page.state, showLocationSearch: true, locationQuery: null }),
 }
 
 export const dayView = {

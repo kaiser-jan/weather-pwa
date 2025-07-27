@@ -137,7 +137,8 @@
           {#if item.icon}
             <item.icon class="shrink-0" />
           {:else}
-            <MapPinIcon class="text-text-muted shrink-0" />
+            <LoaderPulsatingRing className="size-5" />
+            <!-- <MapPinIcon class="text-text-muted shrink-0" /> -->
           {/if}
           <span class="overflow-hidden text-ellipsis">{item.label}</span>
         </div>
