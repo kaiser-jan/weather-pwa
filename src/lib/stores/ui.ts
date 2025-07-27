@@ -4,6 +4,7 @@ import { pushState } from '$app/navigation'
 import { forecastStore } from './data'
 import { get } from 'svelte/store'
 import { DateTime } from 'luxon'
+import { popUntil } from '$lib/utils'
 
 export const locationSearch = {
   hide: () => history.back(),
@@ -61,16 +62,4 @@ export const dayView = {
     const currentIndex = forecast.daily.findIndex((d) => d.datetime.toISO() === page.state.selectedDayDatetime!)
     dayView.select(forecast.daily[currentIndex + 1])
   },
-}
-
-function popUntil(condition: (state: typeof page.state) => boolean) {
-  const handler = () => {
-    if (!page.state || condition(page.state)) {
-      window.removeEventListener('popstate', handler)
-    } else {
-      history.back()
-    }
-  }
-  window.addEventListener('popstate', handler)
-  history.back()
 }

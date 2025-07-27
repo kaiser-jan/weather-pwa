@@ -36,6 +36,9 @@
   import { selectedLocation } from '$lib/stores/location'
   import { page } from '$app/state'
   import { locationSearch } from '$lib/stores/ui'
+  import { pushState } from '$app/navigation'
+  import { onMount } from 'svelte'
+  import { popUntil } from '$lib/utils'
 
   const geolocationDetails = geolocationStore.details
 
@@ -74,30 +77,61 @@
     aeroway: PlaneIcon,
   }
 
-  let search = persistantState('location-search-term', '')
-  let results = persistantState<PlaceOutput[] | null>('location-search-results', null)
+  let search = $state<string | null>(page.state.locationQuery)
+  let currentResults = $state<PlaceOutput[] | null>(null)
+  const cachedResults = persistantState<{ query: string; results: PlaceOutput[] }[]>(
+    'cache-location-search-results',
+    [],
+  )
 
-  const debouncedLoadResults = debounce(loadResults, 2000)
+  const debouncedLoadResults = debounce(loadNewResults, 2000)
+
+  onMount(() => {
+    const handler = async () => {
+      search = page.state.locationQuery
+      currentResults = await loadResults()
+    }
+    window.addEventListener('popstate', handler)
+
+    return () => window.removeEventListener('popstate', handler)
+  })
+
+  async function loadNewResults() {
+    if (!search || search === null) return
+    pushState('', { ...page.state, locationQuery: $state.snapshot(search) })
+    isLoading = true
+    currentResults = await loadResults()
+    isLoading = false
+  }
 
   async function loadResults() {
-    const query = $state.snapshot(search.value)
-    if (query === '') return
-    console.log(`Searching for "${query}"...`)
-    isLoading = true
+    // create a copy to keep during async calls
+    const query = $state.snapshot(page.state.locationQuery)
+    if (!query || query === '') return null
 
+    const cache = cachedResults.value.find((c) => c.query === query)
+    if (cache) {
+      return cache.results
+    }
+
+    console.log(`Searching for "${query}"...`)
     const url = new URL('https://nominatim.openstreetmap.org/search')
     url.searchParams.append('limit', '10')
-    url.searchParams.append('q', query)
+    url.searchParams.append('q', query!)
     url.searchParams.append('format', 'json')
     // url.searchParams.append('layer', ['address', 'poi', 'manmade'].join(','))
     // url.searchParams.append('featureType', ['city', 'settlement'].join(','))
     // countrycodes https://nominatim.org/release-docs/develop/api/Search/#result-restriction
     const response = await fetch(url.toString())
-    const json = await response.json()
-    console.debug(json)
+    const newResults = await response.json()
+    console.debug(newResults)
 
-    results.value = json
-    isLoading = false
+    if (!newResults) return null
+    const MAX_ENTRIES = 10
+    cachedResults.value.unshift({ query: query!, results: newResults })
+    if (cachedResults.value.length > MAX_ENTRIES) cachedResults.value.length = MAX_ENTRIES
+
+    return newResults
   }
 
   const geolocationAddress = readable<string | null>(null, (set) => {
@@ -183,11 +217,11 @@
 
         <LocationList
           title="Search Results"
-          placeholderEmpty={`No results for "${search.value}".\nTry rephrasing your search!`}
+          placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
           placeholderNull="Use the searchbar to show the weather at another location!"
-          placeholderLoading={`Looking up "${search.value}"...`}
+          placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
           loading={isLoading}
-          items={results.value?.map((r) => ({
+          items={currentResults?.map((r) => ({
             id: ITEM_ID_TEMPORARY,
             icon: classIconMap[r.category ?? r.class ?? ''],
             label: r.name !== '' ? r.name : typeToString(r.type),
@@ -213,12 +247,7 @@
       </div>
 
       <div class="relative">
-        <Input
-          placeholder="Search any location..."
-          bind:value={search.value}
-          oninput={debouncedLoadResults}
-          class="h-12"
-        />
+        <Input placeholder="Search any location..." bind:value={search} oninput={debouncedLoadResults} class="h-12" />
         <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
         {#if search}
           <Button
@@ -226,8 +255,7 @@
             variant="outline"
             class="text-muted-foreground absolute top-1/2 right-2 size-8 -translate-y-1/2"
             onclick={() => {
-              search.value = ''
-              results.value = []
+              popUntil((s) => s.locationQuery === null || !s.showLocationSearch)
             }}
           >
             <XIcon />

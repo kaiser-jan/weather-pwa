@@ -100,7 +100,12 @@
 </script>
 
 <h5 class="text-text-muted -mb-3 text-sm">{title}</h5>
-<div class={['bg-midground flex min-h-10 flex-col justify-center gap-0 rounded-md', disabled ? 'bg-disabled!' : '']}>
+<div
+  class={[
+    'bg-midground flex min-h-10 shrink-0 flex-col justify-center gap-0 rounded-md',
+    disabled ? 'bg-disabled!' : '',
+  ]}
+>
   {#if loading}
     <span class="text-muted-foreground flex flex-row items-center gap-2 px-2 py-1">
       <LoaderPulsatingRing className="size-5" />

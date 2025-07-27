@@ -1,3 +1,4 @@
+import { page } from '$app/state'
 import clsx, { type ClassValue } from 'clsx'
 import { DateTime } from 'luxon'
 import { cubicOut } from 'svelte/easing'
@@ -151,4 +152,16 @@ export function deepEqual(a: unknown, b: unknown): boolean {
 export function createUUID() {
   // NOTE: crypto.randomUUID is not available over http
   return crypto?.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now()
+}
+
+export function popUntil(condition: (state: App.PageState) => boolean) {
+  const handler = () => {
+    if (!page.state || condition(page.state)) {
+      window.removeEventListener('popstate', handler)
+    } else {
+      history.back()
+    }
+  }
+  window.addEventListener('popstate', handler)
+  history.back()
 }

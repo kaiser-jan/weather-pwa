@@ -15,6 +15,7 @@ declare global {
       showSettings: boolean
       settingsPath: string[]
       showLocationSearch: boolean
+      locationQuery: string | null
       selectedDayDatetime: string | null
     }
     // interface Platform {}
