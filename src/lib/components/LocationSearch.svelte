@@ -36,28 +36,10 @@
 
   const savedLocations = settings.select((s) => s.data.locations)
 
-  const geolocationAddress = readable<string | null>(null, (set) => {
-    const unsubscribe = geolocationStore.subscribe(async (g) => {
-      if (!g.position?.coords) return set(null)
-
-      set('Looking up address...')
-
-      try {
-        const result = await reverseGeocoding(g.position.coords)
-        set(result.display_name)
-      } catch {
-        set('Failed to fetch address.')
-      }
-    })
-
-    return unsubscribe
-  })
-
   const geolocationItem = $derived({
     id: ITEM_ID_GEOLOCATION,
     icon: $geolocationDetails.icon,
     label: $geolocationDetails.label ?? '',
-    sublabel: $geolocationAddress ?? '',
     coordinates: undefined,
     select: () => {
       selectedLocation.set({ type: 'geolocation' })
@@ -112,84 +94,80 @@
       style="padding-bottom: calc(1rem + min(2rem, env(safe-area-inset-top)))"
     >
       {#if page.state.locationQuery || currentQuery}
-        <div class="flex min-h-0 shrink grow flex-col gap-4">
-          <button class="text-bold flex w-fit flex-row items-center gap-4" onclick={() => history.back()}>
-            <ChevronLeftIcon />
-            <span class="inline-flex flex-wrap">
-              <span>Search results for&nbsp;</span>
-              <span>"{page.state.locationQuery?.trim() ?? currentQuery}"</span>
-            </span>
-          </button>
-          <div class="flex grow flex-col gap-4 overflow-y-auto">
-            <ApiSearchResult
-              bind:liveQuery={currentQuery}
-              bind:searchNow
-              cacheKey="cache-location-search-results"
-              load={nominatimQuery}
-            >
-              {#snippet children({ isLoading, result })}
-                <LocationList
-                  placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
-                  placeholderNull="Search will start when you finish typing."
-                  placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
-                  loading={isLoading}
-                  items={result?.map((r) => ({
-                    id: ITEM_ID_TEMPORARY,
-                    icon: classIconMap[r.category ?? r.class ?? ''],
-                    label: r.name !== '' ? r.name : typeToString(r.type),
-                    sublabel: r.display_name,
-                    coordinates: {
-                      latitude: parseFloat(r?.lat),
-                      longitude: parseFloat(r?.lon),
-                      altitude: null,
-                    },
-                    select: () => {
-                      selectedLocation.set({
-                        type: 'search',
-                        coordinates: {
-                          latitude: parseFloat(r?.lat),
-                          longitude: parseFloat(r?.lon),
-                          altitude: null,
-                        },
-                      })
-                      locationSearch.hide()
-                    },
-                  })) ?? null}
-                />
-              {/snippet}
-            </ApiSearchResult>
-          </div>
+        <button class="text-bold flex w-fit flex-row items-center gap-4" onclick={() => history.back()}>
+          <ChevronLeftIcon />
+          <span class="inline-flex flex-wrap">
+            <span>Search results for&nbsp;</span>
+            <span>"{page.state.locationQuery?.trim() ?? currentQuery}"</span>
+          </span>
+        </button>
+
+        <div class="flex grow flex-col gap-4 overflow-y-auto">
+          <ApiSearchResult
+            bind:liveQuery={currentQuery}
+            bind:searchNow
+            cacheKey="cache-location-search-results"
+            load={nominatimQuery}
+          >
+            {#snippet children({ isLoading, result })}
+              <LocationList
+                placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
+                placeholderNull="Search will start when you finish typing."
+                placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
+                loading={isLoading}
+                items={result?.map((r) => ({
+                  id: ITEM_ID_TEMPORARY,
+                  icon: classIconMap[r.category ?? r.class ?? ''],
+                  label: r.name !== '' ? r.name : typeToString(r.type),
+                  sublabel: r.display_name,
+                  coordinates: {
+                    latitude: parseFloat(r?.lat),
+                    longitude: parseFloat(r?.lon),
+                    altitude: null,
+                  },
+                  select: () => {
+                    selectedLocation.set({
+                      type: 'search',
+                      coordinates: {
+                        latitude: parseFloat(r?.lat),
+                        longitude: parseFloat(r?.lon),
+                        altitude: null,
+                      },
+                    })
+                    locationSearch.hide()
+                  },
+                })) ?? null}
+              />
+            {/snippet}
+          </ApiSearchResult>
         </div>
       {:else}
-        <div class="flex min-h-0 grow flex-col gap-4">
-          <h1 class="text-bold flex flex-row items-center gap-2 text-xl">
-            <MapPinnedIcon class="shrink-0" />
-            Your Locations
-          </h1>
-          <div class="flex grow flex-col gap-4 overflow-y-auto">
-            <LocationList
-              title="Geolocation"
-              placeholderLoading="Loading your geolocation..."
-              placeholderEmpty="Here should be your geolocation... :("
-              items={[geolocationItem]}
-            />
+        <h1 class="text-bold flex flex-row items-center gap-2 text-xl">
+          <MapPinnedIcon class="shrink-0" />
+          Your Locations
+        </h1>
+        <div class="flex grow flex-col gap-4 overflow-y-auto">
+          <LocationList
+            title="Geolocation"
+            placeholderLoading="Loading your geolocation..."
+            placeholderEmpty="Here should be your geolocation... :("
+            items={[geolocationItem]}
+          />
 
-            <LocationList
-              title="Saved Locations"
-              placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
-              items={$savedLocations.map((location) => ({
-                id: location.id,
-                icon: iconMap[location.icon],
-                label: location.name,
-                sublabel: undefined,
-                coordinates: location,
-                select: () => {
-                  selectedLocation.set({ type: 'saved', location })
-                  locationSearch.hide()
-                },
-              }))}
-            />
-          </div>
+          <LocationList
+            title="Saved Locations"
+            placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
+            items={$savedLocations.map((location) => ({
+              id: location.id,
+              icon: iconMap[location.icon],
+              label: location.name,
+              coordinates: location,
+              select: () => {
+                selectedLocation.set({ type: 'saved', location })
+                locationSearch.hide()
+              },
+            }))}
+          />
         </div>
       {/if}
 
