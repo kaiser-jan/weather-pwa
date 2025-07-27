@@ -3,7 +3,7 @@
   import * as Drawer from '$lib/components/ui/drawer'
   import { Input } from '$lib/components/ui/input'
   import { cn } from '$lib/utils'
-  import { ChevronLeftIcon, MapPinnedIcon, SearchIcon, XIcon } from '@lucide/svelte'
+  import { ChevronLeftIcon, MapPinnedIcon, PencilIcon, SearchIcon, XIcon } from '@lucide/svelte'
   import { settings } from '$lib/settings/store'
   import { iconMap } from '$lib/utils/icons'
   import { geolocationStore } from '$lib/stores/geolocation'
@@ -18,6 +18,7 @@
   import type { PlaceOutput } from '$lib/types/nominatim'
   import ApiSearchResult from './ApiSearchResult.svelte'
   import { onMount } from 'svelte'
+  import { pushState } from '$app/navigation'
 
   const geolocationDetails = geolocationStore.details
 
@@ -168,6 +169,19 @@
               },
             }))}
           />
+          <Button
+            variant="outline"
+            onclick={() => {
+              pushState('', {
+                ...page.state,
+                showLocationSearch: false,
+                showSettings: true,
+                settingsPath: ['data', 'locations'],
+              })
+            }}
+          >
+            <PencilIcon /> Edit saved locations
+          </Button>
         </div>
       {/if}
 
