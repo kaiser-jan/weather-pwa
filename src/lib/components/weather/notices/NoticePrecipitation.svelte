@@ -3,6 +3,7 @@
   import { NOW } from '$lib/stores/now'
   import PrecipitationGroup from '$lib/components/weather/PrecipitationGroup.svelte'
   import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
+  import { Duration } from 'luxon'
 
   interface Props {
     always?: boolean
@@ -11,7 +12,10 @@
   let { always }: Props = $props()
 
   const precipitationGroups = $derived.by(() => {
-    const relevantEndDatetime = $NOW.hour <= 12 ? $NOW.endOf('day') : $NOW.endOf('day').plus({ hours: 6 })
+    // show at least the next x hours
+    const minHours = 8
+    const relevantEndDatetime =
+      $NOW.hour <= 24 - minHours ? $NOW.endOf('day') : $NOW.plus(Duration.fromObject({ hours: minHours }))
     return $precipitationGroupsStore.filter((g) => g.end > $NOW && g.start <= relevantEndDatetime)
   })
 </script>

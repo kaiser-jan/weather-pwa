@@ -20,7 +20,7 @@
   }
 
   interface Props {
-    title: string
+    title?: string
     loading?: boolean
     placeholderEmpty?: string
     placeholderNull?: string
@@ -99,7 +99,9 @@
   }
 </script>
 
-<h5 class="text-text-muted -mb-3 text-sm">{title}</h5>
+{#if title}
+  <h5 class="text-text-muted -mb-3 text-sm">{title}</h5>
+{/if}
 <div
   class={[
     'bg-midground flex min-h-10 shrink-0 flex-col justify-center gap-0 rounded-md',

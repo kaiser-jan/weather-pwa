@@ -8,6 +8,7 @@
     BinocularsIcon,
     BuildingIcon,
     CarIcon,
+    ChevronLeftIcon,
     DumbbellIcon,
     HammerIcon,
     type Icon as IconType,
@@ -170,6 +171,12 @@
       locationSearch.hide()
     },
   })
+
+  function clearSearch() {
+    popUntil((s) => {
+      return s.locationQuery === null || s.locationQuery === undefined || !s.showLocationSearch
+    })
+  }
 </script>
 
 <Drawer.Root
@@ -185,68 +192,85 @@
     <SearchIcon />
   </Drawer.Trigger>
   <Drawer.Content class="h-full">
-    <div class="flex min-h-0 grow flex-col gap-4 p-4">
-      <h1 class="text-bold flex flex-row items-center gap-2 text-xl">
-        <MapPinnedIcon />
-        Location Search
-      </h1>
-      <div class="flex grow flex-col gap-4 overflow-y-auto">
-        <LocationList
-          title="Geolocation"
-          placeholderLoading="Loading your geolocation..."
-          placeholderEmpty="Here should be your geolocation... :("
-          loading={$geolocationStore.status === 'loading'}
-          items={$geolocationStore.status === 'loading' ? [] : [geolocationItem]}
-        />
-
-        <LocationList
-          title="Saved Locations"
-          placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
-          items={$savedLocations.map((location) => ({
-            id: location.id,
-            icon: iconMap[location.icon],
-            label: location.name,
-            sublabel: undefined,
-            coordinates: location,
-            select: () => {
-              selectedLocation.set({ type: 'saved', location })
-              locationSearch.hide()
-            },
-          }))}
-        />
-
-        <LocationList
-          title="Search Results"
-          placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
-          placeholderNull="Use the searchbar to show the weather at another location!"
-          placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
-          loading={isLoading}
-          items={currentResults?.map((r) => ({
-            id: ITEM_ID_TEMPORARY,
-            icon: classIconMap[r.category ?? r.class ?? ''],
-            label: r.name !== '' ? r.name : typeToString(r.type),
-            sublabel: r.display_name,
-            coordinates: {
-              latitude: parseFloat(r?.lat),
-              longitude: parseFloat(r?.lon),
-              altitude: null,
-            },
-            select: () => {
-              selectedLocation.set({
-                type: 'search',
+    <div
+      class="flex h-0 grow flex-col gap-4 p-4"
+      style="padding-bottom: calc(1rem + min(2rem, env(safe-area-inset-top)))"
+    >
+      {#if page.state.locationQuery}
+        <div class="flex min-h-0 shrink grow flex-col gap-4">
+          <button class="text-bold flex w-fit flex-row items-center gap-4" onclick={() => history.back()}>
+            <ChevronLeftIcon />
+            <span class="inline-flex flex-wrap">
+              <span>Search results for&nbsp;</span>
+              <span>"{page.state.locationQuery.trim()}"</span>
+            </span>
+          </button>
+          <div class="flex grow flex-col gap-4 overflow-y-auto">
+            <LocationList
+              placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
+              placeholderNull="Use the searchbar to show the weather at another location!"
+              placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
+              loading={isLoading}
+              items={currentResults?.map((r) => ({
+                id: ITEM_ID_TEMPORARY,
+                icon: classIconMap[r.category ?? r.class ?? ''],
+                label: r.name !== '' ? r.name : typeToString(r.type),
+                sublabel: r.display_name,
                 coordinates: {
                   latitude: parseFloat(r?.lat),
                   longitude: parseFloat(r?.lon),
                   altitude: null,
                 },
-              })
-              locationSearch.hide()
-            },
-          })) ?? null}
-        />
-      </div>
+                select: () => {
+                  selectedLocation.set({
+                    type: 'search',
+                    coordinates: {
+                      latitude: parseFloat(r?.lat),
+                      longitude: parseFloat(r?.lon),
+                      altitude: null,
+                    },
+                  })
+                  locationSearch.hide()
+                },
+              })) ?? null}
+            />
+          </div>
+        </div>
+      {:else}
+        <div class="flex min-h-0 grow flex-col gap-4">
+          <h1 class="text-bold flex flex-row items-center gap-2 text-xl">
+            <MapPinnedIcon class="shrink-0" />
+            Your Locations
+          </h1>
+          <div class="flex grow flex-col gap-4 overflow-y-auto">
+            <LocationList
+              title="Geolocation"
+              placeholderLoading="Loading your geolocation..."
+              placeholderEmpty="Here should be your geolocation... :("
+              loading={$geolocationStore.status === 'loading'}
+              items={$geolocationStore.status === 'loading' ? [] : [geolocationItem]}
+            />
 
-      <div class="relative">
+            <LocationList
+              title="Saved Locations"
+              placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
+              items={$savedLocations.map((location) => ({
+                id: location.id,
+                icon: iconMap[location.icon],
+                label: location.name,
+                sublabel: undefined,
+                coordinates: location,
+                select: () => {
+                  selectedLocation.set({ type: 'saved', location })
+                  locationSearch.hide()
+                },
+              }))}
+            />
+          </div>
+        </div>
+      {/if}
+
+      <div class="relative mt-auto">
         <Input placeholder="Search any location..." bind:value={search} oninput={debouncedLoadResults} class="h-12" />
         <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
         {#if search}
@@ -254,16 +278,12 @@
             size="icon"
             variant="outline"
             class="text-muted-foreground absolute top-1/2 right-2 size-8 -translate-y-1/2"
-            onclick={() => {
-              popUntil((s) => s.locationQuery === null || !s.showLocationSearch)
-            }}
+            onclick={clearSearch}
           >
             <XIcon />
           </Button>
         {/if}
       </div>
     </div>
-
-    <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
   </Drawer.Content>
 </Drawer.Root>
