@@ -1,3 +1,34 @@
+# [1.2.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.1.0...v1.2.0) (2025-07-27)
+
+
+### Bug Fixes
+
+* **chart:** make scrubbing reliable by disabling swipe for now ([1b8e5d9](https://github.com/kaiser-jan/weather-pwa/commit/1b8e5d9f78cebd9db38df99852bbd1ecc5469f4c))
+* **chart:** parameter select visual state not updating ([90365b6](https://github.com/kaiser-jan/weather-pwa/commit/90365b68895460a12733c6552d9bae8dc0373544))
+* **chart:** split storage for chart parameters in day view vs today ([3ddf274](https://github.com/kaiser-jan/weather-pwa/commit/3ddf2746f28d83762fe725269a35a4b8bb6bfb13))
+* **data:** transform precipitation amount in period to per hour ([c602449](https://github.com/kaiser-jan/weather-pwa/commit/c60244911ebe34fc2f57a453c70198ba14e47f09))
+* **day:** scrolling blocked by swipe gesture handling ([c5df5da](https://github.com/kaiser-jan/weather-pwa/commit/c5df5dabeb333188c3f86f574bbf216ff50a0830))
+* **insights:** improve precipitation groups which span multiple days ([ffa7956](https://github.com/kaiser-jan/weather-pwa/commit/ffa79561cd4df18049f9bf8f2f3e6a04097292a7))
+* **location:** improve deriving readable address names ([f5102e4](https://github.com/kaiser-jan/weather-pwa/commit/f5102e4911fd69d9392b8cc8f60347407db519e9))
+* **location:** make icons reactive ([25357a5](https://github.com/kaiser-jan/weather-pwa/commit/25357a509a2978bbd9d74087b86172f341753f41))
+* **location:** show search query when using history forward ([4f9a3e2](https://github.com/kaiser-jan/weather-pwa/commit/4f9a3e2434acc7bbf8dbf168ae13dab0c08c7da6))
+* **met.no:** correctly merge MultivariateTimeSeries with overlap ([e2f9894](https://github.com/kaiser-jan/weather-pwa/commit/e2f989450c35f884b49f16632dba0ea525490de8))
+* **navigation:** navigation not always updating ui ([9a45e11](https://github.com/kaiser-jan/weather-pwa/commit/9a45e111b2763b0ad9f155bacbb8938249c62372))
+* notifications not clickable when drawer is open ([2794acf](https://github.com/kaiser-jan/weather-pwa/commit/2794acfd590d63725c87d6d7cae0461f70382a30))
+* **today:** allow scrolling page on chart ([989676c](https://github.com/kaiser-jan/weather-pwa/commit/989676cc0f6744c29756a1f82efa8ca7f107369e))
+
+
+### Features
+
+* **day:** improve selected parameter visuals ([59a1937](https://github.com/kaiser-jan/weather-pwa/commit/59a19375ee33aff5723e047828693d582978619b))
+* **geolocation:** improve geolocation ux after startup ([f80efc8](https://github.com/kaiser-jan/weather-pwa/commit/f80efc8351669b855d6a8dec254d8d3a390d2544))
+* **location:** add link to location settings ([6431f81](https://github.com/kaiser-jan/weather-pwa/commit/6431f819a07fe0d8f6358bf09072dad3b9bf7175))
+* **location:** instant feedback when searching ([a5c9a30](https://github.com/kaiser-jan/weather-pwa/commit/a5c9a30f9bee97a8565cb331daa546afd29f0058))
+* **location:** make saved placeholder clickable ([f64adaf](https://github.com/kaiser-jan/weather-pwa/commit/f64adaf639fdf2addf568e516270158b6f982d19))
+* **location:** split search results to separate page ([561e80b](https://github.com/kaiser-jan/weather-pwa/commit/561e80b4576f05da1b009ecf95aefa5803648f4a))
+* **location:** sync search query with page history state ([3da8c53](https://github.com/kaiser-jan/weather-pwa/commit/3da8c53cca2fa59ccf33d3a23d210c1d484a786a))
+* **nav:** implement shallow routing for drawers ([6c14049](https://github.com/kaiser-jan/weather-pwa/commit/6c1404978fca5f34e0ba5745ac09fd5ed25582f0))
+
 # [1.1.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.0.0...v1.1.0) (2025-07-23)
 
 

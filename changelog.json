@@ -1,6 +1,150 @@
 {
   "releases": [
     {
+      "version": "1.2.0",
+      "date": "2025-07-27",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "1b8e5d9f78cebd9db38df99852bbd1ecc5469f4c",
+              "subject": "make scrubbing reliable by disabling swipe for now",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1b8e5d9f78cebd9db38df99852bbd1ecc5469f4c"
+            },
+            {
+              "hash": "90365b68895460a12733c6552d9bae8dc0373544",
+              "subject": "parameter select visual state not updating",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/90365b68895460a12733c6552d9bae8dc0373544"
+            },
+            {
+              "hash": "3ddf2746f28d83762fe725269a35a4b8bb6bfb13",
+              "subject": "split storage for chart parameters in day view vs today",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3ddf2746f28d83762fe725269a35a4b8bb6bfb13"
+            },
+            {
+              "hash": "c60244911ebe34fc2f57a453c70198ba14e47f09",
+              "subject": "transform precipitation amount in period to per hour",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c60244911ebe34fc2f57a453c70198ba14e47f09"
+            },
+            {
+              "hash": "c5df5dabeb333188c3f86f574bbf216ff50a0830",
+              "subject": "scrolling blocked by swipe gesture handling",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c5df5dabeb333188c3f86f574bbf216ff50a0830"
+            },
+            {
+              "hash": "ffa79561cd4df18049f9bf8f2f3e6a04097292a7",
+              "subject": "improve precipitation groups which span multiple days",
+              "scope": "insights",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ffa79561cd4df18049f9bf8f2f3e6a04097292a7"
+            },
+            {
+              "hash": "f5102e4911fd69d9392b8cc8f60347407db519e9",
+              "subject": "improve deriving readable address names",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f5102e4911fd69d9392b8cc8f60347407db519e9"
+            },
+            {
+              "hash": "25357a509a2978bbd9d74087b86172f341753f41",
+              "subject": "make icons reactive",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/25357a509a2978bbd9d74087b86172f341753f41"
+            },
+            {
+              "hash": "4f9a3e2434acc7bbf8dbf168ae13dab0c08c7da6",
+              "subject": "show search query when using history forward",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4f9a3e2434acc7bbf8dbf168ae13dab0c08c7da6"
+            },
+            {
+              "hash": "e2f989450c35f884b49f16632dba0ea525490de8",
+              "subject": "correctly merge MultivariateTimeSeries with overlap",
+              "scope": "met.no",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e2f989450c35f884b49f16632dba0ea525490de8"
+            },
+            {
+              "hash": "9a45e111b2763b0ad9f155bacbb8938249c62372",
+              "subject": "navigation not always updating ui",
+              "scope": "navigation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/9a45e111b2763b0ad9f155bacbb8938249c62372"
+            },
+            {
+              "hash": "2794acfd590d63725c87d6d7cae0461f70382a30",
+              "subject": "notifications not clickable when drawer is open",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2794acfd590d63725c87d6d7cae0461f70382a30"
+            },
+            {
+              "hash": "989676cc0f6744c29756a1f82efa8ca7f107369e",
+              "subject": "allow scrolling page on chart",
+              "scope": "today",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/989676cc0f6744c29756a1f82efa8ca7f107369e"
+            }
+          ]
+        },
+        {
+          "title": "Features",
+          "type": "feat",
+          "commits": [
+            {
+              "hash": "59a19375ee33aff5723e047828693d582978619b",
+              "subject": "improve selected parameter visuals",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/59a19375ee33aff5723e047828693d582978619b"
+            },
+            {
+              "hash": "f80efc8351669b855d6a8dec254d8d3a390d2544",
+              "subject": "improve geolocation ux after startup",
+              "scope": "geolocation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f80efc8351669b855d6a8dec254d8d3a390d2544"
+            },
+            {
+              "hash": "6431f819a07fe0d8f6358bf09072dad3b9bf7175",
+              "subject": "add link to location settings",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6431f819a07fe0d8f6358bf09072dad3b9bf7175"
+            },
+            {
+              "hash": "a5c9a30f9bee97a8565cb331daa546afd29f0058",
+              "subject": "instant feedback when searching",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a5c9a30f9bee97a8565cb331daa546afd29f0058"
+            },
+            {
+              "hash": "f64adaf639fdf2addf568e516270158b6f982d19",
+              "subject": "make saved placeholder clickable",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f64adaf639fdf2addf568e516270158b6f982d19"
+            },
+            {
+              "hash": "561e80b4576f05da1b009ecf95aefa5803648f4a",
+              "subject": "split search results to separate page",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/561e80b4576f05da1b009ecf95aefa5803648f4a"
+            },
+            {
+              "hash": "3da8c53cca2fa59ccf33d3a23d210c1d484a786a",
+              "subject": "sync search query with page history state",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3da8c53cca2fa59ccf33d3a23d210c1d484a786a"
+            },
+            {
+              "hash": "6c1404978fca5f34e0ba5745ac09fd5ed25582f0",
+              "subject": "implement shallow routing for drawers",
+              "scope": "nav",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6c1404978fca5f34e0ba5745ac09fd5ed25582f0"
+            }
+          ]
+        }
+      ],
+      "compareUrl": "https://github.com/kaiser-jan/weather-pwa/compare/v1.1.0...v1.2.0"
+    },
+    {
       "version": "1.1.0",
       "date": "2025-07-23",
       "commitGroups": [
