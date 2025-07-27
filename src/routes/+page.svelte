@@ -9,7 +9,8 @@
   import NoticePrecipitation from '$lib/components/weather/notices/NoticePrecipitation.svelte'
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
-  import { coordinates } from '$lib/stores/location'
+  import { geolocationStore } from '$lib/stores/geolocation'
+  import { coordinates, selectedLocation } from '$lib/stores/location'
   import { NOW } from '$lib/stores/now'
   import { dayView } from '$lib/stores/ui'
   import { BinocularsIcon, CalendarDaysIcon, ChevronRightIcon, ClockIcon } from '@lucide/svelte'
@@ -25,9 +26,20 @@
     shrinkHeader = $settingCurrentSticky && scroll > scrollContainer.clientHeight * 0.1
   }
 
-  if ($coordinates === null) {
-    goto('/setup')
-  }
+  const geolocationDetails = geolocationStore.details
+
+  $effect(() => {
+    if ($coordinates) return
+    switch ($selectedLocation?.type) {
+      case 'geolocation':
+        if ($geolocationDetails.stateCategory === 'inactive') goto('/setup/geolocation')
+        if ($geolocationDetails.stateCategory === 'failed') goto('/setup')
+        break
+      case undefined:
+        goto('/setup')
+        break
+    }
+  })
 </script>
 
 <main class="grow overflow-x-hidden overflow-y-auto scroll-smooth" bind:this={scrollContainer} onscroll={onScroll}>

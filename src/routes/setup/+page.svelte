@@ -7,6 +7,8 @@
   import { NavigationIcon, SearchIcon } from '@lucide/svelte'
   import { onMount } from 'svelte'
 
+  const geolocationDetails = geolocationStore.details
+
   onMount(() => {
     const unsubscribe = coordinates.subscribe((c) => {
       if (c !== null) goto('/')
@@ -24,9 +26,11 @@
     <p class="text-center text-lg">Where do you want to check the weather at?</p>
     <Button
       class="text-base"
+      disabled={$geolocationDetails.stateCategory === 'failed'}
       onclick={() => {
         geolocationStore.refresh()
         selectedLocation.set({ type: 'geolocation' })
+        goto('/')
       }}
     >
       <NavigationIcon /> Use current location

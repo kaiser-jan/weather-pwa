@@ -103,6 +103,7 @@ interface GeolocationStateDetails {
   icon: typeof IconType | null
   label: string | undefined
   class?: string
+  stateCategory: 'inactive' | 'loading' | 'failed' | 'active'
 }
 
 const ERROR_LABELS: Record<number, string> = {
@@ -116,15 +117,15 @@ function getDetailsForState(g: GeolocationState): GeolocationStateDetails {
 
   switch (g.status) {
     case 'unstarted':
-      return { icon: NavigationIcon, label: 'Inactive', class: 'opacity-50' }
+      return { stateCategory: 'inactive', icon: NavigationIcon, label: 'Inactive', class: 'opacity-50' }
     case 'requesting':
     case 'loading':
-      return { icon: null, label: 'Loading...' }
+      return { stateCategory: 'loading', icon: null, label: 'Loading...' }
     case 'unsupported':
     case 'unpermitted':
     case 'error':
-      return { icon: NavigationOffIcon, label: error ? ERROR_LABELS[error] : 'Error' }
+      return { stateCategory: 'failed', icon: NavigationOffIcon, label: error ? ERROR_LABELS[error] : 'Error' }
     case 'active':
-      return { icon: NavigationIcon, label: 'Active' }
+      return { stateCategory: 'active', icon: NavigationIcon, label: 'Active' }
   }
 }
