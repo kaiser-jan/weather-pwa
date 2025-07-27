@@ -17,7 +17,7 @@
   import { popUntil } from '$lib/utils'
   import type { PlaceOutput } from '$lib/types/nominatim'
   import ApiSearchResult from './ApiSearchResult.svelte'
-  import { onMount } from 'svelte'
+  import { onMount, tick } from 'svelte'
   import { pushState } from '$app/navigation'
 
   const geolocationDetails = geolocationStore.details
@@ -69,6 +69,7 @@
 
   onMount(() => {
     const handler = async () => {
+      await tick()
       currentQuery = page.state.locationQuery
     }
     window.addEventListener('popstate', handler)

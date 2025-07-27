@@ -7,7 +7,7 @@ import { DateTime } from 'luxon'
 import { popUntil } from '$lib/utils'
 
 export const locationSearch = {
-  hide: () => history.back(),
+  hide: () => popUntil((s) => !s.showLocationSearch),
   show: () => pushState('', { ...page.state, showLocationSearch: true, locationQuery: null }),
 }
 
