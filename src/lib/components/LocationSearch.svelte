@@ -9,13 +9,15 @@
   import { geolocationStore } from '$lib/stores/geolocation'
   import { readable } from 'svelte/store'
   import LocationList from './LocationList.svelte'
-  import { reverseGeocoding } from '$lib/data/location'
-  import { ITEM_ID_GEOLOCATION } from '$lib/types/ui'
+  import { classIconMap, reverseGeocoding, typeToString } from '$lib/data/location'
+  import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
   import { selectedLocation } from '$lib/stores/location'
   import { page } from '$app/state'
   import { locationSearch } from '$lib/stores/ui'
   import { popUntil } from '$lib/utils'
-  import LocationSearchResults from './LocationSearchResults.svelte'
+  import type { PlaceOutput } from '$lib/types/nominatim'
+  import ApiSearchResult from './ApiSearchResult.svelte'
+  import { onMount } from 'svelte'
 
   const geolocationDetails = geolocationStore.details
 
@@ -63,11 +65,33 @@
     },
   })
 
+  async function nominatimQuery(query: string) {
+    const url = new URL('https://nominatim.openstreetmap.org/search')
+    url.searchParams.append('limit', '10')
+    url.searchParams.append('q', query)
+    url.searchParams.append('format', 'json')
+    // url.searchParams.append('layer', ['address', 'poi', 'manmade'].join(','))
+    // url.searchParams.append('featureType', ['city', 'settlement'].join(','))
+    // countrycodes https://nominatim.org/release-docs/develop/api/Search/#result-restriction
+    const response = await fetch(url.toString())
+    const results = await response.json()
+    return results as PlaceOutput[]
+  }
+
   function clearSearch() {
     popUntil((s) => {
       return s.locationQuery === null || s.locationQuery === undefined || !s.showLocationSearch
     })
   }
+
+  onMount(() => {
+    const handler = async () => {
+      currentQuery = page.state.locationQuery
+    }
+    window.addEventListener('popstate', handler)
+
+    return () => window.removeEventListener('popstate', handler)
+  })
 </script>
 
 <Drawer.Root
@@ -97,7 +121,43 @@
             </span>
           </button>
           <div class="flex grow flex-col gap-4 overflow-y-auto">
-            <LocationSearchResults bind:liveQuery={currentQuery} bind:searchNow />
+            <ApiSearchResult
+              bind:liveQuery={currentQuery}
+              bind:searchNow
+              cacheKey="cache-location-search-results"
+              load={nominatimQuery}
+            >
+              {#snippet children({ isLoading, result })}
+                <LocationList
+                  placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
+                  placeholderNull="Search will start when you finish typing."
+                  placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
+                  loading={isLoading}
+                  items={result?.map((r) => ({
+                    id: ITEM_ID_TEMPORARY,
+                    icon: classIconMap[r.category ?? r.class ?? ''],
+                    label: r.name !== '' ? r.name : typeToString(r.type),
+                    sublabel: r.display_name,
+                    coordinates: {
+                      latitude: parseFloat(r?.lat),
+                      longitude: parseFloat(r?.lon),
+                      altitude: null,
+                    },
+                    select: () => {
+                      selectedLocation.set({
+                        type: 'search',
+                        coordinates: {
+                          latitude: parseFloat(r?.lat),
+                          longitude: parseFloat(r?.lon),
+                          altitude: null,
+                        },
+                      })
+                      locationSearch.hide()
+                    },
+                  })) ?? null}
+                />
+              {/snippet}
+            </ApiSearchResult>
           </div>
         </div>
       {:else}
