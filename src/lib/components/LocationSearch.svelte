@@ -7,9 +7,8 @@
   import { settings } from '$lib/settings/store'
   import { iconMap } from '$lib/utils/icons'
   import { geolocationStore } from '$lib/stores/geolocation'
-  import { readable } from 'svelte/store'
   import LocationList from './LocationList.svelte'
-  import { classIconMap, reverseGeocoding, typeToString } from '$lib/data/location'
+  import { classIconMap, typeToString } from '$lib/data/location'
   import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
   import { selectedLocation } from '$lib/stores/location'
   import { page } from '$app/state'
@@ -17,7 +16,6 @@
   import { popUntil } from '$lib/utils'
   import type { PlaceOutput } from '$lib/types/nominatim'
   import ApiSearchResult from './ApiSearchResult.svelte'
-  import { onMount, tick } from 'svelte'
   import { pushState } from '$app/navigation'
 
   const geolocationDetails = geolocationStore.details
@@ -67,14 +65,8 @@
     })
   }
 
-  onMount(() => {
-    const handler = async () => {
-      await tick()
-      currentQuery = page.state.locationQuery
-    }
-    window.addEventListener('popstate', handler)
-
-    return () => window.removeEventListener('popstate', handler)
+  $effect(() => {
+    currentQuery = page.state.locationQuery
   })
 </script>
 

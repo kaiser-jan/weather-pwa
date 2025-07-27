@@ -119,13 +119,11 @@
         {/if}
         <Breadcrumb.Item>
           <Breadcrumb.Link
-            onclick={() => {
+            onclick={async () => {
               const currentLength = page.state.settingsPath.length
               const targetLength = settingsPage.path.length
               const moveBackBy = currentLength - targetLength
-              for (let i = 0; i < moveBackBy; i++) {
-                history.back()
-              }
+              history.go(-moveBackBy)
 
               // or should we store only the old path in the forward history, and omit the skipped items?
               // const recentPath = $state.snapshot(page.state.settingsPath)
