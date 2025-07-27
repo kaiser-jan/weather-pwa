@@ -37,7 +37,7 @@
   import { selectedLocation } from '$lib/stores/location'
   import { page } from '$app/state'
   import { locationSearch } from '$lib/stores/ui'
-  import { pushState } from '$app/navigation'
+  import { pushState, replaceState } from '$app/navigation'
   import { onMount } from 'svelte'
   import { popUntil } from '$lib/utils'
 
@@ -78,18 +78,18 @@
     aeroway: PlaneIcon,
   }
 
-  let search = $state<string | null>(page.state.locationQuery)
+  let currentQuery = $state<string | null>(page.state.locationQuery)
   let currentResults = $state<PlaceOutput[] | null>(null)
   const cachedResults = persistantState<{ query: string; results: PlaceOutput[] }[]>(
     'cache-location-search-results',
     [],
   )
 
-  const debouncedLoadResults = debounce(loadNewResults, 2000)
+  const debouncedLoadResults = debounce(loadNewResults, 1000)
 
   onMount(() => {
     const handler = async () => {
-      search = page.state.locationQuery
+      currentQuery = page.state.locationQuery
       currentResults = await loadResults()
     }
     window.addEventListener('popstate', handler)
@@ -97,12 +97,30 @@
     return () => window.removeEventListener('popstate', handler)
   })
 
+  function saveToHistory() {
+    // consider saving each search as an history entry
+    if (page.state.locationQuery) {
+      replaceState('', { ...page.state, locationQuery: $state.snapshot(currentQuery) })
+    } else {
+      pushState('', { ...page.state, locationQuery: $state.snapshot(currentQuery) })
+    }
+  }
+
   async function loadNewResults() {
-    if (!search || search === null) return
-    pushState('', { ...page.state, locationQuery: $state.snapshot(search) })
+    if (!currentQuery || currentQuery === null) return
+
     isLoading = true
+    saveToHistory()
     currentResults = await loadResults()
     isLoading = false
+  }
+
+  async function tryLoadCachedResults(newQuery: string) {
+    const cached = cachedResults.value.find((c) => c.query === newQuery)
+    if (!cached) return
+    currentResults = cached.results
+    currentQuery = newQuery
+    saveToHistory()
   }
 
   async function loadResults() {
@@ -196,19 +214,19 @@
       class="flex h-0 grow flex-col gap-4 p-4"
       style="padding-bottom: calc(1rem + min(2rem, env(safe-area-inset-top)))"
     >
-      {#if page.state.locationQuery}
+      {#if page.state.locationQuery || currentQuery}
         <div class="flex min-h-0 shrink grow flex-col gap-4">
           <button class="text-bold flex w-fit flex-row items-center gap-4" onclick={() => history.back()}>
             <ChevronLeftIcon />
             <span class="inline-flex flex-wrap">
               <span>Search results for&nbsp;</span>
-              <span>"{page.state.locationQuery.trim()}"</span>
+              <span>"{page.state.locationQuery?.trim() ?? currentQuery}"</span>
             </span>
           </button>
           <div class="flex grow flex-col gap-4 overflow-y-auto">
             <LocationList
               placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
-              placeholderNull="Use the searchbar to show the weather at another location!"
+              placeholderNull="Search will start when you finish typing."
               placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
               loading={isLoading}
               items={currentResults?.map((r) => ({
@@ -271,9 +289,20 @@
       {/if}
 
       <div class="relative mt-auto">
-        <Input placeholder="Search any location..." bind:value={search} oninput={debouncedLoadResults} class="h-12" />
+        <Input
+          placeholder="Search any location..."
+          bind:value={currentQuery}
+          oninput={(e) => {
+            debouncedLoadResults()
+            tryLoadCachedResults((e.target as HTMLInputElement).value)
+          }}
+          onkeypress={(e) => {
+            if (e.key === 'Enter') loadNewResults()
+          }}
+          class="h-12"
+        />
         <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
-        {#if search}
+        {#if currentQuery}
           <Button
             size="icon"
             variant="outline"
