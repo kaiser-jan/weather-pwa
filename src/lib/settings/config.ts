@@ -58,7 +58,7 @@ import {
   UmbrellaIcon,
 } from '@lucide/svelte'
 import type { ColorStop } from '$lib/types/ui'
-import type { Coordinates } from '$lib/types/data'
+import { FORECAST_PARAMETERS, type Coordinates, type ForecastParameter } from '$lib/types/data'
 import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import type { Changelog } from '$lib/types/changelog'
@@ -409,6 +409,25 @@ export const settingsConfig = [
             type: 'boolean',
             icon: LetterTextIcon,
             default: true,
+          },
+          {
+            id: 'parameters',
+            label: 'Weather Parameters',
+            type: 'multiselect',
+            icon: LetterTextIcon,
+            options: FORECAST_PARAMETERS,
+            // TODO: consider creating a list combining e.g. wind and wind_speed
+            default: [
+              'temperature',
+              'precipitation_amount',
+              'relative_humidity',
+              'wind_speed',
+              'pressure',
+              'cloud_coverage',
+              'cape',
+              'cin',
+              'grad',
+            ] as ForecastParameter[],
           },
           {
             id: 'chart',

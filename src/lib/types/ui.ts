@@ -3,15 +3,16 @@ import type { Coordinates, TimeSeries, ForecastParameter } from './data'
 
 export type ColorStop = { value: number; h: number; s: number; l: number }
 
+// HACK: this is ugly but allows tailwind to detect the class names
+type ColorDefinition =
+  | { tailwind: { bg: string; fill: string; stroke: string } } //
+  | { gradient: ColorStop[] }
+  | { gradientSetting: string[] }
+
 export interface SeriesDetailsBase {
   style: 'line' | 'bars' | 'area'
   class: string
-  color?:
-    | // HACK: this is ugly but allows tailwind to detect the class names
-    { tailwind: { bg: string; fill: string; stroke: string } } //
-    | { gradient: ColorStop[] }
-    | { gradientSetting: string[] }
-  invert?: boolean
+  color?: ColorDefinition
   areaSecondParameter?: ForecastParameter
   markExtrema?: boolean
 }
@@ -21,9 +22,6 @@ export interface SeriesDetails extends SeriesDetailsBase {
   domain: { min: number[]; max: number[] }
   icon: typeof ThermometerIcon
   iconIfZero?: typeof ThermometerIcon
-  unit: string
-  hideScale?: boolean
-  scaleOnRight?: boolean
   include?: Partial<Record<ForecastParameter, SeriesDetailsBase>>
 }
 

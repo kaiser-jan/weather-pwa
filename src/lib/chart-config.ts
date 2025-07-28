@@ -14,6 +14,8 @@ import {
 import type { ForecastParameter } from './types/data'
 import type { SeriesDetails } from './types/ui'
 
+export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
+
 export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetails>> = {
   temperature: {
     label: 'Temperature',
@@ -21,7 +23,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
     style: 'line',
     icon: ThermometerIcon,
     class: '',
-    unit: '°',
     color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
     markExtrema: true,
     include: {
@@ -41,10 +42,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
     iconIfZero: CloudOffIcon,
     class: 'opacity-15',
     color: { tailwind: { bg: 'bg-blue-200', fill: 'fill-blue-200', stroke: 'stroke-blue-200' } },
-    unit: '%',
-    hideScale: true,
-    // TODO: implement invert
-    invert: true,
   },
   precipitation_amount: {
     label: 'Precipitation Amount',
@@ -54,8 +51,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
     iconIfZero: UmbrellaOffIcon,
     class: 'opacity-80',
     color: { tailwind: { bg: 'bg-blue-300', fill: 'fill-blue-300', stroke: 'stroke-blue-300' } },
-    unit: 'mm/h',
-    scaleOnRight: true,
   },
   wind_speed: {
     label: 'Wind',
@@ -64,8 +59,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
     icon: WindIcon,
     class: 'opacity-80',
     color: { tailwind: { bg: 'bg-blue-100', fill: 'fill-blue-100', stroke: 'stroke-blue-100' } },
-    unit: 'm/s',
-    scaleOnRight: true,
     include: {
       wind_speed_gust: {
         style: 'line',
@@ -81,9 +74,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
     icon: DropletIcon,
     class: 'opacity-80',
     color: { tailwind: { bg: 'bg-green-300', fill: 'fill-green-300', stroke: 'stroke-green-300' } },
-    unit: '%',
-    scaleOnRight: true,
-    hideScale: true,
   },
   pressure: {
     label: 'Pressure',
@@ -92,8 +82,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
     icon: GaugeIcon,
     class: 'opacity-80',
     color: { tailwind: { bg: 'bg-purple-300', fill: 'fill-purple-300', stroke: 'stroke-purple-300' } },
-    unit: 'hPa',
-    scaleOnRight: false,
   },
   // uvi_clear_sky: {
   //   domain: [0, 12],
@@ -110,8 +98,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
     icon: ZapIcon,
     class: 'opacity-80',
     color: { tailwind: { bg: 'bg-yellow-300', fill: 'fill-yellow-300', stroke: 'stroke-yellow-300' } },
-    unit: 'm2/s2',
-    scaleOnRight: false,
   },
   cin: {
     label: 'CIN',
@@ -120,8 +106,6 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
     icon: ShieldIcon,
     class: 'opacity-80',
     color: { tailwind: { bg: 'bg-orange-300', fill: 'fill-orange-300', stroke: 'stroke-orange-300' } },
-    unit: 'J/kg',
-    scaleOnRight: false,
   },
   grad: {
     label: 'Global Radiation',
@@ -130,7 +114,5 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
     icon: SunIcon,
     class: 'opacity-80',
     color: { tailwind: { bg: 'bg-yellow-300', fill: 'fill-yellow-300', stroke: 'stroke-yellow-300' } },
-    unit: 'Ws/m2',
-    scaleOnRight: false,
   },
 } as const
