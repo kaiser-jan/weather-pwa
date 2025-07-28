@@ -10,7 +10,7 @@
   import { createLine } from '$lib/utils/d3/line'
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
-  import { CHART_SERIES_DETAILS } from '$lib/chart-config'
+  import { CHART_SERIES_DETAILS, HIDE_AXIS_FOR_PARAMETERS } from '$lib/chart-config'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { settings } from '$lib/settings/store'
   import type { ColorStop, CreatedSeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
@@ -91,13 +91,13 @@
     let yScaleRightCurrentOffset = 0
     let yScaleLeftCurrentOffset = 0
 
-    for (const seriesKey of visibleSeries) {
-      const details = CHART_SERIES_DETAILS[seriesKey]
-      if (!details || details.hideScale) continue
-      const unit = getPreferredUnit(seriesKey, get(settings))
+    for (const [index, parameter] of [...visibleSeries].entries()) {
+      const details = CHART_SERIES_DETAILS[parameter]
+      if (!details || HIDE_AXIS_FOR_PARAMETERS.includes(parameter)) continue
+      const unit = getPreferredUnit(parameter, get(settings))
       const hideUnit = $settingsChart.axisUnits !== 'inline'
-      const minString = autoFormatMetric(details.domain.min[0], seriesKey, get(settings), { hideUnit })
-      const maxString = autoFormatMetric(details.domain.max[details.domain.max.length - 1], seriesKey, get(settings), {
+      const minString = autoFormatMetric(details.domain.min[0], parameter, get(settings), { hideUnit })
+      const maxString = autoFormatMetric(details.domain.max[details.domain.max.length - 1], parameter, get(settings), {
         hideUnit,
       })
       const textWidthMinValue = estimateTextWidth(minString)
@@ -106,14 +106,15 @@
       const requiredX = Math.max(textWidthMinValue, textWidthUnit, textWidthMaxValue) + 10
       console.debug(minString, maxString, unit)
 
-      if (details.scaleOnRight) {
-        margin['right'] += requiredX
-        yScaleOffsets[seriesKey] = yScaleRightCurrentOffset
-        yScaleRightCurrentOffset += requiredX
-      } else {
+      const axisOnLeft = index % 2 === 0
+      if (axisOnLeft) {
         margin['left'] += requiredX
-        yScaleOffsets[seriesKey] = yScaleLeftCurrentOffset
+        yScaleOffsets[parameter] = yScaleLeftCurrentOffset
         yScaleLeftCurrentOffset -= requiredX
+      } else {
+        margin['right'] += requiredX
+        yScaleOffsets[parameter] = yScaleRightCurrentOffset
+        yScaleRightCurrentOffset += requiredX
       }
     }
     dimensions = computeDimensions()
@@ -133,14 +134,15 @@
 
     const createdSeriesDetails: CreatedSeriesDetails[] = []
 
-    for (const seriesKey of [...visibleSeries].reverse()) {
-      const series = data[seriesKey]
-      const details = CHART_SERIES_DETAILS[seriesKey]
+    for (const [index, parameter] of [...visibleSeries].entries()) {
+      const series = data[parameter]
+      const details = CHART_SERIES_DETAILS[parameter]
+      const axisOnLeft = index % 2 === 0
       if (!series || !details) continue
 
-      const unit = getPreferredUnit(seriesKey, get(settings))
+      const unit = getPreferredUnit(parameter, get(settings))
       const format = (d: number) =>
-        autoFormatMetric(d, seriesKey, get(settings), {
+        autoFormatMetric(d, parameter, get(settings), {
           hideUnit: get(settings).sections.components.chart.axisUnits !== 'inline',
         })
 
@@ -157,18 +159,18 @@
 
       const scaleY = d3.scaleLinear(domain, rangeY) //.nice()
 
-      if (!details.hideScale) {
+      if (!HIDE_AXIS_FOR_PARAMETERS.includes(parameter)) {
         const xOffset =
           dimensions.margin.left +
-          (details.scaleOnRight ? dimensions.width : 0) +
-          (details.scaleOnRight ? LINE_CORRECTION : -LINE_CORRECTION) +
-          (yScaleOffsets[seriesKey] ?? 0)
+          (axisOnLeft ? 0 : dimensions.width) +
+          (axisOnLeft ? -LINE_CORRECTION : LINE_CORRECTION) +
+          (yScaleOffsets[parameter] ?? 0)
 
         createYAxis({
           svg,
           dimensions,
           scale: scaleY,
-          side: details.scaleOnRight ? 'right' : 'left',
+          side: axisOnLeft ? 'left' : 'right',
           addLines: false,
           unit,
           format,
@@ -250,9 +252,9 @@
         }
       }
 
-      addDataRepresentation(seriesKey, series, details)
+      addDataRepresentation(parameter, series, details)
 
-      createdSeriesDetails.push({ ...details, name: seriesKey, scale: scaleY, data: series })
+      createdSeriesDetails.push({ ...details, name: parameter, scale: scaleY, data: series })
     }
 
     svg
