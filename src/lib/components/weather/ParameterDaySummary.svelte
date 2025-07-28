@@ -5,7 +5,7 @@
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
   import type { ColorStop, ParameterDaySummaryProps, SeriesDetails } from '$lib/types/ui'
-  import { CHART_SERIES_DETAILS } from '$lib/chart-config'
+  import { METRIC_DETAILS } from '$lib/metric-config'
   import FormattedMetric from '$lib/components/FormattedMetric.svelte'
   import { cn } from '$lib/utils'
   import { generateCssRangeGradient } from '$lib/utils/ui'
@@ -27,7 +27,7 @@
     selected,
   }: Props = $props()
 
-  const details = $derived<SeriesDetails | undefined>(CHART_SERIES_DETAILS[parameter])
+  const details = $derived<SeriesDetails | undefined>(METRIC_DETAILS[parameter])
   const ParameterIcon = $derived(icon ?? details?.icon)
 
   const domain = $derived.by(() => {

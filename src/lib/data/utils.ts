@@ -60,7 +60,7 @@ export function sum(numbers: (number | undefined)[]): number {
 export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): MultivariateTimeSeriesTimeBucket[] {
   const groupedMap: Record<string, MultivariateTimeSeriesTimeBucket> = {}
 
-  for (const [seriesKey, series] of Object.entries(multiseries)) {
+  for (const [parameter, series] of Object.entries(multiseries)) {
     for (const item of series) {
       const day = item.datetime.toISODate()!
       if (!groupedMap[day])
@@ -70,9 +70,9 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
           series: {},
         }
 
-      const seriesKeyTyped = seriesKey as keyof MultivariateTimeSeries
-      if (!groupedMap[day].series[seriesKeyTyped]) groupedMap[day].series[seriesKeyTyped] = [] as any[]
-      groupedMap[day].series[seriesKeyTyped]!.push(item)
+      const parameterTyped = parameter as keyof MultivariateTimeSeries
+      if (!groupedMap[day].series[parameterTyped]) groupedMap[day].series[parameterTyped] = [] as any[]
+      groupedMap[day].series[parameterTyped]!.push(item)
     }
   }
 

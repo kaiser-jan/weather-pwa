@@ -9,23 +9,26 @@ type ColorDefinition =
   | { gradient: ColorStop[] }
   | { gradientSetting: string[] }
 
-export interface SeriesDetailsBase {
+export interface MetricDetailsChart {
   style: 'line' | 'bars' | 'area'
   class: string
-  color?: ColorDefinition
   areaSecondParameter?: ForecastParameter
   markExtrema?: boolean
 }
 
-export interface SeriesDetails extends SeriesDetailsBase {
+export interface MetricDetails {
   label: string
   domain: { min: number[]; max: number[] }
   icon: typeof ThermometerIcon
+  color: ColorDefinition
   iconIfZero?: typeof ThermometerIcon
-  include?: Partial<Record<ForecastParameter, SeriesDetailsBase>>
+
+  chart: MetricDetailsChart & {
+    include?: Partial<Record<ForecastParameter, MetricDetailsChart & { color?: ColorDefinition }>>
+  }
 }
 
-export interface CreatedSeriesDetails extends SeriesDetails {
+export interface CreatedSeriesDetails extends MetricDetails {
   name: string
   scale: d3.ScaleLinear<number, number, never>
   data: TimeSeries<number>
