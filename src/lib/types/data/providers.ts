@@ -1,5 +1,5 @@
 import type { Duration } from 'luxon'
-import type { WeatherMetricKey } from '.'
+import type { ForecastParameter } from '.'
 import type { ProviderId } from '$lib/data/providers'
 
 export interface Provider {
@@ -17,7 +17,7 @@ export interface Dataset {
   providerId: ProviderId
   name: string
   url: string
-  parameters: WeatherMetricKey[]
+  parameters: ForecastParameter[]
   offset: Duration | null
   interval: Duration | null
   timespan: Duration

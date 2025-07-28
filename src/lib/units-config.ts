@@ -1,4 +1,4 @@
-import type { WeatherMetricKey } from '$lib/types/data'
+import type { ForecastParameter } from '$lib/types/data'
 
 export type UnitDimension =
   | 'temperature'
@@ -11,7 +11,7 @@ export type UnitDimension =
   | 'radiation'
   | 'precipitation'
 
-export const METRIC_DIMENSION: Record<WeatherMetricKey, UnitDimension | null> = {
+export const METRIC_DIMENSION: Record<ForecastParameter, UnitDimension | null> = {
   temperature: 'temperature',
   temperature_min: 'temperature',
   temperature_max: 'temperature',

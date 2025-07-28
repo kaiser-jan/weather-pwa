@@ -1,7 +1,7 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
   import { NOW } from '$lib/stores/now'
-  import type { WeatherMetricKey } from '$lib/types/data'
+  import type { ForecastParameter } from '$lib/types/data'
   import { persistantState } from '$lib/utils/state.svelte'
   import ParameterSelect from '$lib/components/ParameterSelect.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
@@ -12,7 +12,7 @@
 
   const today = $derived($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))))
 
-  let visibleSeries = persistantState<WeatherMetricKey[]>('section-today-chart-parameters', [
+  let visibleSeries = persistantState<ForecastParameter[]>('section-today-chart-parameters', [
     'temperature',
     'precipitation_amount',
     'cloud_coverage',

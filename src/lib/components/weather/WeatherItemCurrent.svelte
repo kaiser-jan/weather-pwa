@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { Forecast, WeatherMetricKey } from '$lib/types/data'
+  import type { Forecast, ForecastParameter } from '$lib/types/data'
   import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
   import FormattedMetric from '$lib/components/FormattedMetric.svelte'
 
   interface Props {
-    item: WeatherMetricKey
+    item: ForecastParameter
     current: Forecast['current'] | null
   }
 
   const { item, current }: Props = $props()
 
-  type Details = { icon?: typeof CloudIcon; datapoint: WeatherMetricKey }
+  type Details = { icon?: typeof CloudIcon; datapoint: ForecastParameter }
 
-  const itemMap: Partial<Record<WeatherMetricKey, Details>> = {
+  const itemMap: Partial<Record<ForecastParameter, Details>> = {
     cloud_coverage: { icon: CloudIcon, datapoint: 'cloud_coverage' },
     uvi: { icon: SunIcon, datapoint: 'uvi' },
     wind_speed: { icon: WindIcon, datapoint: 'wind_speed' },

@@ -7,7 +7,7 @@
   import SkySimulation from '$lib/components/SkySimulation.svelte'
   import { currentFromMultiseries } from '$lib/data/utils'
   import { forecastStore, isForecastLoading } from '$lib/stores/data'
-  import type { WeatherMetricKey } from '$lib/types/data'
+  import type { ForecastParameter } from '$lib/types/data'
   import { autoFormatMetric } from '$lib/utils/units'
   import { settings } from '$lib/settings/store'
   import { reverseGeocoding, placeToWeatherLocation } from '$lib/data/location'
@@ -29,7 +29,7 @@
     return string
   })
 
-  const ITEMS_CURRENT: WeatherMetricKey[] = ['relative_humidity', 'wind_speed', 'pressure']
+  const ITEMS_CURRENT: ForecastParameter[] = ['relative_humidity', 'wind_speed', 'pressure']
 
   const forecastCurrent = $derived.by(() => {
     if (!$forecastStore) return null

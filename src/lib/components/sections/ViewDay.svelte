@@ -6,7 +6,7 @@
   import { Button } from '$lib/components/ui/button'
   import { ChevronLeft, ChevronRight } from '@lucide/svelte'
   import ParameterDaySummary from '$lib/components/weather/ParameterDaySummary.svelte'
-  import type { WeatherMetricKey } from '$lib/types/data'
+  import type { ForecastParameter } from '$lib/types/data'
   import type { ParameterDaySummaryProps } from '$lib/types/ui'
   import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
   import { coordinates } from '$lib/stores/location'
@@ -45,7 +45,7 @@
     dayView.select(target)
   }
 
-  const parameterConfigs: Partial<Record<WeatherMetricKey, ParameterDaySummaryProps>> = {
+  const parameterConfigs: Partial<Record<ForecastParameter, ParameterDaySummaryProps>> = {
     temperature: { useTotalAsDomain: true },
     precipitation_amount: { items: ['icon', 'precipitation-groups'] },
     relative_humidity: {},
@@ -68,7 +68,7 @@
     }
   }
 
-  let visibleSeries = persistantState<WeatherMetricKey[]>('view-day-chart-parameters', [
+  let visibleSeries = persistantState<ForecastParameter[]>('view-day-chart-parameters', [
     'temperature',
     'precipitation_amount',
     'cloud_coverage',
@@ -137,7 +137,7 @@
 
         <div class="flex flex-row flex-wrap gap-2">
           {#each Object.entries(parameterConfigs) as [parameter, config] (parameter)}
-            {@const parameterTyped = parameter as WeatherMetricKey}
+            {@const parameterTyped = parameter as ForecastParameter}
             {#if selectedDay.summary[parameterTyped]}
               <button
                 class={cn(

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { autoFormatMetric, getPreferredUnit } from '$lib/utils/units'
-  import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
+  import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, ForecastParameter } from '$lib/types/data'
   import { onDestroy, onMount } from 'svelte'
   import * as d3 from 'd3'
   import { DateTime } from 'luxon'
@@ -24,7 +24,7 @@
   interface Props {
     multiseries: MultivariateTimeSeries
     unloaded?: boolean
-    visibleSeries: WeatherMetricKey[]
+    visibleSeries: ForecastParameter[]
     startDateTime: DateTime
     endDateTime: DateTime
     datetime: DateTime
@@ -46,7 +46,7 @@
 
   const settingsChart = settings.select((s) => s.sections.components.chart)
 
-  let highlightedTimeBucket = $state<Record<WeatherMetricKey, TimeSeriesNumberEntry> | undefined>()
+  let highlightedTimeBucket = $state<Record<ForecastParameter, TimeSeriesNumberEntry> | undefined>()
 
   let container: HTMLDivElement
 
@@ -87,7 +87,7 @@
       margin.top += 10
     }
 
-    let yScaleOffsets: Partial<Record<WeatherMetricKey, number>> = {}
+    let yScaleOffsets: Partial<Record<ForecastParameter, number>> = {}
     let yScaleRightCurrentOffset = 0
     let yScaleLeftCurrentOffset = 0
 
@@ -244,8 +244,8 @@
 
       if (details.include) {
         for (const [includeParameter, includeDetails] of Object.entries(details.include)) {
-          const includeSeriesA = data[includeParameter as WeatherMetricKey]
-          const includeSeriesB = data[includeDetails.areaSecondParameter as WeatherMetricKey]
+          const includeSeriesA = data[includeParameter as ForecastParameter]
+          const includeSeriesB = data[includeDetails.areaSecondParameter as ForecastParameter]
           addDataRepresentation(includeParameter, includeSeriesA, includeDetails, includeSeriesB)
         }
       }
@@ -284,7 +284,7 @@
 
       const points = updateXAxisPointer(datetime ?? NOW, isManual)
       const timebucket = Object.fromEntries(points.map((p) => [p.name, p.d])) as Record<
-        WeatherMetricKey,
+        ForecastParameter,
         TimeSeriesNumberEntry
       >
 

@@ -1,12 +1,12 @@
 <script lang="ts">
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
   import { settings } from '$lib/settings/store'
-  import type { WeatherMetricKey } from '$lib/types/data'
+  import type { ForecastParameter } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { autoFormatMetric } from '$lib/utils/units'
 
   interface Props {
-    parameter: WeatherMetricKey
+    parameter: ForecastParameter
     value: number | undefined
     class?: string
   }

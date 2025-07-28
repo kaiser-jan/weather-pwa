@@ -6,7 +6,7 @@ import { mount } from 'svelte'
 import { autoFormatMetric } from '$lib/utils/units'
 import { get } from 'svelte/store'
 import { settings } from '$lib/settings/store'
-import type { TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
+import type { TimeSeriesNumberEntry, ForecastParameter } from '$lib/types/data'
 import type { Icon } from '@lucide/svelte'
 
 export function createAxisPointer(options: {
@@ -152,7 +152,7 @@ export function createTooltip(options: {
       `<b>${points[0].d.datetime.toFormat('HH:mm')}</b><br>${points
         .map((p) => {
           const svg = renderIcon(p.name, p.icon)
-          const metric = autoFormatMetric(p.d.value, p.name as WeatherMetricKey, get(settings), { showDecimal: true })
+          const metric = autoFormatMetric(p.d.value, p.name as ForecastParameter, get(settings), { showDecimal: true })
           return `<div class="flex items-center gap-2">${svg}${metric}</div>`
         })
         .join('')}`,

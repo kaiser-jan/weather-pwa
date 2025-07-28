@@ -1,5 +1,5 @@
 import type { Icon, ThermometerIcon } from '@lucide/svelte'
-import type { Coordinates, TimeSeries, WeatherMetricKey } from './data'
+import type { Coordinates, TimeSeries, ForecastParameter } from './data'
 
 export type ColorStop = { value: number; h: number; s: number; l: number }
 
@@ -12,7 +12,7 @@ export interface SeriesDetailsBase {
     | { gradient: ColorStop[] }
     | { gradientSetting: string[] }
   invert?: boolean
-  areaSecondParameter?: WeatherMetricKey
+  areaSecondParameter?: ForecastParameter
   markExtrema?: boolean
 }
 
@@ -24,7 +24,7 @@ export interface SeriesDetails extends SeriesDetailsBase {
   unit: string
   hideScale?: boolean
   scaleOnRight?: boolean
-  include?: Partial<Record<WeatherMetricKey, SeriesDetailsBase>>
+  include?: Partial<Record<ForecastParameter, SeriesDetailsBase>>
 }
 
 export interface CreatedSeriesDetails extends SeriesDetails {

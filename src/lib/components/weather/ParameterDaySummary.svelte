@@ -1,6 +1,6 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
-  import type { TimeBucket, WeatherMetricKey } from '$lib/types/data'
+  import type { TimeBucket, ForecastParameter } from '$lib/types/data'
   import { ArrowDownIcon, ArrowUpIcon } from '@lucide/svelte'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
@@ -13,7 +13,7 @@
   import PrecipitationGroup from '$lib/components/weather/PrecipitationGroup.svelte'
 
   type Props = ParameterDaySummaryProps & {
-    parameter: WeatherMetricKey
+    parameter: ForecastParameter
     day: TimeBucket
     selected: boolean
   }

@@ -11,10 +11,10 @@ import {
   WindIcon,
   ZapIcon,
 } from '@lucide/svelte'
-import type { WeatherMetricKey } from './types/data'
+import type { ForecastParameter } from './types/data'
 import type { SeriesDetails } from './types/ui'
 
-export const CHART_SERIES_DETAILS: Partial<Record<WeatherMetricKey, SeriesDetails>> = {
+export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetails>> = {
   temperature: {
     label: 'Temperature',
     domain: { min: [-40, -20, 0], max: [20, 40, 60] },

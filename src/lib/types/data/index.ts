@@ -21,19 +21,19 @@ export interface TimePeriod {
   duration: Duration
 }
 
-export type WeatherInstant = Partial<Record<WeatherMetricKey, number>>
+export type WeatherInstant = Partial<Record<ForecastParameter, number>>
 
-export type MultivariateTimeSeries = Partial<Record<WeatherMetricKey, TimeSeries<number>>>
+export type MultivariateTimeSeries = Partial<Record<ForecastParameter, TimeSeries<number>>>
 export type MultivariateTimeSeriesTimeBucket = TimePeriod & { series: MultivariateTimeSeries }
 
 // TODO: conider using number values for datetime and duration as those have a considerable performance impact
 export type TimeSeries<T> = (TimePeriod & { value: T })[]
 export type TimeSeriesNumberEntry = TimeSeries<number>[number]
 
-export type TimeBucketSummary = TimePeriod & { summary: Record<WeatherMetricKey, NumberSummary> }
+export type TimeBucketSummary = TimePeriod & { summary: Record<ForecastParameter, NumberSummary> }
 export type TimeBucket = TimeBucketSummary & { multiseries: MultivariateTimeSeries }
 
-export const WEATHER_METRIC_KEYS = [
+export const FORECAST_PARAMETERS = [
   'temperature',
   'temperature_min',
   'temperature_max',
@@ -58,7 +58,7 @@ export const WEATHER_METRIC_KEYS = [
   'grad',
 ] as const
 
-export type WeatherMetricKey = (typeof WEATHER_METRIC_KEYS)[number]
+export type ForecastParameter = (typeof FORECAST_PARAMETERS)[number]
 
 export interface DataProvider {
   load: (coordinates: Coordinates) => Promise<Partial<Forecast>>
