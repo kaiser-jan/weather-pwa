@@ -1,5 +1,5 @@
 import { extractDefaults } from './extractDefaults'
-import { settingsConfig } from './config'
+import { settingsConfig } from '$lib/settings-config'
 import type { ConfigType } from './types'
 import { select } from '$lib/utils/stores'
 import { getDeep, mergeDeep, setDeep } from './deep'
