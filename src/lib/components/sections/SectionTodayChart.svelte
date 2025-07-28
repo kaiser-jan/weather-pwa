@@ -36,7 +36,7 @@
     >
       <WeatherChart
         multiseries={today.multiseries}
-        visibleSeries={visibleSeries.value}
+        parameters={visibleSeries.value}
         startDateTime={today.datetime}
         endDateTime={today.datetime.plus(today.duration)}
         datetime={$NOW}

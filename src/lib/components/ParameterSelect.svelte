@@ -2,7 +2,7 @@
   import * as ToggleGroup from '$lib/components/ui/toggle-group'
   import * as Popover from '$lib/components/ui/popover'
   import { EllipsisIcon, EyeIcon, EyeOffIcon, PinIcon, PinOffIcon } from '@lucide/svelte'
-  import { CHART_SERIES_DETAILS } from '$lib/chart-config'
+  import { METRIC_DETAILS } from '$lib/metric-config'
   import { type ForecastParameter, FORECAST_PARAMETERS } from '$lib/types/data'
   import { Button } from '$lib/components/ui/button'
   import { persistantState } from '$lib/utils/state.svelte'
@@ -33,7 +33,7 @@
 <div class="flex h-fit w-full flex-row gap-2">
   <ToggleGroup.Root type="multiple" variant="outline" bind:value={visible} class="h-fit grow">
     {#each pinned.value as parameter (parameter)}
-      {@const details = CHART_SERIES_DETAILS[parameter]!}
+      {@const details = METRIC_DETAILS[parameter]!}
       <ToggleGroup.Item value={parameter} class="grow">
         <details.icon />
       </ToggleGroup.Item>
@@ -43,7 +43,7 @@
   {#if temporary.length}
     <ToggleGroup.Root type="multiple" variant="outline" bind:value={visible}>
       {#each temporary as parameter (parameter)}
-        {@const details = CHART_SERIES_DETAILS[parameter]!}
+        {@const details = METRIC_DETAILS[parameter]!}
         <ToggleGroup.Item value={parameter}>
           <details.icon />
         </ToggleGroup.Item>
@@ -58,7 +58,7 @@
       </Button>
     </Popover.Trigger>
     <Popover.Content class="flex w-fit flex-col gap-1 p-2">
-      {#each Object.entries(CHART_SERIES_DETAILS) as [parameter, parameterDetails] (parameter)}
+      {#each Object.entries(METRIC_DETAILS) as [parameter, parameterDetails] (parameter)}
         {@const parameterTyped = parameter as ForecastParameter}
         {@const isActive = visible.includes(parameterTyped)}
         {@const isPinned = pinned.value.includes(parameterTyped)}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CHART_SERIES_DETAILS } from '$lib/chart-config'
+  import { METRIC_DETAILS } from '$lib/metric-config'
   import { settings } from '$lib/settings/store'
   import type { ForecastParameter } from '$lib/types/data'
   import { cn } from '$lib/utils'
@@ -13,7 +13,7 @@
 
   let { parameter, value, class: className }: Props = $props()
 
-  const details = $derived(CHART_SERIES_DETAILS[parameter]!)
+  const details = $derived(METRIC_DETAILS[parameter]!)
   const showZeroIcon = $derived(value === 0 && details.iconIfZero)
   const ParameterIcon = $derived(showZeroIcon ? details.iconIfZero : details.icon)
 </script>

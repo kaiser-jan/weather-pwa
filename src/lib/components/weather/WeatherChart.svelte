@@ -10,10 +10,10 @@
   import { createLine } from '$lib/utils/d3/line'
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
-  import { CHART_SERIES_DETAILS, HIDE_AXIS_FOR_PARAMETERS } from '$lib/chart-config'
+  import { METRIC_DETAILS, HIDE_AXIS_FOR_PARAMETERS, type ForecastMetric } from '$lib/metric-config'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { settings } from '$lib/settings/store'
-  import type { ColorStop, CreatedSeriesDetails, SeriesDetailsBase } from '$lib/types/ui'
+  import type { ColorStop, CreatedSeriesDetails, MetricDetails, MetricDetailsChart } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
   import { createUUID, debounce } from '$lib/utils'
   import { Skeleton } from '$lib/components/ui/skeleton'
@@ -24,7 +24,7 @@
   interface Props {
     multiseries: MultivariateTimeSeries
     unloaded?: boolean
-    visibleSeries: ForecastParameter[]
+    parameters: ForecastMetric[]
     startDateTime: DateTime
     endDateTime: DateTime
     datetime: DateTime
@@ -33,7 +33,7 @@
 
   const {
     multiseries: data,
-    visibleSeries,
+    parameters,
     startDateTime,
     endDateTime,
     datetime: NOW, // TODO: only update whats necessary
@@ -91,8 +91,8 @@
     let yScaleRightCurrentOffset = 0
     let yScaleLeftCurrentOffset = 0
 
-    for (const [index, parameter] of [...visibleSeries].entries()) {
-      const details = CHART_SERIES_DETAILS[parameter]
+    for (const [index, parameter] of [...parameters].entries()) {
+      const details = METRIC_DETAILS[parameter]
       if (!details || HIDE_AXIS_FOR_PARAMETERS.includes(parameter)) continue
       const unit = getPreferredUnit(parameter, get(settings))
       const hideUnit = $settingsChart.axisUnits !== 'inline'
@@ -134,9 +134,9 @@
 
     const createdSeriesDetails: CreatedSeriesDetails[] = []
 
-    for (const [index, parameter] of [...visibleSeries].entries()) {
+    for (const [index, parameter] of [...parameters].entries()) {
       const series = data[parameter]
-      const details = CHART_SERIES_DETAILS[parameter]
+      const details = METRIC_DETAILS[parameter]
       const axisOnLeft = index % 2 === 0
       if (!series || !details) continue
 
@@ -190,9 +190,9 @@
         .attr('height', dimensions.height)
 
       function addDataRepresentation(
-        seriesKey: string,
+        parameter: string,
         seriesA: TimeSeries<number> | undefined,
-        details: SeriesDetailsBase,
+        details: MetricDetails,
         seriesB?: TimeSeries<number> | undefined,
       ) {
         if (!seriesA || !details) return
@@ -200,7 +200,7 @@
         let dataRepresentation: d3.Selection<any, any, any, undefined>
 
         const color = details.color && 'tailwind' in details.color ? details.color.tailwind : undefined
-        switch (details.style) {
+        switch (details.chart.style) {
           case 'line':
             dataRepresentation = createLine({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
             if (color) dataRepresentation.classed(color.stroke, true)
@@ -216,7 +216,7 @@
             break
         }
 
-        dataRepresentation.classed([details.class].join(' '), true)
+        dataRepresentation.classed([details.chart.class].join(' '), true)
 
         dataRepresentation.attr('clip-path', `url(#${clipId})`)
 
@@ -232,23 +232,28 @@
             svg,
             scaleY,
             stops: gradientColorStops,
-            name: seriesKey,
+            name: parameter,
           })
 
           dataRepresentation.attr('stroke', `url(#${gradientId})`)
-          if (details.style === 'area') dataRepresentation.attr('fill', `url(#${gradientId})`)
+          if (details.chart.style === 'area') dataRepresentation.attr('fill', `url(#${gradientId})`)
         }
 
-        if (details.markExtrema && $settingsChart.highlightExtrema) {
+        if (details.chart.markExtrema && $settingsChart.highlightExtrema) {
           createExtremaMarkers({ svg, dimensions, scaleX, scaleY, data: seriesA, format })
         }
       }
 
-      if (details.include) {
-        for (const [includeParameter, includeDetails] of Object.entries(details.include)) {
+      if (details.chart.include) {
+        for (const [includeParameter, includeDetails] of Object.entries(details.chart.include)) {
           const includeSeriesA = data[includeParameter as ForecastParameter]
           const includeSeriesB = data[includeDetails.areaSecondParameter as ForecastParameter]
-          addDataRepresentation(includeParameter, includeSeriesA, includeDetails, includeSeriesB)
+          addDataRepresentation(
+            includeParameter,
+            includeSeriesA,
+            { ...details, chart: { ...details.chart, ...includeDetails } },
+            includeSeriesB,
+          )
         }
       }
 
@@ -346,11 +351,11 @@
       clearChart()
       return
     }
-    if (data && visibleSeries.length) updateChart()
+    if (data && parameters.length) updateChart()
   })
 </script>
 
-<ChartValuesDisplay parameters={visibleSeries} {highlightedTimeBucket} />
+<ChartValuesDisplay {parameters} {highlightedTimeBucket} />
 <div bind:this={container} class={['relative', className]}>
   <Skeleton class="h-full w-full" />
 </div>

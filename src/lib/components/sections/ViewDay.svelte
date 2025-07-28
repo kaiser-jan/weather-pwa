@@ -124,7 +124,7 @@
           {#if selectedDay}
             <WeatherChart
               multiseries={selectedDay.multiseries}
-              visibleSeries={visibleSeries.value}
+              parameters={visibleSeries.value}
               startDateTime={selectedDay.datetime}
               endDateTime={selectedDay.datetime.plus(selectedDay.duration)}
               datetime={$NOW}

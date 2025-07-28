@@ -12,77 +12,96 @@ import {
   ZapIcon,
 } from '@lucide/svelte'
 import type { ForecastParameter } from './types/data'
-import type { SeriesDetails } from './types/ui'
+import type { MetricDetails } from './types/ui'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 
-export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetails>> = {
+const _METRIC_DETAILS = {
   temperature: {
     label: 'Temperature',
     domain: { min: [-40, -20, 0], max: [20, 40, 60] },
-    style: 'line',
     icon: ThermometerIcon,
-    class: '',
     color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
-    markExtrema: true,
-    include: {
-      temperature_max: {
-        style: 'area',
-        class: 'opacity-40',
-        color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
-        areaSecondParameter: 'temperature_min',
+    chart: {
+      style: 'line',
+      class: '',
+      markExtrema: true,
+
+      include: {
+        temperature_max: {
+          style: 'area',
+          class: 'opacity-40',
+          color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
+          areaSecondParameter: 'temperature_min',
+        },
       },
     },
   },
+
   cloud_coverage: {
     label: 'Cloud Coverage',
     domain: { min: [0], max: [100] },
-    style: 'bars',
     icon: CloudyIcon,
     iconIfZero: CloudOffIcon,
-    class: 'opacity-15',
     color: { tailwind: { bg: 'bg-blue-200', fill: 'fill-blue-200', stroke: 'stroke-blue-200' } },
+    chart: {
+      style: 'bars',
+      class: 'opacity-15',
+    },
   },
+
   precipitation_amount: {
     label: 'Precipitation Amount',
     domain: { min: [0], max: [20, 50] },
-    style: 'bars',
     icon: UmbrellaIcon,
     iconIfZero: UmbrellaOffIcon,
-    class: 'opacity-80',
     color: { tailwind: { bg: 'bg-blue-300', fill: 'fill-blue-300', stroke: 'stroke-blue-300' } },
+    chart: {
+      style: 'bars',
+      class: 'opacity-80',
+    },
   },
+
   wind_speed: {
     label: 'Wind',
     domain: { min: [0], max: [61 / 3.6, 118 / 3.6] },
-    style: 'line',
     icon: WindIcon,
-    class: 'opacity-80',
     color: { tailwind: { bg: 'bg-blue-100', fill: 'fill-blue-100', stroke: 'stroke-blue-100' } },
-    include: {
-      wind_speed_gust: {
-        style: 'line',
-        class: 'opacity-50 [stroke-dasharray:4_8]',
-        color: { tailwind: { bg: 'bg-blue-100', fill: 'fill-blue-100', stroke: 'stroke-blue-100' } },
+    chart: {
+      style: 'line',
+      class: 'opacity-80',
+      include: {
+        wind_speed_gust: {
+          style: 'line',
+          class: 'opacity-50 [stroke-dasharray:4_8]',
+          color: { tailwind: { bg: 'bg-blue-100', fill: 'fill-blue-100', stroke: 'stroke-blue-100' } },
+        },
       },
     },
   },
+
   relative_humidity: {
     label: 'Relative Humidity',
     domain: { min: [0], max: [100] },
-    style: 'line',
     icon: DropletIcon,
-    class: 'opacity-80',
     color: { tailwind: { bg: 'bg-green-300', fill: 'fill-green-300', stroke: 'stroke-green-300' } },
+    chart: {
+      style: 'line',
+      class: 'opacity-80',
+    },
   },
+
   pressure: {
     label: 'Pressure',
     domain: { min: [980 * 100], max: [1040 * 100] },
-    style: 'line',
     icon: GaugeIcon,
-    class: 'opacity-80',
     color: { tailwind: { bg: 'bg-purple-300', fill: 'fill-purple-300', stroke: 'stroke-purple-300' } },
+    chart: {
+      style: 'line',
+      class: 'opacity-80',
+    },
   },
+
   // uvi_clear_sky: {
   //   domain: [0, 12],
   //   style: 'line',
@@ -91,28 +110,42 @@ export const CHART_SERIES_DETAILS: Partial<Record<ForecastParameter, SeriesDetai
   //   formatter: (d) => d.toString(),
   //   scaleOnRight: false,
   // },
+
   cape: {
     label: 'CAPE',
     domain: { min: [0], max: [1000] },
-    style: 'line',
     icon: ZapIcon,
-    class: 'opacity-80',
     color: { tailwind: { bg: 'bg-yellow-300', fill: 'fill-yellow-300', stroke: 'stroke-yellow-300' } },
+    chart: {
+      style: 'line',
+      class: 'opacity-80',
+    },
   },
+
   cin: {
     label: 'CIN',
     domain: { min: [-500], max: [0] },
-    style: 'line',
     icon: ShieldIcon,
-    class: 'opacity-80',
     color: { tailwind: { bg: 'bg-orange-300', fill: 'fill-orange-300', stroke: 'stroke-orange-300' } },
+    chart: {
+      style: 'line',
+      class: 'opacity-80',
+    },
   },
+
   grad: {
     label: 'Global Radiation',
     domain: { min: [-1000], max: [50_000_000] },
-    style: 'line',
     icon: SunIcon,
-    class: 'opacity-80',
     color: { tailwind: { bg: 'bg-yellow-300', fill: 'fill-yellow-300', stroke: 'stroke-yellow-300' } },
+    chart: {
+      style: 'line',
+      class: 'opacity-80',
+    },
   },
-} as const
+} as const satisfies Partial<Record<ForecastParameter, MetricDetails>>
+
+export type ForecastMetric = keyof typeof _METRIC_DETAILS
+
+// HACK: get the keys out but still type the entries as MetricDetails
+export const METRIC_DETAILS = _METRIC_DETAILS as Partial<Record<ForecastParameter, MetricDetails>>
