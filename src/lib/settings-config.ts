@@ -63,6 +63,7 @@ import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import type { Changelog } from '$lib/types/changelog'
 import { iconMap } from '$lib/utils/icons'
+import { FORECAST_METRICS } from './metric-config'
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   temperature: '°C',
@@ -411,12 +412,11 @@ export const settingsConfig = [
             default: true,
           },
           {
-            id: 'parameters',
-            label: 'Weather Parameters',
+            id: 'metrics',
+            label: 'Weather Metrics',
             type: 'multiselect',
             icon: LetterTextIcon,
-            options: FORECAST_PARAMETERS,
-            // TODO: consider creating a list combining e.g. wind and wind_speed
+            options: FORECAST_METRICS,
             default: [
               'temperature',
               'precipitation_amount',
@@ -424,9 +424,6 @@ export const settingsConfig = [
               'wind_speed',
               'pressure',
               'cloud_coverage',
-              'cape',
-              'cin',
-              'grad',
             ] as ForecastParameter[],
           },
           {

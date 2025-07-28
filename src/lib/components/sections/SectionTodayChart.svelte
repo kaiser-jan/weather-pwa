@@ -9,10 +9,11 @@
   import { swipe } from 'svelte-gestures'
   import { settings } from '$lib/settings/store'
   import { dayView } from '$lib/stores/ui'
+  import type { ForecastMetric } from '$lib/metric-config'
 
   const today = $derived($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))))
 
-  let visibleSeries = persistantState<ForecastParameter[]>('section-today-chart-parameters', [
+  let visibleSeries = persistantState<ForecastMetric[]>('section-today-chart-parameters', [
     'temperature',
     'precipitation_amount',
     'cloud_coverage',

@@ -248,12 +248,7 @@
         for (const [includeParameter, includeDetails] of Object.entries(details.chart.include)) {
           const includeSeriesA = data[includeParameter as ForecastParameter]
           const includeSeriesB = data[includeDetails.areaSecondParameter as ForecastParameter]
-          addDataRepresentation(
-            includeParameter,
-            includeSeriesA,
-            { ...details, chart: { ...details.chart, ...includeDetails } },
-            includeSeriesB,
-          )
+          addDataRepresentation(includeParameter, includeSeriesA, { ...details, chart: includeDetails }, includeSeriesB)
         }
       }
 
