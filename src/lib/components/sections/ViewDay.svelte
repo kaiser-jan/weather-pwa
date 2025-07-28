@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Drawer from '$lib/components/ui/drawer'
   import { forecastStore } from '$lib/stores/data'
   import { NOW } from '$lib/stores/now'
@@ -18,6 +19,7 @@
   import { cn, toggle } from '$lib/utils'
   import { page } from '$app/state'
   import { dayView } from '$lib/stores/ui'
+  import { FORECAST_METRICS, type ForecastMetric } from '$lib/metric-config'
 
   const selectedDay = $derived(
     $forecastStore?.daily?.find((d) => d.datetime.toISO() === page.state.selectedDayDatetime),
@@ -45,7 +47,7 @@
     dayView.select(target)
   }
 
-  const parameterConfigs: Partial<Record<ForecastParameter, ParameterDaySummaryProps>> = {
+  const metricConfigs: Partial<Record<ForecastParameter, ParameterDaySummaryProps>> = {
     temperature: { useTotalAsDomain: true },
     precipitation_amount: { items: ['icon', 'precipitation-groups'] },
     relative_humidity: {},
@@ -68,11 +70,13 @@
     }
   }
 
-  let visibleSeries = persistantState<ForecastParameter[]>('view-day-chart-parameters', [
+  let visibleSeries = persistantState<ForecastMetric[]>('view-day-chart-parameters', [
     'temperature',
     'precipitation_amount',
     'cloud_coverage',
   ])
+
+  const hiddenMetrics = $derived(FORECAST_METRICS.filter((m) => !$settings.sections.components.metrics.includes(m)))
 </script>
 
 <Drawer.Root
@@ -134,31 +138,49 @@
             <Skeleton class="h-full w-full" />
           {/if}
         </div>
+        {@render metricButtons($settings.sections.components.metrics)}
 
-        <div class="flex flex-row flex-wrap gap-2">
-          {#each Object.entries(parameterConfigs) as [parameter, config] (parameter)}
-            {@const parameterTyped = parameter as ForecastParameter}
-            {#if selectedDay.summary[parameterTyped]}
-              <button
-                class={cn(
-                  'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
-                  visibleSeries.value.includes(parameterTyped) ? 'bg-midground border-midground' : '',
-                )}
-                style={`width: ${!config.items || config.items?.includes('range-bar') || config.items?.includes('precipitation-groups') ? 100 : 40}%`}
-                onclick={() => toggle(visibleSeries.value, parameter)}
-              >
-                <ParameterDaySummary
-                  {...config}
-                  parameter={parameterTyped}
-                  day={selectedDay}
-                  selected={visibleSeries.value.includes(parameterTyped)}
-                />
-              </button>
-            {/if}
-          {/each}
-        </div>
+        {#if hiddenMetrics.length}
+          <Accordion.Root type="single" class="-my-2 min-h-10 w-full">
+            <Accordion.Item>
+              <Accordion.Trigger class="p-auto">{hiddenMetrics.length} Hidden Metrics</Accordion.Trigger>
+              <Accordion.Content class="flex flex-col gap-2">
+                {@render metricButtons(hiddenMetrics)}
+              </Accordion.Content>
+            </Accordion.Item>
+          </Accordion.Root>
+        {/if}
       {/if}
     </div>
     <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
   </Drawer.Content>
 </Drawer.Root>
+
+{#snippet metricButtons(metrics: ForecastMetric[])}
+  <div class="flex flex-row flex-wrap gap-2">
+    {#each metrics as metric (metric)}
+      {@const config = metricConfigs[metric]}
+      {#if selectedDay?.summary[metric] && config}
+        <button
+          class={cn(
+            'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
+            visibleSeries.value.includes(metric) ? 'bg-midground border-midground' : '',
+          )}
+          style={`width: ${
+            !config.items || config.items.includes('range-bar') || config.items.includes('precipitation-groups')
+              ? 100
+              : 40
+          }%`}
+          onclick={() => toggle(visibleSeries.value, metric)}
+        >
+          <ParameterDaySummary
+            {...config}
+            parameter={metric}
+            day={selectedDay}
+            selected={visibleSeries.value.includes(metric)}
+          />
+        </button>
+      {/if}
+    {/each}
+  </div>
+{/snippet}
