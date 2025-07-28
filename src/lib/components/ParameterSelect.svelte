@@ -3,17 +3,17 @@
   import * as Popover from '$lib/components/ui/popover'
   import { EllipsisIcon, EyeIcon, EyeOffIcon, PinIcon, PinOffIcon } from '@lucide/svelte'
   import { CHART_SERIES_DETAILS } from '$lib/chart-config'
-  import { type WeatherMetricKey, WEATHER_METRIC_KEYS } from '$lib/types/data'
+  import { type ForecastParameter, FORECAST_PARAMETERS } from '$lib/types/data'
   import { Button } from '$lib/components/ui/button'
   import { persistantState } from '$lib/utils/state.svelte'
   import { sortByReferenceOrder, toggle } from '$lib/utils'
 
   interface Props {
-    visible: WeatherMetricKey[]
+    visible: ForecastParameter[]
   }
   let { visible: visible = $bindable() }: Props = $props()
 
-  let pinned = persistantState<WeatherMetricKey[]>('chart-parameters-pinned', [
+  let pinned = persistantState<ForecastParameter[]>('chart-parameters-pinned', [
     'cloud_coverage',
     'precipitation_amount',
     'temperature',
@@ -23,10 +23,10 @@
   let temporary = $derived(visible.filter((p) => !pinned.value.includes(p)))
 
   function sortPinned() {
-    pinned.value = sortByReferenceOrder(pinned.value, WEATHER_METRIC_KEYS)
+    pinned.value = sortByReferenceOrder(pinned.value, FORECAST_PARAMETERS)
   }
   function sortVisible() {
-    visible = sortByReferenceOrder(visible, WEATHER_METRIC_KEYS)
+    visible = sortByReferenceOrder(visible, FORECAST_PARAMETERS)
   }
 </script>
 
@@ -59,7 +59,7 @@
     </Popover.Trigger>
     <Popover.Content class="flex w-fit flex-col gap-1 p-2">
       {#each Object.entries(CHART_SERIES_DETAILS) as [parameter, parameterDetails] (parameter)}
-        {@const parameterTyped = parameter as WeatherMetricKey}
+        {@const parameterTyped = parameter as ForecastParameter}
         {@const isActive = visible.includes(parameterTyped)}
         {@const isPinned = pinned.value.includes(parameterTyped)}
         <button

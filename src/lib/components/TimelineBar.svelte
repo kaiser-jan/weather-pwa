@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Coordinates, MultivariateTimeSeries, WeatherMetricKey } from '$lib/types/data'
+  import type { Coordinates, MultivariateTimeSeries, ForecastParameter } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { DateTime } from 'luxon'
   import TimelineBarLayer from './TimelineBarLayer.svelte'
@@ -7,7 +7,7 @@
 
   type Parameter =
     | Extract<
-        WeatherMetricKey,
+        ForecastParameter,
         'temperature' | 'cloud_coverage' | 'precipitation_amount' | 'wind_speed' | 'uvi_clear_sky'
       >
     | 'sun'

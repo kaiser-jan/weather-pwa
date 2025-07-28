@@ -1,13 +1,13 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
-  import type { WeatherMetricKey } from '$lib/types/data'
+  import type { ForecastParameter } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { getPreferredUnit, autoFormatMetric } from '$lib/utils/units'
   import MathFraction from './MathFraction.svelte'
 
   interface Props {
     value: number
-    parameter: WeatherMetricKey
+    parameter: ForecastParameter
     class?: string
   }
 

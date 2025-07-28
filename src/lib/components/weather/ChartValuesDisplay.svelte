@@ -1,14 +1,14 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
-  import type { TimeSeriesNumberEntry, WeatherMetricKey } from '$lib/types/data'
+  import type { TimeSeriesNumberEntry, ForecastParameter } from '$lib/types/data'
   import { slide } from 'svelte/transition'
   import ParameterValue from '$lib/components/ParameterValue.svelte'
 
   const settingsChart = settings.select((s) => s.sections.components.chart)
 
   interface Props {
-    parameters: WeatherMetricKey[]
-    highlightedTimeBucket: Record<WeatherMetricKey, TimeSeriesNumberEntry> | undefined
+    parameters: ForecastParameter[]
+    highlightedTimeBucket: Record<ForecastParameter, TimeSeriesNumberEntry> | undefined
   }
 
   const { parameters, highlightedTimeBucket }: Props = $props()
@@ -19,7 +19,7 @@
   })
 
   function createEmptyTimeBucket() {
-    let emptyTimeBucket: Record<WeatherMetricKey, undefined> = {} as any
+    let emptyTimeBucket: Record<ForecastParameter, undefined> = {} as any
     for (const key of parameters) {
       emptyTimeBucket[key] = undefined
     }
@@ -35,7 +35,7 @@
     <div class="text-text border-foreground flex min-h-9 grow flex-row flex-wrap gap-4 rounded-lg border-1 px-2 py-1.5">
       {#each parameters as parameter (parameter)}
         <ParameterValue
-          parameter={parameter as WeatherMetricKey}
+          parameter={parameter as ForecastParameter}
           value={timeBucket?.[parameter]?.value}
           class="min-w-16"
         />

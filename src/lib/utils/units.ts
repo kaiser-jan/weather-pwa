@@ -1,9 +1,9 @@
 import { type SettingsSchema } from '$lib/settings/store'
-import type { WeatherMetricKey } from '$lib/types/data'
+import type { ForecastParameter } from '$lib/types/data'
 import { CONVERTERS, DECIMAL_RECOMMENDED_FOR, METRIC_DIMENSION, type Unit } from '$lib/units-config'
 import * as d3 from 'd3'
 
-export function convertToUnit(value: number, key: WeatherMetricKey, unit: Unit | null): number {
+export function convertToUnit(value: number, key: ForecastParameter, unit: Unit | null): number {
   const dimension = METRIC_DIMENSION[key]
   if (!dimension || !unit) return value
   const converter = CONVERTERS[dimension]?.[unit] ?? ((v) => v)
@@ -30,7 +30,7 @@ export function formatMetric(
 
 export function autoFormatMetric(
   value: number,
-  key: WeatherMetricKey,
+  key: ForecastParameter,
   settings: SettingsSchema,
   options?: { hideUnit?: boolean; showDecimal?: boolean },
 ): string {
@@ -40,7 +40,7 @@ export function autoFormatMetric(
 }
 
 // NOTE: passing in settings allows for deciding on reactivity
-export function getPreferredUnit(key: WeatherMetricKey, settings: SettingsSchema) {
+export function getPreferredUnit(key: ForecastParameter, settings: SettingsSchema) {
   const dimension = METRIC_DIMENSION[key]
   if (!dimension) return null
   return settings.general.units[dimension]

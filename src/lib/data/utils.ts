@@ -3,7 +3,7 @@ import type {
   MultivariateTimeSeries,
   MultivariateTimeSeriesTimeBucket,
   NumberSummary,
-  WeatherMetricKey,
+  ForecastParameter,
 } from '$lib/types/data'
 import type { TimeBucketSummary } from '$lib/types/data'
 import { DateTime, Duration } from 'luxon'
@@ -81,7 +81,7 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
   // add one item from the neighboring day at each
   for (let i = 1; i < grouped.length; i++) {
     for (const key of Object.keys(grouped[i].series)) {
-      const keyTyped = key as WeatherMetricKey
+      const keyTyped = key as ForecastParameter
       const previousSeries = grouped[i - 1].series[keyTyped]
       const currentSeries = grouped[i].series[keyTyped]
       if (!previousSeries || !currentSeries) continue
