@@ -9,12 +9,10 @@
   import { pushState, replaceState } from '$app/navigation'
 
   function openSettings() {
-    console.log('open')
-    pushState('', { showSettings: true })
+    pushState('', { ...page.state, showSettings: true })
   }
 
   function close() {
-    console.log('close')
     page.state.showSettings = undefined
     page.state.settingsPath = undefined
     replaceState('', page.state)

@@ -28,10 +28,11 @@ export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, 'childre
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { ref?: U | null }
 
 export function formatRelativeDatetime(datetime: DateTime, options?: { omitDate?: boolean }) {
-  const today = DateTime.now().startOf('day')
-  const inputDate = datetime.startOf('day')
+  const todayMidnight = DateTime.now().startOf('day')
+  const inputDayMidnight = datetime.startOf('day')
+  const isToday = inputDayMidnight.equals(todayMidnight)
 
-  if (inputDate.equals(today) || options?.omitDate) {
+  if (isToday || options?.omitDate) {
     return datetime.toFormat('HH:mm')
     // NOTE: this requires translation
     // } else if (inputDate.equals(today.plus({ days: 1 }))) {

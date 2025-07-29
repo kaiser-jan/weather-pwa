@@ -90,7 +90,6 @@ function getNearestPointAtDateTime(
 ) {
   const x0 = datetime.toMillis()
   const i = bisect(series.data, x0) ?? series.data.length - 1
-  console.log(series.name, i)
   const d0 = series.data[i - 1]
   const d1 = series.data[i]
   const d =
