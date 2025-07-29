@@ -1,7 +1,6 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
   import { NOW } from '$lib/stores/now'
-  import type { ForecastParameter } from '$lib/types/data'
   import { persistantState } from '$lib/utils/state.svelte'
   import ParameterSelect from '$lib/components/ParameterSelect.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'

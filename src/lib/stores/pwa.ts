@@ -1,5 +1,5 @@
 import { toast } from 'svelte-sonner'
-import { writable, derived, type Readable } from 'svelte/store'
+import { writable, derived } from 'svelte/store'
 import { useRegisterSW } from 'virtual:pwa-register/svelte'
 import type { Icon } from '@lucide/svelte'
 import {
@@ -28,7 +28,6 @@ function createSWStores() {
 
   let registration: ServiceWorkerRegistration | undefined
   let swUrl: string | undefined
-  let unsubscribed = false
 
   const icon = derived(state, ($state) => swStateIconMap[$state as ServiceWorkerState] ?? LucideCircleHelp)
 
@@ -86,7 +85,6 @@ function createSWStores() {
   }
 
   function destroy() {
-    unsubscribed = true
     state.set(undefined)
     isChecking.set(false)
     needRefresh.set(false)

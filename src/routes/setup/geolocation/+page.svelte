@@ -4,7 +4,6 @@
   import { Button } from '$lib/components/ui/button'
   import { geolocationStore } from '$lib/stores/geolocation'
   import { coordinates, selectedLocation } from '$lib/stores/location'
-  import { locationSearch } from '$lib/stores/ui'
   import { NavigationIcon, SearchIcon } from '@lucide/svelte'
   import { onMount } from 'svelte'
 

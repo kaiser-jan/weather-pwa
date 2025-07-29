@@ -1,7 +1,7 @@
 <script lang="ts">
   import { geolocationStore } from '$lib/stores/geolocation'
   import type { Coordinates } from '$lib/types/data'
-  import { BookmarkIcon, ChevronRight, MapPinIcon, Trash2Icon, type Icon } from '@lucide/svelte'
+  import { BookmarkIcon, ChevronRight, Trash2Icon, type Icon } from '@lucide/svelte'
   import { Button } from './ui/button'
   import { ITEM_ID_GEOLOCATION, type Location } from '$lib/types/ui'
   import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
@@ -119,7 +119,7 @@
     <span class="text-text px-2 py-1">{placeholderEmpty}</span>
   {/if}
 
-  {#each items ?? [] as item, index}
+  {#each items ?? [] as item, index (item.id)}
     {@const asSaved = getSavedLocationFor(item)}
 
     {#if index !== 0}

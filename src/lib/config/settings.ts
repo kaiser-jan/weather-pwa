@@ -42,7 +42,6 @@ import {
   PaletteIcon,
   PencilLineIcon,
   PinIcon,
-  RefreshCcwDotIcon,
   RotateCwIcon,
   RulerIcon,
   SettingsIcon,
@@ -58,7 +57,7 @@ import {
   UmbrellaIcon,
 } from '@lucide/svelte'
 import type { ColorStop } from '$lib/types/ui'
-import { FORECAST_PARAMETERS, type Coordinates, type ForecastParameter } from '$lib/types/data'
+import { type ForecastParameter } from '$lib/types/data'
 import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import type { Changelog } from '$lib/types/changelog'

@@ -23,7 +23,8 @@
   bind:open={
     () => page.state.showSettings ?? false,
     (o) => {
-      o ? openSettings() : close()
+      if (o) openSettings()
+      else close()
     }
   }
 >

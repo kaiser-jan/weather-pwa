@@ -141,7 +141,7 @@ export function createTooltip(options: {
     tooltip.style('opacity', 0)
   }
 
-  function updateTooltip(x: number, y: number, points: ReturnType<typeof getNearestPointAtDateTime>[]) {
+  function updateTooltip(x: number, y: number, points: NonNullable<ReturnType<typeof getNearestPointAtDateTime>>[]) {
     const alignLeft = x > dimensions.widthFull / 2
     const alignTop = y > dimensions.heightFull / 2
     const offset = 4
@@ -151,6 +151,11 @@ export function createTooltip(options: {
       'y',
       y + (alignTop ? -tooltipBBox.height - 3 - offset : offset),
     )
+
+    if (points.length === 0) {
+      hideTooltip()
+      return
+    }
 
     tooltip.html(
       `<b>${points[0].d.datetime.toFormat('HH:mm')}</b><br>${points

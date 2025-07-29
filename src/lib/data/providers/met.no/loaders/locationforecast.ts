@@ -150,7 +150,7 @@ function transformTimePeriod(period: MetnoForecastTimePeriod, duration: Duration
     // precipitation_amount_min: toHourly(period.precipitation_amount_min),
     // precipitation_amount_max: toHourly(period.precipitation_amount_max),
     precipitation_probability: period.probability_of_precipitation,
-    thunder_probablilty: period.probability_of_thunder,
+    // thunder_probablilty: period.probability_of_thunder,
     uvi_clear_sky: period.ultraviolet_index_clear_sky_max,
     // mm | expected precipitation amount for period
   }

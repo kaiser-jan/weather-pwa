@@ -1,5 +1,5 @@
 // import adapter from '@sveltejs/adapter-auto'
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-static'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -15,13 +15,13 @@ const config = {
     adapter: adapter({
       pages: 'build',
       assets: 'build',
-      fallback: null
+      fallback: null,
     }),
     serviceWorker: {
       register: false,
     },
     alias: {
-      "changelog.json": "./changelog.json",
+      'changelog.json': './changelog.json',
     },
     files: {
       // you don't need to do this if you're using generateSW strategy in your app

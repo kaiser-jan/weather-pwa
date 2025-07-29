@@ -7,8 +7,8 @@
   import PageList from './pages/PageList.svelte'
   import { SettingsIcon } from '@lucide/svelte'
   import PageChangelog from './pages/PageChangelog.svelte'
-  import { onMount, tick } from 'svelte'
-  import { pushState, replaceState } from '$app/navigation'
+  import { onMount } from 'svelte'
+  import { pushState } from '$app/navigation'
   import { page } from '$app/state'
 
   interface Props {
