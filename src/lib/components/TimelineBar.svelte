@@ -27,8 +27,8 @@
   let {
     multiseries,
     parameters,
-    startTimestamp: startTimestamp,
-    endTimestamp: endTimestamp,
+    startTimestamp,
+    endTimestamp,
     datetime: NOW,
     marks = [],
     coordinates,
@@ -84,7 +84,7 @@
         {endTimestamp}
         {coordinates}
         {barHeight}
-        distanceFromDatetimes={distanceFromTimestamps}
+        {distanceFromTimestamps}
       />
     {:else}
       <Skeleton class="size-full" />

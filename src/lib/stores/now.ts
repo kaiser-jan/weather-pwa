@@ -33,5 +33,5 @@ export const NOW = writable(DateTime.now(), () => {
 })
 
 export const NOW_MILLIS = derived(NOW, (n) => n.toMillis())
-export const TODAY_MILLIS = derived(NOW_MILLIS, (n) => getStartOfDayTimestamp(n))
-export const TOMORROW_MILLIS = derived(NOW_MILLIS, (n) => getEndOfDayTimestamp(n))
+export const TODAY_MILLIS = derived(NOW_MILLIS, (n) => getStartOfDayTimestamp(n, { local: true }))
+export const TOMORROW_MILLIS = derived(NOW_MILLIS, (n) => getEndOfDayTimestamp(n, { local: true }))

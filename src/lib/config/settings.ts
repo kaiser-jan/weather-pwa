@@ -63,6 +63,7 @@ import { derived } from 'svelte/store'
 import type { Changelog } from '$lib/types/changelog'
 import { iconMap } from '$lib/utils/icons'
 import { FORECAST_METRICS } from './metrics'
+import { DATASET_IDS_BY_PRIORITY } from './datasets'
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   temperature: '°C',
@@ -172,20 +173,15 @@ export const settingsConfig = [
         icon: ListIcon,
         reorder: true,
         disabled: true,
-        options: DATASET_IDS,
+        options: DATASET_IDS_BY_PRIORITY,
         labels: Object.fromEntries(
-          DATASET_IDS.map((id) => {
+          DATASET_IDS_BY_PRIORITY.map((id) => {
             const provider = PROVIDERS.find((p) => p.datasetIds.includes(id))!
             const dataset = DATASETS.find((d) => d.id === id)!
             return [id, provider.name + ' ' + dataset.label]
           }),
         ),
-        default: [
-          'met.no_locationforecast',
-          'geosphere.at_nwp-v1-1h-2500m_offset',
-          'geosphere.at_nwp-v1-1h-2500m',
-          'geosphere.at_nowcast-v1-15min-1km',
-        ] as DatasetId[],
+        default: DATASET_IDS_BY_PRIORITY satisfies DatasetId[],
       },
       {
         id: 'incrementalLoad',
