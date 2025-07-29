@@ -13,7 +13,7 @@ export function createLine(options: {
 
   const lineGenerator = d3
     .line<TimeSeriesNumberEntry>()
-    .x((d) => scaleX(d.datetime.toMillis()))
+    .x((d) => scaleX(d.timestamp))
     .y((d) => scaleY(d.value))
     .curve(d3.curveBasis)
     .defined((d) => d.value !== null && !isNaN(d.value))

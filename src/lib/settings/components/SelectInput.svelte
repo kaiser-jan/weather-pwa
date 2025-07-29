@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SelectSetting } from '../types'
   import * as Select from '$lib/components/ui/select'
+  import { toReadable } from '$lib/utils/stores'
 
   interface Props {
     item: SelectSetting
@@ -9,6 +10,8 @@
   }
 
   let { item, value, onchange }: Props = $props()
+
+  let disabled = toReadable(item.disabled)
 </script>
 
 <Select.Root
@@ -18,7 +21,7 @@
     value = v
     onchange(v)
   }}
-  disabled={item.disabled}
+  disabled={$disabled}
 >
   <Select.Trigger>
     {value}

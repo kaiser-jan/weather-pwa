@@ -10,7 +10,7 @@
   import { dayView } from '$lib/stores/ui'
   import type { ForecastMetric } from '$lib/config/metrics'
 
-  const today = $derived($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))))
+  const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $NOW.startOf('day').toMillis()))
 
   let visibleSeries = persistantState<ForecastMetric[]>('section-today-chart-parameters', [
     'temperature',
@@ -29,7 +29,9 @@
       onclick={() => dayView.open(today)}
       use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30, touchAction: 'pan-y' })}
       onswipe={(e) => {
-        const tomorrow = $forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day').plus({ days: 1 })))
+        const tomorrow = $forecastStore?.daily.find(
+          (d) => d.timestamp === $NOW.startOf('day').plus({ days: 1 }).toMillis(),
+        )
         if (!tomorrow) return
         if (e.detail.direction === 'left') dayView.open(tomorrow)
       }}
@@ -37,9 +39,9 @@
       <WeatherChart
         multiseries={today.multiseries}
         parameters={visibleSeries.value}
-        startDateTime={today.datetime}
-        endDateTime={today.datetime.plus(today.duration)}
-        datetime={$NOW}
+        startTimestamp={today.timestamp}
+        endTimestamp={today.timestamp + today.duration}
+        timestamp={$NOW.toMillis()}
         className="snap-center shrink-0 w-full h-[25vh]"
       />
     </button>

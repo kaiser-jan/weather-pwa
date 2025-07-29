@@ -6,6 +6,7 @@ import type {
   ForecastParameter,
 } from '$lib/types/data'
 import type { TimeBucketSummary } from '$lib/types/data'
+import { getStartOfDayTimestamp } from '$lib/utils'
 import { DateTime, Duration } from 'luxon'
 
 export function combineStatisticalNumberSummaries<KeyT extends string>(
@@ -62,11 +63,11 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
 
   for (const [parameter, series] of Object.entries(multiseries)) {
     for (const item of series) {
-      const day = item.datetime.toISODate()!
+      const day = DateTime.fromMillis(item.timestamp).toISODate()!
       if (!groupedMap[day])
         groupedMap[day] = {
-          datetime: item.datetime.startOf('day'),
-          duration: Duration.fromObject({ hours: 24 }),
+          timestamp: getStartOfDayTimestamp(item.timestamp),
+          duration: Duration.fromObject({ hours: 24 }).toMillis(),
           series: {},
         }
 
@@ -87,12 +88,12 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
       if (!previousSeries || !currentSeries) continue
       const lastItemPrevious = previousSeries[previousSeries.length - 1]
       const firstItemCurrent = currentSeries[0]
-      const startOfDay = firstItemCurrent.datetime.startOf('day')
-      if (lastItemPrevious.datetime.plus(lastItemPrevious.duration) > startOfDay) {
+      const startOfDayTimestamp = getStartOfDayTimestamp(firstItemCurrent.timestamp)
+      if (lastItemPrevious.timestamp + lastItemPrevious.duration > startOfDayTimestamp) {
         currentSeries.unshift({
           value: lastItemPrevious.value,
-          datetime: startOfDay,
-          duration: firstItemCurrent.datetime.diff(startOfDay),
+          timestamp: startOfDayTimestamp,
+          duration: firstItemCurrent.timestamp - startOfDayTimestamp,
         })
       }
       previousSeries.push(currentSeries[0])
@@ -104,8 +105,9 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
 
     // HACK: how to determine whether a day is complete?
     const lastTemperatureItem = g.series.temperature[g.series.temperature.length - 1]
-    const temperatureEndDateTime = lastTemperatureItem.datetime.plus(lastTemperatureItem.duration)
-    const isIncomplete = temperatureEndDateTime.startOf('day').equals(g.series.temperature[0].datetime.startOf('day'))
+    const temperatureEndTimestamp = lastTemperatureItem.timestamp + lastTemperatureItem.duration
+    const isIncomplete =
+      getStartOfDayTimestamp(temperatureEndTimestamp) === getStartOfDayTimestamp(g.series.temperature[0].timestamp)
     if (isIncomplete) return false
     return true
   })
@@ -113,11 +115,11 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
   return groupedCompleteOnly
 }
 
-export function combineMultiseriesToDailyForecast(multiserIes: MultivariateTimeSeries): Forecast['daily'] {
-  const grouped = groupMultiseriesByDay(multiserIes)
+export function combineMultiseriesToDailyForecast(multiseries: MultivariateTimeSeries): Forecast['daily'] {
+  const grouped = groupMultiseriesByDay(multiseries)
 
   return grouped.map((day) => ({
-    datetime: day.datetime,
+    timestamp: day.timestamp,
     duration: day.duration,
     summary: mapRecord(day.series, (s) => calculateStatisticalNumberSummary(s.map((tp) => tp.value))),
     multiseries: day.series,
@@ -146,17 +148,17 @@ export function forecastTotalFromDailyForecast(daily: TimeBucketSummary[]): Time
   const last = daily[daily.length - 1]
 
   return {
-    datetime: daily[0].datetime,
-    duration: last.datetime.plus(last.duration).diff(first.datetime),
+    timestamp: daily[0].timestamp,
+    duration: last.timestamp + last.duration - first.timestamp,
     summary: total,
   }
 }
 
-export function currentFromMultiseries(multiseries: MultivariateTimeSeries, datetime: DateTime) {
-  // retrieves the last value before DateTime.now() for each series
+export function currentFromMultiseries(multiseries: MultivariateTimeSeries, timestamp: number) {
+  // retrieves the last value before timestamp for each series
   const current: Forecast['current'] = {}
   Object.entries(multiseries).forEach(([key, series]) => {
-    current[key as keyof typeof current] = series.findLast((tp) => tp.datetime < datetime)?.value
+    current[key as keyof typeof current] = series.findLast((tp) => tp.timestamp < timestamp)?.value
   })
   return current
 }

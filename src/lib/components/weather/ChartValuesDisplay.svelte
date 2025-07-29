@@ -3,6 +3,7 @@
   import type { TimeSeriesNumberEntry, ForecastParameter } from '$lib/types/data'
   import { slide } from 'svelte/transition'
   import ParameterValue from '$lib/components/ParameterValue.svelte'
+  import { DateTime } from 'luxon'
 
   const settingsChart = settings.select((s) => s.sections.components.chart)
 
@@ -30,7 +31,11 @@
 {#if timeBucket !== null}
   <div class="flex w-full gap-2 text-sm" transition:slide>
     <div class="border-foreground flex min-h-9 w-fit items-center rounded-lg border-1 p-2">
-      <span class="font-bold">{Object.values(timeBucket)[0]?.datetime.toFormat('HH:mm') ?? '--:--'}</span>
+      <span class="font-bold"
+        >{Object.values(timeBucket)
+          ? DateTime.fromMillis(Object.values(timeBucket)[0]!.timestamp).toFormat('HH:mm')
+          : '--:--'}</span
+      >
     </div>
     <div class="text-text border-foreground flex min-h-9 grow flex-row flex-wrap gap-4 rounded-lg border-1 px-2 py-1.5">
       {#each parameters as parameter (parameter)}

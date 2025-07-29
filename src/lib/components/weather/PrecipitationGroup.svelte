@@ -3,26 +3,28 @@
   import type { PrecipitationGroup } from '$lib/stores/precipitationGroups'
   import { ArrowRightIcon } from '@lucide/svelte'
   import { NOW } from '$lib/stores/now'
-  import type { DateTime } from 'luxon'
+  import { DateTime } from 'luxon'
 
   interface Props {
     precipitationGroup: PrecipitationGroup
-    startDatetime: DateTime
-    endDatetime: DateTime
+    startTimestamp: number
+    endTimestamp: number
     isRestOfDayOnly?: boolean
   }
 
-  let { precipitationGroup, startDatetime, endDatetime, isRestOfDayOnly }: Props = $props()
+  let { precipitationGroup, startTimestamp, endTimestamp, isRestOfDayOnly }: Props = $props()
 </script>
 
 <div class="flex flex-row items-center justify-between gap-2">
   <span class="inline-flex items-center gap-1">
-    {#if precipitationGroup.start > $NOW || (!isRestOfDayOnly && precipitationGroup.start >= startDatetime)}
-      {formatRelativeDatetime(precipitationGroup.start, { omitDate: precipitationGroup.start >= startDatetime })}
+    {#if precipitationGroup.start > $NOW.toMillis() || (!isRestOfDayOnly && precipitationGroup.start >= startTimestamp)}
+      {formatRelativeDatetime(DateTime.fromMillis(precipitationGroup.start), {
+        omitDate: precipitationGroup.start >= startTimestamp,
+      })}
     {/if}
     <ArrowRightIcon class="text-text-muted" />
-    {formatRelativeDatetime(precipitationGroup.end, {
-      omitDate: precipitationGroup.end < endDatetime,
+    {formatRelativeDatetime(DateTime.fromMillis(precipitationGroup.end), {
+      omitDate: precipitationGroup.end < endTimestamp,
     })}
     {#if precipitationGroup.isEndOfData}
       <span class="text-text-muted">+</span>

@@ -34,7 +34,7 @@
   const forecastCurrent = $derived.by(() => {
     if (!$forecastStore) return null
     if ($forecastStore.current) return $forecastStore.current
-    return currentFromMultiseries($forecastStore.multiseries, $NOW)
+    return currentFromMultiseries($forecastStore.multiseries, $NOW.toMillis())
   })
 </script>
 

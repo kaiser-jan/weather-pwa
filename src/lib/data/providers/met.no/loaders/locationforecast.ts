@@ -53,8 +53,8 @@ export async function loadLocationforecast(coordinates: Coordinates) {
       if (!multiseries[keyTyped]) multiseries[keyTyped] = []
 
       multiseries[keyTyped].push({
-        datetime,
-        duration,
+        timestamp: datetime.toMillis(),
+        duration: duration.toMillis(),
         value: data[keyTyped],
       })
     }

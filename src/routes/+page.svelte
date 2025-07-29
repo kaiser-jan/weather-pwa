@@ -52,7 +52,8 @@
       title="Today"
       icon={ClockIcon}
       actionIcon={ChevronRightIcon}
-      onclick={() => dayView.open($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))) ?? null)}
+      onclick={() =>
+        dayView.open($forecastStore?.daily.find((d) => d.timestamp === $NOW.startOf('day').toMillis()) ?? null)}
     />
     <SectionTodayChart />
 

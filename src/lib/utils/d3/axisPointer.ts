@@ -23,13 +23,13 @@ export function createAxisPointer(options: {
     tooltip?.hideTooltip()
   }
 
-  function updateXAxisPointer(datetime: DateTime, showTooltip = true) {
+  function updateXAxisPointer(timestamp: number, showTooltip = true) {
     xAxisPointer.classed('hidden', false)
 
-    const points = seriesList.map((m) => getNearestPointAtDateTime(datetime, m, scaleX)).filter((p) => p !== null)
+    const points = seriesList.map((m) => getNearestPointAtTimestamp(timestamp, m, scaleX)).filter((p) => p !== null)
 
     const nearest = points.reduce((a, b) =>
-      Math.abs(b.d.datetime.diff(datetime).toMillis()) < Math.abs(a.d.datetime.diff(datetime).toMillis()) ? b : a,
+      Math.abs(b.d.timestamp - timestamp) < Math.abs(a.d.timestamp - timestamp) ? b : a,
     )
     const highest = points.reduce((a, b) => (b.y < a.y ? b : a))
     xAxisPointer.attr('transform', `translate(${nearest.x},0)`)
@@ -74,7 +74,7 @@ export function createAxisPointer(options: {
 
   const tooltip = options.tooltip ? createTooltip({ svg, dimensions }) : null
 
-  updateXAxisPointer(DateTime.now(), false)
+  updateXAxisPointer(DateTime.now().toMillis(), false)
 
   return {
     updateXAxisPointer,
@@ -82,23 +82,22 @@ export function createAxisPointer(options: {
   }
 }
 
-const bisect = d3.bisector<TimeSeriesNumberEntry, number>((d) => d.datetime.toMillis()).left
-function getNearestPointAtDateTime(
-  datetime: DateTime,
+const bisect = d3.bisector<TimeSeriesNumberEntry, number>((d) => d.timestamp).left
+function getNearestPointAtTimestamp(
+  timestamp: number,
   series: CreatedSeriesDetails,
   scaleX: d3.ScaleTime<number, number, never>,
 ) {
-  const x0 = datetime.toMillis()
+  const x0 = timestamp
   const i = bisect(series.data, x0) ?? series.data.length - 1
   const d0 = series.data[i - 1]
   const d1 = series.data[i]
-  const d =
-    d0 === undefined || Math.abs(d0.datetime.toMillis() - x0) > Math.abs(d1?.datetime?.toMillis() - x0) ? d1 : d0
+  const d = d0 === undefined || Math.abs(d0.timestamp - x0) > Math.abs(d1?.timestamp - x0) ? d1 : d0
 
   if (!d) return null
 
   return {
-    x: scaleX(d.datetime.toMillis()),
+    x: scaleX(d.timestamp),
     y: series.scale(d.value),
     d,
     name: series.name,
@@ -141,7 +140,7 @@ export function createTooltip(options: {
     tooltip.style('opacity', 0)
   }
 
-  function updateTooltip(x: number, y: number, points: NonNullable<ReturnType<typeof getNearestPointAtDateTime>>[]) {
+  function updateTooltip(x: number, y: number, points: NonNullable<ReturnType<typeof getNearestPointAtTimestamp>>[]) {
     const alignLeft = x > dimensions.widthFull / 2
     const alignTop = y > dimensions.heightFull / 2
     const offset = 4
@@ -158,7 +157,7 @@ export function createTooltip(options: {
     }
 
     tooltip.html(
-      `<b>${points[0].d.datetime.toFormat('HH:mm')}</b><br>${points
+      `<b>${DateTime.fromMillis(points[0].d.timestamp).toFormat('HH:mm')}</b><br>${points
         .map((p) => {
           const svg = renderIcon(p.name, p.icon)
           const metric = autoFormatMetric(p.d.value, p.name as ForecastParameter, get(settings), { showDecimal: true })
