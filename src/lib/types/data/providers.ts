@@ -1,26 +1,41 @@
 import type { Duration } from 'luxon'
-import type { ForecastParameter } from '.'
-import type { ProviderId } from '$lib/data/providers'
-
-export interface Provider {
-  name: string
-  url: string
-  country: string | null
-}
+import type { Coordinates, ForecastParameter, MultivariateTimeSeries } from '.'
+import type { Feature, Geometry } from 'geojson'
 
 interface Coordinate2D {
   longitude: number
   latitude: number
 }
 
-export interface Dataset {
-  providerId: ProviderId
+type ProviderId = string
+type LoaderId = string
+type DatasetId = string
+
+export interface Provider {
+  id: ProviderId
   name: string
   url: string
+  country: string | null
+  loaderIds: LoaderId[]
+  datasetIds: DatasetId[]
+}
+
+export interface Loader<DatasetId extends string> {
+  id: LoaderId
+  url?: string
+  datasetIds: DatasetId[]
+  load: (coordinates: Coordinates) => Promise<MultivariateTimeSeries>
+}
+
+export interface Dataset {
+  id: DatasetId
+  name: string
+  label: string
+  url?: string
   parameters: ForecastParameter[]
   offset: Duration | null
   interval: Duration | null
   timespan: Duration
-  boundingBox: [Coordinate2D, Coordinate2D]
+  coverageArea: Feature<Geometry>
   spatialResolution: number // meters
 }

@@ -69,6 +69,12 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
   return output
 }
 
+export function getForecastParametersFromConfig<ConfigInKeyT extends string, ConfigOutKeyT extends string>(
+  configs: TimeSeriesConfig<ConfigInKeyT, ConfigOutKeyT>[],
+) {
+  return configs.flatMap((c) => (c.type === 'vector' ? [c.outKeyLength, c.outKeyAngle] : [c.outKey]))
+}
+
 export function mergeMultivariateTimeSeries(
   multiseriesA: MultivariateTimeSeries,
   multiseriesB: MultivariateTimeSeries,

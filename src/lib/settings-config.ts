@@ -1,5 +1,5 @@
 import { UNIT_OPTIONS, type Unit, type UnitDimension } from '$lib/units-config'
-import { DATASET_IDS, DATASETS, type DatasetId } from '$lib/data/providers'
+import { DATASET_IDS, DATASETS, PROVIDERS, type DatasetId } from '$lib/data/providers'
 import type { ConfigItem } from '$lib/settings/types'
 import type { Location } from '$lib/types/ui'
 import type { DateObjectUnits } from 'luxon'
@@ -174,8 +174,9 @@ export const settingsConfig = [
         options: DATASET_IDS,
         labels: Object.fromEntries(
           DATASET_IDS.map((id) => {
-            const dataset = DATASETS[id]
-            return [id, dataset.providerId + ' ' + dataset.name]
+            const provider = PROVIDERS.find((p) => p.datasetIds.includes(id))!
+            const dataset = DATASETS.find((d) => d.id === id)!
+            return [id, provider.name + ' ' + dataset.label]
           }),
         ),
         default: [

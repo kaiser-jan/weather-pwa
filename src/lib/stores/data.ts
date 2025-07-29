@@ -2,7 +2,7 @@ import { get, readonly, writable } from 'svelte/store'
 import { combineMultiseriesToDailyForecast, forecastTotalFromDailyForecast } from '$lib/data/utils'
 import { mergeMultivariateTimeSeries } from '$lib/utils/data'
 import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/data'
-import { LOADERS, type DatasetId } from '$lib/data/providers'
+import { getLoadersForDataset, type DatasetId } from '$lib/data/providers'
 import { debounce, deepEqual } from '$lib/utils'
 import { DateTime, Duration } from 'luxon'
 import { coordinates } from './location'
@@ -67,12 +67,13 @@ function updateWith(coordinates: Coordinates, datasets: readonly DatasetId[], st
     set(cachedForecast)
   }
 
-  const loaders = datasets.map((d) => LOADERS[d])
+  const loaders = datasets.map((d) => getLoadersForDataset(d))
   const parts: (MultivariateTimeSeries | null | false)[] = Array(datasets.length).fill(null)
   const debouncedUpdate = debounce(() => updateForecast(parts), 500)
 
   for (const [loaderIndex, loader] of loaders.entries()) {
-    loader(coordinates)
+    loader
+      ?.load(coordinates)
       .then((r) => {
         parts[loaderIndex] = r
       })

@@ -6,8 +6,16 @@ import type {
 } from '$lib/types/metno'
 import { useCache } from '$lib/data/cache'
 import { DateTime, Duration } from 'luxon'
-import type { DatasetId } from '$lib/data/providers'
 import { mergeMultivariateTimeSeries } from '$lib/utils/data'
+import type { Loader } from '$lib/types/data/providers'
+import type { DatasetId } from '../datasets'
+
+export default {
+  id: 'met.no_locationforecast',
+  url: 'https://api.met.no/weatherapi/locationforecast/2.0/documentation',
+  datasetIds: ['met.no_meps', 'met.no_arome-arctic', 'met.no_ecmwf'],
+  load: loadLocationforecast,
+} as const satisfies Loader<DatasetId>
 
 export async function loadLocationforecast(coordinates: Coordinates) {
   if (coordinates.altitude === null) {
@@ -108,16 +116,24 @@ export async function loadLocationforecast(coordinates: Coordinates) {
 
 function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<WeatherInstant> {
   return {
-    temperature: instant.air_temperature,
     pressure: (instant.air_pressure_at_sea_level ?? 0) * 100, // convert from hPa to Pa
-    relative_humidity: instant.relative_humidity,
-    uvi_clear_sky: (instant as { ultraviolet_index_clear_sky: number }).ultraviolet_index_clear_sky,
+    temperature: instant.air_temperature,
+    // @ts-expect-error this does exist
+    temperature_min: instant.air_temperature_percentile_10,
+    // @ts-expect-error this does exist
+    temperature_max: instant.air_temperature_percentile_90,
     cloud_coverage: instant.cloud_area_fraction,
     // cloud_coverage_low: instant.cloud_area_fraction_low,
     // cloud_coverage_medium: instant.cloud_area_fraction_medium,
     // cloud_coverage_high: instant.cloud_area_fraction_high,
+    // dew_point: instant.dew_point_temperature,
     fog: instant.fog_area_fraction,
+    relative_humidity: instant.relative_humidity,
+    // @ts-expect-error this does exist
+    uvi_clear_sky: instant.ultraviolet_index_clear_sky,
     wind_speed: instant.wind_speed,
+    // wind_speed_min: instant.wind_speed_percentile_10,
+    // wind_speed_max: instant.wind_speed_percentile_90,
     wind_speed_gust: instant.wind_speed_of_gust,
     wind_degrees: instant.wind_from_direction,
   }
@@ -125,11 +141,17 @@ function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<Weathe
 
 function transformTimePeriod(period: MetnoForecastTimePeriod, duration: Duration): Partial<WeatherInstant> {
   const toHourFactor = (60 * 60 * 1000) / duration.toMillis()
+  const toHourly = (value: number | undefined) => {
+    return value ? value * toHourFactor : undefined
+  }
+
   return {
+    precipitation_amount: toHourly(period.precipitation_amount),
+    // precipitation_amount_min: toHourly(period.precipitation_amount_min),
+    // precipitation_amount_max: toHourly(period.precipitation_amount_max),
+    precipitation_probability: period.probability_of_precipitation,
+    thunder_probablilty: period.probability_of_thunder,
     uvi_clear_sky: period.ultraviolet_index_clear_sky_max,
     // mm | expected precipitation amount for period
-    precipitation_amount: period.precipitation_amount ? period.precipitation_amount * toHourFactor : undefined,
-    precipitation_probability: period.probability_of_precipitation,
-    thunder_probability: period.probability_of_thunder,
   }
 }
