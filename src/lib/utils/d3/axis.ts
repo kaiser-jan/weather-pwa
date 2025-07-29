@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 import type { Dimensions } from './types'
 import { settings } from '$lib/settings/store'
 import { get } from 'svelte/store'
-import type { Unit } from '$lib/units-config'
+import type { Unit } from '$lib/config/units'
 
 export function createXAxis<ScaleT extends d3.AxisDomain>(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>

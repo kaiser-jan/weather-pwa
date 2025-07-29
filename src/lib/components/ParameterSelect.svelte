@@ -2,7 +2,7 @@
   import * as ToggleGroup from '$lib/components/ui/toggle-group'
   import * as Popover from '$lib/components/ui/popover'
   import { EllipsisIcon, EyeIcon, EyeOffIcon, PinIcon, PinOffIcon } from '@lucide/svelte'
-  import { METRIC_DETAILS } from '$lib/metric-config'
+  import { METRIC_DETAILS } from '$lib/config/metrics'
   import { type ForecastParameter, FORECAST_PARAMETERS } from '$lib/types/data'
   import { Button } from '$lib/components/ui/button'
   import { persistantState } from '$lib/utils/state.svelte'

@@ -10,7 +10,7 @@
   import { createLine } from '$lib/utils/d3/line'
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
-  import { METRIC_DETAILS, HIDE_AXIS_FOR_PARAMETERS, type ForecastMetric } from '$lib/metric-config'
+  import { METRIC_DETAILS, HIDE_AXIS_FOR_PARAMETERS, type ForecastMetric } from '$lib/config/metrics'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { settings } from '$lib/settings/store'
   import type { ColorStop, CreatedSeriesDetails, MetricDetails, MetricDetailsChart } from '$lib/types/ui'

@@ -1,6 +1,6 @@
 import { type SettingsSchema } from '$lib/settings/store'
 import type { ForecastParameter } from '$lib/types/data'
-import { CONVERTERS, DECIMAL_RECOMMENDED_FOR, METRIC_DIMENSION, type Unit } from '$lib/units-config'
+import { CONVERTERS, DECIMAL_RECOMMENDED_FOR, METRIC_DIMENSION, type Unit } from '$lib/config/units'
 import * as d3 from 'd3'
 
 export function convertToUnit(value: number, key: ForecastParameter, unit: Unit | null): number {
