@@ -9,6 +9,7 @@ const settingDataForecastPrecipitation = settings.select((s) => s.data.forecast.
 export interface PrecipitationGroup {
   start: DateTime
   end: DateTime
+  isEndOfData?: boolean
   amount: number
   sporadic?: boolean
 }
@@ -48,6 +49,12 @@ export const precipitationGroupsStore = derived(
 
       const currentGroup = groups[groups.length - 1]
       currentGroup.amount += timeBucket.value
+    }
+
+    if (groups.length && !groups[groups.length - 1].end) {
+      const lastPrecipitationAmount = precipitation_amount[precipitation_amount.length - 1]
+      groups[groups.length - 1].end = lastPrecipitationAmount.datetime.plus(lastPrecipitationAmount.duration)
+      groups[groups.length - 1].isEndOfData = true
     }
 
     return groups

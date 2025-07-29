@@ -24,6 +24,9 @@
     {formatRelativeDatetime(precipitationGroup.end, {
       omitDate: precipitationGroup.end < endDatetime,
     })}
+    {#if precipitationGroup.isEndOfData}
+      <span class="text-text-muted">+</span>
+    {/if}
   </span>
   {#if precipitationGroup.sporadic}
     <span class="text-text-muted text-sm italic">sporadic</span>
