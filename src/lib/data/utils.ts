@@ -6,7 +6,7 @@ import type {
   ForecastParameter,
 } from '$lib/types/data'
 import type { TimeBucketSummary } from '$lib/types/data'
-import { getStartOfDayTimestamp } from '$lib/utils'
+import { getEndOfDayTimestamp, getStartOfDayTimestamp } from '$lib/utils'
 import { DateTime, Duration } from 'luxon'
 
 export function combineStatisticalNumberSummaries<KeyT extends string>(
@@ -63,7 +63,7 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
 
   for (const [parameter, series] of Object.entries(multiseries)) {
     for (const item of series) {
-      const dayStartTimestamp = getStartOfDayTimestamp(item.timestamp)
+      const dayStartTimestamp = getStartOfDayTimestamp(item.timestamp, { local: true })
       if (!groupedMap[dayStartTimestamp])
         groupedMap[dayStartTimestamp] = {
           timestamp: dayStartTimestamp,
@@ -105,11 +105,12 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
     if (!g.series.temperature?.length) return true
 
     // HACK: how to determine whether a day is complete?
+    const firstTemperatureItem = g.series.temperature[0]
     const lastTemperatureItem = g.series.temperature[g.series.temperature.length - 1]
     const temperatureEndTimestamp = lastTemperatureItem.timestamp + lastTemperatureItem.duration
-    const isIncomplete =
-      getStartOfDayTimestamp(temperatureEndTimestamp) === getStartOfDayTimestamp(g.series.temperature[0].timestamp)
-    if (isIncomplete) return false
+    const isMissingEnd = temperatureEndTimestamp < getEndOfDayTimestamp(firstTemperatureItem.timestamp)
+    const isMissingStart = firstTemperatureItem.timestamp > getStartOfDayTimestamp(firstTemperatureItem.timestamp)
+    if (isMissingStart || isMissingEnd) return false
     return true
   })
 

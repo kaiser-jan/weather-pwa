@@ -12,7 +12,7 @@
     endTimestamp: number
     coordinates: Coordinates | null
     barHeight: number
-    distanceFromDatetimes: (t: number, t1?: number) => number | undefined
+    distanceFromTimestamps: (t: number, t1?: number) => number | undefined
   }
 
   let {
@@ -24,7 +24,7 @@
     endTimestamp,
     coordinates,
     barHeight,
-    distanceFromDatetimes: distanceFromTimestamps,
+    distanceFromTimestamps,
   }: Props = $props()
 
   let firstTimestamp = $derived(series[0].timestamp)

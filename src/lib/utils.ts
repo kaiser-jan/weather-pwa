@@ -167,10 +167,14 @@ export function popUntil(condition: (state: App.PageState) => boolean) {
   history.back()
 }
 
+// TODO: what about timezones?
+const offset = new Date().getTimezoneOffset() * 60_000
 const MS_PER_DAY = 86_400_000
 export function getStartOfDayTimestamp(timestamp: number) {
-  return Math.floor(timestamp / MS_PER_DAY) * MS_PER_DAY
+  const start = Math.floor((timestamp - offset) / MS_PER_DAY) * MS_PER_DAY + offset
+  return start
 }
 export function getEndOfDayTimestamp(timestamp: number) {
-  return Math.ceil(timestamp / MS_PER_DAY) * MS_PER_DAY
+  const end = getStartOfDayTimestamp(timestamp - offset) + MS_PER_DAY + offset
+  return end
 }
