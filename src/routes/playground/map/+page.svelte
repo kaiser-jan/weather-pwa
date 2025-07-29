@@ -7,9 +7,12 @@
   import { DATASETS } from '$lib/data/providers'
 
   let map: L.Map
+  let marker: L.Marker
 
-  onMount(() => {
-    map = L.map('map').setView([$coordinates?.latitude ?? 0, $coordinates?.longitude ?? 0], 4)
+  function init() {
+    const { latitude, longitude } = $coordinates ?? { latitude: 0, longitude: 0 }
+    map = L.map('map').setView([latitude, longitude], 4)
+    marker = L.marker([latitude, longitude]).addTo(map)
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 
@@ -34,6 +37,16 @@
         },
       }).addTo(map)
     }
+  }
+
+  onMount(() => {
+    init()
+
+    return coordinates.subscribe((c) => {
+      if (!c) return
+      if (marker) marker.setLatLng([c.latitude, c.longitude])
+      if (map) map.setView([c.latitude, c.longitude], 6)
+    })
   })
 </script>
 
