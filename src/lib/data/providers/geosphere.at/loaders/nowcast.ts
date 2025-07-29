@@ -14,7 +14,7 @@ export default {
   load: loadTimeseriesForecast,
 } as const satisfies Loader<DatasetId>
 
-const REQUESTED_WEATHER_PARAMETERS: string[] = [
+const REQUESTED_WEATHER_PARAMETERS = [
   't2m', // Air temperature 2m above ground
   'rh2m', // Relative humidity 2m above ground
   'pt', // Precipitation type
@@ -23,7 +23,7 @@ const REQUESTED_WEATHER_PARAMETERS: string[] = [
   'fx', // 10m gust speed
   'dd', // 10m wind direction
   // 'td', // Dew point temperature 2m above ground
-] as const
+] as const satisfies string[]
 
 export const configs: TimeSeriesConfig<(typeof REQUESTED_WEATHER_PARAMETERS)[number], ForecastParameter>[] = [
   { outKey: 'temperature', inKey: 't2m', type: 'normal' },

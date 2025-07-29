@@ -14,7 +14,7 @@ export default {
   load: loadTimeseriesForecast,
 } as const satisfies Loader<DatasetId>
 
-const REQUESTED_WEATHER_PARAMETERS: string[] = [
+const REQUESTED_WEATHER_PARAMETERS = [
   'cape',
   'cin',
   'grad',
@@ -34,7 +34,7 @@ const REQUESTED_WEATHER_PARAMETERS: string[] = [
   'u10m',
   'v10m',
   'vgust',
-] as const
+] as const satisfies string[]
 
 export const configs: TimeSeriesConfig<(typeof REQUESTED_WEATHER_PARAMETERS)[number], ForecastParameter>[] = [
   { outKey: 'temperature', inKey: 't2m', type: 'normal' },

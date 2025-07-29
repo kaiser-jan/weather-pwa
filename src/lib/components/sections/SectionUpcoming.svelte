@@ -5,21 +5,33 @@
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { interpolateColor } from '$lib/utils/ui'
   import { autoFormatMetric } from '$lib/utils/units'
-  import { NOW, NOW_MILLIS } from '$lib/stores/now'
+  import { NOW, NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { dayView } from '$lib/stores/ui'
   import { Button } from '../ui/button'
   import { getEndOfDayTimestamp, getStartOfDayTimestamp } from '$lib/utils'
   import { DateTime } from 'luxon'
+
+  const SHOW_PAST = false
+
+  let days = $derived.by(() => {
+    const todayIndex = $forecastStore?.daily.findIndex((d) => d.timestamp === $TODAY_MILLIS)
+    const start = SHOW_PAST ? 0 : todayIndex
+    const end = (todayIndex ?? 0) + 3
+    return $forecastStore?.daily.slice(start, end) ?? []
+  })
 </script>
 
-<div class="bg-midground flex flex-col overflow-hidden rounded-md">
-  {#each $forecastStore?.daily.slice(0, 3) ?? [] as day (day.timestamp)}
+<div class="flex flex-col overflow-hidden rounded-md">
+  {#each days as day (day.timestamp)}
     <Button
       variant="midground"
       size="fit"
-      class="border-foreground inline-flex flex-row items-center justify-between gap-3 rounded-none px-3 py-2 text-base not-last:border-b-2"
+      class={[
+        'border-foreground inline-flex flex-row items-center justify-between gap-3 rounded-none px-3 py-2 text-base not-last:border-b-2',
+        day.timestamp < $TODAY_MILLIS ? 'opacity-40' : '',
+      ]}
       onclick={() => dayView.open(day)}
     >
       <span class="w-[3ch]">{DateTime.fromMillis(day.timestamp).toFormat('ccc')}</span>

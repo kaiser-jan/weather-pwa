@@ -6,14 +6,27 @@
   import { dayView } from '$lib/stores/ui'
   import { Button } from '../ui/button'
   import { DateTime } from 'luxon'
+  import { TODAY_MILLIS } from '$lib/stores/now'
+  import { onMount } from 'svelte'
+
+  let container: HTMLDivElement
+
+  onMount(() => {
+    if (container.firstElementChild) {
+      container.scrollLeft = (container.firstElementChild as HTMLElement).offsetWidth
+    }
+  })
 </script>
 
-<div class="bg-midground flex flex-row overflow-y-auto rounded-md">
+<div class="flex flex-row overflow-y-auto rounded-md" bind:this={container}>
   {#each $forecastStore?.daily ?? [] as day (day.timestamp)}
     <Button
       variant="midground"
       size="fit"
-      class="border-foreground flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1 rounded-none p-1 text-base not-last:border-r-2"
+      class={[
+        'border-foreground flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1 rounded-none p-1 text-base not-last:border-r-2',
+        day.timestamp < $TODAY_MILLIS ? 'opacity-40' : '',
+      ]}
       onclick={() => dayView.open(day)}
     >
       <span>{DateTime.fromMillis(day.timestamp).toFormat('ccc')}</span>
