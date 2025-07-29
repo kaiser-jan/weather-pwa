@@ -1,4 +1,4 @@
-import type { Coordinates, TimeBucket } from '$lib/types/data'
+import type { TimeBucket } from '$lib/types/data'
 import { page } from '$app/state'
 import { pushState } from '$app/navigation'
 import { forecastStore } from './data'

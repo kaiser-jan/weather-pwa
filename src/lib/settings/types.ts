@@ -54,7 +54,7 @@ export type StaticDescription = BaseConfigItem & {
 
 export type StaticValue = BaseConfigItem & {
   type: 'value'
-  value: string | Readable<string> | (() => Promise<string>)
+  value: string | undefined | Readable<string | undefined> | (() => Promise<string | undefined>)
 }
 export type StaticAction = BaseConfigItem & {
   type: 'action'

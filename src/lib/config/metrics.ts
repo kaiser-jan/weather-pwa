@@ -11,8 +11,8 @@ import {
   WindIcon,
   ZapIcon,
 } from '@lucide/svelte'
-import type { ForecastParameter } from './types/data'
-import type { MetricDetails } from './types/ui'
+import type { ForecastParameter } from '$lib/types/data'
+import type { MetricDetails } from '$lib/types/ui'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 

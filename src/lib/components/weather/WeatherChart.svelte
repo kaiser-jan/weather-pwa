@@ -13,7 +13,7 @@
   import { METRIC_DETAILS, HIDE_AXIS_FOR_PARAMETERS, type ForecastMetric } from '$lib/config/metrics'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { settings } from '$lib/settings/store'
-  import type { ColorStop, CreatedSeriesDetails, MetricDetails, MetricDetailsChart } from '$lib/types/ui'
+  import type { ColorStop, CreatedSeriesDetails, MetricDetails } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
   import { createUUID, debounce } from '$lib/utils'
   import { Skeleton } from '$lib/components/ui/skeleton'

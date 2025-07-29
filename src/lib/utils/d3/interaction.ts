@@ -12,7 +12,7 @@ export function handleInteraction(options: {
   let pointerMode: 'x' | 'y' | 'swipe-x' | null = null
   let startX: number | null = null
   let startY: number | null = null
-  let pointerDownTimeout: number | undefined = undefined
+  let pointerDownTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
   svg.on('pointerdown', (event: PointerEvent) => {
     pointerMode = null

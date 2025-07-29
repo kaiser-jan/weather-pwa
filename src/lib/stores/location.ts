@@ -38,7 +38,7 @@ export const coordinates = derived([selectedLocation, geolocationStore], ([l, g]
 
 function getLocationSaved(id: string): LocationSelection {
   const settingLocations = get(settings).data.locations
-  let location = settingLocations.find((l) => l.id === id)
+  const location = settingLocations.find((l) => l.id === id)
   if (location) {
     return { type: 'saved', location }
   }

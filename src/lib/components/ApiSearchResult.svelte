@@ -3,7 +3,7 @@
   import { page } from '$app/state'
   import { debounce } from '$lib/utils'
   import { persistantState } from '$lib/utils/state.svelte'
-  import { onMount, type Snippet } from 'svelte'
+  import { type Snippet } from 'svelte'
 
   interface Props {
     liveQuery: string | null

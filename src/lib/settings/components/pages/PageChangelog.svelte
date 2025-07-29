@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { Changelog } from '$lib/types/changelog'
   import { DateTime } from 'luxon'
   import * as Accordion from '$lib/components/ui/accordion/index.js'
   import changelog from 'changelog.json'

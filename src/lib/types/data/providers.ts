@@ -1,11 +1,6 @@
 import type { Duration } from 'luxon'
 import type { Coordinates, ForecastParameter, MultivariateTimeSeries } from '.'
-import type { Feature, Geometry, Polygon } from 'geojson'
-
-interface Coordinate2D {
-  longitude: number
-  latitude: number
-}
+import type { Feature, Polygon } from 'geojson'
 
 type ProviderId = string
 type LoaderId = string

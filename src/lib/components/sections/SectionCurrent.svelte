@@ -95,7 +95,7 @@
       class:h-0!={shrink}
       class:p-0!={shrink}
     >
-      {#each ITEMS_CURRENT as item}
+      {#each ITEMS_CURRENT as item (item)}
         <WeatherItemCurrent {item} current={forecastCurrent} />
       {/each}
     </div>

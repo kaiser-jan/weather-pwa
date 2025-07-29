@@ -13,7 +13,7 @@ export interface Forecast {
   current: (WeatherInstant & { symbol?: WeatherSituation }) | null
   multiseries: MultivariateTimeSeries
   daily: TimeBucket[]
-  total: TimeBucketSummary
+  total: TimeBucketSummary | null
 }
 
 export interface TimePeriod {
