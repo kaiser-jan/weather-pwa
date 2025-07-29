@@ -4,7 +4,7 @@
   import { ArrowDownIcon, ArrowUpIcon } from '@lucide/svelte'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
-  import type { ColorStop, ParameterDaySummaryProps, SeriesDetails } from '$lib/types/ui'
+  import type { ColorStop, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FormattedMetric from '$lib/components/FormattedMetric.svelte'
   import { cn } from '$lib/utils'
@@ -27,7 +27,7 @@
     selected,
   }: Props = $props()
 
-  const details = $derived<SeriesDetails | undefined>(METRIC_DETAILS[parameter])
+  const details = $derived<MetricDetails | undefined>(METRIC_DETAILS[parameter])
   const ParameterIcon = $derived(icon ?? details?.icon)
 
   const domain = $derived.by(() => {
@@ -110,14 +110,14 @@
     {/if}
   {:else if item === 'precipitation-groups'}
     {@const precipitationGroups = $precipitationGroupsStore.filter(
-      (g) => g.end > day.datetime && g.start < day.datetime.plus(day.duration),
+      (g) => g.end > day.timestamp && g.start < day.timestamp + day.duration,
     )}
     <div class="flex flex-col gap-1">
       {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}
         <PrecipitationGroup
           {precipitationGroup}
-          startDatetime={day.datetime}
-          endDatetime={day.datetime.plus(day.duration)}
+          startTimestamp={day.timestamp}
+          endTimestamp={day.timestamp + day.duration}
         />
       {:else}
         <span class="text-text-muted">No rain on this day!</span>

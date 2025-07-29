@@ -72,13 +72,13 @@ async function loadTimeseriesForecast(coordinates: Coordinates, offset = 0): Pro
     return { data, expires }
   })
 
-  const parsedTimestamps = data.timestamps.map((t) => DateTime.fromISO(t as string))
+  const parsedTimestamps = data.timestamps.map((t) => DateTime.fromISO(t as string).toMillis())
 
   const transformed = transformTimeSeries(
     parsedTimestamps,
     data.features[0].properties.parameters,
     configs,
-    Duration.fromObject({ hour: 1 }),
+    Duration.fromObject({ hour: 1 }).toMillis(),
   )
 
   if (coordinates.altitude !== null) {

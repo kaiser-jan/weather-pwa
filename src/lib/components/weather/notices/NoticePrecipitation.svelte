@@ -16,7 +16,7 @@
     const minHours = 8
     const relevantEndDatetime =
       $NOW.hour <= 24 - minHours ? $NOW.endOf('day') : $NOW.plus(Duration.fromObject({ hours: minHours }))
-    return $precipitationGroupsStore.filter((g) => g.end > $NOW && g.start <= relevantEndDatetime)
+    return $precipitationGroupsStore.filter((g) => g.end > $NOW.toMillis() && g.start <= relevantEndDatetime.toMillis())
   })
 </script>
 
@@ -28,8 +28,8 @@
         <PrecipitationGroup
           {precipitationGroup}
           isRestOfDayOnly
-          startDatetime={$NOW.startOf('day')}
-          endDatetime={$NOW.endOf('day')}
+          startTimestamp={$NOW.startOf('day').toMillis()}
+          endTimestamp={$NOW.endOf('day').toMillis()}
         />
       {/each}
     </div>

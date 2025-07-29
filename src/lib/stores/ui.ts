@@ -3,7 +3,6 @@ import { page } from '$app/state'
 import { pushState } from '$app/navigation'
 import { forecastStore } from './data'
 import { get } from 'svelte/store'
-import { DateTime } from 'luxon'
 import { popUntil } from '$lib/utils'
 
 export const locationSearch = {
@@ -12,9 +11,9 @@ export const locationSearch = {
 }
 
 export const dayView = {
-  _selectedOnOpen: null as DateTime | null,
+  _selectedOnOpenTimestamp: null as number | null,
   hide: async () => {
-    popUntil((s) => !s.selectedDayDatetime)
+    popUntil((s) => !s.selectedDayTimestamp)
   },
   // consider always setting today as root
   // selectRecursive: (target: TimeBucket | null) => {
@@ -26,17 +25,17 @@ export const dayView = {
   // },
   open: (target: TimeBucket | null) => {
     if (!target) return
-    dayView._selectedOnOpen = target.datetime
+    dayView._selectedOnOpenTimestamp = target.timestamp
     dayView.select(target)
   },
   select: (target: TimeBucket) => {
-    pushState('', { ...page.state, selectedDayDatetime: target.datetime.toISO() })
+    pushState('', { ...page.state, selectedDayTimestamp: target.timestamp })
   },
   previous: () => {
-    if (!page.state.selectedDayDatetime) return
+    if (!page.state.selectedDayTimestamp) return
 
     const isAfterInitial =
-      !dayView._selectedOnOpen || DateTime.fromISO(page.state.selectedDayDatetime) > dayView._selectedOnOpen
+      !dayView._selectedOnOpenTimestamp || page.state.selectedDayTimestamp > dayView._selectedOnOpenTimestamp
     if (isAfterInitial) {
       history.back()
       return
@@ -44,14 +43,14 @@ export const dayView = {
 
     const forecast = get(forecastStore)
     if (!forecast) return
-    const currentIndex = forecast.daily.findIndex((d) => d.datetime.toISO() === page.state.selectedDayDatetime!)
+    const currentIndex = forecast.daily.findIndex((d) => d.timestamp === page.state.selectedDayTimestamp!)
     dayView.select(forecast.daily[currentIndex - 1])
   },
   next: () => {
-    if (!page.state.selectedDayDatetime) return
+    if (!page.state.selectedDayTimestamp) return
 
     const isBeforeInitial =
-      !dayView._selectedOnOpen || DateTime.fromISO(page.state.selectedDayDatetime) < dayView._selectedOnOpen
+      !dayView._selectedOnOpenTimestamp || page.state.selectedDayTimestamp < dayView._selectedOnOpenTimestamp
     if (isBeforeInitial) {
       history.back()
       return
@@ -59,7 +58,7 @@ export const dayView = {
 
     const forecast = get(forecastStore)
     if (!forecast) return
-    const currentIndex = forecast.daily.findIndex((d) => d.datetime.toISO() === page.state.selectedDayDatetime!)
+    const currentIndex = forecast.daily.findIndex((d) => d.timestamp === page.state.selectedDayTimestamp!)
     dayView.select(forecast.daily[currentIndex + 1])
   },
 }

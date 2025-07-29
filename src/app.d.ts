@@ -15,7 +15,7 @@ declare global {
       settingsPath: string[]
       showLocationSearch: boolean
       locationQuery: string | null
-      selectedDayDatetime: string | null
+      selectedDayTimestamp: number | null
     }
     // interface Platform {}
   }

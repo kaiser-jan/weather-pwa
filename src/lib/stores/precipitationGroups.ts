@@ -2,13 +2,13 @@ import { derived } from 'svelte/store'
 import { forecastStore } from './data'
 import { NOW } from './now'
 import { settings } from '$lib/settings/store'
-import { Duration, type DateTime } from 'luxon'
+import { Duration } from 'luxon'
 
 const settingDataForecastPrecipitation = settings.select((s) => s.data.forecast.precipitation)
 
 export interface PrecipitationGroup {
-  start: DateTime
-  end: DateTime
+  start: number
+  end: number
   isEndOfData?: boolean
   amount: number
   sporadic?: boolean
@@ -28,7 +28,7 @@ export const precipitationGroupsStore = derived(
 
       if (timeBucket.value < settingDataForecastPrecipitation.threshold || timeBucket.value === 0) {
         if (!isInGroup) continue
-        previousGroup.end = timeBucket.datetime
+        previousGroup.end = timeBucket.timestamp
         isInGroup = false
         continue
       }
@@ -36,14 +36,14 @@ export const precipitationGroupsStore = derived(
       if (!isInGroup) {
         isInGroup = true
         const threshold = Duration.fromDurationLike(settingDataForecastPrecipitation.groupInterval)
-        const isSporadic = previousGroup && timeBucket.datetime.diff(previousGroup.end) < threshold
+        const isSporadic = previousGroup && timeBucket.timestamp - previousGroup.end < threshold.toMillis()
 
         if (isSporadic) {
           // continue this group
           previousGroup.sporadic = true
         } else {
           // start a new group
-          groups.push({ start: timeBucket.datetime, amount: 0 } as PrecipitationGroup)
+          groups.push({ start: timeBucket.timestamp, amount: 0 } as PrecipitationGroup)
         }
       }
 
@@ -53,7 +53,7 @@ export const precipitationGroupsStore = derived(
 
     if (groups.length && !groups[groups.length - 1].end) {
       const lastPrecipitationAmount = precipitation_amount[precipitation_amount.length - 1]
-      groups[groups.length - 1].end = lastPrecipitationAmount.datetime.plus(lastPrecipitationAmount.duration)
+      groups[groups.length - 1].end = lastPrecipitationAmount.timestamp + lastPrecipitationAmount.duration
       groups[groups.length - 1].isEndOfData = true
     }
 

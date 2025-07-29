@@ -10,27 +10,29 @@
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { dayView } from '$lib/stores/ui'
   import { Button } from '../ui/button'
+  import { getEndOfDayTimestamp, getStartOfDayTimestamp } from '$lib/utils'
+  import { DateTime } from 'luxon'
 </script>
 
 <div class="bg-midground flex flex-col overflow-hidden rounded-md">
-  {#each $forecastStore?.daily.slice(0, 3) ?? [] as day (day.datetime)}
+  {#each $forecastStore?.daily.slice(0, 3) ?? [] as day (day.timestamp)}
     <Button
       variant="midground"
       size="fit"
       class="border-foreground inline-flex flex-row items-center justify-between gap-3 rounded-none px-3 py-2 text-base not-last:border-b-2"
       onclick={() => dayView.open(day)}
     >
-      <span class="w-[3ch]">{day.datetime.toFormat('ccc')}</span>
+      <span class="w-[3ch]">{DateTime.fromMillis(day.timestamp).toFormat('ccc')}</span>
 
       <div class="flex grow gap-2">
         <TimelineBar
           multiseries={day.multiseries}
-          startDatetime={day.datetime.startOf('day')}
-          endDatetime={day.datetime.endOf('day')}
+          startTimestamp={getStartOfDayTimestamp(day.timestamp)}
+          endTimestamp={getEndOfDayTimestamp(day.timestamp)}
           parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-          marks={$settings.sections.components.timelineBar.marks.map((m) => day.datetime.set(m))}
+          marks={$settings.sections.components.timelineBar.marks.map((m) => DateTime.fromMillis(day!.timestamp).set(m))}
           coordinates={$coordinates}
-          datetime={$NOW}
+          datetime={$NOW.toMillis()}
           className="h-2"
         />
       </div>

@@ -16,9 +16,9 @@
   interface Props {
     multiseries: MultivariateTimeSeries | null
     parameters: Parameter[]
-    startDatetime: DateTime
-    endDatetime: DateTime
-    datetime: DateTime
+    startTimestamp: number
+    endTimestamp: number
+    datetime: number
     marks?: DateTime[]
     coordinates: Coordinates | null
     className: string
@@ -27,8 +27,8 @@
   let {
     multiseries,
     parameters,
-    startDatetime,
-    endDatetime,
+    startTimestamp: startTimestamp,
+    endTimestamp: endTimestamp,
     datetime: NOW,
     marks = [],
     coordinates,
@@ -48,14 +48,14 @@
     uvi_clear_sky: 'gradient',
   }
 
-  function distanceFromDatetimes(
-    d: DateTime,
-    d1: DateTime = startDatetime,
-    start: DateTime = startDatetime,
-    end = endDatetime,
+  function distanceFromTimestamps(
+    t: number,
+    t1: number = startTimestamp,
+    start: number = startTimestamp,
+    end: number = endTimestamp,
   ) {
-    if (!d || !d1 || !start || !end) return
-    return ((d.toUnixInteger() - d1.toUnixInteger()) / (end.toUnixInteger() - start.toUnixInteger())) * 100
+    if (!t || !t1 || !start || !end) return
+    return ((t - t1) / (end - start)) * 100
   }
 </script>
 
@@ -65,12 +65,12 @@
 >
   <div
     class="stripe-pattern absolute top-0 bottom-0 z-2"
-    style={`width: ${distanceFromDatetimes(NOW, startDatetime)}%; left: 0;`}
+    style={`width: ${distanceFromTimestamps(NOW, startTimestamp)}%; left: 0;`}
   ></div>
   {#each marks as mark, i (i)}
     <div
       class="bg-foreground absolute -top-1 -bottom-1 z-2 w-[0.05rem] mix-blend-difference"
-      style={`left: ${distanceFromDatetimes(mark, startDatetime)}%;`}
+      style={`left: ${distanceFromTimestamps(mark.toMillis(), startTimestamp)}%;`}
     ></div>
   {/each}
   {#each parameters as parameter (parameter)}
@@ -80,11 +80,11 @@
         {parameter}
         series={multiseries![parameter as keyof typeof multiseries] ?? []}
         style={parameterStyleMap[parameter]}
-        {startDatetime}
-        {endDatetime}
+        {startTimestamp}
+        {endTimestamp}
         {coordinates}
         {barHeight}
-        {distanceFromDatetimes}
+        distanceFromDatetimes={distanceFromTimestamps}
       />
     {:else}
       <Skeleton class="size-full" />

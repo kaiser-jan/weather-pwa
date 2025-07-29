@@ -14,7 +14,7 @@ export function createArea(options: {
 
   const areaGenerator = d3
     .area<TimeSeriesNumberEntry>()
-    .x((d) => scaleX(d.datetime.toMillis()))
+    .x((d) => scaleX(d.timestamp))
     .y0((d, i) => scaleY(dataA[i].value)) // NOTE: assumes the indices match
     // .y0((d, i) => scaleY(dataA.find((dA) => dA.datetime.equals(d.datetime))?.value))
     .y1((d) => scaleY(d.value))

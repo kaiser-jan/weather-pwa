@@ -1,5 +1,5 @@
 import type { MultivariateTimeSeries, TimeSeries } from '$lib/types/data'
-import { DateTime, type Duration } from 'luxon'
+import { type Duration } from 'luxon'
 
 export type TimeSeriesConfig<InKeyT extends string, OutKeyT extends string> =
   | { type: 'normal'; inKey: InKeyT; outKey: OutKeyT; multiplier?: number }
@@ -8,16 +8,16 @@ export type TimeSeriesConfig<InKeyT extends string, OutKeyT extends string> =
   | { type: 'vector'; xKey: InKeyT; yKey: InKeyT; outKeyLength: OutKeyT; outKeyAngle: OutKeyT }
 
 interface TimeValue {
-  datetime: DateTime
-  duration: Duration
+  timestamp: number
+  duration: number
   value: number | null
 }
 
 export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT extends string>(
-  timestamps: DateTime[],
+  timestamps: number[],
   values: Record<string, { data: (number | null)[] }>,
   configs: TimeSeriesConfig<ConfigInKeyT, ConfigOutKeyT>[],
-  duration: Duration,
+  duration: number,
 ): Record<string, TimeValue[]> {
   const output: Record<string, TimeValue[]> = {}
 
@@ -32,23 +32,23 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
   }
 
   // fill data
-  timestamps.forEach((datetime, i) => {
+  timestamps.forEach((timestamp, i) => {
     for (const item of configs) {
       if (item.type === 'normal') {
         const multiplier = item.multiplier ?? 1
         const rawValue = values[item.inKey].data[i]
         const value = rawValue !== null ? rawValue * multiplier : null
-        output[item.outKey].push({ datetime, duration, value })
+        output[item.outKey].push({ timestamp, duration, value })
       }
       if (item.type === 'accumulated-until') {
         const arr = values[item.inKey].data
         let value = Math.max(0, (arr[i + 1] ?? 0) - (arr[i] ?? 0))
         // convert e.g. mm of rain in this timebucket to mm/h (with 1 hour as asDeltaPer)
         if (item.asDeltaPer) {
-          const factor = item.asDeltaPer.toMillis() / duration.toMillis()
+          const factor = item.asDeltaPer.toMillis() / duration
           value *= factor
         }
-        output[item.outKey].push({ datetime, duration, value: value })
+        output[item.outKey].push({ timestamp, duration, value: value })
       }
       if (item.type === 'vector') {
         const vx = values[item.xKey].data[i]
@@ -58,8 +58,8 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
 
         const length = isComplete ? Math.hypot(vx!, vy!) : null
         const angle = isComplete ? (Math.atan2(vy!, vx!) * 180) / Math.PI : null
-        output[item.outKeyLength].push({ datetime, duration, value: length })
-        output[item.outKeyAngle].push({ datetime, duration, value: angle })
+        output[item.outKeyLength].push({ timestamp, duration, value: length })
+        output[item.outKeyAngle].push({ timestamp, duration, value: angle })
       }
     }
   })
@@ -97,29 +97,22 @@ export function mergeMultivariateTimeSeries(
 
     // collect all bounds (start- and end-timestamps)
     const bounds = new Set<number>()
-    for (const { datetime, duration } of [...a!, ...b]) {
-      bounds.add(datetime.toMillis())
-      bounds.add(datetime.toMillis() + duration.toMillis())
+    for (const { timestamp, duration } of [...a!, ...b]) {
+      bounds.add(timestamp)
+      bounds.add(timestamp + duration)
     }
 
-    // sort the bounds and convert back to DateTimes
-    const times = Array.from(bounds)
-      .sort((x, y) => x - y)
-      .map((ms) => DateTime.fromMillis(ms))
+    // sort the bounds
+    const times = Array.from(bounds).sort((x, y) => x - y)
 
-    const findCover = (series: TimeSeries<number>, start: DateTime, end: DateTime) =>
-      series.find(
-        (pt) =>
-          pt.datetime <= start &&
-          pt.datetime.toMillis() + pt.duration.toMillis() >= end.toMillis() &&
-          pt.value !== null,
-      )
+    const findCover = (series: TimeSeries<number>, start: number, end: number) =>
+      series.find((pt) => pt.timestamp <= start && pt.timestamp + pt.duration >= end && pt.value !== null)
 
     const out: TimeSeries<number> = []
     for (let i = 0; i < times.length - 1; i++) {
       const start = times[i]
       const end = times[i + 1]
-      const segDur = end.diff(start)
+      const segDur = end - start
       const pa = findCover(a, start, end)
       const pb = findCover(b, start, end)
       let src: TimeSeries<number>[number] | undefined
@@ -130,7 +123,7 @@ export function mergeMultivariateTimeSeries(
         src = pa ?? pb
       }
       if (!src) continue
-      out.push({ datetime: start, duration: segDur, value: src.value })
+      out.push({ timestamp: start, duration: segDur, value: src.value })
     }
 
     timeSeriesResult[parameterTyped] = out

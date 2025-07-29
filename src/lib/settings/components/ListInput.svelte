@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ChevronRightIcon, PencilIcon } from '@lucide/svelte'
+  import { ChevronRightIcon } from '@lucide/svelte'
   import type { ListSetting } from '../types'
 
   interface Props {

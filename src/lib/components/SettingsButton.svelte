@@ -13,8 +13,8 @@
   }
 
   function close() {
-    page.state.showSettings = undefined
-    page.state.settingsPath = undefined
+    page.state.showSettings = false
+    page.state.settingsPath = []
     replaceState('', page.state)
   }
 </script>

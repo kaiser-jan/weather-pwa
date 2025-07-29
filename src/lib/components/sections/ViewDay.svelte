@@ -16,33 +16,31 @@
   import { persistantState } from '$lib/utils/state.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
-  import { cn, toggle } from '$lib/utils'
+  import { cn, getEndOfDayTimestamp, getStartOfDayTimestamp, toggle } from '$lib/utils'
   import { page } from '$app/state'
   import { dayView } from '$lib/stores/ui'
   import { FORECAST_METRICS, type ForecastMetric } from '$lib/config/metrics'
 
-  const selectedDay = $derived(
-    $forecastStore?.daily?.find((d) => d.datetime.toISO() === page.state.selectedDayDatetime),
-  )
+  const selectedDay = $derived($forecastStore?.daily?.find((d) => d.timestamp === page.state.selectedDayTimestamp))
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !selectedDay) return false
-    return selectedDay.datetime.startOf('day').equals($NOW.startOf('day'))
+    return getStartOfDayTimestamp(selectedDay.timestamp) === $NOW.startOf('day').toMillis()
   })
 
   const dayLabel = $derived.by(() => {
     if (!selectedDay) return 'Today'
-    if (isToday) return 'Today, ' + selectedDay.datetime.toLocaleString(DateTime.DATE_FULL)
-    return selectedDay.datetime.toLocaleString(DateTime.DATE_HUGE)
+    if (isToday) return 'Today, ' + DateTime.fromMillis(selectedDay.timestamp).toLocaleString(DateTime.DATE_FULL)
+    return DateTime.fromMillis(selectedDay.timestamp).toLocaleString(DateTime.DATE_HUGE)
   })
 
   const currentIndex = $derived.by(() => {
     if (!$forecastStore || !selectedDay) return -1
-    return $forecastStore.daily.findIndex((d) => d.datetime.equals(selectedDay.datetime))
+    return $forecastStore.daily.findIndex((d) => d.timestamp === selectedDay.timestamp)
   })
 
   function navigateToToday() {
-    const target = $forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day')))
+    const target = $forecastStore?.daily.find((d) => d.timestamp === $NOW.startOf('day').toMillis())
     if (!target) return
     dayView.select(target)
   }
@@ -81,7 +79,7 @@
 
 <Drawer.Root
   bind:open={
-    () => Boolean(page.state.selectedDayDatetime),
+    () => Boolean(page.state.selectedDayTimestamp),
     (o) => {
       if (!o) dayView.hide()
     }
@@ -115,12 +113,14 @@
       {#if selectedDay}
         <TimelineBar
           multiseries={selectedDay.multiseries}
-          startDatetime={selectedDay.datetime.startOf('day')}
-          endDatetime={selectedDay.datetime.endOf('day')}
+          startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
+          endTimestamp={getEndOfDayTimestamp(selectedDay.timestamp)}
           parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-          marks={$settings.sections.components.timelineBar.marks.map((m) => selectedDay!.datetime.set(m))}
+          marks={$settings.sections.components.timelineBar.marks.map((m) =>
+            DateTime.fromMillis(selectedDay!.timestamp).set(m),
+          )}
           coordinates={$coordinates}
-          datetime={$NOW}
+          datetime={$NOW.toMillis()}
           className="h-2"
         />
 
@@ -129,9 +129,9 @@
             <WeatherChart
               multiseries={selectedDay.multiseries}
               parameters={visibleSeries.value}
-              startDateTime={selectedDay.datetime}
-              endDateTime={selectedDay.datetime.plus(selectedDay.duration)}
-              datetime={$NOW}
+              startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
+              endTimestamp={selectedDay.timestamp + selectedDay.duration}
+              timestamp={$NOW.toMillis()}
               className="snap-center shrink-0 w-full h-[30vh]"
             />
           {:else}

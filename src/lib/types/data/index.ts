@@ -1,5 +1,4 @@
 import type { WeatherSituation } from '$lib/data/symbols'
-import type { DateTime, Duration } from 'luxon'
 
 export interface Coordinates {
   longitude: number
@@ -17,8 +16,10 @@ export interface Forecast {
 }
 
 export interface TimePeriod {
-  datetime: DateTime
-  duration: Duration
+  /** unix timestamp in milliseconds **/
+  timestamp: number
+  /** milliseconds **/
+  duration: number
 }
 
 export type WeatherInstant = Partial<Record<ForecastParameter, number>>
@@ -26,7 +27,6 @@ export type WeatherInstant = Partial<Record<ForecastParameter, number>>
 export type MultivariateTimeSeries = Partial<Record<ForecastParameter, TimeSeries<number>>>
 export type MultivariateTimeSeriesTimeBucket = TimePeriod & { series: MultivariateTimeSeries }
 
-// TODO: conider using number values for datetime and duration as those have a considerable performance impact
 export type TimeSeries<T> = (TimePeriod & { value: T })[]
 export type TimeSeriesNumberEntry = TimeSeries<number>[number]
 

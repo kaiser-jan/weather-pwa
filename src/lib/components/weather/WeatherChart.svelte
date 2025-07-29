@@ -25,18 +25,18 @@
     multiseries: MultivariateTimeSeries
     unloaded?: boolean
     parameters: ForecastMetric[]
-    startDateTime: DateTime
-    endDateTime: DateTime
-    datetime: DateTime
+    startTimestamp: number
+    endTimestamp: number
+    timestamp: number
     className: string
   }
 
   const {
     multiseries: data,
     parameters,
-    startDateTime,
-    endDateTime,
-    datetime: NOW, // TODO: only update whats necessary
+    startTimestamp,
+    endTimestamp,
+    timestamp: NOW, // TODO: only update whats necessary
     className,
     unloaded,
   }: Props = $props()
@@ -127,7 +127,7 @@
 
     // Declare the x (horizontal position) scale.
     // const minTime = d3.min(data.multiseries.temperature, (d) => d.datetime.toMillis())!
-    const scaleX = d3.scaleUtc([startDateTime, endDateTime], [dimensions.margin.left, dimensions.width + margin.left])
+    const scaleX = d3.scaleUtc([startTimestamp, endTimestamp], [dimensions.margin.left, dimensions.width + margin.left])
 
     createXAxis({ svg, dimensions, scale: scaleX, addLines: true }) //
       .attr('transform', `translate(0,${dimensions.margin.top + dimensions.height + 0.5})`)
@@ -274,9 +274,9 @@
       tooltip: $settingsChart.tooltip,
     })
 
-    function selectDatetime(datetime: DateTime | null) {
-      const isToday = NOW >= startDateTime && NOW <= endDateTime
-      const isManual = datetime !== null
+    function selectDatetime(timestamp: number | null) {
+      const isToday = NOW >= startTimestamp && NOW <= endTimestamp
+      const isManual = timestamp !== null
 
       if (!isManual && !isToday) {
         hideXAxisPointer()
@@ -284,7 +284,7 @@
         return
       }
 
-      const points = updateXAxisPointer(datetime ?? NOW, isManual)
+      const points = updateXAxisPointer(timestamp ?? NOW, isManual)
       const timebucket = Object.fromEntries(points.map((p) => [p.name, p.d])) as Record<
         ForecastParameter,
         TimeSeriesNumberEntry
@@ -297,12 +297,12 @@
       svg,
       onLongPress: (e) => {
         const [px] = d3.pointer(e)
-        const datetime = DateTime.fromMillis(scaleX.invert(px).getTime())
+        const datetime = scaleX.invert(px).getTime()
         selectDatetime(datetime)
       },
       onScrollX: (e) => {
         const [px] = d3.pointer(e)
-        const datetime = DateTime.fromMillis(scaleX.invert(px).getTime())
+        const datetime = scaleX.invert(px).getTime()
         selectDatetime(datetime)
       },
       onSwipeX: (_) => {},

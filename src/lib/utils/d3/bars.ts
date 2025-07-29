@@ -17,15 +17,15 @@ export function createBars(options: {
     .data(data)
     .join('rect')
     .attr('x', (d) => {
-      return scaleX(d.datetime)
+      return scaleX(d.timestamp)
 
-      // const center = d.datetime.toMillis()
-      // const half = d.duration.toMillis() / 2
+      // const center = d.timestamp
+      // const half = d.timestamp / 2
       // return scaleX(center - half) + padding
     })
     .attr('width', (d) => {
-      const start = d.datetime.toMillis()
-      const end = start + d.duration.toMillis()
+      const start = d.timestamp
+      const end = start + d.duration
       const width = scaleX(end) - scaleX(start) - 2 * padding
       return Math.max(width, 2)
     })

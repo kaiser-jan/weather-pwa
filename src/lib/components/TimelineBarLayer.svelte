@@ -8,11 +8,11 @@
     parameter: string
     series: TimeSeries<number>
     style: 'gradient' | 'blocks'
-    startDatetime: DateTime
-    endDatetime: DateTime
+    startTimestamp: number
+    endTimestamp: number
     coordinates: Coordinates | null
     barHeight: number
-    distanceFromDatetimes: (d: DateTime, d1?: DateTime) => number | undefined
+    distanceFromDatetimes: (t: number, t1?: number) => number | undefined
   }
 
   let {
@@ -20,16 +20,16 @@
     parameter,
     series,
     style,
-    startDatetime,
-    endDatetime,
+    startTimestamp,
+    endTimestamp,
     coordinates,
     barHeight,
-    distanceFromDatetimes,
+    distanceFromDatetimes: distanceFromTimestamps,
   }: Props = $props()
 
-  let firstDatetime = $derived(series[0].datetime)
-  let lastDatetime = $derived(series[series.length - 1].datetime)
-  let lastDatetimeEnd = $derived(lastDatetime?.plus(series[series.length - 1].duration))
+  let firstTimestamp = $derived(series[0].timestamp)
+  let lastTimestamp = $derived(series[series.length - 1].timestamp)
+  let lastEndTimestamp = $derived(lastTimestamp + series[series.length - 1].duration)
 
   const COLOR_ERROR = 'hsla(0, 100%, 50%, 0%)'
 
@@ -57,15 +57,15 @@
   }
 
   function createDatalessGradient(
-    colorCallback: (datetime: DateTime) => string,
+    colorCallback: (datetime: number) => string,
     interval = Duration.fromObject({ hour: 1 }),
   ) {
     const gradientStops = []
-    let cursor = startDatetime
+    let cursor = startTimestamp
 
-    while (cursor < endDatetime) {
-      gradientStops.push(`${colorCallback(cursor)} ${distanceFromDatetimes(cursor)}%`)
-      cursor = cursor.plus(interval)
+    while (cursor < endTimestamp) {
+      gradientStops.push(`${colorCallback(cursor)} ${distanceFromTimestamps(cursor)}%`)
+      cursor = cursor + interval.toMillis()
     }
     return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
   }
@@ -77,12 +77,12 @@
     if (series.length === 0) return ''
 
     const gradientStops = series.map(
-      (timePeriod) => `${getDetailsForValue(timePeriod.value).color} ${distanceFromDatetimes(timePeriod.datetime)}%`,
+      (timePeriod) => `${getDetailsForValue(timePeriod.value).color} ${distanceFromTimestamps(timePeriod.timestamp)}%`,
     )
 
-    if (startDatetime) {
+    if (startTimestamp) {
       gradientStops.unshift(`${COLOR_ERROR} 0%`)
-      gradientStops.unshift(`${COLOR_ERROR} ${distanceFromDatetimes(series[0].datetime)}%`)
+      gradientStops.unshift(`${COLOR_ERROR} ${distanceFromTimestamps(series[0].timestamp)}%`)
     }
 
     return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
@@ -91,15 +91,15 @@
   function getBlocksForSeries() {
     if (series.length === 0) return []
     return series.map((value) => ({
-      position: distanceFromDatetimes(value.datetime),
+      position: distanceFromTimestamps(value.timestamp),
       ...getDetailsForValue(value.value),
     }))
   }
 
   function getWidthForSeriesItem(i: number) {
-    const seriesEndDatetime = series[i].datetime.plus(series[i].duration)
-    const limitedSeriesEndDatetime = seriesEndDatetime > endDatetime ? endDatetime : seriesEndDatetime
-    const percentage = distanceFromDatetimes(limitedSeriesEndDatetime, series[i].datetime)
+    const seriesEndDatetime = series[i].timestamp + series[i].duration
+    const limitedSeriesEndDatetime = seriesEndDatetime > endTimestamp ? endTimestamp : seriesEndDatetime
+    const percentage = distanceFromTimestamps(limitedSeriesEndDatetime, series[i].timestamp)
     return percentage + '%'
   }
 
@@ -151,17 +151,17 @@
   const sunColor = (factor: number) => `hsla(55, 65%, 65%, ${factor * 100}%)`
   const moonColor = (factor: number) => `hsla(260, 90%, 80%, ${factor * 100}%)`
 
-  export function getSunlightColor(date: DateTime, coordinates?: Coordinates): string {
+  export function getSunlightColor(timestamp: number, coordinates?: Coordinates | null): string {
     if (!coordinates) return sunColor(1)
-    const position = SunCalc.getPosition(date.toJSDate(), coordinates.latitude, coordinates.longitude)
+    const position = SunCalc.getPosition(new Date(timestamp), coordinates.latitude, coordinates.longitude)
     const value = Math.max(0, Math.sin(position.altitude)) // altitude is in radians
     return sunColor(value)
   }
 
-  export function getMoonlightColor(date: DateTime, coordinates?: Coordinates): string {
+  export function getMoonlightColor(timestamp: number, coordinates?: Coordinates | null): string {
     if (!coordinates) return moonColor(1)
-    const position = SunCalc.getMoonPosition(date.toJSDate(), coordinates.latitude, coordinates.longitude)
-    const illumination = SunCalc.getMoonIllumination(date.toJSDate())
+    const position = SunCalc.getMoonPosition(new Date(timestamp), coordinates.latitude, coordinates.longitude)
+    const illumination = SunCalc.getMoonIllumination(new Date(timestamp))
     const positionFactor = Math.max(0, Math.sin(position.altitude)) // altitude is in radians
     const illuminationFactor = illumination.fraction / 2 + 0.5
     const value = positionFactor * illuminationFactor
@@ -173,7 +173,7 @@
   <div class={[parameter, 'absolute inset-0']} style={createTimelineGradient()}></div>
 {:else if style === 'blocks'}
   <div class={[parameter, 'absolute inset-0 flex flex-row justify-end']}>
-    <div style={`width: ${distanceFromDatetimes(firstDatetime, startDatetime)}%;`}></div>
+    <div style={`width: ${distanceFromTimestamps(firstTimestamp, startTimestamp)}%;`}></div>
     {#each getBlocksForSeries().entries() as [i, stop] (i)}
       <div class={`flex h-full items-end justify-center ${i}`} style={`width: ${getWidthForSeriesItem(i)};`}>
         <div
@@ -186,6 +186,6 @@
         ></div>
       </div>
     {/each}
-    <div style={`width: ${distanceFromDatetimes(endDatetime, lastDatetimeEnd)}%`}></div>
+    <div style={`width: ${distanceFromTimestamps(endTimestamp, lastEndTimestamp)}%`}></div>
   </div>
 {/if}

@@ -24,9 +24,9 @@ export function createExtremaMarkers(options: {
     .data([morningLow, max, eveningLow])
     .enter()
     .append('g')
-    .attr('transform', (d) => `translate(${scaleX(d.datetime)}, ${scaleY(d.value)})`)
+    .attr('transform', (d) => `translate(${scaleX(d.timestamp)}, ${scaleY(d.value)})`)
     .each(function (d) {
-      const x = scaleX(d.datetime)
+      const x = scaleX(d.timestamp)
       let dx = 0
       const offset = 10
       if (x <= offset + dimensions.margin.left) {

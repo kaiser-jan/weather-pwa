@@ -166,3 +166,10 @@ export function popUntil(condition: (state: App.PageState) => boolean) {
   window.addEventListener('popstate', handler)
   history.back()
 }
+
+export function getStartOfDayTimestamp(timestamp: number) {
+  return new Date(new Date(timestamp).setHours(0, 0, 0, 0)).getTime()
+}
+export function getEndOfDayTimestamp(timestamp: number) {
+  return new Date(new Date(timestamp).setHours(23, 59, 59, 999)).getTime()
+}

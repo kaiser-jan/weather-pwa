@@ -5,17 +5,18 @@
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { dayView } from '$lib/stores/ui'
   import { Button } from '../ui/button'
+  import { DateTime } from 'luxon'
 </script>
 
 <div class="bg-midground flex flex-row overflow-y-auto rounded-md">
-  {#each $forecastStore?.daily ?? [] as day (day.datetime)}
+  {#each $forecastStore?.daily ?? [] as day (day.timestamp)}
     <Button
       variant="midground"
       size="fit"
       class="border-foreground flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1 rounded-none p-1 text-base not-last:border-r-2"
       onclick={() => dayView.open(day)}
     >
-      <span>{day.datetime.toFormat('ccc')}</span>
+      <span>{DateTime.fromMillis(day.timestamp).toFormat('ccc')}</span>
 
       <span class="text-text-muted">{Math.round(day.summary.temperature.max)}</span>
       <NumberRangeBar
