@@ -46,8 +46,6 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
         // convert e.g. mm of rain in this timebucket to mm/h (with 1 hour as asDeltaPer)
         if (item.asDeltaPer) {
           const factor = item.asDeltaPer.toMillis() / duration.toMillis()
-          console.log('*', factor, duration.toMillis() / 1000 / 3600)
-
           value *= factor
         }
         output[item.outKey].push({ datetime, duration, value: value })
