@@ -28,7 +28,9 @@ export function createAxisPointer(options: {
 
     const points = seriesList.map((m) => getNearestPointAtDateTime(datetime, m, scaleX)).filter((p) => p !== null)
 
-    const nearest = points.reduce((a, b) => (b.d.datetime.diffNow() < a.d.datetime.diffNow() ? b : a))
+    const nearest = points.reduce((a, b) =>
+      Math.abs(b.d.datetime.diff(datetime).toMillis()) < Math.abs(a.d.datetime.diff(datetime).toMillis()) ? b : a,
+    )
     const highest = points.reduce((a, b) => (b.y < a.y ? b : a))
     xAxisPointer.attr('transform', `translate(${nearest.x},0)`)
     xAxisPointer.select('line').attr('y1', highest.y)
@@ -87,17 +89,20 @@ function getNearestPointAtDateTime(
   scaleX: d3.ScaleTime<number, number, never>,
 ) {
   const x0 = datetime.toMillis()
-  const i = bisect(series.data, x0)
+  const i = bisect(series.data, x0) ?? series.data.length - 1
+  console.log(series.name, i)
   const d0 = series.data[i - 1]
   const d1 = series.data[i]
-  const d = !d0 || x0 - d0.datetime.toMillis() > d1?.datetime?.toMillis() - x0 ? d1 : d0
+  const d =
+    d0 === undefined || Math.abs(d0.datetime.toMillis() - x0) > Math.abs(d1?.datetime?.toMillis() - x0) ? d1 : d0
+
+  if (!d) return null
 
   return {
     x: scaleX(d.datetime.toMillis()),
     y: series.scale(d.value),
     d,
     name: series.name,
-    unit: series.unit,
     icon: series.icon,
   }
 }
