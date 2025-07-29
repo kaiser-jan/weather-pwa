@@ -9,11 +9,17 @@
   import { coordinates } from '$lib/stores/location'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { dayView } from '$lib/stores/ui'
+  import { Button } from '../ui/button'
 </script>
 
-<div class="bg-midground flex flex-col gap-2 rounded-md px-3 py-2">
+<div class="bg-midground flex flex-col overflow-hidden rounded-md">
   {#each $forecastStore?.daily.slice(0, 3) ?? [] as day (day.datetime)}
-    <button class="inline-flex flex-row items-center justify-between gap-3" onclick={() => dayView.open(day)}>
+    <Button
+      variant="midground"
+      size="fit"
+      class="border-foreground inline-flex flex-row items-center justify-between gap-3 rounded-none px-3 py-2 text-base not-last:border-b-2"
+      onclick={() => dayView.open(day)}
+    >
       <span class="w-[3ch]">{day.datetime.toFormat('ccc')}</span>
 
       <div class="flex grow gap-2">
@@ -54,7 +60,7 @@
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
         </div>
       {/if}
-    </button>
+    </Button>
   {:else}
     <Skeleton class="w-full h-32" />
   {/each}
