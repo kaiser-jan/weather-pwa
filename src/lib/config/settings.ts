@@ -1,4 +1,4 @@
-import { UNIT_OPTIONS, type Unit, type UnitDimension } from '$lib/units-config'
+import { UNIT_OPTIONS, type Unit, type UnitDimension } from '$lib/config/units'
 import { DATASET_IDS, DATASETS, PROVIDERS, type DatasetId } from '$lib/data/providers'
 import type { ConfigItem } from '$lib/settings/types'
 import type { Location } from '$lib/types/ui'
@@ -63,7 +63,7 @@ import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import type { Changelog } from '$lib/types/changelog'
 import { iconMap } from '$lib/utils/icons'
-import { FORECAST_METRICS } from './metric-config'
+import { FORECAST_METRICS } from './metrics'
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   temperature: '°C',

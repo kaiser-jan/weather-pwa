@@ -19,7 +19,7 @@
   import { cn, toggle } from '$lib/utils'
   import { page } from '$app/state'
   import { dayView } from '$lib/stores/ui'
-  import { FORECAST_METRICS, type ForecastMetric } from '$lib/metric-config'
+  import { FORECAST_METRICS, type ForecastMetric } from '$lib/config/metrics'
 
   const selectedDay = $derived(
     $forecastStore?.daily?.find((d) => d.datetime.toISO() === page.state.selectedDayDatetime),

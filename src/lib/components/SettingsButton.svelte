@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settingsConfig } from '$lib/settings-config'
+  import { settingsConfig } from '$lib/config/settings'
   import { buttonVariants } from '$lib/components/ui/button'
   import * as Drawer from '$lib/components/ui/drawer/index.js'
   import SettingsView from '$lib/settings/components/SettingsView.svelte'

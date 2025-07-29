@@ -9,7 +9,7 @@
   import { swipe } from 'svelte-gestures'
   import { settings } from '$lib/settings/store'
   import { dayView } from '$lib/stores/ui'
-  import type { ForecastMetric } from '$lib/metric-config'
+  import type { ForecastMetric } from '$lib/config/metrics'
 
   const today = $derived($forecastStore?.daily.find((d) => d.datetime.equals($NOW.startOf('day'))))
 

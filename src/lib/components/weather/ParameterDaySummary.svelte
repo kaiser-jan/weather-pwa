@@ -5,7 +5,7 @@
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
   import type { ColorStop, ParameterDaySummaryProps, SeriesDetails } from '$lib/types/ui'
-  import { METRIC_DETAILS } from '$lib/metric-config'
+  import { METRIC_DETAILS } from '$lib/config/metrics'
   import FormattedMetric from '$lib/components/FormattedMetric.svelte'
   import { cn } from '$lib/utils'
   import { generateCssRangeGradient } from '$lib/utils/ui'
