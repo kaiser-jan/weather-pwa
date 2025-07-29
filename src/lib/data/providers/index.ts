@@ -1,43 +1,20 @@
-import type { Coordinates, MultivariateTimeSeries } from '$lib/types/data'
-import type { Dataset, Provider } from '$lib/types/data/providers'
-import nowcast from './geosphere.at/nowcast'
-import nwp from './geosphere.at/nwp'
-import nwpOffset from './geosphere.at/nwp-offset'
-import locationforecast from './met.no/locationforecast'
+import type { Dataset, Loader, Provider } from '$lib/types/data/providers'
+import geosphereat from './geosphere.at'
+import metno from './met.no'
 
-const PROVIDER_IDS = ['geosphere.at', 'met.no'] as const
+const _PROVIDERS = [metno.provider, geosphereat.provider] as const
+const _DATASETS = [...metno.datasets, ...geosphereat.datasets] as const
+const _LOADERS = [...metno.loaders, ...geosphereat.loaders] as const
 
-export const DATASET_IDS = [
-  'geosphere.at_nwp-v1-1h-2500m',
-  'geosphere.at_nwp-v1-1h-2500m_offset',
-  'geosphere.at_nowcast-v1-15min-1km',
-  'met.no_locationforecast',
-] as const
+export const DATASET_IDS = _DATASETS.map((d) => d.id)
 
-export const PROVIDERS: Record<ProviderId, Provider> = {
-  'geosphere.at': { name: 'GeoSphere Austria', url: 'https://geosphere.at/', country: 'AT' },
-  'met.no': {
-    name: 'Norwegian Meteorological Institute',
-    url: 'https://www.met.no/',
-    country: 'NO',
-  },
-} as const
-
-// TODO: details about combined models like
-// https://api.met.no/doc/locationforecast/datamodel
-export const DATASETS: Record<DatasetId, Dataset> = {
-  'geosphere.at_nwp-v1-1h-2500m': nwp.meta,
-  'geosphere.at_nwp-v1-1h-2500m_offset': nwpOffset.meta,
-  'geosphere.at_nowcast-v1-15min-1km': nowcast.meta,
-  'met.no_locationforecast': locationforecast.meta,
-}
-
-export const LOADERS: Record<DatasetId, (coordinates: Coordinates) => Promise<MultivariateTimeSeries>> = {
-  'geosphere.at_nwp-v1-1h-2500m': nwp.load,
-  'geosphere.at_nwp-v1-1h-2500m_offset': nwpOffset.load,
-  'geosphere.at_nowcast-v1-15min-1km': nowcast.load,
-  'met.no_locationforecast': locationforecast.load,
-}
+export const PROVIDERS = _PROVIDERS as readonly Provider[]
+export const DATASETS = _DATASETS as readonly Dataset[]
+const LOADERS = _LOADERS as readonly Loader<DatasetId>[]
 
 export type DatasetId = (typeof DATASET_IDS)[number]
-export type ProviderId = (typeof PROVIDER_IDS)[number]
+export type ProviderId = (typeof PROVIDERS)[number]['id']
+
+export function getLoadersForDataset(datasetId: DatasetId): Loader<DatasetId> | null {
+  return LOADERS.find((l) => l.datasetIds.includes(datasetId)) ?? null
+}
