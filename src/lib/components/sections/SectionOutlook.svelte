@@ -4,12 +4,15 @@
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { dayView } from '$lib/stores/ui'
+  import { Button } from '../ui/button'
 </script>
 
-<div class="bg-midground flex flex-row overflow-y-auto rounded-md py-1.5">
+<div class="bg-midground flex flex-row overflow-y-auto rounded-md">
   {#each $forecastStore?.daily ?? [] as day (day.datetime)}
-    <button
-      class="flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1"
+    <Button
+      variant="midground"
+      size="fit"
+      class="border-foreground flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1 rounded-none p-1 text-base not-last:border-r-2"
       onclick={() => dayView.open(day)}
     >
       <span>{day.datetime.toFormat('ccc')}</span>
@@ -31,7 +34,7 @@
           <span class="text-text-disabled text-xs">mm</span>
         </span>
       {/if}
-    </button>
+    </Button>
   {:else}
     <Skeleton class="w-full h-32" />
   {/each}
