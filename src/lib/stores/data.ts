@@ -109,7 +109,8 @@ function updateWith(coordinates: Coordinates, datasets: readonly DatasetId[], st
   }, 15_000)
 
   function updateForecast(partsRaw: (MultivariateTimeSeries | null | false)[]) {
-    const parts = partsRaw.filter((p) => p !== null && p !== false)
+    // NOTE: reverse, so the first items take priority
+    const parts = partsRaw.filter((p) => p !== null && p !== false).reverse()
 
     if (parts.length === 0) {
       set(null)
