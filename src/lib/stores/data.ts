@@ -9,6 +9,8 @@ import { coordinates } from './location'
 import { settings } from '$lib/settings/store'
 import { NOW } from './now'
 import { subscribeNonImmediate } from '$lib/utils/state.svelte'
+import { getSuggestedDatasetsForLocation } from '$lib/data/providers/suggestedDatasets'
+import { DATASET_IDS_BY_PRIORITY } from '$lib/config/datasets'
 
 const _isForecastLoading = writable(false)
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
@@ -33,13 +35,18 @@ const { subscribe, set } = writable<Forecast | null>(null, () => {
 function update(cause: string) {
   console.debug('update', cause)
   const _coordinates = get(coordinates)
-  const datasetIds = get(settings).data.datasets
-  const stream = get(settings).data.incrementalLoad
   if (!_coordinates) {
     console.warn('Cannot update, no coordinates!')
     return
   }
-  updateWith(_coordinates, datasetIds, stream)
+  // const datasetIds = get(settings).data.datasets
+  const datasetIds = getSuggestedDatasetsForLocation(_coordinates, DATASET_IDS_BY_PRIORITY)
+  const stream = get(settings).data.incrementalLoad
+  updateWith(
+    _coordinates,
+    datasetIds.map((d) => d.id as DatasetId),
+    stream,
+  )
 }
 
 export const forecastStore = {

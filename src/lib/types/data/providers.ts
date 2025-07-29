@@ -1,6 +1,6 @@
 import type { Duration } from 'luxon'
 import type { Coordinates, ForecastParameter, MultivariateTimeSeries } from '.'
-import type { Feature, Geometry } from 'geojson'
+import type { Feature, Geometry, Polygon } from 'geojson'
 
 interface Coordinate2D {
   longitude: number
@@ -36,6 +36,6 @@ export interface Dataset {
   offset: Duration | null
   interval: Duration | null
   timespan: Duration
-  coverageArea: Feature<Geometry>
+  coverageArea: Feature<Polygon>
   spatialResolution: number // meters
 }
