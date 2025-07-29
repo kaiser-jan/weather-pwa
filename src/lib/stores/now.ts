@@ -1,5 +1,6 @@
+import { getEndOfDayTimestamp, getStartOfDayTimestamp } from '$lib/utils'
 import { DateTime } from 'luxon'
-import { writable } from 'svelte/store'
+import { derived, writable } from 'svelte/store'
 
 export const NOW = writable(DateTime.now(), () => {
   let minuteChangeTimeout: ReturnType<typeof setTimeout> | undefined = undefined
@@ -30,3 +31,7 @@ export const NOW = writable(DateTime.now(), () => {
     document.removeEventListener('visibilitychange', onVisibilityChange)
   }
 })
+
+export const NOW_MILLIS = derived(NOW, (n) => n.toMillis())
+export const TODAY_MILLIS = derived(NOW_MILLIS, (n) => getStartOfDayTimestamp(n))
+export const TOMORROW_MILLIS = derived(NOW_MILLIS, (n) => getEndOfDayTimestamp(n))

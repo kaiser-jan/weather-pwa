@@ -1,6 +1,6 @@
 <script lang="ts">
   import { UmbrellaIcon, UmbrellaOffIcon } from '@lucide/svelte'
-  import { NOW } from '$lib/stores/now'
+  import { NOW, NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
   import PrecipitationGroup from '$lib/components/weather/PrecipitationGroup.svelte'
   import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
   import { Duration } from 'luxon'
@@ -16,7 +16,7 @@
     const minHours = 8
     const relevantEndDatetime =
       $NOW.hour <= 24 - minHours ? $NOW.endOf('day') : $NOW.plus(Duration.fromObject({ hours: minHours }))
-    return $precipitationGroupsStore.filter((g) => g.end > $NOW.toMillis() && g.start <= relevantEndDatetime.toMillis())
+    return $precipitationGroupsStore.filter((g) => g.end > $NOW_MILLIS && g.start <= relevantEndDatetime.toMillis())
   })
 </script>
 
@@ -28,8 +28,8 @@
         <PrecipitationGroup
           {precipitationGroup}
           isRestOfDayOnly
-          startTimestamp={$NOW.startOf('day').toMillis()}
-          endTimestamp={$NOW.endOf('day').toMillis()}
+          startTimestamp={$TODAY_MILLIS}
+          endTimestamp={$TOMORROW_MILLIS}
         />
       {/each}
     </div>

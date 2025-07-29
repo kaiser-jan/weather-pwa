@@ -167,9 +167,10 @@ export function popUntil(condition: (state: App.PageState) => boolean) {
   history.back()
 }
 
+const MS_PER_DAY = 86_400_000
 export function getStartOfDayTimestamp(timestamp: number) {
-  return new Date(new Date(timestamp).setHours(0, 0, 0, 0)).getTime()
+  return Math.floor(timestamp / MS_PER_DAY) * MS_PER_DAY
 }
 export function getEndOfDayTimestamp(timestamp: number) {
-  return new Date(new Date(timestamp).setHours(23, 59, 59, 999)).getTime()
+  return Math.ceil(timestamp / MS_PER_DAY) * MS_PER_DAY
 }

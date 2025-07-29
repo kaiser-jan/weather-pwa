@@ -2,7 +2,7 @@
   import { formatRelativeDatetime } from '$lib/utils'
   import type { PrecipitationGroup } from '$lib/stores/precipitationGroups'
   import { ArrowRightIcon } from '@lucide/svelte'
-  import { NOW } from '$lib/stores/now'
+  import { NOW, NOW_MILLIS } from '$lib/stores/now'
   import { DateTime } from 'luxon'
 
   interface Props {
@@ -17,7 +17,7 @@
 
 <div class="flex flex-row items-center justify-between gap-2">
   <span class="inline-flex items-center gap-1">
-    {#if precipitationGroup.start > $NOW.toMillis() || (!isRestOfDayOnly && precipitationGroup.start >= startTimestamp)}
+    {#if precipitationGroup.start > $NOW_MILLIS || (!isRestOfDayOnly && precipitationGroup.start >= startTimestamp)}
       {formatRelativeDatetime(DateTime.fromMillis(precipitationGroup.start), {
         omitDate: precipitationGroup.start >= startTimestamp,
       })}

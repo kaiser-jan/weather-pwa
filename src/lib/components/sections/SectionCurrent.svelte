@@ -11,7 +11,7 @@
   import { autoFormatMetric } from '$lib/utils/units'
   import { settings } from '$lib/settings/store'
   import { reverseGeocoding, placeToWeatherLocation } from '$lib/data/location'
-  import { NOW } from '$lib/stores/now'
+  import { NOW, NOW_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
 
   interface Props {
@@ -34,7 +34,7 @@
   const forecastCurrent = $derived.by(() => {
     if (!$forecastStore) return null
     if ($forecastStore.current) return $forecastStore.current
-    return currentFromMultiseries($forecastStore.multiseries, $NOW.toMillis())
+    return currentFromMultiseries($forecastStore.multiseries, $NOW_MILLIS)
   })
 </script>
 

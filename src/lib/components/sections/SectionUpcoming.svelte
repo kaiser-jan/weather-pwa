@@ -5,7 +5,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { interpolateColor } from '$lib/utils/ui'
   import { autoFormatMetric } from '$lib/utils/units'
-  import { NOW } from '$lib/stores/now'
+  import { NOW, NOW_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
   import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
   import { dayView } from '$lib/stores/ui'
@@ -32,7 +32,7 @@
           parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
           marks={$settings.sections.components.timelineBar.marks.map((m) => DateTime.fromMillis(day!.timestamp).set(m))}
           coordinates={$coordinates}
-          datetime={$NOW.toMillis()}
+          datetime={$NOW_MILLIS}
           className="h-2"
         />
       </div>

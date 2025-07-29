@@ -11,7 +11,7 @@
   import { forecastStore } from '$lib/stores/data'
   import { geolocationStore } from '$lib/stores/geolocation'
   import { coordinates, selectedLocation } from '$lib/stores/location'
-  import { NOW } from '$lib/stores/now'
+  import { NOW, TODAY_MILLIS } from '$lib/stores/now'
   import { dayView } from '$lib/stores/ui'
   import { BinocularsIcon, CalendarDaysIcon, ChevronRightIcon, ClockIcon } from '@lucide/svelte'
 
@@ -52,8 +52,7 @@
       title="Today"
       icon={ClockIcon}
       actionIcon={ChevronRightIcon}
-      onclick={() =>
-        dayView.open($forecastStore?.daily.find((d) => d.timestamp === $NOW.startOf('day').toMillis()) ?? null)}
+      onclick={() => dayView.open($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS) ?? null)}
     />
     <SectionTodayChart />
 
