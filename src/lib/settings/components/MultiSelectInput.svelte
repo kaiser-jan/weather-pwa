@@ -2,6 +2,7 @@
   import type { MultiSelectSetting } from '../types'
   import { Checkbox } from '$lib/components/ui/checkbox'
   import { Label } from '$lib/components/ui/label'
+  import { toReadable } from '$lib/utils/stores'
 
   interface Props {
     item: MultiSelectSetting
@@ -10,6 +11,8 @@
   }
 
   let { item, value, onchange }: Props = $props()
+
+  let disabled = toReadable(item.disabled)
 </script>
 
 <div class="flex flex-col gap-1">
@@ -17,6 +20,7 @@
     <div class="flex flex-row items-center gap-2">
       <Checkbox
         id={option}
+        disabled={$disabled}
         bind:checked={
           () => value.includes(option),
           (v) => {

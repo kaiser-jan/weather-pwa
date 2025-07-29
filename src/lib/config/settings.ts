@@ -171,6 +171,8 @@ export const settingsConfig = [
         label: 'Datasets',
         type: 'multiselect',
         icon: ListIcon,
+        reorder: true,
+        disabled: true,
         options: DATASET_IDS,
         labels: Object.fromEntries(
           DATASET_IDS.map((id) => {
@@ -185,7 +187,6 @@ export const settingsConfig = [
           'geosphere.at_nwp-v1-1h-2500m',
           'geosphere.at_nowcast-v1-15min-1km',
         ] as DatasetId[],
-        reorder: true,
       },
       {
         id: 'incrementalLoad',

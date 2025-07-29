@@ -1,6 +1,7 @@
 import type { Dataset, Loader, Provider } from '$lib/types/data/providers'
 import geosphereat from './geosphere.at'
 import metno from './met.no'
+import type { Feature, Polygon } from 'geojson'
 
 const _PROVIDERS = [metno.provider, geosphereat.provider] as const
 const _DATASETS = [...metno.datasets, ...geosphereat.datasets] as const

@@ -69,6 +69,7 @@
   },
   "dependencies": {
     "@lucide/svelte": "^0.515.0",
+    "@turf/boolean-point-in-polygon": "^7.2.0",
     "bits-ui": "^2.8.10",
     "clsx": "^2.1.1",
     "d3": "^7.9.0",
