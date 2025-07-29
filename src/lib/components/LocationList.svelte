@@ -119,7 +119,7 @@
     <span class="text-text px-2 py-1">{placeholderEmpty}</span>
   {/if}
 
-  {#each items ?? [] as item, index (item.id)}
+  {#each items ?? [] as item, index (index)}
     {@const asSaved = getSavedLocationFor(item)}
 
     {#if index !== 0}

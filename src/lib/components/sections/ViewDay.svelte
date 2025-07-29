@@ -2,7 +2,7 @@
   import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Drawer from '$lib/components/ui/drawer'
   import { forecastStore } from '$lib/stores/data'
-  import { NOW } from '$lib/stores/now'
+  import { NOW, NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { DateTime } from 'luxon'
   import { Button } from '$lib/components/ui/button'
   import { ChevronLeft, ChevronRight } from '@lucide/svelte'
@@ -25,7 +25,7 @@
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !selectedDay) return false
-    return getStartOfDayTimestamp(selectedDay.timestamp) === $NOW.startOf('day').toMillis()
+    return getStartOfDayTimestamp(selectedDay.timestamp) === $TODAY_MILLIS
   })
 
   const dayLabel = $derived.by(() => {
@@ -40,7 +40,7 @@
   })
 
   function navigateToToday() {
-    const target = $forecastStore?.daily.find((d) => d.timestamp === $NOW.startOf('day').toMillis())
+    const target = $forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS)
     if (!target) return
     dayView.select(target)
   }
@@ -120,7 +120,7 @@
             DateTime.fromMillis(selectedDay!.timestamp).set(m),
           )}
           coordinates={$coordinates}
-          datetime={$NOW.toMillis()}
+          datetime={$NOW_MILLIS}
           className="h-2"
         />
 
@@ -131,7 +131,7 @@
               parameters={visibleSeries.value}
               startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
               endTimestamp={selectedDay.timestamp + selectedDay.duration}
-              timestamp={$NOW.toMillis()}
+              timestamp={$NOW_MILLIS}
               className="snap-center shrink-0 w-full h-[30vh]"
             />
           {:else}

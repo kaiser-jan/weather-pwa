@@ -1,6 +1,6 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
-  import { NOW } from '$lib/stores/now'
+  import { NOW, NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
   import { persistantState } from '$lib/utils/state.svelte'
   import ParameterSelect from '$lib/components/ParameterSelect.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
@@ -10,7 +10,7 @@
   import { dayView } from '$lib/stores/ui'
   import type { ForecastMetric } from '$lib/config/metrics'
 
-  const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $NOW.startOf('day').toMillis()))
+  const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS))
 
   let visibleSeries = persistantState<ForecastMetric[]>('section-today-chart-parameters', [
     'temperature',
@@ -29,9 +29,7 @@
       onclick={() => dayView.open(today)}
       use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30, touchAction: 'pan-y' })}
       onswipe={(e) => {
-        const tomorrow = $forecastStore?.daily.find(
-          (d) => d.timestamp === $NOW.startOf('day').plus({ days: 1 }).toMillis(),
-        )
+        const tomorrow = $forecastStore?.daily.find((d) => d.timestamp === $TOMORROW_MILLIS)
         if (!tomorrow) return
         if (e.detail.direction === 'left') dayView.open(tomorrow)
       }}
@@ -41,7 +39,7 @@
         parameters={visibleSeries.value}
         startTimestamp={today.timestamp}
         endTimestamp={today.timestamp + today.duration}
-        timestamp={$NOW.toMillis()}
+        timestamp={$NOW_MILLIS}
         className="snap-center shrink-0 w-full h-[25vh]"
       />
     </button>
