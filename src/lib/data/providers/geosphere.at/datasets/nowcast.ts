@@ -29,8 +29,9 @@ export default {
   label: 'Nowcast',
   url: 'https://data.hub.geosphere.at/dataset/nowcast-v1-15min-1km',
   parameters: getForecastParametersFromConfig(configs),
-  offset: Duration.fromObject({ minutes: 30 }),
-  interval: Duration.fromObject({ minutes: 15 }),
+  temporalResolution: Duration.fromObject({ minutes: 15 }),
+  baseForecastAge: Duration.fromObject({ minutes: 30 }),
+  updateFrequency: Duration.fromObject({ minutes: 15 }),
   timespan: Duration.fromObject({ minutes: 195 }),
   coverageArea: {
     type: 'Feature',

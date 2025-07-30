@@ -23,8 +23,6 @@ export function createTimeseriesForecastLoader({
   configs,
   isPressureSurfaceLevel = false,
 }: LoaderOptions) {
-  const intervalMs = dataset.interval?.toMillis()
-
   async function load(coordinates: Coordinates, offset = 0): Promise<MultivariateTimeSeries> {
     const now = DateTime.now()
     const url = new URL(`https://dataset.api.hub.geosphere.at/v1/timeseries/${mode}/${model}`)
@@ -46,8 +44,8 @@ export function createTimeseriesForecastLoader({
       const expires =
         mode === 'forecast'
           ? DateTime.fromISO(json.reference_time as string)
-              .plus(dataset.interval)
-              .plus(dataset.interval.mapUnits((x) => x * (1 + offset)))
+              .plus(dataset.updateFrequency)
+              .plus(dataset.updateFrequency.mapUnits((x) => x * (1 + offset)))
           : now.endOf('hour')
 
       return { data: json, expires }
@@ -55,7 +53,12 @@ export function createTimeseriesForecastLoader({
 
     const timestamps = data.timestamps.map((t) => DateTime.fromISO(t as string).toMillis())
 
-    const transformed = transformTimeSeries(timestamps, data.features[0].properties.parameters, configs, intervalMs)
+    const transformed = transformTimeSeries(
+      timestamps,
+      data.features[0].properties.parameters,
+      configs,
+      dataset.temporalResolution.toMillis(),
+    )
 
     if (isPressureSurfaceLevel) {
       if (coordinates.altitude != null) {

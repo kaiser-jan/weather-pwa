@@ -12,7 +12,7 @@
       <DatabaseIcon />
       <span class="mr-auto">Data Sources</span>
     </Accordion.Trigger>
-    <Accordion.Content class="bg-midground mb-4 flex flex-col gap-2 rounded-md px-2.5 py-0">
+    <Accordion.Content class="bg-midground flex flex-col gap-2 rounded-md px-2.5 py-0">
       <div class="flex flex-col gap-1">
         {#each $loaderResults as result (result.loader.id)}
           {@const provider = PROVIDERS.find((p) => p.loaderIds.includes(result.loader.id))}
@@ -25,7 +25,7 @@
               <CircleXIcon class="shrink-0 text-red-500" />
             {/if}
             <a class="mr-auto inline-flex grow flex-nowrap items-center gap-1" href={result.loader.url} target="_blank">
-              {result.loader.name}
+              {[result.loader.name, result.loader.label].filter(Boolean).join(' ')}
               <ExternalLinkIcon class="text-text-muted size-3" />
             </a>
             <a class="text-text-muted text-right" href={provider?.url} target="_blank">{provider?.name}</a>

@@ -86,9 +86,9 @@
         {barHeight}
         {distanceFromTimestamps}
       />
-    {:else}
-      <Skeleton class="size-full" />
     {/if}
+  {:else}
+    <Skeleton class="size-full" />
   {/each}
 </div>
 

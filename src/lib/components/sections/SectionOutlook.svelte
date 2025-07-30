@@ -15,6 +15,7 @@
 
   function scrollToToday() {
     if (container?.firstElementChild) {
+      // TODO: only if this is a past day
       container.scrollLeft = (container.firstElementChild as HTMLElement).offsetWidth
     }
   }

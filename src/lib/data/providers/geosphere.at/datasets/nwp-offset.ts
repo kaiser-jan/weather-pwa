@@ -8,5 +8,5 @@ export default {
   name: 'AROME Offset',
   label: 'NWP Offset',
   parameters: getForecastParametersFromConfig(configs),
-  offset: nwp.offset!.plus(nwp.interval!.mapUnits((x, _) => x * (1 + NWP_MAX_OFFSET))),
+  baseForecastAge: nwp.baseForecastAge!.plus(nwp.updateFrequency!.mapUnits((x, _) => x * (1 + NWP_MAX_OFFSET))),
 } as const satisfies Dataset

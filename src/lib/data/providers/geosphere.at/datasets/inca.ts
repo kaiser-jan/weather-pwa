@@ -29,9 +29,11 @@ export default {
   label: 'Analysis',
   url: 'https://data.hub.geosphere.at/dataset/inca-v1-1h-1km',
   parameters: getForecastParametersFromConfig(configs),
-  offset: DateTime.fromISO('2011-03-15T00:00+00:00').diffNow().negate(),
-  interval: Duration.fromObject({ minutes: 60 }),
-  timespan: Duration.fromObject({ minutes: 0 }),
+  temporalResolution: Duration.fromObject({ hours: 1 }),
+  // TODO: add a start param or so instead
+  baseForecastAge: DateTime.fromISO('2011-03-15T00:00+00:00').diffNow().negate(),
+  updateFrequency: Duration.fromObject({ hours: 0 }),
+  timespan: Duration.fromObject({ hours: 0 }),
   coverageArea: {
     type: 'Feature',
     geometry: {

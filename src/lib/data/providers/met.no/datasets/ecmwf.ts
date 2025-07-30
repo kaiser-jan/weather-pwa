@@ -26,8 +26,9 @@ export default {
     // 'thunder_probability',
     'uvi_clear_sky',
   ],
-  offset: null,
-  interval: Duration.fromObject({ hours: 1 }), // TODO: there are multiple resolutions for this dataset
+  baseForecastAge: null,
+  temporalResolution: Duration.fromObject({ hours: 1 }),
+  updateFrequency: Duration.fromObject({ hours: 1 }), // TODO: there are multiple resolutions for this dataset
   timespan: Duration.fromObject({ days: 10 }),
   spatialResolution: 9000,
   coverageArea: {

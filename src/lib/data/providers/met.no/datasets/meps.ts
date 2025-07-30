@@ -30,8 +30,9 @@ export default {
     'thunder_probability',
     'uvi_clear_sky',
   ],
-  offset: null,
-  interval: Duration.fromObject({ hours: 1 }),
+  baseForecastAge: null,
+  temporalResolution: Duration.fromObject({ hours: 1 }),
+  updateFrequency: Duration.fromObject({ hours: 1 }), // TODO:
   timespan: Duration.fromObject({ hours: 60 }),
   spatialResolution: 2500,
   // ncdump -h "https://thredds.met.no/thredds/dodsC/mepslatest/meps_lagged_6_h_latest_2_5km_latest.nc"
