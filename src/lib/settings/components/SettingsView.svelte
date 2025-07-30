@@ -88,6 +88,7 @@
   })
 
   function updateScroll() {
+    console.log(historyElements)
     const gap = parseInt(getComputedStyle(scrollContainer).gap, 10)
     scrollContainer.style.left =
       -1 * page.state.settingsPath.length * (scrollContainer.parentElement!.getBoundingClientRect().width + gap) + 'px'
@@ -123,6 +124,8 @@
               const currentLength = page.state.settingsPath.length
               const targetLength = settingsPage.path.length
               const moveBackBy = currentLength - targetLength
+              // avoid reloading
+              if (moveBackBy === 0) return
               history.go(-moveBackBy)
 
               // or should we store only the old path in the forward history, and omit the skipped items?

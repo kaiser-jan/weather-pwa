@@ -1,4 +1,5 @@
 import type { MultivariateTimeSeries, TimeSeries } from '$lib/types/data'
+import type { Dataset } from '$lib/types/data/providers'
 import { type Duration } from 'luxon'
 
 export type TimeSeriesConfig<InKeyT extends string, OutKeyT extends string> =
@@ -71,6 +72,21 @@ export function getForecastParametersFromConfig<ConfigInKeyT extends string, Con
   configs: TimeSeriesConfig<ConfigInKeyT, ConfigOutKeyT>[],
 ) {
   return configs.flatMap((c) => (c.type === 'vector' ? [c.outKeyLength, c.outKeyAngle] : [c.outKey]))
+}
+export function getRequestedParametersFromConfig<ConfigInKeyT extends string, ConfigOutKeyT extends string>(
+  configs: TimeSeriesConfig<ConfigInKeyT, ConfigOutKeyT>[],
+) {
+  return configs.flatMap((c) => (c.type === 'vector' ? [c.xKey, c.yKey] : [c.inKey]))
+}
+
+export function createLoaderMetaForDataset<DatasetIdT extends string>(dataset: Dataset) {
+  return {
+    id: dataset.id as DatasetIdT,
+    name: dataset.name,
+    label: dataset.label,
+    url: dataset.url,
+    datasetIds: [dataset.id as DatasetIdT],
+  } as const
 }
 
 export function mergeMultivariateTimeSeries(

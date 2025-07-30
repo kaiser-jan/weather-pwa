@@ -87,6 +87,7 @@ function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[],
   }
 
   const loaders = getMinimalLoadersForDatasets(datasetsIds)
+  console.debug('Using the following loaders: ', loaders)
   const results: LoaderResult[] = loaders.map((loader) => ({ done: false, loader }))
   const debouncedUpdate = debounce(() => updateForecast(results), 500)
   _loaderResults.set(results)

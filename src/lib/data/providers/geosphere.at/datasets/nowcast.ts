@@ -1,7 +1,27 @@
+import type { ForecastParameter } from '$lib/types/data'
 import type { Dataset } from '$lib/types/data/providers'
-import { getForecastParametersFromConfig } from '$lib/utils/data'
+import { getForecastParametersFromConfig, type TimeSeriesConfig } from '$lib/utils/data'
 import { Duration } from 'luxon'
-import { configs } from '../loaders/nowcast'
+
+const AVAILABLE_WEATHER_PARAMETERS = [
+  't2m', // Air temperature 2m above ground
+  'rh2m', // Relative humidity 2m above ground
+  'pt', // Precipitation type
+  'rr', // Precipitation sum
+  'ff', // 10m wind speed
+  'fx', // 10m gust speed
+  'dd', // 10m wind direction
+  // 'td', // Dew point temperature 2m above ground
+] as const satisfies string[]
+
+export const configs: TimeSeriesConfig<(typeof AVAILABLE_WEATHER_PARAMETERS)[number], ForecastParameter>[] = [
+  { outKey: 'temperature', inKey: 't2m', type: 'normal' },
+  { outKey: 'relative_humidity', inKey: 'rh2m', type: 'normal' },
+  { outKey: 'precipitation_amount', inKey: 'rr', type: 'normal', multiplier: 4 }, // * 4 to go from mm/15min to mm/h
+  { outKey: 'wind_speed', inKey: 'ff', type: 'normal' },
+  { outKey: 'wind_degrees', inKey: 'dd', type: 'normal' },
+  { outKey: 'wind_speed_gust', inKey: 'fx', type: 'normal' },
+]
 
 export default {
   id: 'geosphere.at_nowcast-v1-15min-1km',

@@ -1,7 +1,6 @@
 import type { Dataset } from '$lib/types/data/providers'
 import { getForecastParametersFromConfig } from '$lib/utils/data'
-import { configs } from '../loaders/nwp'
-import nwp, { NWP_MAX_OFFSET } from './nwp'
+import nwp, { configs, NWP_MAX_OFFSET } from './nwp'
 
 export default {
   ...nwp,
