@@ -6,7 +6,7 @@
   import AsyncText from '$lib/components/AsyncText.svelte'
   import SkySimulation from '$lib/components/SkySimulation.svelte'
   import { currentFromMultiseries } from '$lib/data/utils'
-  import { forecastStore, isForecastLoading } from '$lib/stores/data'
+  import { forecastStore, loaderResults } from '$lib/stores/data'
   import type { ForecastParameter } from '$lib/types/data'
   import { autoFormatMetric } from '$lib/utils/units'
   import { settings } from '$lib/settings/store'
@@ -57,7 +57,10 @@
       {#await locationNamePromise then locationName}
         <span class="drop-shadow-c-md ml-1 line-clamp-1">{locationName}</span>
       {/await}
-      <button onclick={() => forecastStore.update('manual')} class={['p-2', $isForecastLoading ? 'animate-spin' : '']}>
+      <button
+        onclick={() => forecastStore.update('manual')}
+        class={['p-2', $loaderResults.every((r) => r === null) ? 'animate-spin ' : '']}
+      >
         <RefreshCwIcon />
       </button>
     </div>

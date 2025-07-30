@@ -17,6 +17,7 @@ export interface Provider {
 
 export interface Loader<DatasetId extends string> {
   id: LoaderId
+  name: string
   url?: string
   datasetIds: DatasetId[]
   load: (coordinates: Coordinates) => Promise<MultivariateTimeSeries>

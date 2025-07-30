@@ -7,6 +7,7 @@ import nwp, { NWP_MAX_OFFSET } from '../datasets/nwp'
 
 export default {
   id: 'geosphere.at_nwp-v1-1h-2500m_offset',
+  name: 'AROME NWP Offset',
   url: 'https://data.hub.geosphere.at/dataset/nwp-v1-1h-2500m',
   datasetIds: ['geosphere.at_nwp-v1-1h-2500m_offset'],
   load: loadTimeSeriesForecast,

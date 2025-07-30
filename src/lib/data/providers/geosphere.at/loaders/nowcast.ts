@@ -9,6 +9,7 @@ import type { Loader } from '$lib/types/data/providers'
 
 export default {
   id: 'geosphere.at_nowcast-v1-15min-1km',
+  name: 'INCA Nowcast',
   url: 'https://data.hub.geosphere.at/dataset/nowcast-v1-15min-1km',
   datasetIds: ['geosphere.at_nowcast-v1-15min-1km'],
   load: loadTimeseriesForecast,

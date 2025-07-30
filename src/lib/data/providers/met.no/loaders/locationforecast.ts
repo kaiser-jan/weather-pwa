@@ -12,6 +12,7 @@ import type { DatasetId } from '../datasets'
 
 export default {
   id: 'met.no_locationforecast',
+  name: 'Locationforecast',
   url: 'https://api.met.no/weatherapi/locationforecast/2.0/documentation',
   datasetIds: ['met.no_meps', 'met.no_arome-arctic', 'met.no_ecmwf'],
   load: loadLocationforecast,
