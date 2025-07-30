@@ -19,7 +19,7 @@ export interface Loader<DatasetId extends string> {
   id: LoaderId
   name: string
   url?: string
-  datasetIds: DatasetId[]
+  datasetIds: readonly DatasetId[]
   load: (coordinates: Coordinates) => Promise<MultivariateTimeSeries>
 }
 
@@ -30,7 +30,7 @@ export interface Dataset {
   url?: string
   parameters: ForecastParameter[]
   offset: Duration | null
-  interval: Duration | null
+  interval: Duration
   timespan: Duration
   coverageArea: Feature<Polygon>
   spatialResolution: number // meters

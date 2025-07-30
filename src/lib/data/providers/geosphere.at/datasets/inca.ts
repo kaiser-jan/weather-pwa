@@ -1,7 +1,27 @@
 import type { Dataset } from '$lib/types/data/providers'
-import { getForecastParametersFromConfig } from '$lib/utils/data'
+import { getForecastParametersFromConfig, type TimeSeriesConfig } from '$lib/utils/data'
 import { DateTime, Duration } from 'luxon'
-import { configs } from '../loaders/inca'
+import type { ForecastParameter } from '$lib/types/data'
+
+const AVAILABLE_WEATHER_PARAMETERS = [
+  'GL', // global radiation (W m-2)
+  'P0', // mean sea level pressure (Pa)
+  'RH2M', // relative humidity 2m above ground (percent)
+  'RR', // 1-hour precipitation sum (kg m-2)
+  'T2M', // air temperature 2m above ground (degree_Celsius)
+  // 'TD2M', // dew point temperature 2m above ground (degree_Celsius)
+  'UU', // wind speed in eastward direction (m s-1)
+  'VV', // wind speed in northward direction (m s-1)
+] as const satisfies string[]
+
+export const configs: TimeSeriesConfig<(typeof AVAILABLE_WEATHER_PARAMETERS)[number], ForecastParameter>[] = [
+  { outKey: 'grad', inKey: 'GL', type: 'normal' },
+  { outKey: 'pressure', inKey: 'P0', type: 'normal' },
+  { outKey: 'relative_humidity', inKey: 'RH2M', type: 'normal' },
+  { outKey: 'temperature', inKey: 'T2M', type: 'normal' },
+  { outKey: 'precipitation_amount', inKey: 'RR', type: 'normal' },
+  { outKeyLength: 'wind_speed', outKeyAngle: 'wind_degrees', xKey: 'UU', yKey: 'VV', type: 'vector' },
+]
 
 export default {
   id: 'geosphere.at_inca-v1-1h-1km',
