@@ -9,6 +9,7 @@ import nwp from '../datasets/nwp'
 
 export default {
   id: 'geosphere.at_nwp-v1-1h-2500m',
+  name: 'AROME NWP',
   url: 'https://data.hub.geosphere.at/dataset/nwp-v1-1h-2500m',
   datasetIds: ['geosphere.at_nwp-v1-1h-2500m'],
   load: loadTimeseriesForecast,

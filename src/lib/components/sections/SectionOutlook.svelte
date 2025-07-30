@@ -11,9 +11,19 @@
 
   let container: HTMLDivElement
 
-  onMount(() => {
-    if (container.firstElementChild) {
+  const forecastStoreSubscription = forecastStore.subscribe(scrollToToday)
+
+  function scrollToToday() {
+    if (container?.firstElementChild) {
       container.scrollLeft = (container.firstElementChild as HTMLElement).offsetWidth
+    }
+  }
+
+  onMount(() => {
+    scrollToToday()
+
+    return () => {
+      forecastStoreSubscription()
     }
   })
 </script>

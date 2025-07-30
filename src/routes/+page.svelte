@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
+  import LoaderStatusList from '$lib/components/LoaderStatusList.svelte'
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
   import SectionOutlook from '$lib/components/sections/SectionOutlook.svelte'
   import SectionTitle from '$lib/components/sections/SectionTitle.svelte'
@@ -61,6 +62,8 @@
 
     <SectionTitle title="Outlook" icon={BinocularsIcon} />
     <SectionOutlook />
+
+    <LoaderStatusList />
   </div>
 
   <ViewDay />

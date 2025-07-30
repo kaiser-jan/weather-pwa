@@ -9,6 +9,7 @@ import type { Loader } from '$lib/types/data/providers'
 
 export default {
   id: 'geosphere.at_inca-v1-1h-1km',
+  name: 'INCA Analysis',
   url: 'https://data.hub.geosphere.at/dataset/inca-v1-1h-1km',
   datasetIds: ['geosphere.at_inca-v1-1h-1km'],
   load: loadTimeseriesForecast,

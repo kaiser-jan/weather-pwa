@@ -1,8 +1,8 @@
-import { get, readonly, writable } from 'svelte/store'
+import { get, readable, readonly, writable } from 'svelte/store'
 import { combineMultiseriesToDailyForecast, forecastTotalFromDailyForecast } from '$lib/data/utils'
 import { mergeMultivariateTimeSeries } from '$lib/utils/data'
 import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/data'
-import { getLoadersForDataset, type DatasetId } from '$lib/data/providers'
+import { getLoadersForDataset, getMinimalLoadersForDatasets, type DatasetId } from '$lib/data/providers'
 import { debounce, deepEqual } from '$lib/utils'
 import { DateTime, Duration } from 'luxon'
 import { coordinates } from './location'
@@ -11,8 +11,8 @@ import { NOW } from './now'
 import { subscribeNonImmediate } from '$lib/utils/state.svelte'
 import { getSuggestedDatasetsForLocation } from '$lib/data/providers/suggestedDatasets'
 import { DATASET_IDS_BY_PRIORITY } from '$lib/config/datasets'
+import type { Loader } from '$lib/types/data/providers'
 
-const _isForecastLoading = writable(false)
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
 const { subscribe, set } = writable<Forecast | null>(null, () => {
@@ -54,52 +54,61 @@ export const forecastStore = {
   update,
 }
 
-export const isForecastLoading = readonly(_isForecastLoading)
+type LoaderResult =
+  | {
+      loader: Loader<DatasetId>
+      done: false
+    }
+  | {
+      loader: Loader<DatasetId>
+      done: true
+      success: true
+      result: MultivariateTimeSeries
+    }
+  | {
+      loader: Loader<DatasetId>
+      done: true
+      success: false
+      error: string
+    }
 
-function onLoadingStart() {
-  _isForecastLoading.set(true)
-}
-function onLoadingDone() {
-  setTimeout(() => _isForecastLoading.set(false), 500)
-}
+const _loaderResults = writable<LoaderResult[]>([])
+export const loaderResults = readonly(_loaderResults)
 
-function updateWith(coordinates: Coordinates, datasets: readonly DatasetId[], stream = true) {
+function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[], stream = true) {
   console.info('Loading data...')
-  onLoadingStart()
-  set(null)
 
   // show cached data for this location while loading
-  const cachedForecast = getCachedForecast(coordinates, datasets)
+  const cachedForecast = getCachedForecast(coordinates, datasetsIds)
   if (cachedForecast) {
     set(cachedForecast)
+  } else {
+    set(null)
   }
 
-  const loaders = datasets.map((d) => getLoadersForDataset(d))
-  const parts: (MultivariateTimeSeries | null | false)[] = Array(datasets.length).fill(null)
-  const debouncedUpdate = debounce(() => updateForecast(parts), 500)
+  const loaders = getMinimalLoadersForDatasets(datasetsIds)
+  const results: LoaderResult[] = loaders.map((loader) => ({ done: false, loader }))
+  const debouncedUpdate = debounce(() => updateForecast(results), 500)
+  _loaderResults.set(results)
 
   for (const [loaderIndex, loader] of loaders.entries()) {
     loader
       ?.load(coordinates)
-      .then((r) => {
-        parts[loaderIndex] = r
+      .then((result) => {
+        results[loaderIndex] = { done: true, success: true, result, loader }
       })
-      .catch((e) => {
-        console.warn(`Loading dataset ${datasets[loaderIndex]} failed!\n${e}`)
-        parts[loaderIndex] = false
+      .catch((error) => {
+        console.warn(`Loading dataset ${datasetsIds[loaderIndex]} failed!\n${error}`)
+        results[loaderIndex] = { done: true, success: false, error, loader }
       })
       .finally(() => {
-        updateIfComplete()
+        const done = results.filter(Boolean).length === loaders.length
+        _loaderResults.set(results)
+        if (stream || done) debouncedUpdate()
+        if (done) {
+          clearTimeout(loadTimeout)
+        }
       })
-  }
-
-  function updateIfComplete() {
-    const isComplete = parts.filter((p) => p !== null).length === loaders.length
-    if (stream || isComplete) debouncedUpdate()
-    if (isComplete) {
-      onLoadingDone()
-      clearTimeout(loadTimeout)
-    }
   }
 
   clearTimeout(loadTimeout)
@@ -108,14 +117,14 @@ function updateWith(coordinates: Coordinates, datasets: readonly DatasetId[], st
     debouncedUpdate()
   }, 15_000)
 
-  function updateForecast(partsRaw: (MultivariateTimeSeries | null | false)[]) {
+  function updateForecast(results: LoaderResult[]) {
     // NOTE: reverse, so the first items take priority
-    const parts = partsRaw.filter((p) => p !== null && p !== false).reverse()
+    const parts = results
+      .filter((p) => p.done && p.success)
+      .reverse()
+      .map((p) => p.result)
 
-    if (parts.length === 0) {
-      set(null)
-      return
-    }
+    if (parts.length === 0) return
 
     let merged = parts[0]
     for (let i = 1; i < parts.length; i++) {
@@ -138,7 +147,7 @@ function updateWith(coordinates: Coordinates, datasets: readonly DatasetId[], st
 
     const cachedForecast: CachedForecast = {
       coordinates,
-      datasets,
+      datasets: datasetsIds,
       forecast,
     }
     localStorage.setItem('last-forecast', JSON.stringify(cachedForecast))

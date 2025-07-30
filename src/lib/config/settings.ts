@@ -270,7 +270,7 @@ export const settingsConfig = [
                 label: 'Threshold',
                 icon: SquareSplitVerticalIcon,
                 type: 'number',
-                default: 0.0,
+                default: 0.05,
                 step: 0.01,
               },
               {
