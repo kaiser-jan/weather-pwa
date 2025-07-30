@@ -52,8 +52,9 @@ export default {
   label: 'NWP',
   url: 'https://data.hub.geosphere.at/dataset/nwp-v1-1h-2500m',
   parameters: getForecastParametersFromConfig(configs),
-  offset: Duration.fromObject({ hours: 4 }),
-  interval: Duration.fromObject({ hours: 3 }),
+  temporalResolution: Duration.fromObject({ hours: 1 }),
+  baseForecastAge: Duration.fromObject({ hours: 4 }),
+  updateFrequency: Duration.fromObject({ hours: 3 }),
   timespan: Duration.fromObject({ hours: 61 }),
   coverageArea: {
     type: 'Feature',

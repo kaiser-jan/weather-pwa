@@ -1,6 +1,6 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { point } from '@turf/helpers'
-import type { Coordinates } from '$lib/types/data'
+import type { Coordinates, ForecastParameter } from '$lib/types/data'
 import { DATASETS, type DatasetId } from '.'
 import { Duration } from 'luxon'
 import type { Dataset } from '$lib/types/data/providers'
@@ -11,6 +11,7 @@ type Criterion = {
   interval?: DurationFilter
   offset?: DurationFilter
   timespan?: DurationFilter
+  parameters?: ForecastParameter[]
 }
 
 function matchDuration(value: Duration | null, filter?: DurationFilter): boolean {
@@ -26,8 +27,8 @@ function matchDuration(value: Duration | null, filter?: DurationFilter): boolean
 
 function matchesCriterion(dataset: Dataset, criteria: Criterion): boolean {
   return (
-    matchDuration(dataset.interval, criteria.interval) &&
-    matchDuration(dataset.offset, criteria.offset) &&
+    matchDuration(dataset.updateFrequency, criteria.interval) &&
+    matchDuration(dataset.baseForecastAge, criteria.offset) &&
     matchDuration(dataset.timespan, criteria.timespan)
   )
 }
@@ -40,6 +41,7 @@ const criteria: Criterion[] = [
   },
   { timespan: { gte: Duration.fromObject({ days: 5 }) } },
   { offset: { gte: Duration.fromObject({ hours: 6 }) } },
+  { parameters: ['o3'] },
 ]
 
 export function getSuggestedDatasetsForLocation(coordinates: Coordinates, datasetIdList: DatasetId[]): Dataset[] {

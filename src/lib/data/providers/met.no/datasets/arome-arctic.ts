@@ -7,8 +7,9 @@ export default {
   label: 'Arctic region',
   url: 'https://www.met.no/en/projects/The-weather-model-AROME-Arctic',
   parameters: [],
-  offset: null,
-  interval: Duration.fromObject({ hours: 6 }), // TODO: check, it only mentions updating 4 times pr day
+  baseForecastAge: null,
+  temporalResolution: Duration.fromObject({ hours: 1 }),
+  updateFrequency: Duration.fromObject({ hours: 6 }), // TODO: check, it only mentions updating 4 times pr day
   timespan: Duration.fromObject({ days: 10 }),
   spatialResolution: 18000,
   // TODO: this is an estimation only
