@@ -53,7 +53,7 @@
         />
       </div>
 
-      {#if $settings.sections.upcoming.temperature === 'range-bar'}
+      {#if $settings.sections.upcoming.temperature === 'range-bar' && day.summary.temperature}
         <div class="flex items-center gap-2">
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.min, 'temperature', $settings)}</span>
           <NumberRangeBar
@@ -64,7 +64,7 @@
           />
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
         </div>
-      {:else if $settings.sections.upcoming.temperature === 'dots'}
+      {:else if $settings.sections.upcoming.temperature === 'dots' && day.summary.temperature}
         <div class="flex items-center gap-2">
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.min, 'temperature', $settings)}</span>
           <span

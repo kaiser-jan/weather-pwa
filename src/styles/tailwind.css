@@ -1,9 +1,11 @@
 @import 'tailwindcss';
 
+@config '../../tailwind.config.js';
+
 @theme {
   --color-red: #f00;
 
-  --color-background: hsl(220, 50%, 5%);
+  /* --color-background: hsl(220, 50%, 5%); */
   --color-midground: hsl(220, 25%, 12%);
   --color-foreground: hsl(220, 20%, 20%);
   --color-overlay: hsl(220, 20%, 30%);
@@ -15,7 +17,7 @@
   --color-disabled: hsl(220, 15%, 20%);
   --color-disabled-foreground: hsl(220, 15%, 65%);
 
-  --color-primary: hsl(160.68, 51.3%, 22.55%);
+  /* --color-primary: hsl(160.68, 51.3%, 22.55%); */
   --color-primary-foreground: var(--color-text);
 
   --color-accent: var(--color-foreground);
