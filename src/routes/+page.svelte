@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
   import LoaderStatusList from '$lib/components/LoaderStatusList.svelte'
+  import SectionAirPollution from '$lib/components/sections/SectionAirPollution.svelte'
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
   import SectionOutlook from '$lib/components/sections/SectionOutlook.svelte'
   import SectionTitle from '$lib/components/sections/SectionTitle.svelte'
@@ -14,7 +15,7 @@
   import { coordinates, selectedLocation } from '$lib/stores/location'
   import { NOW, TODAY_MILLIS } from '$lib/stores/now'
   import { dayView } from '$lib/stores/ui'
-  import { BinocularsIcon, CalendarDaysIcon, ChevronRightIcon, ClockIcon } from '@lucide/svelte'
+  import { BinocularsIcon, CalendarDaysIcon, ChevronRightIcon, ClockIcon, FactoryIcon } from '@lucide/svelte'
 
   let scrollContainer = $state<HTMLElement>()
   let shrinkHeader = $state(false)
@@ -62,6 +63,12 @@
 
     <SectionTitle title="Outlook" icon={BinocularsIcon} />
     <SectionOutlook />
+
+    <SectionTitle title="Air Pollution" icon={FactoryIcon} />
+    <!-- TODO: derive from datasets -> provided parameters -->
+    {#if $forecastStore?.multiseries.pm25 || $forecastStore?.multiseries.pm10 || $forecastStore?.multiseries.o3 || $forecastStore?.multiseries.no2}
+      <SectionAirPollution />
+    {/if}
 
     <LoaderStatusList />
   </div>

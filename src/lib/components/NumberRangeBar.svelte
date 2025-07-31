@@ -45,7 +45,7 @@
   const insetStyle = $derived(vertical ? `top: ${end}%; bottom: ${start}%;` : `left: ${start}%; right: ${end}%;`)
 </script>
 
-<div class={cn('bg-foreground relative h-full w-full rounded-full', className)}>
+<div class={cn('bg-foreground relative h-full w-full overflow-hidden rounded-full', className)}>
   <span
     class={['absolute inset-0 rounded-full', backgroundColor]}
     style={[insetStyle, color === 'temperature' && gradientCss].filter((v) => v !== false).join('')}

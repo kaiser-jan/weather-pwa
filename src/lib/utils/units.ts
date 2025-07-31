@@ -29,11 +29,12 @@ export function formatMetric(
 }
 
 export function autoFormatMetric(
-  value: number,
+  value: number | undefined | null,
   key: ForecastParameter,
   settings: SettingsSchema,
   options?: { hideUnit?: boolean; showDecimal?: boolean },
 ): string {
+  if (value === undefined || value === null) return 'N/A'
   const unit = getPreferredUnit(key, settings)
   const converted = convertToUnit(value, key, unit)
   return formatMetric(converted, unit, options)
