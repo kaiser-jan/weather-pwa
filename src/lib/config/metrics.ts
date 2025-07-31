@@ -14,56 +14,18 @@ import {
 } from '@lucide/svelte'
 import type { ForecastParameter } from '$lib/types/data'
 import type { ColorStop, MetricDetails } from '$lib/types/ui'
+import { eaqiDefinition } from './categorization'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 
-const green = { h: 110, s: 60, l: 60 }
-const yellow = { h: 60, s: 70, l: 50 }
-const orange = { h: 30, s: 75, l: 50 }
-const red = { h: 5, s: 70, l: 45 }
-const darkred = { h: 0, s: 90, l: 30 }
-
-function createLimitsGradient([a, b, c, d]: {
-  value: number
-  comment: string
-}[]): ColorStop[] {
-  return [
-    { value: 0, ...green },
-    { value: a.value, ...yellow },
-    { value: b.value, ...orange },
-    { value: c.value, ...red },
-    { value: d.value, ...darkred },
-  ]
+function createLimitsGradient(limits: number[], colors: Omit<ColorStop, 'value'>[]) {
+  return limits.map(
+    (l, i): ColorStop => ({
+      value: l * 1e-6,
+      ...colors[i],
+    }),
+  )
 }
-
-// https://eur-lex.europa.eu/eli/dir/2024/2881/oj/eng#anx_I
-const pm25Limits = [
-  { value: 5 * 1e-6, comment: 'WHO annual' },
-  { value: 10 * 1e-6, comment: 'EU limit yearly' },
-  { value: 25 * 1e-6, comment: 'EU limit daily, max 18 days' },
-  { value: 50 * 1e-6, comment: '' },
-]
-
-const pm10Limits = [
-  { value: 15 * 1e-6, comment: 'WHO guideline' },
-  { value: 20 * 1e-6, comment: 'EU limit yearly' },
-  { value: 45 * 1e-6, comment: 'EU limit daily, max 18 days' },
-  { value: 100 * 1e-6, comment: '' },
-]
-
-const o3Limits = [
-  { value: 100 * 1e-6, comment: 'WHO daily 8‑hour, EU long-term objective 2050' },
-  { value: 120 * 1e-6, comment: 'EU target, max 8-hour mean within a year' },
-  { value: 160 * 1e-6, comment: '' },
-  { value: 200 * 1e-6, comment: '' },
-]
-
-const no2Limits = [
-  { value: 10 * 1e-6, comment: 'WHO annual' },
-  { value: 20 * 1e-6, comment: 'EU limit yearly' },
-  { value: 50 * 1e-6, comment: 'EU limit daily' },
-  { value: 200 * 1e-6, comment: 'EU limit hourly' },
-]
 
 const _METRIC_DETAILS = {
   temperature: {
@@ -201,7 +163,7 @@ const _METRIC_DETAILS = {
       max: [10 * 1e-6, 50 * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(pm25Limits),
+      gradient: createLimitsGradient(eaqiDefinition.limits.pm25, eaqiDefinition.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -213,7 +175,7 @@ const _METRIC_DETAILS = {
       max: [20 * 1e-6, 100 * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(pm10Limits),
+      gradient: createLimitsGradient(eaqiDefinition.limits.pm10, eaqiDefinition.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -225,7 +187,7 @@ const _METRIC_DETAILS = {
       max: [120 * 1e-6, 240 * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(o3Limits),
+      gradient: createLimitsGradient(eaqiDefinition.limits.o3, eaqiDefinition.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -237,7 +199,7 @@ const _METRIC_DETAILS = {
       max: [20 * 1e-6, 200 * 1e-6], // µg/m³: WHO annual limit, moderate, unhealthy
     },
     color: {
-      gradient: createLimitsGradient(no2Limits),
+      gradient: createLimitsGradient(eaqiDefinition.limits.no2, eaqiDefinition.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },

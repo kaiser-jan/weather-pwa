@@ -11,23 +11,13 @@
   import SectionTitle from './SectionTitle.svelte'
   import { FactoryIcon, InfoIcon } from '@lucide/svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
+  import { eaqiDefinition } from '$lib/config/categorization'
+  import { hslFromObject } from '$lib/utils/ui'
 
   const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS))
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS))
 
-  const cmap = ['#5AAA5F', '#A7D25C', '#ECD347', '#F5BE41', '#F09235', '#D93322'] as const
-  const labels = ['Very good', 'Good', 'Medium', 'Poor', 'Very Poor', 'Extremely Poor'] as const
-  // const index_levels = [1, 2, 3, 4, 5, 6] as const
-
-  const limits = {
-    o3: [0, 50, 100, 130, 240, 380, 800],
-    no2: [0, 40, 90, 120, 230, 340, 1000],
-    // so2: [0, 100, 200, 350, 500, 750, 1250],
-    pm25: [0, 20, 40, 50, 100, 150, 1200],
-    pm10: [0, 10, 20, 25, 50, 75, 800],
-  } as const
-
-  type ForecastParameterAirPollution = keyof typeof limits
+  type ForecastParameterAirPollution = keyof typeof eaqiDefinition.limits
 
   function getLevel(value: number, scale: readonly number[]): number {
     for (let i = 0; i < scale.length - 1; i++) {
@@ -43,11 +33,11 @@
 
   function getEaqiLevels(values: Partial<Record<ForecastParameterAirPollution, number | undefined>>) {
     const levels = {} as Record<ForecastParameterAirPollution, number>
-    for (const key in limits) {
+    for (const key in eaqiDefinition.limits) {
       const param = key as ForecastParameterAirPollution
       const value = values[param]
       if (value === null || value === undefined) return
-      levels[param] = getLevel(convertToUnit(value, param, 'ug/m3'), limits[param])
+      levels[param] = getLevel(convertToUnit(value, param, 'ug/m3'), eaqiDefinition.limits[param])
     }
     return levels
   }
@@ -102,7 +92,10 @@
     {@const roundedIndex = Math.max(Math.floor(index) - 1, 0)}
     <div class="flex flex-row items-center gap-2" class:opacity-70={type === 'tomorrow'}>
       <span class="text-text" class:font-bold={type === 'now'}>{label}</span>
-      <div class="ml-auto size-3 rounded-full" style="background-color: {cmap[roundedIndex]}"></div>
+      <div
+        class="ml-auto size-3 rounded-full"
+        style="background-color: {hslFromObject(eaqiDefinition.colors[roundedIndex])}"
+      ></div>
       <!-- <span class="text-text-muted text-xs">{labels[roundedIndex]}</span> -->
       <span class="text-text-muted">{index.toFixed(1)}</span>
     </div>
@@ -138,7 +131,7 @@
         <div class="flex flex-row flex-nowrap items-center gap-2">
           <span class="w-16 text-sm font-medium">{pollutant.toUpperCase()}</span>
           <NumberRangeBar
-            total={{ min: 0, max: limits[pollutant][4] * 1e-6 }}
+            total={{ min: 0, max: eaqiDefinition.limits[pollutant][Math.ceil($eaqi.today?.maxIndex)] * 1e-6 }}
             instance={{
               min: $eaqi.today?.minValues[pollutant],
               avg: $eaqi.current.values[pollutant],

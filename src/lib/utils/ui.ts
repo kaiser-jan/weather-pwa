@@ -16,10 +16,14 @@ export function generateCssRangeGradient(
 
   const gradientStops = includedStops.map((s) => {
     const pos = ((s.value - rangeMin) / (rangeMax - rangeMin)) * 100
-    return `hsl(${s.h}, ${s.s}%, ${s.l}%) ${pos}%`
+    return `${hslFromObject(s)} ${pos}%`
   })
 
   return `background: linear-gradient(to ${direction}, ${gradientStops.join(', ')});`
+}
+
+export function hslFromObject(color: Omit<ColorStop, 'value'>) {
+  return `hsl(${color.h}, ${color.s}%, ${color.l}%)`
 }
 
 export function interpolate(a: number, b: number, t: number): number {

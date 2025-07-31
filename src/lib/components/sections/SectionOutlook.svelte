@@ -34,7 +34,7 @@
 
 <SectionTitle title="Outlook" icon={BinocularsIcon} />
 <div class="flex flex-row overflow-y-auto rounded-md" bind:this={container}>
-  {#each $forecastStore?.daily ?? [] as day (day.timestamp)}
+  {#each $forecastStore?.daily.filter((d) => d.summary !== undefined) ?? [] as day (day.timestamp)}
     <Button
       variant="midground"
       size="fit"
