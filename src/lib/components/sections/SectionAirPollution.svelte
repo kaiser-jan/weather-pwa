@@ -11,13 +11,13 @@
   import SectionTitle from './SectionTitle.svelte'
   import { FactoryIcon, InfoIcon } from '@lucide/svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
-  import { eaqiDefinition } from '$lib/config/categorization'
+  import { EAQI } from '$lib/config/categorization'
   import { hslFromObject } from '$lib/utils/ui'
 
   const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS))
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS))
 
-  type ForecastParameterAirPollution = keyof typeof eaqiDefinition.limits
+  type ForecastParameterAirPollution = keyof typeof EAQI.limits
 
   function getLevel(value: number, scale: readonly number[]): number {
     for (let i = 0; i < scale.length - 1; i++) {
@@ -33,11 +33,11 @@
 
   function getEaqiLevels(values: Partial<Record<ForecastParameterAirPollution, number | undefined>>) {
     const levels = {} as Record<ForecastParameterAirPollution, number>
-    for (const key in eaqiDefinition.limits) {
+    for (const key in EAQI.limits) {
       const param = key as ForecastParameterAirPollution
       const value = values[param]
       if (value === null || value === undefined) return
-      levels[param] = getLevel(convertToUnit(value, param, 'ug/m3'), eaqiDefinition.limits[param])
+      levels[param] = getLevel(convertToUnit(value, param, 'ug/m3'), EAQI.limits[param])
     }
     return levels
   }
@@ -94,7 +94,7 @@
       <span class="text-text" class:font-bold={type === 'now'}>{label}</span>
       <div
         class="ml-auto size-3 rounded-full"
-        style="background-color: {hslFromObject(eaqiDefinition.colors[roundedIndex])}"
+        style="background-color: {hslFromObject(EAQI.colors[roundedIndex])}"
       ></div>
       <!-- <span class="text-text-muted text-xs">{labels[roundedIndex]}</span> -->
       <span class="text-text-muted">{index.toFixed(1)}</span>
@@ -131,7 +131,7 @@
         <div class="flex flex-row flex-nowrap items-center gap-2">
           <span class="w-16 text-sm font-medium">{pollutant.toUpperCase()}</span>
           <NumberRangeBar
-            total={{ min: 0, max: eaqiDefinition.limits[pollutant][Math.ceil($eaqi.today?.maxIndex)] * 1e-6 }}
+            total={{ min: 0, max: EAQI.limits[pollutant][Math.ceil($eaqi.today?.maxIndex)] * 1e-6 }}
             instance={{
               min: $eaqi.today?.minValues[pollutant],
               avg: $eaqi.current.values[pollutant],
