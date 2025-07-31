@@ -35,7 +35,7 @@ export const METRIC_DIMENSION: Record<ForecastParameter, UnitDimension | null> =
   cape: 'energy',
   cin: 'energy',
   grad: 'radiation',
-  pm2_5: 'density',
+  pm25: 'density',
   pm10: 'density',
   o3: 'density',
   no2: 'density',

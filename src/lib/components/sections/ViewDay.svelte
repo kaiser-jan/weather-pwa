@@ -56,7 +56,7 @@
     cape: { items: ['icon', 'avg', 'max'] },
     cin: { items: ['icon', 'max'] },
     grad: { items: ['icon', 'max'] },
-    pm2_5: { items: ['icon', 'avg', 'max'] },
+    pm25: { items: ['icon', 'avg', 'max'] },
     pm10: { items: ['icon', 'avg', 'max'] },
     o3: { items: ['icon', 'avg', 'max'] },
     no2: { items: ['icon', 'avg', 'max'] },

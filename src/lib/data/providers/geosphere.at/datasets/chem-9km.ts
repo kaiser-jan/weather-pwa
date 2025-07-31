@@ -14,7 +14,7 @@ export const configs: TimeSeriesConfig<(typeof AVAILABLE_WEATHER_PARAMETERS)[num
   { outKey: 'no2', inKey: 'no2surf', type: 'normal', multiplier: 1e-6 },
   { outKey: 'o3', inKey: 'o3surf', type: 'normal', multiplier: 1e-6 },
   { outKey: 'pm10', inKey: 'pm10surf', type: 'normal', multiplier: 1e-6 },
-  { outKey: 'pm2_5', inKey: 'pm25surf', type: 'normal', multiplier: 1e-6 },
+  { outKey: 'pm25', inKey: 'pm25surf', type: 'normal', multiplier: 1e-6 },
 ]
 
 export default {

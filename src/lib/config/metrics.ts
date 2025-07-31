@@ -193,7 +193,7 @@ const _METRIC_DETAILS = {
     },
   },
 
-  pm2_5: {
+  pm25: {
     label: 'PM 2.5',
     abbreviation: 'PM2.5',
     domain: {
