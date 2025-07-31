@@ -2,6 +2,7 @@
   import type { Forecast, ForecastParameter } from '$lib/types/data'
   import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
   import FormattedMetric from '$lib/components/FormattedMetric.svelte'
+  import IconOrAbbreviation from '../IconOrAbbreviation.svelte'
 
   interface Props {
     item: ForecastParameter
@@ -26,7 +27,7 @@
 
 {#if current?.[details.datapoint] !== undefined}
   <span class="inline-flex items-center gap-[0.375rem]">
-    <details.icon />
+    <IconOrAbbreviation {details} />
 
     <FormattedMetric value={current[details.datapoint]!} parameter={item} />
 

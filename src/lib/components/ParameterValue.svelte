@@ -4,6 +4,7 @@
   import type { ForecastParameter } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { autoFormatMetric } from '$lib/utils/units'
+  import IconOrAbbreviation from './IconOrAbbreviation.svelte'
 
   interface Props {
     parameter: ForecastParameter
@@ -15,11 +16,10 @@
 
   const details = $derived(METRIC_DETAILS[parameter]!)
   const showZeroIcon = $derived(value === 0 && details.iconIfZero)
-  const ParameterIcon = $derived(showZeroIcon ? details.iconIfZero : details.icon)
 </script>
 
 <div class={cn('align-center flex flex-1 flex-row items-center justify-center gap-1 last:mr-1.5', className)}>
-  <ParameterIcon />
+  <IconOrAbbreviation {details} showZeroIcon={value === 0} />
   {#if value === undefined}
     <span>-</span>
   {:else if !showZeroIcon}
