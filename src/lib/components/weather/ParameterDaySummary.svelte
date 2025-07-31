@@ -49,6 +49,8 @@
       gradientColorStops = settings.readSetting(details.color.gradientSetting).value as ColorStop[]
     } else if ('gradient' in details.color) {
       gradientColorStops = details.color.gradient
+    } else if ('css' in details.color) {
+      return `background-color: ${details.color.css}`
     }
 
     if (gradientColorStops) {
@@ -62,20 +64,10 @@
 </script>
 
 {#if details?.color}
-  <!-- NOTE: moving tailwind colors to css will make this easier -->
-  <div
-    class={cn('absolute left-0 h-full w-1', 'tailwind' in details.color ? details.color.tailwind?.bg : 'bg-foreground')}
-    style={colorStyle}
-  ></div>
+  <div class={'absolute left-0 h-full w-1'} style={colorStyle}></div>
 
   {#if selected}
-    <div
-      class={cn(
-        'absolute -top-4 right-0 h-10 w-4 -rotate-45',
-        'tailwind' in details.color ? details.color.tailwind?.bg : 'bg-foreground',
-      )}
-      style={colorStyle}
-    ></div>
+    <div class={'absolute -top-4 right-0 h-10 w-4 -rotate-45'} style={colorStyle}></div>
   {/if}
 {/if}
 
@@ -97,10 +89,7 @@
     <NumberRangeBar
       total={domain}
       instance={day?.summary[parameter]}
-      color={parameter === 'temperature'
-        ? parameter
-        : // @ts-expect-error if it doesn't exist undefined is fine
-          details?.color?.tailwind?.bg}
+      color={details?.color && 'css' in details?.color ? details?.color?.css : parameter}
       className="h-2"
     />
   {:else if item === 'trend'}
