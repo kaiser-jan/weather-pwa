@@ -102,6 +102,7 @@ function getNearestPointAtTimestamp(
     d,
     name: series.name,
     icon: series.icon,
+    abbreviation: series.abbreviation,
   }
 }
 
@@ -159,9 +160,9 @@ export function createTooltip(options: {
     tooltip.html(
       `<b>${DateTime.fromMillis(points[0].d.timestamp).toFormat('HH:mm')}</b><br>${points
         .map((p) => {
-          const svg = renderIcon(p.name, p.icon)
+          const svg = p.icon ? renderIcon(p.name, p.icon) : (p.abbreviation ?? p.name)
           const metric = autoFormatMetric(p.d.value, p.name as ForecastParameter, get(settings), { showDecimal: true })
-          return `<div class="flex items-center gap-2">${svg}${metric}</div>`
+          return `<div class="flex items-center gap-2">${svg} <span class='ml-auto'>${metric}</span></div>`
         })
         .join('')}`,
     )

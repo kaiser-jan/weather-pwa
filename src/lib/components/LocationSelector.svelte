@@ -23,6 +23,7 @@
       onclick={() => {
         if ($selectedLocation?.type === 'geolocation') geolocationStore.refresh()
         else selectedLocation?.set({ type: 'geolocation' })
+        geolocationStore.start()
       }}
     >
       {#if $geolocationDetails.icon}

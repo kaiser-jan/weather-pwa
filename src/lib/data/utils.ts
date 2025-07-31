@@ -80,7 +80,7 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
     }
   }
 
-  const grouped = Object.values(groupedMap)
+  const grouped = Object.values(groupedMap).sort((a, b) => a.timestamp - b.timestamp)
 
   // add one item from the neighboring day at each
   for (let i = 1; i < grouped.length; i++) {

@@ -26,7 +26,7 @@
             {/if}
             <a class="mr-auto inline-flex grow flex-nowrap items-center gap-1" href={result.loader.url} target="_blank">
               {[result.loader.name, result.loader.label].filter(Boolean).join(' ')}
-              <ExternalLinkIcon class="text-text-muted size-3" />
+              <ExternalLinkIcon class="text-text-muted size-3 shrink-0" />
             </a>
             <a class="text-text-muted text-right" href={provider?.url} target="_blank">{provider?.name}</a>
           </div>
