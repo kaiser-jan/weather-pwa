@@ -80,7 +80,9 @@
         {parameter}
         series={multiseries![parameter as keyof typeof multiseries] ?? []}
         style={parameterStyleMap[parameter]}
-        {startTimestamp}
+        startTimestamp={(['sun', 'moon'].includes(parameter)
+          ? multiseries?.cloud_coverage?.[0]?.timestamp
+          : startTimestamp) ?? startTimestamp}
         {endTimestamp}
         {coordinates}
         {barHeight}
