@@ -143,7 +143,7 @@ function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<Weathe
 function transformTimePeriod(period: MetnoForecastTimePeriod, duration: Duration): Partial<WeatherInstant> {
   const toHourFactor = (60 * 60 * 1000) / duration.toMillis()
   const toHourly = (value: number | undefined) => {
-    return value ? value * toHourFactor : undefined
+    return value !== undefined ? value * toHourFactor : undefined
   }
 
   return {

@@ -15,10 +15,10 @@ export function createArea(options: {
   const areaGenerator = d3
     .area<TimeSeriesNumberEntry>()
     .x((d) => scaleX(d.timestamp))
-    .y0((d, i) => scaleY(dataA[i].value)) // NOTE: assumes the indices match
-    // .y0((d, i) => scaleY(dataA.find((dA) => dA.datetime.equals(d.datetime))?.value))
+    .y0((d, i) => scaleY(dataA.find((dA) => dA.timestamp === d.timestamp)?.value ?? 0))
     .y1((d) => scaleY(d.value))
     .curve(d3.curveBasis)
+    .defined((d) => d.value !== null && !isNaN(d.value))
 
   const area = svg
     .append('path')
