@@ -13,6 +13,9 @@ import { getSuggestedDatasetsForLocation } from '$lib/data/providers/suggestedDa
 import { DATASET_IDS_BY_PRIORITY } from '$lib/config/datasets'
 import type { Loader } from '$lib/types/data/providers'
 
+// ensure cached forecasts are discarded if they use an older data format (e.g. DateTime and Duration)
+const CURRENT_FORECAST_DATA_VERSION = 2
+
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
 const { subscribe, set } = writable<Forecast | null>(null, () => {
@@ -147,6 +150,7 @@ function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[],
     set(forecast)
 
     const cachedForecast: CachedForecast = {
+      version: CURRENT_FORECAST_DATA_VERSION,
       coordinates,
       datasets: datasetsIds,
       forecast,
@@ -156,6 +160,7 @@ function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[],
 }
 
 type CachedForecast = {
+  version: number
   coordinates: Coordinates
   datasets: readonly DatasetId[]
   forecast: Forecast
@@ -180,6 +185,7 @@ function getCachedForecast(coordinates: Coordinates, datasets: readonly DatasetI
     const lastForecastString = localStorage.getItem('last-forecast')
     if (!lastForecastString) return null
     const lastForecast = JSON.parse(lastForecastString, luxonReviver) as CachedForecast
+    if (lastForecast.version !== CURRENT_FORECAST_DATA_VERSION) return null
     const isValid = deepEqual(coordinates, lastForecast.coordinates) && deepEqual(datasets, lastForecast.datasets)
     if (isValid) return lastForecast.forecast
   } catch {}

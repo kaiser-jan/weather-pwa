@@ -21,7 +21,7 @@
   import { dayView } from '$lib/stores/ui'
   import { FORECAST_METRICS, type ForecastMetric } from '$lib/config/metrics'
 
-  const selectedDay = $derived($forecastStore?.daily?.find((d) => d.timestamp === page.state.selectedDayTimestamp))
+  const selectedDay = $derived($forecastStore?.daily?.[page.state.selectedDayIndex])
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !selectedDay) return false
@@ -84,7 +84,7 @@
 
 <Drawer.Root
   bind:open={
-    () => Boolean(page.state.selectedDayTimestamp),
+    () => page.state.selectedDayIndex !== undefined,
     (o) => {
       if (!o) dayView.hide()
     }
