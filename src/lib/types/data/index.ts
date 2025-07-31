@@ -56,6 +56,10 @@ export const FORECAST_PARAMETERS = [
   'cape',
   'cin',
   'grad',
+  'no2',
+  'o3',
+  'pm10',
+  'pm2_5',
 ] as const
 
 export type ForecastParameter = (typeof FORECAST_PARAMETERS)[number]

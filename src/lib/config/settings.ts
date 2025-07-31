@@ -75,6 +75,7 @@ const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   energy: 'J/kg',
   radiation: 'kWh/m2',
   precipitation: 'mm/h',
+  density: 'ug/m3',
 } as const
 
 export const settingsConfig = [

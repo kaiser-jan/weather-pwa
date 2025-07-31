@@ -29,7 +29,8 @@ function matchesCriterion(dataset: Dataset, criteria: Criterion): boolean {
   return (
     matchDuration(dataset.updateFrequency, criteria.interval) &&
     matchDuration(dataset.baseForecastAge, criteria.offset) &&
-    matchDuration(dataset.timespan, criteria.timespan)
+    matchDuration(dataset.timespan, criteria.timespan) &&
+    (!criteria.parameters || criteria.parameters.every((p) => dataset.parameters.includes(p)))
   )
 }
 

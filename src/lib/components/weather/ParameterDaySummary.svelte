@@ -11,6 +11,7 @@
   import { generateCssRangeGradient } from '$lib/utils/ui'
   import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
   import PrecipitationGroup from '$lib/components/weather/PrecipitationGroup.svelte'
+  import IconOrAbbreviation from '../IconOrAbbreviation.svelte'
 
   type Props = ParameterDaySummaryProps & {
     parameter: ForecastParameter
@@ -28,7 +29,6 @@
   }: Props = $props()
 
   const details = $derived<MetricDetails | undefined>(METRIC_DETAILS[parameter])
-  const ParameterIcon = $derived(icon ?? details?.icon)
 
   const domain = $derived.by(() => {
     if (useTotalAsDomain || !day || !details) return $forecastStore?.total?.summary[parameter]
@@ -52,7 +52,9 @@
     }
 
     if (gradientColorStops) {
-      return generateCssRangeGradient(domain.min, domain.max, gradientColorStops, 'top')
+      const min = $forecastStore?.total?.summary[parameter].min ?? domain.min
+      const max = $forecastStore?.total?.summary[parameter].max ?? domain.max
+      return generateCssRangeGradient(min, max, gradientColorStops, 'top')
     }
 
     return ''
@@ -78,8 +80,8 @@
 {/if}
 
 {#each items as item (item)}
-  {#if item === 'icon' && ParameterIcon}
-    <ParameterIcon class="shrink-0" />
+  {#if item === 'icon' && details}
+    <IconOrAbbreviation {details} />
   {:else if item === 'min' || item === 'max' || item === 'avg' || item === 'sum'}
     <FormattedMetric
       value={day?.summary[parameter][item]}

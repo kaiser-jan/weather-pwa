@@ -7,12 +7,14 @@
   import { Button } from '$lib/components/ui/button'
   import { persistantState } from '$lib/utils/state.svelte'
   import { sortByReferenceOrder, toggle } from '$lib/utils'
+  import IconOrAbbreviation from './IconOrAbbreviation.svelte'
 
   interface Props {
     visible: ForecastParameter[]
   }
   let { visible: visible = $bindable() }: Props = $props()
 
+  // TODO: clean up on startup to ensure no old metrics are there which dont exist anymore
   let pinned = persistantState<ForecastParameter[]>('chart-parameters-pinned', [
     'cloud_coverage',
     'precipitation_amount',
@@ -35,7 +37,7 @@
     {#each pinned.value as parameter (parameter)}
       {@const details = METRIC_DETAILS[parameter]!}
       <ToggleGroup.Item value={parameter} class="grow">
-        <details.icon />
+        <IconOrAbbreviation {details} />
       </ToggleGroup.Item>
     {/each}
   </ToggleGroup.Root>
@@ -45,7 +47,7 @@
       {#each temporary as parameter (parameter)}
         {@const details = METRIC_DETAILS[parameter]!}
         <ToggleGroup.Item value={parameter}>
-          <details.icon />
+          <IconOrAbbreviation {details} />
         </ToggleGroup.Item>
       {/each}
     </ToggleGroup.Root>
@@ -73,7 +75,7 @@
             sortVisible()
           }}
         >
-          <parameterDetails.icon />
+          <IconOrAbbreviation details={parameterDetails} />
           {parameterDetails.label}
           <span class="grow"></span>
           <Button variant={isActive ? 'secondary' : 'outline'} class="size-8 p-0">

@@ -19,7 +19,8 @@ export interface MetricDetailsChart {
 export interface MetricDetails {
   label: string
   domain: { min: number[]; max: number[] }
-  icon: typeof ThermometerIcon
+  icon?: typeof ThermometerIcon
+  abbreviation?: string
   color: ColorDefinition
   iconIfZero?: typeof ThermometerIcon
 

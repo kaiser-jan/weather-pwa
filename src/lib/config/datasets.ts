@@ -16,6 +16,8 @@ export const DATASET_IDS_BY_PRIORITY = [
   'met.no_meps',
   'met.no_arome-arctic',
   'met.no_ecmwf',
+  'geosphere.at_chem-v2-1h-3km',
+  'geosphere.at_chem-v2-1h-9km',
 ] as const satisfies DatasetId[]
 
 checkArrayUniqueness(DATASET_IDS_BY_PRIORITY)

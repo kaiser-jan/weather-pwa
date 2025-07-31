@@ -10,6 +10,7 @@ export type UnitDimension =
   | 'energy'
   | 'radiation'
   | 'precipitation'
+  | 'density'
 
 export const METRIC_DIMENSION: Record<ForecastParameter, UnitDimension | null> = {
   temperature: 'temperature',
@@ -34,6 +35,10 @@ export const METRIC_DIMENSION: Record<ForecastParameter, UnitDimension | null> =
   cape: 'energy',
   cin: 'energy',
   grad: 'radiation',
+  pm2_5: 'density',
+  pm10: 'density',
+  o3: 'density',
+  no2: 'density',
 } as const
 
 export const UNIT_OPTIONS = {
@@ -46,6 +51,7 @@ export const UNIT_OPTIONS = {
   energy: ['J/kg', 'm2/s2'],
   radiation: ['Ws/m2', 'J/m2', 'Wh/m2', 'kWh/m2'],
   precipitation: ['mm/h'],
+  density: ['ug/m3'],
 } as const
 
 export type Unit = (typeof UNIT_OPTIONS)[keyof typeof UNIT_OPTIONS][number]
@@ -92,6 +98,9 @@ export const CONVERTERS: Record<UnitDimension, Partial<Record<Unit, (v: number) 
   },
   precipitation: {
     'mm/h': (v) => v,
+  },
+  density: {
+    'ug/m3': (v) => v * 1e6,
   },
 } as const
 

@@ -2,6 +2,7 @@ import {
   CloudOffIcon,
   CloudyIcon,
   DropletIcon,
+  FactoryIcon,
   GaugeIcon,
   ShieldIcon,
   SunIcon,
@@ -12,9 +13,57 @@ import {
   ZapIcon,
 } from '@lucide/svelte'
 import type { ForecastParameter } from '$lib/types/data'
-import type { MetricDetails } from '$lib/types/ui'
+import type { ColorStop, MetricDetails } from '$lib/types/ui'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
+
+const green = { h: 110, s: 60, l: 60 }
+const yellow = { h: 60, s: 70, l: 70 }
+const orange = { h: 30, s: 75, l: 80 }
+const red = { h: 5, s: 70, l: 75 }
+const darkred = { h: 0, s: 90, l: 30 }
+
+function createLimitsGradient([a, b, c, d]: {
+  value: number
+  comment: string
+}[]): ColorStop[] {
+  return [
+    { value: 0, ...green },
+    { value: a.value, ...yellow },
+    { value: b.value, ...orange },
+    { value: c.value, ...red },
+    { value: d.value, ...darkred },
+  ]
+}
+
+// https://eur-lex.europa.eu/eli/dir/2024/2881/oj/eng#anx_I
+const pm25Limits = [
+  { value: 5 * 1e-6, comment: 'WHO annual' },
+  { value: 10 * 1e-6, comment: 'EU limit yearly' },
+  { value: 25 * 1e-6, comment: 'EU limit daily, max 18 days' },
+  { value: 50 * 1e-6, comment: '' },
+]
+
+const pm10Limits = [
+  { value: 15 * 1e-6, comment: 'WHO guideline' },
+  { value: 20 * 1e-6, comment: 'EU limit yearly' },
+  { value: 45 * 1e-6, comment: 'EU limit daily, max 18 days' },
+  { value: 100 * 1e-6, comment: '' },
+]
+
+const o3Limits = [
+  { value: 100 * 1e-6, comment: 'WHO daily 8‑hour, EU long-term objective 2050' },
+  { value: 120 * 1e-6, comment: 'EU target, max 8-hour mean within a year' },
+  { value: 160 * 1e-6, comment: '' },
+  { value: 200 * 1e-6, comment: '' },
+]
+
+const no2Limits = [
+  { value: 10 * 1e-6, comment: 'WHO annual' },
+  { value: 20 * 1e-6, comment: 'EU limit yearly' },
+  { value: 50 * 1e-6, comment: 'EU limit daily' },
+  { value: 200 * 1e-6, comment: 'EU limit hourly' },
+]
 
 const _METRIC_DETAILS = {
   temperature: {
@@ -143,6 +192,56 @@ const _METRIC_DETAILS = {
       class: 'opacity-80',
     },
   },
+
+  pm2_5: {
+    label: 'PM 2.5',
+    abbreviation: 'PM2.5',
+    domain: {
+      min: [0],
+      max: [10 * 1e-6, 50 * 1e-6],
+    },
+    color: {
+      gradient: createLimitsGradient(pm25Limits),
+    },
+    chart: { style: 'line', class: 'opacity-80' },
+  },
+  pm10: {
+    label: 'PM 10',
+    abbreviation: 'PM10',
+    domain: {
+      min: [0],
+      max: [20 * 1e-6, 100 * 1e-6],
+    },
+    color: {
+      gradient: createLimitsGradient(pm10Limits),
+    },
+    chart: { style: 'line', class: 'opacity-80' },
+  },
+  o3: {
+    label: 'Ozone',
+    abbreviation: 'O3',
+    domain: {
+      min: [0],
+      max: [120 * 1e-6, 240 * 1e-6],
+    },
+    color: {
+      gradient: createLimitsGradient(o3Limits),
+    },
+    chart: { style: 'line', class: 'opacity-80' },
+  },
+  no2: {
+    label: 'Nitrogen Dioxide',
+    abbreviation: 'NO2',
+    domain: {
+      min: [0],
+      max: [20 * 1e-6, 200 * 1e-6], // µg/m³: WHO annual limit, moderate, unhealthy
+    },
+    color: {
+      gradient: createLimitsGradient(no2Limits),
+    },
+    chart: { style: 'line', class: 'opacity-80' },
+  },
+  // TODO: make this use ForecastMetrics instead
 } as const satisfies Partial<Record<ForecastParameter, MetricDetails>>
 
 export type ForecastMetric = keyof typeof _METRIC_DETAILS

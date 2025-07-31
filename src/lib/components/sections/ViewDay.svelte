@@ -45,6 +45,7 @@
     dayView.select(target)
   }
 
+  // TODO: integrate to metrics config
   const metricConfigs: Partial<Record<ForecastParameter, ParameterDaySummaryProps>> = {
     temperature: { useTotalAsDomain: true },
     precipitation_amount: { items: ['icon', 'precipitation-groups'] },
@@ -55,6 +56,10 @@
     cape: { items: ['icon', 'avg', 'max'] },
     cin: { items: ['icon', 'max'] },
     grad: { items: ['icon', 'max'] },
+    pm2_5: { items: ['icon', 'avg', 'max'] },
+    pm10: { items: ['icon', 'avg', 'max'] },
+    o3: { items: ['icon', 'avg', 'max'] },
+    no2: { items: ['icon', 'avg', 'max'] },
   }
 
   function handleSwipe(event: SwipeCustomEvent) {
