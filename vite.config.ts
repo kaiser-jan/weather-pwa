@@ -41,7 +41,7 @@ export default defineConfig({
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        theme_color: colors.primary.DEFAULT,
+        theme_color: colors.primary,
         background_color: colors.background,
       },
       injectManifest: {
