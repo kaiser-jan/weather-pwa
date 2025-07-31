@@ -8,6 +8,8 @@
   import { settings } from '$lib/settings/store'
   import type { TimeBucket } from '$lib/types/data'
   import { DateTime } from 'luxon'
+  import SectionTitle from './SectionTitle.svelte'
+  import { FactoryIcon, InfoIcon } from '@lucide/svelte'
 
   const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS))
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS))
@@ -106,6 +108,15 @@
   {/if}
 {/snippet}
 
+<SectionTitle title="Air Pollution" icon={FactoryIcon}>
+  <a
+    class="ml-auto inline-flex items-center gap-1 text-sm"
+    href="https://ecmwf-projects.github.io/copernicus-training-cams/proc-aq-index.html?utm_source=chatgpt.com"
+    target="_blank"
+  >
+    <InfoIcon class="size-[1em]" /> EAQI
+  </a>
+</SectionTitle>
 <div class="bg-midground flex flex-row gap-4 rounded-md px-3 py-2">
   {#if $eaqi && $eaqi.current.levels}
     <div class="flex grow flex-col justify-between gap-1">

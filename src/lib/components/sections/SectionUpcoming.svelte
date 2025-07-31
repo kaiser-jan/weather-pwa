@@ -12,6 +12,8 @@
   import { Button } from '../ui/button'
   import { getEndOfDayTimestamp, getStartOfDayTimestamp } from '$lib/utils'
   import { DateTime } from 'luxon'
+  import SectionTitle from './SectionTitle.svelte'
+  import { CalendarDaysIcon } from '@lucide/svelte'
 
   const SHOW_PAST = false
 
@@ -23,6 +25,7 @@
   })
 </script>
 
+<SectionTitle title="Upcoming" icon={CalendarDaysIcon} />
 <div class="flex flex-col overflow-hidden rounded-md">
   {#each days as day (day.timestamp)}
     <Button

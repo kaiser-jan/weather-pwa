@@ -4,7 +4,6 @@
   import SectionAirPollution from '$lib/components/sections/SectionAirPollution.svelte'
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
   import SectionOutlook from '$lib/components/sections/SectionOutlook.svelte'
-  import SectionTitle from '$lib/components/sections/SectionTitle.svelte'
   import SectionTodayChart from '$lib/components/sections/SectionTodayChart.svelte'
   import SectionUpcoming from '$lib/components/sections/SectionUpcoming.svelte'
   import ViewDay from '$lib/components/sections/ViewDay.svelte'
@@ -13,9 +12,6 @@
   import { forecastStore } from '$lib/stores/data'
   import { geolocationStore } from '$lib/stores/geolocation'
   import { coordinates, selectedLocation } from '$lib/stores/location'
-  import { NOW, TODAY_MILLIS } from '$lib/stores/now'
-  import { dayView } from '$lib/stores/ui'
-  import { BinocularsIcon, CalendarDaysIcon, ChevronRightIcon, ClockIcon, FactoryIcon } from '@lucide/svelte'
 
   let scrollContainer = $state<HTMLElement>()
   let shrinkHeader = $state(false)
@@ -50,21 +46,12 @@
   <div class="flex flex-col gap-4 p-4" data-vaul-drawer-wrapper>
     <NoticePrecipitation />
 
-    <SectionTitle
-      title="Today"
-      icon={ClockIcon}
-      actionIcon={ChevronRightIcon}
-      onclick={() => dayView.open($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS) ?? null)}
-    />
     <SectionTodayChart />
 
-    <SectionTitle title="Upcoming" icon={CalendarDaysIcon} />
     <SectionUpcoming />
 
-    <SectionTitle title="Outlook" icon={BinocularsIcon} />
     <SectionOutlook />
 
-    <SectionTitle title="Air Pollution" icon={FactoryIcon} />
     <!-- TODO: derive from datasets -> provided parameters -->
     {#if $forecastStore?.multiseries.pm25 || $forecastStore?.multiseries.pm10 || $forecastStore?.multiseries.o3 || $forecastStore?.multiseries.no2}
       <SectionAirPollution />

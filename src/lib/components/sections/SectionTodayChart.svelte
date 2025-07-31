@@ -9,6 +9,8 @@
   import { settings } from '$lib/settings/store'
   import { dayView } from '$lib/stores/ui'
   import type { ForecastMetric } from '$lib/config/metrics'
+  import SectionTitle from './SectionTitle.svelte'
+  import { ChevronRightIcon, ClockIcon } from '@lucide/svelte'
 
   const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS))
 
@@ -19,6 +21,13 @@
   ])
 </script>
 
+<SectionTitle
+  title="Today"
+  icon={ClockIcon}
+  onclick={() => dayView.open($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS) ?? null)}
+>
+  <ChevronRightIcon class="ml-auto" />
+</SectionTitle>
 <div class="bg-midground flex w-full flex-col flex-wrap justify-between gap-2 gap-x-4 gap-y-2 rounded-lg p-2">
   {#if $settings.sections.today.showChartParameterSelect}
     <ParameterSelect bind:visible={visibleSeries.value} />
