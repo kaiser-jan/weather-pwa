@@ -105,7 +105,7 @@
 <SectionTitle title="Air Pollution" icon={FactoryIcon}>
   <a
     class="ml-auto inline-flex items-center gap-1 text-sm"
-    href="https://ecmwf-projects.github.io/copernicus-training-cams/proc-aq-index.html?utm_source=chatgpt.com"
+    href="https://ecmwf-projects.github.io/copernicus-training-cams/proc-aq-index.html"
     target="_blank"
   >
     <InfoIcon class="size-[1em]" /> EAQI
