@@ -44,7 +44,7 @@
 
 <div
   class={[
-    'bg-midground top-0 z-50 flex min-h-20 w-full flex-col overflow-hidden rounded-b-[1rem] p-[0.5rem] transition-all',
+    'bg-midground top-0 z-50 flex min-h-20 w-full flex-col overflow-hidden rounded-b-2xl p-2 transition-all',
     $settingCurrentSticky ? 'absolute' : 'relative',
   ]}
   style={`height: calc(min(2rem, env(safe-area-inset-top)) + ${shrink ? '10vh' : '25vh'})`}
@@ -93,7 +93,7 @@
     </div>
 
     <div
-      class="bg-background absolute inset-0 top-auto flex h-10 w-full shrink-0 flex-row justify-between gap-4 overflow-hidden rounded-[0.5rem] px-3 py-2 transition-all"
+      class="bg-background absolute inset-0 top-auto flex h-10 w-full shrink-0 flex-row justify-between gap-4 overflow-hidden rounded-lg px-3 py-2 transition-all"
       class:opacity-0={shrink}
       class:h-0!={shrink}
       class:p-0!={shrink}

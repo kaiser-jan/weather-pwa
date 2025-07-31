@@ -63,7 +63,7 @@
         Pin a location from <SearchIcon class="inline" /> search!
       </button>
     {/if}
-    <div class="to-midground absolute top-0 right-0 h-full w-6 bg-gradient-to-r from-transparent"></div>
+    <div class="to-midground absolute top-0 right-0 h-full w-6 bg-linear-to-r from-transparent"></div>
   </div>
   <div class="bg-midground flex flex-row gap-2 rounded-r-full p-2">
     <LocationSearch active={$selectedLocation?.type === 'search'} />

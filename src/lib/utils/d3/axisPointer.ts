@@ -39,7 +39,7 @@ export function createAxisPointer(options: {
       xAxisPointer
         .select(`circle#x-axis-pointer-circle-${p.name}`)
         .attr('cy', p.y)
-        .classed('!fill-text', i === 0 || !tooltip || !showTooltip),
+        .classed('fill-text!', i === 0 || !tooltip || !showTooltip),
     )
 
     if (tooltip) {
