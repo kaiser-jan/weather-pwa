@@ -14,7 +14,7 @@ import {
 } from '@lucide/svelte'
 import type { ForecastParameter } from '$lib/types/data'
 import type { ColorStop, MetricDetails } from '$lib/types/ui'
-import { eaqiDefinition } from './categorization'
+import { EAQI } from './categorization'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 
@@ -163,7 +163,7 @@ const _METRIC_DETAILS = {
       max: [10 * 1e-6, 50 * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(eaqiDefinition.limits.pm25, eaqiDefinition.colors),
+      gradient: createLimitsGradient(EAQI.limits.pm25, EAQI.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -175,7 +175,7 @@ const _METRIC_DETAILS = {
       max: [20 * 1e-6, 100 * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(eaqiDefinition.limits.pm10, eaqiDefinition.colors),
+      gradient: createLimitsGradient(EAQI.limits.pm10, EAQI.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -187,7 +187,7 @@ const _METRIC_DETAILS = {
       max: [120 * 1e-6, 240 * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(eaqiDefinition.limits.o3, eaqiDefinition.colors),
+      gradient: createLimitsGradient(EAQI.limits.o3, EAQI.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -199,7 +199,7 @@ const _METRIC_DETAILS = {
       max: [20 * 1e-6, 200 * 1e-6], // µg/m³: WHO annual limit, moderate, unhealthy
     },
     color: {
-      gradient: createLimitsGradient(eaqiDefinition.limits.no2, eaqiDefinition.colors),
+      gradient: createLimitsGradient(EAQI.limits.no2, EAQI.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
