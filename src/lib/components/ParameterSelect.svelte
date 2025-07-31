@@ -55,7 +55,7 @@
 
   <Popover.Root>
     <Popover.Trigger>
-      <Button size="icon" variant="secondary" class="size-9! border-1 p-2">
+      <Button size="icon" variant="secondary" class="size-9! border p-2">
         <EllipsisIcon />
       </Button>
     </Popover.Trigger>

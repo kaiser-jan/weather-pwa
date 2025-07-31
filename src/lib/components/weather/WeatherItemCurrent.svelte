@@ -26,7 +26,7 @@
 </script>
 
 {#if current?.[details.datapoint] !== undefined}
-  <span class="inline-flex items-center gap-[0.375rem]">
+  <span class="inline-flex items-center gap-1.5">
     <IconOrAbbreviation {details} />
 
     <FormattedMetric value={current[details.datapoint]!} parameter={item} />

@@ -12,8 +12,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     %sveltekit.head%
   </head>
-  <!-- TODO: find a way to set the initial body color based on the tailwind definition -->
-  <body data-sveltekit-preload-data="hover">
+  <body data-sveltekit-preload-data="hover" style="background-color: var(--color-background)">
     <div style="display: contents">%sveltekit.body%</div>
   </body>
 </html>

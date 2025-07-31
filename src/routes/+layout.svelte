@@ -52,11 +52,11 @@
   -->
   <ContainerCorners
     left="left-4"
-    bottom="bottom-[calc(5.5rem_+min(env(safe-area-inset-bottom),1rem))]"
+    bottom="bottom-[calc(5.5rem+min(env(safe-area-inset-bottom),1rem))]"
     right="right-4"
   />
   <div
-    class="from-background/50 pointer-events-none absolute right-0 bottom-22 left-0 flex h-8 flex-row gap-2 bg-gradient-to-t to-transparent"
+    class="from-background/50 pointer-events-none absolute right-0 bottom-22 left-0 flex h-8 flex-row gap-2 bg-linear-to-t to-transparent"
   ></div>
 
   <div class="bg-background flex h-22 shrink-0 flex-row items-center gap-2 p-4">
@@ -65,7 +65,7 @@
   </div>
 
   <!-- HACK: the safe area on iOS is quite large -->
-  <div class="h-[env(safe-area-inset-bottom)] max-h-[1rem] shrink-0"></div>
+  <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
 </div>
 
 <Portal to="html">
@@ -75,7 +75,7 @@
       unstyled: true,
       classes: {
         toast:
-          'bg-background border-foreground border-2 flex flex-row flex-wrap gap-2 items-center rounded-lg p-3 text-sm z-[1000] touch-auto',
+          'bg-background border-foreground border-2 flex flex-row flex-wrap gap-2 items-center rounded-lg p-3 text-sm z-1000 touch-auto',
         title: 'text-text font-semibold flex flex-row gap-2',
         description: 'text-text-muted italic',
         actionButton: 'bg-foreground rounded-md p-2 h-8 flex items-center hover:bg-primary',
