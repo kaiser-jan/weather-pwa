@@ -1,3 +1,5 @@
+import plugin from 'tailwindcss/plugin'
+
 export const colors = {
   background: 'hsl(220, 50%, 5%)',
   primary: 'hsl(160.68, 51.3%, 22.55%)',
@@ -16,6 +18,16 @@ const config = {
       },
     }
   },
+  plugins: [
+    plugin(function({ addBase }) {
+      addBase({
+        ':root': {
+          '--color-background': colors.background,
+          '--color-primary': colors.primary,
+        },
+      });
+    })
+  ]
 }
 
 export default config
