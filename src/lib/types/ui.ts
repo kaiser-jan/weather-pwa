@@ -3,7 +3,7 @@ import type { Coordinates, TimeSeries, ForecastParameter } from './data'
 
 export type ColorStop = { value: number; h: number; s: number; l: number }
 
-type ColorDefinition =
+export type ColorDefinition =
   | { css: string } //
   | { gradient: ColorStop[] }
   | { gradientSetting: string[] }

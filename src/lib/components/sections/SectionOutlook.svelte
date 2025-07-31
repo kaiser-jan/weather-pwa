@@ -10,6 +10,7 @@
   import { onMount } from 'svelte'
   import SectionTitle from './SectionTitle.svelte'
   import { BinocularsIcon } from '@lucide/svelte'
+  import { METRIC_DETAILS } from '$lib/config/metrics'
 
   let container: HTMLDivElement
 
@@ -49,7 +50,7 @@
       <NumberRangeBar
         total={$forecastStore?.total?.summary.temperature}
         instance={day.summary.temperature}
-        color="temperature"
+        color={METRIC_DETAILS.temperature!.color}
         className="w-2 h-20"
         vertical
       />

@@ -14,6 +14,7 @@
   import { DateTime } from 'luxon'
   import SectionTitle from './SectionTitle.svelte'
   import { CalendarDaysIcon } from '@lucide/svelte'
+  import { METRIC_DETAILS } from '$lib/config/metrics'
 
   const SHOW_PAST = false
 
@@ -58,7 +59,7 @@
           <NumberRangeBar
             total={$forecastStore?.total?.summary.temperature}
             instance={day.summary.temperature}
-            color="temperature"
+            color={METRIC_DETAILS.temperature!.color}
             className="h-2 w-8"
           />
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>

@@ -3,12 +3,12 @@
   import type { NumberSummary } from '$lib/types/data'
   import { settings } from '$lib/settings/store'
   import { cn } from '$lib/utils'
+  import type { ColorDefinition, ColorStop } from '$lib/types/ui'
 
   interface Props {
     total: Pick<NumberSummary, 'min' | 'max'> | undefined
     instance: NumberSummary
-    // TODO: rework color prop
-    color: 'clouds' | 'temperature' | string
+    color: ColorDefinition
     className: string
     vertical?: boolean
   }
@@ -18,38 +18,25 @@
   const start = $derived(scale(instance.min))
   const end = $derived(100 - scale(instance.max))
   const startAverage = $derived(scale(instance.avg))
-  const gradientCss = $derived(
-    generateCssRangeGradient(
-      instance.min,
-      instance.max,
-      $settings.appearance.colors.temperatureColorStops,
-      vertical ? 'top' : 'right',
-    ),
-  )
+
+  const colorCss = $derived.by(() => {
+    if ('css' in color) return `background-color: ${color.css}`
+
+    const gradientColorStops =
+      color && 'gradient' in color ? color.gradient : (settings.readSetting(color.gradientSetting).value as ColorStop[])
+
+    return generateCssRangeGradient(instance.min, instance.max, gradientColorStops, vertical ? 'top' : 'right')
+  })
 
   function scale(temperature: number) {
     return ((temperature - total.min) / (total.max - total.min)) * 100
   }
 
-  const backgroundColor = $derived.by(() => {
-    switch (color) {
-      case 'temperature':
-        return 'bg-amber-100'
-      case 'clouds':
-        return 'bg-gray-400'
-      default:
-        return color
-    }
-  })
-
   const insetStyle = $derived(vertical ? `top: ${end}%; bottom: ${start}%;` : `left: ${start}%; right: ${end}%;`)
 </script>
 
 <div class={cn('bg-foreground relative h-full w-full overflow-hidden rounded-full', className)}>
-  <span
-    class={['absolute inset-0 rounded-full', backgroundColor]}
-    style={[insetStyle, color === 'temperature' && gradientCss].filter((v) => v !== false).join('')}
-  ></span>
+  <span class="absolute inset-0 rounded-full" style={[insetStyle, colorCss].join('')}></span>
   <span
     class={[
       'bg-background absolute h-1 w-1 rounded-full opacity-50',
