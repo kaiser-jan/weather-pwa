@@ -8,6 +8,8 @@
   import { DateTime } from 'luxon'
   import { TODAY_MILLIS } from '$lib/stores/now'
   import { onMount } from 'svelte'
+  import SectionTitle from './SectionTitle.svelte'
+  import { BinocularsIcon } from '@lucide/svelte'
 
   let container: HTMLDivElement
 
@@ -29,6 +31,7 @@
   })
 </script>
 
+<SectionTitle title="Outlook" icon={BinocularsIcon} />
 <div class="flex flex-row overflow-y-auto rounded-md" bind:this={container}>
   {#each $forecastStore?.daily ?? [] as day (day.timestamp)}
     <Button
