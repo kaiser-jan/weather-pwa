@@ -18,9 +18,9 @@ import type { ColorStop, MetricDetails } from '$lib/types/ui'
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 
 const green = { h: 110, s: 60, l: 60 }
-const yellow = { h: 60, s: 70, l: 70 }
-const orange = { h: 30, s: 75, l: 80 }
-const red = { h: 5, s: 70, l: 75 }
+const yellow = { h: 60, s: 70, l: 50 }
+const orange = { h: 30, s: 75, l: 50 }
+const red = { h: 5, s: 70, l: 45 }
 const darkred = { h: 0, s: 90, l: 30 }
 
 function createLimitsGradient([a, b, c, d]: {

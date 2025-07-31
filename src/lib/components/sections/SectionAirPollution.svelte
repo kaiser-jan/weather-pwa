@@ -10,6 +10,7 @@
   import { DateTime } from 'luxon'
   import SectionTitle from './SectionTitle.svelte'
   import { FactoryIcon, InfoIcon } from '@lucide/svelte'
+  import { METRIC_DETAILS } from '$lib/config/metrics'
 
   const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS))
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS))
@@ -143,7 +144,7 @@
               avg: $eaqi.current.values[pollutant],
               max: $eaqi.today?.maxValues[pollutant],
             }}
-            color="bg-green-400"
+            color={METRIC_DETAILS[pollutant]!.color}
             className="h-2"
           />
           <div class="text-muted-foreground w-20 text-right text-xs text-nowrap">
