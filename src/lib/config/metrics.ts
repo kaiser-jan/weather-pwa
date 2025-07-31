@@ -92,7 +92,7 @@ const _METRIC_DETAILS = {
     domain: { min: [0], max: [100] },
     icon: CloudyIcon,
     iconIfZero: CloudOffIcon,
-    color: { tailwind: { bg: 'bg-blue-200', fill: 'fill-blue-200', stroke: 'stroke-blue-200' } },
+    color: { css: 'var(--color-blue-200)' },
     chart: {
       style: 'bars',
       class: 'opacity-15',
@@ -104,7 +104,7 @@ const _METRIC_DETAILS = {
     domain: { min: [0], max: [20, 50] },
     icon: UmbrellaIcon,
     iconIfZero: UmbrellaOffIcon,
-    color: { tailwind: { bg: 'bg-blue-300', fill: 'fill-blue-300', stroke: 'stroke-blue-300' } },
+    color: { css: 'var(--color-blue-300)' },
     chart: {
       style: 'bars',
       class: 'opacity-80',
@@ -115,7 +115,7 @@ const _METRIC_DETAILS = {
     label: 'Wind',
     domain: { min: [0], max: [61 / 3.6, 118 / 3.6] },
     icon: WindIcon,
-    color: { tailwind: { bg: 'bg-blue-100', fill: 'fill-blue-100', stroke: 'stroke-blue-100' } },
+    color: { css: 'var(--color-blue-100)' },
     chart: {
       style: 'line',
       class: 'opacity-80',
@@ -123,7 +123,7 @@ const _METRIC_DETAILS = {
         wind_speed_gust: {
           style: 'line',
           class: 'opacity-50 [stroke-dasharray:4_8]',
-          color: { tailwind: { bg: 'bg-blue-100', fill: 'fill-blue-100', stroke: 'stroke-blue-100' } },
+          color: { css: 'var(--color-blue-100)' },
         },
       },
     },
@@ -133,7 +133,7 @@ const _METRIC_DETAILS = {
     label: 'Relative Humidity',
     domain: { min: [0], max: [100] },
     icon: DropletIcon,
-    color: { tailwind: { bg: 'bg-green-300', fill: 'fill-green-300', stroke: 'stroke-green-300' } },
+    color: { css: 'var(--color-green-300)' },
     chart: {
       style: 'line',
       class: 'opacity-80',
@@ -144,7 +144,7 @@ const _METRIC_DETAILS = {
     label: 'Pressure',
     domain: { min: [980 * 100], max: [1040 * 100] },
     icon: GaugeIcon,
-    color: { tailwind: { bg: 'bg-purple-300', fill: 'fill-purple-300', stroke: 'stroke-purple-300' } },
+    color: { css: 'var(--color-purple-300)' },
     chart: {
       style: 'line',
       class: 'opacity-80',
@@ -164,7 +164,7 @@ const _METRIC_DETAILS = {
     label: 'CAPE',
     domain: { min: [0], max: [1000] },
     icon: ZapIcon,
-    color: { tailwind: { bg: 'bg-yellow-300', fill: 'fill-yellow-300', stroke: 'stroke-yellow-300' } },
+    color: { css: 'var(--color-yellow-300)' },
     chart: {
       style: 'line',
       class: 'opacity-80',
@@ -175,7 +175,7 @@ const _METRIC_DETAILS = {
     label: 'CIN',
     domain: { min: [-500], max: [0] },
     icon: ShieldIcon,
-    color: { tailwind: { bg: 'bg-orange-300', fill: 'fill-orange-300', stroke: 'stroke-orange-300' } },
+    color: { css: 'var(--color-orange-300)' },
     chart: {
       style: 'line',
       class: 'opacity-80',
@@ -186,7 +186,7 @@ const _METRIC_DETAILS = {
     label: 'Global Radiation',
     domain: { min: [-1000], max: [50_000_000] },
     icon: SunIcon,
-    color: { tailwind: { bg: 'bg-yellow-300', fill: 'fill-yellow-300', stroke: 'stroke-yellow-300' } },
+    color: { css: 'var(--color-yellow-300)' },
     chart: {
       style: 'line',
       class: 'opacity-80',

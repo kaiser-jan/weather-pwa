@@ -199,20 +199,20 @@
 
         let dataRepresentation: d3.Selection<any, any, any, undefined>
 
-        const color = details.color && 'tailwind' in details.color ? details.color.tailwind : undefined
+        const color = details.color && 'css' in details.color ? details.color.css : undefined
         switch (details.chart.style) {
           case 'line':
             dataRepresentation = createLine({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
-            if (color) dataRepresentation.classed(color.stroke, true)
+            if (color) dataRepresentation.style('stroke', color)
             break
           case 'bars':
             dataRepresentation = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
-            if (color) dataRepresentation.classed(color.fill, true)
+            if (color) dataRepresentation.style('fill', color)
             break
           case 'area':
             if (!seriesB) return
             dataRepresentation = createArea({ svg, dimensions, scaleX, scaleY, dataA: seriesA, dataB: seriesB }) //
-            if (color) dataRepresentation.classed(color.fill, true)
+            if (color) dataRepresentation.style('fill', color)
             break
         }
 

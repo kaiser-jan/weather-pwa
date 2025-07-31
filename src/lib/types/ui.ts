@@ -3,9 +3,8 @@ import type { Coordinates, TimeSeries, ForecastParameter } from './data'
 
 export type ColorStop = { value: number; h: number; s: number; l: number }
 
-// HACK: this is ugly but allows tailwind to detect the class names
 type ColorDefinition =
-  | { tailwind: { bg: string; fill: string; stroke: string } } //
+  | { css: string } //
   | { gradient: ColorStop[] }
   | { gradientSetting: string[] }
 
