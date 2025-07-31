@@ -67,6 +67,8 @@
       gradientStops.push(`${colorCallback(cursor)} ${distanceFromTimestamps(cursor)}%`)
       cursor = cursor + interval.toMillis()
     }
+    gradientStops.unshift(`${COLOR_ERROR} 0%`)
+    gradientStops.unshift(`${COLOR_ERROR} ${distanceFromTimestamps(startTimestamp)}%`)
     return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
   }
 
