@@ -1,11 +1,11 @@
 <script lang="ts">
-  import SettingsRenderer from './SettingsRenderer.svelte'
-  import { settings } from '../store'
-  import type { ConfigItem } from '../types'
+  import { settings } from '../../store'
+  import type { ConfigItem } from '../../types'
   import Button from '$lib/components/ui/button/button.svelte'
   import { ChevronRightIcon, LockIcon } from '@lucide/svelte'
-  import SettingsItemRenderer from './SettingsItemRenderer.svelte'
-  import ItemAction from './items/ItemAction.svelte'
+  import BasicPageRenderer from './BasicPageRenderer.svelte'
+  import ActionItem from '../items/ActionItem.svelte'
+  import BasicItemRenderer from '../items/BasicItemRenderer.svelte'
 
   interface Props {
     path: string[]
@@ -31,7 +31,7 @@
           <item.icon />
           {item.label}
         </h2>
-        <SettingsRenderer
+        <BasicPageRenderer
           config={item.children}
           {path}
           onnavigate={(target) => {
@@ -43,7 +43,7 @@
     {:else if item.type === 'description'}
       <p class="bg-midground text-text-muted rounded-md px-3 py-2">{@html item.text}</p>
     {:else if item.type === 'action'}
-      <ItemAction {item} />
+      <ActionItem {item} />
     {:else if item.type === 'not-implemented'}
       <div
         class="bg-disabled text-disabled-foreground flex min-h-12 items-center justify-between gap-2 rounded-md px-4"
@@ -55,7 +55,7 @@
         <LockIcon />
       </div>
     {:else}
-      <SettingsItemRenderer path={[...parentPath, item.id]} {item} {onnavigate} />
+      <BasicItemRenderer path={[...parentPath, item.id]} {item} {onnavigate} />
     {/if}
   {/if}
 {/each}

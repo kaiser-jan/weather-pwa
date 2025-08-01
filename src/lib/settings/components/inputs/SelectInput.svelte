@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SelectSetting } from '../types'
+  import type { SelectSetting } from '../../types'
   import * as Select from '$lib/components/ui/select'
   import { toReadable } from '$lib/utils/stores'
 

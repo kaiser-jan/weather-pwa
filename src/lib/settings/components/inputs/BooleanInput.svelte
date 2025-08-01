@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { BooleanSetting } from '../types'
+  import type { BooleanSetting } from '../../types'
   import Switch from '$lib/components/ui/switch/switch.svelte'
 
   interface Props {
