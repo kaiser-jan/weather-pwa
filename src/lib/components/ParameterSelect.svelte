@@ -5,9 +5,10 @@
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import { type ForecastParameter, FORECAST_PARAMETERS } from '$lib/types/data'
   import { Button } from '$lib/components/ui/button'
-  import { persistantState } from '$lib/utils/state.svelte'
   import { sortByReferenceOrder, toggle } from '$lib/utils'
   import IconOrAbbreviation from './IconOrAbbreviation.svelte'
+  import { persist } from '$lib/utils/state.svelte'
+  import { get } from 'svelte/store'
 
   interface Props {
     visible: ForecastParameter[]
@@ -15,17 +16,17 @@
   let { visible: visible = $bindable() }: Props = $props()
 
   // TODO: clean up on startup to ensure no old metrics are there which dont exist anymore
-  let pinned = persistantState<ForecastParameter[]>('chart-parameters-pinned', [
+  let pinned = persist<ForecastParameter[]>('chart-parameters-pinned', [
     'cloud_coverage',
     'precipitation_amount',
     'temperature',
     'wind_speed',
   ])
 
-  let temporary = $derived(visible.filter((p) => !pinned.value.includes(p)))
+  let temporary = $derived(visible.filter((p) => !$pinned.includes(p)))
 
   function sortPinned() {
-    pinned.value = sortByReferenceOrder(pinned.value, FORECAST_PARAMETERS)
+    pinned.set(sortByReferenceOrder(get(pinned), FORECAST_PARAMETERS))
   }
   function sortVisible() {
     visible = sortByReferenceOrder(visible, FORECAST_PARAMETERS)
@@ -34,7 +35,7 @@
 
 <div class="flex h-fit w-full flex-row gap-2">
   <ToggleGroup.Root type="multiple" variant="outline" bind:value={visible} class="h-fit grow">
-    {#each pinned.value as parameter (parameter)}
+    {#each $pinned as parameter (parameter)}
       {@const details = METRIC_DETAILS[parameter]!}
       <ToggleGroup.Item value={parameter} class="grow">
         <IconOrAbbreviation {details} />
@@ -63,7 +64,7 @@
       {#each Object.entries(METRIC_DETAILS) as [parameter, parameterDetails] (parameter)}
         {@const parameterTyped = parameter as ForecastParameter}
         {@const isActive = visible.includes(parameterTyped)}
-        {@const isPinned = pinned.value.includes(parameterTyped)}
+        {@const isPinned = $pinned.includes(parameterTyped)}
         <button
           class={[
             'flex flex-row items-center gap-2 rounded-md px-2 py-1',
@@ -90,7 +91,7 @@
             class="size-8 p-0"
             onclick={(e) => {
               e.stopPropagation()
-              toggle(pinned.value, parameter)
+              toggle($pinned, parameter)
               sortPinned()
             }}
           >
