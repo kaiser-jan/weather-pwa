@@ -13,13 +13,13 @@
   import { coordinates } from '$lib/stores/location'
   import TimelineBar from '$lib/components/TimelineBar.svelte'
   import { settings } from '$lib/settings/store'
-  import { persistantState } from '$lib/utils/state.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
   import { cn, getEndOfDayTimestamp, getStartOfDayTimestamp, toggle } from '$lib/utils'
   import { page } from '$app/state'
   import { dayView } from '$lib/stores/ui'
   import { FORECAST_METRICS, type ForecastMetric } from '$lib/config/metrics'
+  import { persist } from '$lib/utils/state.svelte'
 
   const selectedDay = $derived($forecastStore?.daily?.[page.state.selectedDayIndex])
 
@@ -73,7 +73,7 @@
     }
   }
 
-  let visibleSeries = persistantState<ForecastMetric[]>('view-day-chart-parameters', [
+  let visibleSeries = persist<ForecastMetric[]>('view-day-chart-parameters', [
     'temperature',
     'precipitation_amount',
     'cloud_coverage',
@@ -133,7 +133,7 @@
           {#if selectedDay}
             <WeatherChart
               multiseries={selectedDay.multiseries}
-              parameters={visibleSeries.value}
+              parameters={$visibleSeries}
               startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
               endTimestamp={selectedDay.timestamp + selectedDay.duration}
               timestamp={$NOW_MILLIS}
@@ -169,20 +169,20 @@
         <button
           class={cn(
             'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
-            visibleSeries.value.includes(metric) ? 'bg-midground border-midground' : '',
+            $visibleSeries.includes(metric) ? 'bg-midground border-midground' : '',
           )}
           style={`width: ${
             !config.items || config.items.includes('range-bar') || config.items.includes('precipitation-groups')
               ? 100
               : 40
           }%`}
-          onclick={() => toggle(visibleSeries.value, metric)}
+          onclick={() => toggle($visibleSeries, metric)}
         >
           <ParameterDaySummary
             {...config}
             parameter={metric}
             day={selectedDay}
-            selected={visibleSeries.value.includes(metric)}
+            selected={$visibleSeries.includes(metric)}
           />
         </button>
       {/if}

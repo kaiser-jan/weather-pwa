@@ -2,8 +2,9 @@
   import { replaceState, pushState } from '$app/navigation'
   import { page } from '$app/state'
   import { debounce } from '$lib/utils'
-  import { persistantState } from '$lib/utils/state.svelte'
+  import { persist } from '$lib/utils/state.svelte'
   import { type Snippet } from 'svelte'
+  import { get } from 'svelte/store'
 
   interface Props {
     liveQuery: string | null
@@ -25,7 +26,7 @@
 
   let currentQuery = $state<string | null>(null)
   let currentResults = $state<ResultT[] | null>(null)
-  const cachedResults = persistantState<{ query: string; results: ResultT[] }[]>($state.snapshot(cacheKey), [])
+  const cachedResults = persist<{ query: string; results: ResultT[] }[]>($state.snapshot(cacheKey), [])
 
   const debouncedLoadResults = debounce(loadResultsForLiveQuery, 1000)
 
@@ -56,18 +57,20 @@
   }
 
   async function tryLoadCachedResults(newQuery: string) {
-    const cached = cachedResults.value.find((c) => c.query === newQuery)
+    const cached = get(cachedResults).find((c) => c.query === newQuery)
     if (!cached) return
     currentResults = cached.results
     saveToHistory()
   }
 
   async function loadResults() {
+    const _cachedResults = get(cachedResults)
+
     // create a copy to keep during async calls
     const query = $state.snapshot(page.state.locationQuery)
     if (!query || query === '') return null
 
-    const cache = cachedResults.value.find((c) => c.query === query)
+    const cache = _cachedResults.find((c) => c.query === query)
     if (cache) {
       return cache.results
     }
@@ -80,8 +83,8 @@
 
     if (!newResults) return null
     const MAX_ENTRIES = 10
-    cachedResults.value.unshift({ query: query!, results: newResults })
-    if (cachedResults.value.length > MAX_ENTRIES) cachedResults.value.length = MAX_ENTRIES
+    _cachedResults.unshift({ query: query!, results: newResults })
+    if (_cachedResults.length > MAX_ENTRIES) _cachedResults.length = MAX_ENTRIES
 
     return newResults
   }
