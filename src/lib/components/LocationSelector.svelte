@@ -57,10 +57,12 @@
       </div>
     {:else}
       <button
-        class="text-text-muted line-clamp-2 flex h-14 w-fit grow flex-row items-center gap-2 p-2 px-3 text-sm"
+        class="text-text-muted inline-flex h-14 w-fit items-center p-2 px-3 text-sm"
         onclick={locationSearch.show}
       >
-        Pin a location from <SearchIcon class="inline" /> search!
+        <span class="line-clamp-2">
+          Pin a location from <SearchIcon class="inline align-text-top" /> search!
+        </span>
       </button>
     {/if}
     <div class="to-midground absolute top-0 right-0 h-full w-6 bg-linear-to-r from-transparent"></div>
