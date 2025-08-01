@@ -1,8 +1,8 @@
-export function getDeep(obj: any, path: string[]): unknown {
+export function getDeep(obj: any, path: readonly string[]): unknown {
   return path.reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), obj)
 }
 
-export function setDeep(obj: any, path: string[], value: unknown): void {
+export function setDeep(obj: any, path: readonly string[], value: unknown): void {
   let part = obj
   // select the part containing the key
   for (let i = 0; i < path.length - 1; i++) {
@@ -12,7 +12,7 @@ export function setDeep(obj: any, path: string[], value: unknown): void {
   part[path.at(-1)!] = value
 }
 
-export function deleteDeep(obj: any, path: string[]): void {
+export function deleteDeep(obj: any, path: readonly string[]): void {
   let part = obj
   for (let i = 0; i < path.length - 1; i++) {
     const key = path[i]

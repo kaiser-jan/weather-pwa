@@ -1,9 +1,9 @@
 <script lang="ts">
   import { ChevronRightIcon } from '@lucide/svelte'
-  import type { ListSetting } from '../../types'
+  import type { ListSettingPage } from '../../types'
 
   interface Props {
-    item: ListSetting
+    item: ListSettingPage
     value: Record<string, unknown>[]
     onchange: (v: unknown[]) => void
     onnavigate: (target: string) => void

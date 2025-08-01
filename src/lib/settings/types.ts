@@ -47,16 +47,15 @@ export type NumberSetting = BaseConfigItem & {
   step?: number
 }
 
-export type StaticDescription = BaseConfigItem & {
+export type DescriptionItem = BaseConfigItem & {
   type: 'description'
   text: string
 }
-
-export type StaticValue = BaseConfigItem & {
+export type ValueDisplayItem = BaseConfigItem & {
   type: 'value'
   value: string | undefined | Readable<string | undefined> | (() => Promise<string | undefined>)
 }
-export type StaticAction = BaseConfigItem & {
+export type ActionItem = BaseConfigItem & {
   type: 'action'
   action: () => Promise<unknown> | unknown | void
   enabled?: Readable<true>
@@ -67,40 +66,33 @@ export type NotImplementedSetting = BaseConfigItem & {
   default?: unknown
 }
 
-export type Setting =
-  | TextSetting
-  | SelectSetting
-  | MultiSelectSetting
-  | BooleanSetting
-  | NumberSetting
-  | NotImplementedSetting
-
-type Static = StaticDescription | StaticValue | StaticAction
-
-//
-
 type OptionalProp<T, K extends PropertyKey> = T extends Record<K, unknown> ? Omit<T, K> & Partial<Pick<T, K>> : T
-export type SettingGroup = BaseConfigItem & {
+export type GroupWrapper = BaseConfigItem & {
   type: 'group'
   children: ConfigItem[]
 }
-export type SettingPage = BaseConfigItem & {
+export type BasePage = BaseConfigItem & {
   type: 'page'
   children: ConfigItem[]
 }
-export type ListSetting = BaseConfigItem & {
+export type ListSettingPage = BaseConfigItem & {
   type: 'list'
   default: Array<unknown>
   nameProperty: string
   children: OptionalProp<ConfigItem, 'default'>[]
 }
-export type PageChangelog = BaseConfigItem & {
+export type ChangelogPage = BaseConfigItem & {
   type: 'changelog'
 }
 
-export type NestableSetting = SettingGroup | SettingPage | ListSetting
+export type SettingsPage = BasePage | ListSettingPage | ChangelogPage
+export type SettingsWrapper = GroupWrapper
+export type SettingsItem = DescriptionItem | ValueDisplayItem | ActionItem | NotImplementedSetting
+export type SettingsInput = TextSetting | SelectSetting | MultiSelectSetting | BooleanSetting | NumberSetting
 
-export type ConfigItem = Setting | Static | NestableSetting | PageChangelog
+export type SettingsNested = BasePage | SettingsWrapper
+
+export type ConfigItem = SettingsPage | SettingsWrapper | SettingsItem | SettingsInput
 
 //
 

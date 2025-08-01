@@ -27,7 +27,7 @@ export const settings = {
   resetSetting,
 }
 
-function writeSetting(path: string[], value: unknown) {
+function writeSetting(path: readonly string[], value: unknown) {
   console.info(`Writing setting: ${path} = ${JSON.stringify(value)}`)
   settingsBaseStore.update((s) => {
     setDeep(s, path, value)
@@ -42,7 +42,7 @@ function writeSetting(path: string[], value: unknown) {
   })
 }
 
-function readSetting(path: string[]) {
+function readSetting(path: readonly string[]) {
   console.debug(`Reading setting: ${path}`)
   const valueOverride = getDeep(get(settingsOverrides), path)
   if (valueOverride !== undefined) {

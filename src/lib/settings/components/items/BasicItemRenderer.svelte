@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { getComponent } from '../../registry'
+  import { getInputComponent } from '../../registry'
   import { settings } from '../../store'
-  import type { Setting } from '../../types'
+  import type { SettingsInput } from '../../types'
 
   interface Props {
     path: string[]
-    item: Setting
+    item: SettingsInput
     onnavigate: (target: string) => void
   }
 
   let { path, item, onnavigate }: Props = $props()
 
-  const Component = getComponent(item.type)
+  const Component = getInputComponent(item.type)
 
   const initialSetting = settings.readSetting(path)
   let value = $state(initialSetting.value)
@@ -33,6 +33,7 @@
 
   {#if Component}
     <Component
+      {path}
       {item}
       {value}
       {onnavigate}
