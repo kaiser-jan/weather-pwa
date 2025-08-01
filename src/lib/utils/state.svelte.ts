@@ -1,5 +1,6 @@
 import { writable, type Readable, type Writable } from 'svelte/store'
 import { browser } from '$app/environment'
+import { registerLocalStorage } from './cache'
 
 export function persist<T>(key: string, initial: T): Writable<T> {
   let data = initial
@@ -13,6 +14,8 @@ export function persist<T>(key: string, initial: T): Writable<T> {
   store.subscribe((value) => {
     localStorage.setItem(key, JSON.stringify(value))
   })
+
+  registerLocalStorage(key)
 
   return store
 }

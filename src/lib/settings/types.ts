@@ -1,3 +1,4 @@
+import type { buttonVariants } from '$lib/components/ui/button'
 import type { Icon } from '@lucide/svelte'
 import type { Readable } from 'svelte/store'
 
@@ -58,6 +59,7 @@ export type ValueDisplayItem = BaseConfigItem & {
 export type ActionItem = BaseConfigItem & {
   type: 'action'
   action: () => Promise<unknown> | unknown | void
+  variant?: string
   enabled?: Readable<true>
 }
 

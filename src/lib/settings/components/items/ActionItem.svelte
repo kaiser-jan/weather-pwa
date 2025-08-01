@@ -34,7 +34,7 @@
 </script>
 
 <Button
-  variant="secondary"
+  variant={(item.variant as 'secondary') ?? 'secondary'}
   class="relative flex min-h-12 flex-wrap items-center justify-between gap-x-3 gap-y-1 overflow-hidden rounded-md px-4 py-2 text-base"
   disabled={loading || $disabled}
   onclick={() => {

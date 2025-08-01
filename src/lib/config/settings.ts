@@ -20,6 +20,7 @@ import {
   CodeIcon,
   ComponentIcon,
   DatabaseIcon,
+  EraserIcon,
   GitCommitVerticalIcon,
   GithubIcon,
   GlobeIcon,
@@ -64,6 +65,7 @@ import type { Changelog } from '$lib/types/changelog'
 import { iconMap } from '$lib/utils/icons'
 import { FORECAST_METRICS } from './metrics'
 import { DATASET_IDS_BY_PRIORITY } from './datasets'
+import { clearCache, resetApp } from '$lib/utils/cache'
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   temperature: '°C',
@@ -518,9 +520,16 @@ export const settingsConfig = [
             id: 'clear-cache',
             type: 'action',
             label: 'Clear Cache',
+            icon: EraserIcon,
+            action: () => clearCache(),
+          },
+          {
+            id: 'reset-app',
+            type: 'action',
+            label: 'Reset App',
             icon: Trash2Icon,
-            disabled: true,
-            action: () => console.warn('Clear cache not implemented!'),
+            variant: 'destructive',
+            action: () => resetApp(),
           },
         ],
       },

@@ -32,6 +32,9 @@
   --color-popover: var(--color-background);
   --color-popover-foreground: var(--color-text);
 
+  --color-destructive: var(--color-red-900);
+  --color-destructive-foreground: var(--color-text);
+
   --color-border: var(--color-foreground);
   --color-input: var(--color-foreground);
   --color-ring: var(--color-primary);
