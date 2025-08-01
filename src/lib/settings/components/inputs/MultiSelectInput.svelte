@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { MultiSelectSetting } from '../types'
+  import type { MultiSelectSetting } from '../../types'
   import { Checkbox } from '$lib/components/ui/checkbox'
   import { Label } from '$lib/components/ui/label'
   import { toReadable } from '$lib/utils/stores'

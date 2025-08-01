@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TextSetting } from '../types'
+  import type { TextSetting } from '../../types'
   import Input from '$lib/components/ui/input/input.svelte'
 
   interface Props {

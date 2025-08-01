@@ -1,15 +1,15 @@
 <script lang="ts">
-  import SettingsRenderer from './SettingsRenderer.svelte'
   import type { ConfigItem, NestableSetting, SettingPage } from '../types'
   import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js'
   import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
   import { settings } from '../store'
-  import PageList from './pages/PageList.svelte'
   import { SettingsIcon } from '@lucide/svelte'
-  import PageChangelog from './pages/PageChangelog.svelte'
   import { onMount } from 'svelte'
   import { pushState, replaceState } from '$app/navigation'
   import { page } from '$app/state'
+  import ListSettingPage from './pages/ListSettingPage.svelte'
+  import ChangelogPage from './pages/ChangelogPage.svelte'
+  import BasicPageRenderer from './pages/BasicPageRenderer.svelte'
 
   interface Props {
     config: ConfigItem[]
@@ -166,7 +166,7 @@
           bind:this={historyElements[i]}
         >
           {#if settingsPage.type === 'list'}
-            <PageList
+            <ListSettingPage
               item={settingsPage}
               value={settings.readSetting(settingsPage.path).value as Record<string, unknown>[]}
               onnavigate={(t) => navigateToKey(t)}
@@ -175,9 +175,9 @@
               }}
             />
           {:else if settingsPage.type === 'changelog'}
-            <PageChangelog />
+            <ChangelogPage />
           {:else}
-            <SettingsRenderer
+            <BasicPageRenderer
               config={settingsPage.children}
               path={page.state.settingsPath.slice(0, i)}
               onnavigate={navigateToKey}

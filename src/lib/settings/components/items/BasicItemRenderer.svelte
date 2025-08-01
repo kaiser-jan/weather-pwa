@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { getComponent } from '../registry'
-  import { settings } from '../store'
-  import type { Setting } from '../types'
+  import { getComponent } from '../../registry'
+  import { settings } from '../../store'
+  import type { Setting } from '../../types'
 
   interface Props {
     path: string[]
@@ -30,9 +30,6 @@
     <item.icon class={hasChanged ? 'text-text' : 'text-text-muted'} />
     {item.label}
   </span>
-  {#if hasChanged}
-    <span class="bg-primary absolute top-0 bottom-0 left-0 h-full w-0.5"></span>
-  {/if}
 
   {#if Component}
     <Component
@@ -49,5 +46,9 @@
     {item.type}
     {item.id}
     {value}
+  {/if}
+
+  {#if hasChanged}
+    <span class="bg-primary absolute top-0 bottom-0 left-0 h-full w-0.5"></span>
   {/if}
 </button>

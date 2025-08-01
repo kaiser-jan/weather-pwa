@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Input } from '$lib/components/ui/input'
-  import type { NumberSetting } from '../types'
+  import type { NumberSetting } from '../../types'
 
   interface Props {
     item: NumberSetting
