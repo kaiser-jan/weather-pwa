@@ -11,6 +11,7 @@ export default defineConfig({
     __DATE__: `'${new Date().toISOString()}'`,
   },
   server: {
+    allowedHosts: ['weather-debug.kjan.dev'],
     fs: {
       allow: ['./changelog.json'],
     },
@@ -63,7 +64,7 @@ export default defineConfig({
     }),
   ],
   preview: {
-    allowedHosts: ['weather.kjan.dev', 'weather-beta.kjan.dev', 'weather-live.kjan.dev'],
+    allowedHosts: ['weather.kjan.dev', 'weather-beta.kjan.dev', 'weather-live.kjan.dev', 'weather-debug.kjan.dev'],
   },
   optimizeDeps: {
     exclude: ['bits-ui'],

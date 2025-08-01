@@ -59,8 +59,12 @@
       <!-- TODO: small bar to display intensity: for each category, color it and set the size to the percentage of time where preciptiation is in that range -->
       {#if $settings.sections.outlook.showPrecipitation}
         <span class="inline-flex items-baseline text-blue-200">
-          <span>{Math.round(day.summary.precipitation_amount?.sum)}</span>
-          <span class="text-text-disabled text-xs">mm</span>
+          {#if day.summary.precipitation_amount}
+            <span>{Math.round(day.summary.precipitation_amount?.sum)}</span>
+            <span class="text-text-disabled text-xs">mm</span>
+          {:else}
+            <span>-</span>
+          {/if}
         </span>
       {/if}
     </Button>

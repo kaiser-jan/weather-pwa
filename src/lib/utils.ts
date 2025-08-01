@@ -111,10 +111,11 @@ export function capitalizeFirstChar(word: string | undefined) {
   return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
-export function toggle(array: string[], value: string): void {
+export function toggle<T extends string>(array: T[], value: T) {
   const index = array.indexOf(value)
   if (index === -1) array.push(value)
   else array.splice(index, 1)
+  return array
 }
 
 export function sortByReferenceOrder<T extends string>(items: T[], reference: readonly T[]): T[] {

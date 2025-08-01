@@ -26,6 +26,9 @@ const config = {
           '--color-primary': colors.primary,
         },
       });
+    }),
+    plugin(function({ addVariant }) {
+      addVariant('supports-hover', '@media (hover: hover)')
     })
   ]
 }
