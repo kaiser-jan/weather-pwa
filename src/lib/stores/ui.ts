@@ -41,7 +41,6 @@ export const dayView = {
     if (!forecast) return
     const targetIndex = forecast.daily.findIndex((d) => d.timestamp === target.timestamp)
 
-    console.log(targetIndex, page.state.selectedDayIndex)
     navigateBy(targetIndex - page.state.selectedDayIndex)
   },
   previous: () => navigateBy(-1),

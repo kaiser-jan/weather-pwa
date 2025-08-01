@@ -40,29 +40,22 @@
       // the childPage could also be part of a ListSetting, which has no children
       let childPage = lastPage.children.find((p) => p.id === key) as SettingsPage
 
-      // HACK:
-      //  TODO: this needs to be generalized
-      if (childPage?.type === 'changelog') {
-        childPage = { ...lastPage, type: 'changelog', id: 'changelog', label: 'Changelog' }
-      }
-
-      if (lastPage.type === 'list' && !isNaN(parseInt(key))) {
+      // HACK: this is a child of a nested setting (e.g. ListSetting) so we make it a page so it displays its properties given by the parent
+      if (!childPage) {
         const values = settings.readSetting(page.state.settingsPath.slice(0, index)).value as Record<string, unknown>[]
-        const hasName = values && lastPage.nameProperty && lastPage.nameProperty in values[parseInt(key)]
+        const hasName =
+          values &&
+          'nameProperty' in lastPage &&
+          lastPage.nameProperty &&
+          lastPage.nameProperty in values[parseInt(key)]
         let label = hasName ? (values[parseInt(key)][lastPage.nameProperty] as string) : key
 
-        // HACK: a list item has no setting definition so we make it a page so it displays its properties given by the parent
         childPage = {
           ...lastPage,
           id: key,
           label,
           type: 'page',
         } as SettingsPage
-      }
-
-      if (!childPage || !('children' in childPage)) {
-        console.warn(`Path ${page.state.settingsPath} could not be traversed, as ${key} does not contain items.`)
-        continue
       }
 
       _pages.push({ ...childPage, path: page.state.settingsPath.slice(0, index + 1) })
@@ -73,7 +66,6 @@
 
   function navigateToKey(key: string, replace = false) {
     const newPath = [...page.state.settingsPath, key]
-    console.log('navigateToKey', key, replace)
     if (replace) replaceState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
     else pushState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
   }
@@ -88,7 +80,6 @@
   })
 
   function updateScroll() {
-    console.log(historyElements)
     const gap = parseInt(getComputedStyle(scrollContainer).gap, 10)
     scrollContainer.style.left =
       -1 * page.state.settingsPath.length * (scrollContainer.parentElement!.getBoundingClientRect().width + gap) + 'px'

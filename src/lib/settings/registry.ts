@@ -42,6 +42,9 @@ type SettingComponentInput = Component<
   ''
 >
 
+// TODO: consider making this a real one-source-of-truth registry, where each component is registered, e.g.
+// { key: 'changelog', type: 'page', component: ChangelogPage }
+
 const inputs: Record<SettingsInput['type'], SettingComponent> = {
   select: SelectInput,
   multiselect: MultiSelectInput,
