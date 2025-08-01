@@ -18,8 +18,9 @@
   import { cn, getEndOfDayTimestamp, getStartOfDayTimestamp, toggle } from '$lib/utils'
   import { page } from '$app/state'
   import { dayView } from '$lib/stores/ui'
-  import { FORECAST_METRICS, type ForecastMetric } from '$lib/config/metrics'
+  import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { persist } from '$lib/utils/state.svelte'
+  import IconOrAbbreviation from '../IconOrAbbreviation.svelte'
 
   const selectedDay = $derived($forecastStore?.daily?.[page.state.selectedDayIndex])
 
@@ -146,9 +147,24 @@
         {@render metricButtons($settings.sections.components.metrics)}
 
         {#if hiddenMetrics.length}
+          {@const hiddenSelectedMetrics = $visibleSeries.filter((p) => hiddenMetrics.includes(p))}
           <Accordion.Root type="single" class="-my-2 min-h-10 w-full">
             <Accordion.Item>
-              <Accordion.Trigger class="p-auto">{hiddenMetrics.length} Hidden Metrics</Accordion.Trigger>
+              <Accordion.Trigger class="p-auto">
+                {hiddenMetrics.length} Hidden Metrics
+                {#if hiddenSelectedMetrics}
+                  <span class="text-text-muted inline-flex items-center space-x-1">
+                    (
+                    {#each hiddenSelectedMetrics as hiddenSelectedMetric, i (hiddenSelectedMetric)}
+                      {#if i !== 0}
+                        ,
+                      {/if}
+                      <IconOrAbbreviation details={METRIC_DETAILS[hiddenSelectedMetric]!} />
+                    {/each}
+                    <span>selected)</span>
+                  </span>
+                {/if}
+              </Accordion.Trigger>
               <Accordion.Content class="flex flex-col gap-2">
                 {@render metricButtons(hiddenMetrics)}
               </Accordion.Content>
@@ -176,7 +192,7 @@
               ? 100
               : 40
           }%`}
-          onclick={() => toggle($visibleSeries, metric)}
+          onclick={() => visibleSeries.set(toggle($visibleSeries, metric))}
         >
           <ParameterDaySummary
             {...config}

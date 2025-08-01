@@ -19,13 +19,13 @@
 
   type ForecastParameterAirPollution = keyof typeof EAQI.limits
 
-  function getLevel(value: number, scale: readonly number[]): number {
-    for (let i = 0; i < scale.length - 1; i++) {
+  function getEaqiLevel(value: number, scale: readonly number[]): number {
+    for (let i = 1; i < scale.length - 1; i++) {
       const lower = scale[i]
       const upper = scale[i + 1]
       if (value < upper) {
         const t = (value - lower) / (upper - lower)
-        return i + t
+        return i + 1 + t
       }
     }
     return scale.length - 1
@@ -37,12 +37,12 @@
       const param = key as ForecastParameterAirPollution
       const value = values[param]
       if (value === null || value === undefined) return
-      levels[param] = getLevel(convertToUnit(value, param, 'ug/m3'), EAQI.limits[param])
+      levels[param] = getEaqiLevel(convertToUnit(value, param, 'ug/m3'), EAQI.limits[param])
     }
     return levels
   }
 
-  function getEaqiIndex(levels: Record<string, number>): number {
+  function getTotalEaqiIndex(levels: Record<string, number>): number {
     return Math.max(0, ...Object.values(levels))
   }
 
@@ -51,7 +51,7 @@
     const maxValues = day ? Object.fromEntries(Object.entries(day.summary).map(([p, s]) => [p, s.max])) : {}
 
     const maxLevels = getEaqiLevels(maxValues)
-    const maxIndex = getEaqiIndex(maxLevels)
+    const maxIndex = getTotalEaqiIndex(maxLevels)
 
     return {
       minValues,
@@ -71,7 +71,7 @@
       current: {
         values: currentValues,
         levels: currentLevels,
-        index: currentLevels ? getEaqiIndex(currentLevels) : undefined,
+        index: currentLevels ? getTotalEaqiIndex(currentLevels) : undefined,
       },
       today: today ? getEaqiDetailsForTimeBucket(today) : undefined,
       tomorrow: tomorrow ? getEaqiDetailsForTimeBucket(tomorrow) : undefined,
@@ -96,7 +96,7 @@
         class="ml-auto size-3 rounded-full"
         style="background-color: {hslFromObject(EAQI.colors[roundedIndex])}"
       ></div>
-      <!-- <span class="text-text-muted text-xs">{labels[roundedIndex]}</span> -->
+      <!-- <span class="text-text-muted text-xs">{EAQI.labels[roundedIndex]}</span> -->
       <span class="text-text-muted">{index.toFixed(1)}</span>
     </div>
   {/if}
@@ -105,7 +105,7 @@
 <SectionTitle title="Air Pollution" icon={FactoryIcon}>
   <a
     class="ml-auto inline-flex items-center gap-1 text-sm"
-    href="https://ecmwf-projects.github.io/copernicus-training-cams/proc-aq-index.html"
+    href="https://airindex.eea.europa.eu/AQI/index.html#"
     target="_blank"
   >
     <InfoIcon class="size-[1em]" /> EAQI
@@ -129,9 +129,9 @@
       {#each Object.keys($eaqi.current.levels) as _pollutant}
         {@const pollutant = _pollutant as ForecastParameterAirPollution}
         <div class="flex flex-row flex-nowrap items-center gap-2">
-          <span class="w-16 text-sm font-medium">{pollutant.toUpperCase()}</span>
+          <span class="w-22 text-sm font-medium">{METRIC_DETAILS[pollutant]?.abbreviation}</span>
           <NumberRangeBar
-            total={{ min: 0, max: EAQI.limits[pollutant][Math.ceil($eaqi.today?.maxIndex)] * 1e-6 }}
+            total={{ min: 0, max: EAQI.limits[pollutant][Math.ceil($eaqi.today?.maxIndex) - 1] * 1e-6 }}
             instance={{
               min: $eaqi.today?.minValues[pollutant],
               avg: $eaqi.current.values[pollutant],

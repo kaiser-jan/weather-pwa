@@ -1,5 +1,6 @@
 // TODO: create a playground for adapting the colors
 
+// https://airindex.eea.europa.eu/AQI/index.html#
 export const EAQI = {
   colors: [
     { h: 132, s: 35, l: 51 }, // #5AAA5F
@@ -9,14 +10,14 @@ export const EAQI = {
     { h: 27, s: 85, l: 58 }, // #F09235
     { h: 6, s: 73, l: 50 }, // #D93322
   ],
-  labels: ['Very good', 'Good', 'Medium', 'Poor', 'Very Poor', 'Extremely Poor'],
+  labels: ['Good', 'Fair', 'Medium', 'Poor', 'Very Poor', 'Extremely Poor'],
 
   limits: {
-    o3: [0, 50, 100, 130, 240, 380, 800],
-    no2: [0, 40, 90, 120, 230, 340, 1000],
-    // so2: [0, 100, 200, 350, 500, 750, 1250],
-    pm25: [0, 20, 40, 50, 100, 150, 1200],
-    pm10: [0, 10, 20, 25, 50, 75, 800],
+    pm25: [0, 6, 16, 51, 91, 141],
+    pm10: [0, 16, 46, 121, 196, 271],
+    o3: [0, 61, 101, 121, 161, 181],
+    no2: [0, 11, 26, 61, 101, 151],
+    // so2: [0, 21, 41, 126, 191, 276],
   },
 }
 
