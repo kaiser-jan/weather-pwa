@@ -10,7 +10,7 @@
   interface Props {
     path: string[]
     config: ConfigItem[]
-    onnavigate: (target: string) => void
+    onnavigate: (target: string, replace?: boolean) => void
   }
 
   let { path: parentPath, config, onnavigate }: Props = $props()
@@ -34,8 +34,9 @@
         <SettingsRenderer
           config={item.children}
           {path}
-          onnavigate={() => {
+          onnavigate={(target) => {
             onnavigate(item.id)
+            onnavigate(target, true)
           }}
         />
       </section>

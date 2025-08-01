@@ -8,7 +8,7 @@
   import { SettingsIcon } from '@lucide/svelte'
   import PageChangelog from './pages/PageChangelog.svelte'
   import { onMount } from 'svelte'
-  import { pushState } from '$app/navigation'
+  import { pushState, replaceState } from '$app/navigation'
   import { page } from '$app/state'
 
   interface Props {
@@ -73,9 +73,11 @@
     return _pages
   })
 
-  function navigateToKey(key: string) {
+  function navigateToKey(key: string, replace = false) {
     const newPath = [...page.state.settingsPath, key]
-    pushState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
+    console.log('navigateToKey', key, replace)
+    if (replace) replaceState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
+    else pushState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
   }
 
   let scrollContainer: HTMLDivElement
@@ -123,7 +125,12 @@
             onclick={async () => {
               const currentLength = page.state.settingsPath.length
               const targetLength = settingsPage.path.length
-              const moveBackBy = currentLength - targetLength
+              let moveBackBy = currentLength - targetLength
+              console.log(currentLength, targetLength, page.state.settingsPath, settingsPage.path)
+              // NOTE: groups are not added to history
+              for (let i = targetLength - 1; i <= currentLength - 1; i++) {
+                if (pages[i]?.type === 'group' && i !== targetLength) moveBackBy -= 1
+              }
               // avoid reloading
               if (moveBackBy === 0) return
               history.go(-moveBackBy)
@@ -173,7 +180,7 @@
             <SettingsRenderer
               config={settingsPage.children}
               path={page.state.settingsPath.slice(0, i)}
-              onnavigate={(t) => navigateToKey(t)}
+              onnavigate={navigateToKey}
             />
           {/if}
         </div>
