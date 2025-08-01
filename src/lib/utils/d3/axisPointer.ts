@@ -43,7 +43,7 @@ export function createAxisPointer(options: {
     )
 
     if (tooltip) {
-      tooltip.updateTooltip(nearest.x, points[0].y, points)
+      tooltip.updateTooltip(nearest.x, points[0].y, nearest.d.timestamp, points)
       if (!showTooltip) tooltip.hideTooltip()
     }
 
@@ -90,9 +90,9 @@ function getNearestPointAtTimestamp(
 ) {
   const x0 = timestamp
   const i = bisect(series.data, x0) ?? series.data.length - 1
-  const d0 = series.data[i - 1]
-  const d1 = series.data[i]
-  const d = d0 === undefined || Math.abs(d0.timestamp - x0) > Math.abs(d1?.timestamp - x0) ? d1 : d0
+  // NOTE: using the previous point instead of using the next if its closer
+  // this would cause the axis pointer to jump e.g. for hourly data around :30
+  const d = series.data[i - 1] ?? series.data[i]
 
   if (!d) return null
 
@@ -141,7 +141,12 @@ export function createTooltip(options: {
     tooltip.style('opacity', 0)
   }
 
-  function updateTooltip(x: number, y: number, points: NonNullable<ReturnType<typeof getNearestPointAtTimestamp>>[]) {
+  function updateTooltip(
+    x: number,
+    y: number,
+    timestamp: number,
+    points: NonNullable<ReturnType<typeof getNearestPointAtTimestamp>>[],
+  ) {
     const alignLeft = x > dimensions.widthFull / 2
     const alignTop = y > dimensions.heightFull / 2
     const offset = 4
@@ -158,7 +163,7 @@ export function createTooltip(options: {
     }
 
     tooltip.html(
-      `<b>${DateTime.fromMillis(points[0].d.timestamp).toFormat('HH:mm')}</b><br>${points
+      `<b>${DateTime.fromMillis(timestamp).toFormat('HH:mm')}</b><br>${points
         .map((p) => {
           const svg = p.icon ? renderIcon(p.name, p.icon) : (p.abbreviation ?? p.name)
           const metric = autoFormatMetric(p.d.value, p.name as ForecastParameter, get(settings), { showDecimal: true })
