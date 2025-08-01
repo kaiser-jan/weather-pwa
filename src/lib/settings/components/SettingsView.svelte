@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ConfigItem, NestableSetting, SettingPage } from '../types'
+  import type { ConfigItem, SettingsPage } from '../types'
   import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js'
   import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
   import { settings } from '../store'
@@ -7,9 +7,7 @@
   import { onMount } from 'svelte'
   import { pushState, replaceState } from '$app/navigation'
   import { page } from '$app/state'
-  import ListSettingPage from './pages/ListSettingPage.svelte'
-  import ChangelogPage from './pages/ChangelogPage.svelte'
-  import BasicPageRenderer from './pages/BasicPageRenderer.svelte'
+  import { getPageComponent, isWrapper } from '../registry'
 
   interface Props {
     config: ConfigItem[]
@@ -17,19 +15,19 @@
 
   let { config }: Props = $props()
 
-  type Page = NestableSetting & { path: string[] }
+  type Page = SettingsPage & { path: readonly string[] }
+
+  const BASE_PAGE = {
+    id: 'settings',
+    type: 'page',
+    label: 'Settings',
+    icon: SettingsIcon,
+    children: config,
+    path: [],
+  } as const
 
   let pages: Page[] = $derived.by(() => {
-    let _pages: Page[] = [
-      {
-        id: 'settings',
-        type: 'page',
-        label: 'Settings',
-        icon: SettingsIcon,
-        children: config,
-        path: [],
-      },
-    ]
+    let _pages: Page[] = [BASE_PAGE]
 
     if (!page.state.settingsPath) page.state.settingsPath = []
 
@@ -40,7 +38,7 @@
       }
 
       // the childPage could also be part of a ListSetting, which has no children
-      let childPage = lastPage.children.find((p) => p.id === key) as NestableSetting
+      let childPage = lastPage.children.find((p) => p.id === key) as SettingsPage
 
       // HACK:
       //  TODO: this needs to be generalized
@@ -59,7 +57,7 @@
           id: key,
           label,
           type: 'page',
-        } as SettingPage
+        } as SettingsPage
       }
 
       if (!childPage || !('children' in childPage)) {
@@ -126,20 +124,15 @@
               const currentLength = page.state.settingsPath.length
               const targetLength = settingsPage.path.length
               let moveBackBy = currentLength - targetLength
-              console.log(currentLength, targetLength, page.state.settingsPath, settingsPage.path)
-              // NOTE: groups are not added to history
+
+              // NOTE: wrappers are not added to history
               for (let i = targetLength - 1; i <= currentLength - 1; i++) {
-                if (pages[i]?.type === 'group' && i !== targetLength) moveBackBy -= 1
+                if (pages[i] && isWrapper(pages[i]) && i !== targetLength) moveBackBy -= 1
               }
+
               // avoid reloading
               if (moveBackBy === 0) return
               history.go(-moveBackBy)
-
-              // or should we store only the old path in the forward history, and omit the skipped items?
-              // const recentPath = $state.snapshot(page.state.settingsPath)
-              // replaceState('', { ...page.state, settingsPath: settingsPage.path })
-              // pushState('', { ...page.state, settingsPath: $state.snapshot(recentPath) })
-              // history.back()
             }}>{settingsPage.label}</Breadcrumb.Link
           >
         </Breadcrumb.Item>
@@ -161,28 +154,20 @@
       bind:this={scrollContainer}
     >
       {#each pages as settingsPage, i (settingsPage.id)}
+        {@const PageComponent = getPageComponent(settingsPage.type)}
         <div
           class="flex h-full w-full shrink-0 flex-col gap-2 overflow-hidden overflow-y-auto"
           bind:this={historyElements[i]}
         >
-          {#if settingsPage.type === 'list'}
-            <ListSettingPage
-              item={settingsPage}
-              value={settings.readSetting(settingsPage.path).value as Record<string, unknown>[]}
-              onnavigate={(t) => navigateToKey(t)}
-              onchange={(v) => {
-                settings.writeSetting(page.state.settingsPath, v)
-              }}
-            />
-          {:else if settingsPage.type === 'changelog'}
-            <ChangelogPage />
-          {:else}
-            <BasicPageRenderer
-              config={settingsPage.children}
-              path={page.state.settingsPath.slice(0, i)}
-              onnavigate={navigateToKey}
-            />
-          {/if}
+          <PageComponent
+            item={settingsPage}
+            path={page.state.settingsPath.slice(0, i)}
+            value={settings.readSetting(settingsPage.path).value as Record<string, unknown>[]}
+            onnavigate={navigateToKey}
+            onchange={(v) => {
+              settings.writeSetting(page.state.settingsPath, v)
+            }}
+          />
         </div>
       {/each}
     </div>

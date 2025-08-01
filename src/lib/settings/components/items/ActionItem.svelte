@@ -1,13 +1,12 @@
 <script lang="ts">
   import { Button } from '$lib/components/ui/button'
   import { CircleCheckIcon, CircleXIcon } from '@lucide/svelte'
-  import type { StaticAction } from '../../types'
+  import type { ActionItem } from '../../types'
   import LoaderPulsatingRing from '$lib/components/LoaderPulsatingRing.svelte'
-  import { readable } from 'svelte/store'
   import { toReadable } from '$lib/utils/stores'
 
   interface Props {
-    item: StaticAction
+    item: ActionItem
   }
 
   let { item }: Props = $props()

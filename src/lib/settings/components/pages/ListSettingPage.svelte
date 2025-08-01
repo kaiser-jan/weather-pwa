@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { ListSettingPage } from '$lib/settings/types'
   import { ChevronRightIcon, GripHorizontalIcon } from '@lucide/svelte'
   import { dragHandle, dragHandleZone } from 'svelte-dnd-action'
-  import type { ListSetting } from '$lib/settings/types'
 
   interface Props {
-    item: ListSetting
+    item: ListSettingPage
     value: Record<string, unknown>[]
     onchange: (v: unknown[]) => void
     onnavigate: (target: string) => void
