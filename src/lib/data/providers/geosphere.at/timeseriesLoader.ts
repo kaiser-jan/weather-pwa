@@ -41,6 +41,8 @@ export function createTimeseriesForecastLoader({
       const response = await fetch(url.toString())
       const json = (await response.json()) as TimeseriesForecastGeoJsonSerializer
 
+      if (!response.ok) throw (json as any).message ?? 'Fetch failed'
+
       const expires =
         mode === 'forecast'
           ? DateTime.fromISO(json.reference_time as string)

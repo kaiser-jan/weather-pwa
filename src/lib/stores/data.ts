@@ -102,6 +102,7 @@ function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[],
         results[loaderIndex] = { done: true, success: true, result, loader }
       })
       .catch((error) => {
+        // TODO: consider using a result pattern
         console.warn(`Loading dataset ${datasetsIds[loaderIndex]} failed!\n${error}`)
         results[loaderIndex] = { done: true, success: false, error, loader }
       })

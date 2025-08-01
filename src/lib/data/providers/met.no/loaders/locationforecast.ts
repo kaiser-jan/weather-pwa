@@ -35,6 +35,7 @@ export async function loadLocationforecast(coordinates: Coordinates) {
   const data = await useCache('met.no_locationforecast' as DatasetId, { coordinates }, async () => {
     const response = await fetch(urlString.toString())
     const data = (await response.json()) as MetjsonForecast
+    if (!response.ok) throw (data as any).message ?? 'Fetch failed'
     // const referenceDatetime = DateTime.fromISO(data.properties.meta.updated_at as string)
     const expiresHeader = response.headers.get('expires')
     const expires = expiresHeader ? DateTime.fromHTTP(expiresHeader) : DateTime.now()
