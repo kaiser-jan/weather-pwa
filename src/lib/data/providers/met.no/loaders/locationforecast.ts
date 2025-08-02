@@ -18,7 +18,7 @@ export default {
   load: loadLocationforecast,
 } as const satisfies Loader<DatasetId>
 
-export async function loadLocationforecast(coordinates: Coordinates) {
+export async function loadLocationforecast(coordinates: Coordinates): Promise<ReturnType<Loader<string>['load']>> {
   if (coordinates.altitude === null) {
     console.warn(
       'Model met.no locationforecast should be provided an altitude!\n' +
@@ -32,14 +32,14 @@ export async function loadLocationforecast(coordinates: Coordinates) {
   if (coordinates.altitude) url.searchParams.set('altitude', coordinates.altitude.toFixed(0))
   const urlString = url.toString()
 
-  const data = await useCache('met.no_locationforecast' as DatasetId, { coordinates }, async () => {
+  const result = await useCache('met.no_locationforecast' as DatasetId, { coordinates }, async () => {
     const response = await fetch(urlString.toString())
     const data = (await response.json()) as MetjsonForecast
     if (!response.ok) throw (data as any).message ?? 'Fetch failed'
     // const referenceDatetime = DateTime.fromISO(data.properties.meta.updated_at as string)
     const expiresHeader = response.headers.get('expires')
-    const expires = expiresHeader ? DateTime.fromHTTP(expiresHeader) : DateTime.now()
-    return { data, expires }
+    const expiresAt = expiresHeader ? DateTime.fromHTTP(expiresHeader) : DateTime.now()
+    return { data, expiresAt }
   })
 
   function addData(
@@ -62,7 +62,7 @@ export async function loadLocationforecast(coordinates: Coordinates) {
     }
   }
 
-  const timeseries = data.properties.timeseries
+  const timeseries = result.data.properties.timeseries
   const multiseriesInstants: MultivariateTimeSeries = {}
   const multiseries1Hours: MultivariateTimeSeries = {}
   const multiseries6Hours: MultivariateTimeSeries = {}
@@ -110,10 +110,18 @@ export async function loadLocationforecast(coordinates: Coordinates) {
     }
   }
 
-  return mergeMultivariateTimeSeries(
+  const merged = mergeMultivariateTimeSeries(
     multiseriesInstants,
     mergeMultivariateTimeSeries(multiseries1Hours, mergeMultivariateTimeSeries(multiseries6Hours, multiseries12Hours)),
   )
+
+  return {
+    success: true,
+    data: merged,
+    updatedAt: result.updatedAt,
+    cached: result.cached,
+    refreshAt: result.expiresAt,
+  }
 }
 
 function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<WeatherInstant> {

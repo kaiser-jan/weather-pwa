@@ -11,7 +11,7 @@ import { NOW } from './now'
 import { subscribeNonImmediate } from '$lib/utils/state.svelte'
 import { getSuggestedDatasetsForLocation } from '$lib/data/providers/suggestedDatasets'
 import { DATASET_IDS_BY_PRIORITY } from '$lib/config/datasets'
-import type { Loader } from '$lib/types/data/providers'
+import type { Loader, LoaderResult } from '$lib/types/data/providers'
 
 // ensure cached forecasts are discarded if they use an older data format (e.g. DateTime and Duration)
 const CURRENT_FORECAST_DATA_VERSION = 2
@@ -57,59 +57,62 @@ export const forecastStore = {
   update,
 }
 
-type LoaderResult =
+type LoaderState =
   | {
-      loader: Loader<DatasetId>
       done: false
-    }
-  | {
       loader: Loader<DatasetId>
-      done: true
-      success: true
-      result: MultivariateTimeSeries
     }
-  | {
+  | ({
+      done: true
       loader: Loader<DatasetId>
-      done: true
-      success: false
-      error: string
-    }
+    } & LoaderResult)
 
-const _loaderResults = writable<LoaderResult[]>([])
-export const loaderResults = readonly(_loaderResults)
+const _loaderStates = writable<LoaderState[]>([])
+export const loaderStates = readonly(_loaderStates)
 
-function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[], stream = true) {
+function updateWith(coordinates: Coordinates, datasetIds: readonly DatasetId[], stream = true) {
   console.info('Loading data...')
 
-  // show cached data for this location while loading
-  const cachedForecast = getCachedForecast(coordinates, datasetsIds)
-  if (cachedForecast) {
-    set(cachedForecast)
-  } else {
-    set(null)
+  const areParametersUnchanged =
+    deepEqual(coordinates, get(forecastStore)?.coordinates) && deepEqual(datasetIds, get(forecastStore)?.datasetIds)
+
+  if (!get(forecastStore) || !areParametersUnchanged) {
+    // show cached data for this location while loading
+    const cachedForecast = getCachedForecast(coordinates, datasetIds)
+    if (cachedForecast) {
+      console.debug('no forecast, using cached')
+      set(cachedForecast)
+    } else {
+      console.debug('no cached forecast, resetting')
+      set(null)
+    }
   }
 
-  const loaders = getMinimalLoadersForDatasets(datasetsIds)
+  const loaders = getMinimalLoadersForDatasets(datasetIds)
   console.debug('Using the following loaders: ', loaders)
-  const results: LoaderResult[] = loaders.map((loader) => ({ done: false, loader }))
-  const debouncedUpdate = debounce(() => updateForecast(results), 500)
-  _loaderResults.set(results)
+  const states: LoaderState[] = loaders.map((loader) => ({ done: false, loader }))
+  const debouncedUpdate = debounce(() => updateForecast(states), 500)
+  _loaderStates.set(states)
 
   for (const [loaderIndex, loader] of loaders.entries()) {
     loader
       ?.load(coordinates)
       .then((result) => {
-        results[loaderIndex] = { done: true, success: true, result, loader }
+        states[loaderIndex] = { done: true, ...result, loader }
       })
       .catch((error) => {
         // TODO: consider using a result pattern
-        console.warn(`Loading dataset ${datasetsIds[loaderIndex]} failed!\n${error}`)
-        results[loaderIndex] = { done: true, success: false, error, loader }
+        console.warn(`Loading dataset ${datasetIds[loaderIndex]} failed!\n${error}`)
+        states[loaderIndex] = { done: true, loader, success: false, error }
       })
       .finally(() => {
-        const done = results.filter(Boolean).length === loaders.length
-        _loaderResults.set(results)
-        if (stream || done) debouncedUpdate()
+        const done = states.filter(Boolean).length === loaders.length
+        _loaderStates.set(states)
+        const wasCached = states[loaderIndex].done && states[loaderIndex].success && states[loaderIndex].cached
+        const needsRefresh = !wasCached || !areParametersUnchanged
+        const shouldUpdate = stream || done
+        console.debug('loader', loader.id, wasCached, areParametersUnchanged, shouldUpdate)
+        if (shouldUpdate && needsRefresh) debouncedUpdate()
         if (done) {
           clearTimeout(loadTimeout)
         }
@@ -122,12 +125,14 @@ function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[],
     debouncedUpdate()
   }, 15_000)
 
-  function updateForecast(results: LoaderResult[]) {
+  function updateForecast(results: LoaderState[]) {
+    console.debug('updating forecast')
+
     // NOTE: reverse, so the first items take priority
     const parts = results
       .filter((p) => p.done && p.success)
       .reverse()
-      .map((p) => p.result)
+      .map((p) => p.data)
 
     if (parts.length === 0) return
 
@@ -144,6 +149,8 @@ function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[],
       multiseries: merged,
       daily,
       total,
+      coordinates,
+      datasetIds,
     }
 
     console.info(forecast)
@@ -152,8 +159,6 @@ function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[],
 
     const cachedForecast: CachedForecast = {
       version: CURRENT_FORECAST_DATA_VERSION,
-      coordinates,
-      datasets: datasetsIds,
       forecast,
     }
     localStorage.setItem('last-forecast', JSON.stringify(cachedForecast))
@@ -162,8 +167,6 @@ function updateWith(coordinates: Coordinates, datasetsIds: readonly DatasetId[],
 
 type CachedForecast = {
   version: number
-  coordinates: Coordinates
-  datasets: readonly DatasetId[]
   forecast: Forecast
 }
 
@@ -187,7 +190,8 @@ function getCachedForecast(coordinates: Coordinates, datasets: readonly DatasetI
     if (!lastForecastString) return null
     const lastForecast = JSON.parse(lastForecastString, luxonReviver) as CachedForecast
     if (lastForecast.version !== CURRENT_FORECAST_DATA_VERSION) return null
-    const isValid = deepEqual(coordinates, lastForecast.coordinates) && deepEqual(datasets, lastForecast.datasets)
+    const isValid =
+      deepEqual(coordinates, lastForecast.forecast.coordinates) && deepEqual(datasets, lastForecast.forecast.datasetIds)
     if (isValid) return lastForecast.forecast
   } catch {}
 
