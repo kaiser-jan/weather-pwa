@@ -1,7 +1,6 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
   import { NOW, NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
-  import { persist } from '$lib/utils/state.svelte'
   import ParameterSelect from '$lib/components/ParameterSelect.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
@@ -14,11 +13,7 @@
 
   const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS))
 
-  let visibleSeries = persist<ForecastMetric[]>('section-today-chart-parameters', [
-    'temperature',
-    'precipitation_amount',
-    'cloud_coverage',
-  ])
+  let visibleMetrics = $state<ForecastMetric[]>($settings.sections.components.chart.metrics)
 </script>
 
 <SectionTitle
@@ -30,7 +25,7 @@
 </SectionTitle>
 <div class="bg-midground flex w-full flex-col flex-wrap justify-between gap-2 gap-x-4 gap-y-2 rounded-lg p-2">
   {#if $settings.sections.today.showChartParameterSelect}
-    <ParameterSelect bind:visible={$visibleSeries} />
+    <ParameterSelect bind:visible={visibleMetrics} />
   {/if}
 
   {#if today}
@@ -45,7 +40,7 @@
     >
       <WeatherChart
         multiseries={today.multiseries}
-        parameters={$visibleSeries}
+        parameters={visibleMetrics}
         startTimestamp={today.timestamp}
         endTimestamp={today.timestamp + today.duration}
         timestamp={$NOW_MILLIS}

@@ -28,6 +28,8 @@ export function createAxisPointer(options: {
 
     const points = seriesList.map((m) => getNearestPointAtTimestamp(timestamp, m, scaleX)).filter((p) => p !== null)
 
+    if (!points.length) return
+
     const nearest = points.reduce((a, b) =>
       Math.abs(b.d.timestamp - timestamp) < Math.abs(a.d.timestamp - timestamp) ? b : a,
     )
