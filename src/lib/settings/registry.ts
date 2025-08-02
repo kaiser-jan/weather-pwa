@@ -11,6 +11,7 @@ import ActionItem from './components/items/ActionItem.svelte'
 import DescriptionItem from './components/items/DescriptionItem.svelte'
 import PageItem from './components/items/PageItem.svelte'
 import NotImplementedItem from './components/items/NotImplementedItem.svelte'
+import ValueDisplayItem from './components/items/ValueDisplayItem.svelte'
 
 import GroupWrapper from './components/wrappers/GroupWrapper.svelte'
 
@@ -74,7 +75,7 @@ export function isPage(item: ConfigItem): item is SettingsPage {
 const items: Record<SettingsItem['type'], SettingComponent> = {
   action: ActionItem,
   description: DescriptionItem,
-  value: BasicItemRenderer,
+  value: ValueDisplayItem,
   'not-implemented': NotImplementedItem,
 }
 export function getItemComponent(item: ConfigItem): SettingComponent {
