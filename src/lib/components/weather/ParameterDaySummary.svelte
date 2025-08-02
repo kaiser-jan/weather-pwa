@@ -17,6 +17,7 @@
     parameter: ForecastParameter
     day: TimeBucket
     selected: boolean
+    onclick: () => void
   }
 
   let {
@@ -26,6 +27,7 @@
     day,
     useTotalAsDomain,
     selected,
+    onclick,
   }: Props = $props()
 
   const details = $derived<MetricDetails | undefined>(METRIC_DETAILS[parameter])
@@ -63,53 +65,62 @@
   })
 </script>
 
-{#if details?.color}
-  <div class={'absolute left-0 h-full w-1'} style={colorStyle}></div>
+<button
+  class={cn(
+    'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
+    selected ? 'bg-midground border-midground' : '',
+  )}
+  style={`width: ${!items || items.includes('range-bar') || items.includes('precipitation-groups') ? 100 : 40}%`}
+  {onclick}
+>
+  {#if details?.color}
+    <div class={'absolute left-0 h-full w-1'} style={colorStyle}></div>
 
-  {#if selected}
-    <div class={'absolute -top-4 right-0 h-10 w-4 -rotate-45'} style={colorStyle}></div>
+    {#if selected}
+      <div class={'absolute -top-4 right-0 h-10 w-4 -rotate-45'} style={colorStyle}></div>
+    {/if}
   {/if}
-{/if}
 
-{#each items as item (item)}
-  {#if item === 'icon' && details}
-    <IconOrAbbreviation {details} />
-  {:else if item === 'min' || item === 'max' || item === 'avg' || item === 'sum'}
-    <FormattedMetric
-      value={day?.summary[parameter][item]}
-      {parameter}
-      class={items.includes('range-bar') ? 'w-16' : ''}
-    />
-    {#if !items.includes('range-bar')}
-      <div class="text-text-muted mt-1 text-xs leading-none">
-        {item}
-      </div>
-    {/if}
-  {:else if item === 'range-bar'}
-    <NumberRangeBar total={domain} instance={day?.summary[parameter]} color={details?.color} className="h-2" />
-  {:else if item === 'trend'}
-    {@const values = day.multiseries[parameter]}
-    {#if values && values[0].value < values[values.length - 1].value}
-      <ArrowUpIcon />
-    {:else}
-      <ArrowDownIcon />
-    {/if}
-  {:else if item === 'precipitation-groups'}
-    {@const precipitationGroups = $precipitationGroupsStore.filter(
-      (g) => g.end > day.timestamp && g.start < day.timestamp + day.duration,
-    )}
-    <div class="flex flex-col gap-1">
-      {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}
-        <PrecipitationGroup
-          {precipitationGroup}
-          startTimestamp={day.timestamp}
-          endTimestamp={day.timestamp + day.duration}
-        />
+  {#each items as item (item)}
+    {#if item === 'icon' && details}
+      <IconOrAbbreviation {details} />
+    {:else if item === 'min' || item === 'max' || item === 'avg' || item === 'sum'}
+      <FormattedMetric
+        value={day?.summary[parameter][item]}
+        {parameter}
+        class={items.includes('range-bar') ? 'w-16' : ''}
+      />
+      {#if !items.includes('range-bar')}
+        <div class="text-text-muted mt-1 text-xs leading-none">
+          {item}
+        </div>
+      {/if}
+    {:else if item === 'range-bar'}
+      <NumberRangeBar total={domain} instance={day?.summary[parameter]} color={details?.color} className="h-2" />
+    {:else if item === 'trend'}
+      {@const values = day.multiseries[parameter]}
+      {#if values && values[0].value < values[values.length - 1].value}
+        <ArrowUpIcon />
       {:else}
-        <span class="text-text-muted">No rain on this day!</span>
-      {/each}
-    </div>
-  {:else}
-    ...
-  {/if}
-{/each}
+        <ArrowDownIcon />
+      {/if}
+    {:else if item === 'precipitation-groups'}
+      {@const precipitationGroups = $precipitationGroupsStore.filter(
+        (g) => g.end > day.timestamp && g.start < day.timestamp + day.duration,
+      )}
+      <div class="flex flex-col gap-1">
+        {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}
+          <PrecipitationGroup
+            {precipitationGroup}
+            startTimestamp={day.timestamp}
+            endTimestamp={day.timestamp + day.duration}
+          />
+        {:else}
+          <span class="text-text-muted">No rain on this day!</span>
+        {/each}
+      </div>
+    {:else}
+      ...
+    {/if}
+  {/each}
+</button>

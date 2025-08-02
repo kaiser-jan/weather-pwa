@@ -36,7 +36,7 @@
   {@render children()}
 
   {#snippet failed(error)}
-    <main class="flex grow flex-col gap-4 overflow-y-auto p-4">
+    <main class="flex h-dvh max-h-full w-dvw shrink-0 grow flex-col gap-4 overflow-y-auto p-4">
       <h1 class="inline-flex items-center justify-between gap-2 text-xl font-bold text-red-300">
         <span>The {scope} crashed!</span>
         <span>:(</span>
