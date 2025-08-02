@@ -21,6 +21,7 @@
   import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { persist } from '$lib/utils/state.svelte'
   import IconOrAbbreviation from '../IconOrAbbreviation.svelte'
+  import ExpandableList from '../ExpandableList.svelte'
 
   const selectedDay = $derived($forecastStore?.daily?.[page.state.selectedDayIndex])
 
@@ -81,6 +82,7 @@
   ])
 
   const hiddenMetrics = $derived(FORECAST_METRICS.filter((m) => !$settings.sections.components.metrics.includes(m)))
+  const hiddenSelectedMetrics = $derived($visibleSeries.filter((p) => hiddenMetrics.includes(p)))
 </script>
 
 <Drawer.Root
@@ -93,13 +95,13 @@
 >
   <Drawer.Content class="">
     <div
-      class="bg-background relative flex h-full flex-col gap-4 overflow-y-auto p-4 pt-0"
+      class="bg-background relative flex h-full min-h-0 flex-col gap-4 p-4 py-0"
       use:swipe={() => ({ touchAction: 'pan-y' })}
       onswipe={handleSwipe}
     >
       <!-- BUG: the sticky header causes a 1px height w-full line, which bleeds through the siblings scrolled below  -->
       <!-- it was tried to e.g. put an absolute position element on top, but nothing seems to help -->
-      <header class="bg-background/80 sticky top-0 z-10 -mb-2 flex justify-between gap-4 py-4 text-xl font-bold">
+      <header class="bg-background/80 sticky top-0 z-10 -mb-2 flex justify-between gap-4 py-2 text-xl font-bold">
         <Button size="icon" variant="outline" onclick={() => dayView.previous()} disabled={currentIndex === 0}>
           <ChevronLeft />
         </Button>
@@ -144,64 +146,37 @@
             <Skeleton class="h-full w-full" />
           {/if}
         </div>
-        {@render metricButtons($settings.sections.components.metrics)}
 
-        {#if hiddenMetrics.length}
-          {@const hiddenSelectedMetrics = $visibleSeries.filter((p) => hiddenMetrics.includes(p))}
-          <Accordion.Root type="single" class="-my-2 min-h-10 w-full">
-            <Accordion.Item>
-              <Accordion.Trigger class="p-auto">
-                {hiddenMetrics.length} Hidden Metrics
-                {#if hiddenSelectedMetrics}
-                  <span class="text-text-muted inline-flex items-center space-x-1">
-                    (
-                    {#each hiddenSelectedMetrics as hiddenSelectedMetric, i (hiddenSelectedMetric)}
-                      {#if i !== 0}
-                        ,
-                      {/if}
-                      <IconOrAbbreviation details={METRIC_DETAILS[hiddenSelectedMetric]!} />
-                    {/each}
-                    <span>selected)</span>
-                  </span>
-                {/if}
-              </Accordion.Trigger>
-              <Accordion.Content class="flex flex-col gap-2">
-                {@render metricButtons(hiddenMetrics)}
-              </Accordion.Content>
-            </Accordion.Item>
-          </Accordion.Root>
-        {/if}
+        <div class="border-foreground -mt-2 min-h-0 grow overflow-y-auto border-t-2 pt-2">
+          <ExpandableList
+            items={FORECAST_METRICS}
+            visibleItems={$settings.sections.components.metrics}
+            markedItems={$visibleSeries}
+          >
+            {#snippet itemSnippet(metric)}
+              <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
+            {/snippet}
+
+            {#snippet children(metrics: ForecastMetric[])}
+              <div class="flex flex-row flex-wrap gap-2">
+                {#each metrics as metric (metric)}
+                  {@const config = metricConfigs[metric]}
+                  {#if selectedDay?.summary[metric] && config}
+                    <ParameterDaySummary
+                      {...config}
+                      parameter={metric}
+                      day={selectedDay}
+                      selected={$visibleSeries.includes(metric)}
+                      onclick={() => visibleSeries.set(toggle($visibleSeries, metric))}
+                    />
+                  {/if}
+                {/each}
+              </div>
+            {/snippet}
+          </ExpandableList>
+        </div>
       {/if}
     </div>
     <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
   </Drawer.Content>
 </Drawer.Root>
-
-{#snippet metricButtons(metrics: ForecastMetric[])}
-  <div class="flex flex-row flex-wrap gap-2">
-    {#each metrics as metric (metric)}
-      {@const config = metricConfigs[metric]}
-      {#if selectedDay?.summary[metric] && config}
-        <button
-          class={cn(
-            'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
-            $visibleSeries.includes(metric) ? 'bg-midground border-midground' : '',
-          )}
-          style={`width: ${
-            !config.items || config.items.includes('range-bar') || config.items.includes('precipitation-groups')
-              ? 100
-              : 40
-          }%`}
-          onclick={() => visibleSeries.set(toggle($visibleSeries, metric))}
-        >
-          <ParameterDaySummary
-            {...config}
-            parameter={metric}
-            day={selectedDay}
-            selected={$visibleSeries.includes(metric)}
-          />
-        </button>
-      {/if}
-    {/each}
-  </div>
-{/snippet}
