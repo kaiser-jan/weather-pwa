@@ -181,7 +181,7 @@ export const settingsConfig = [
           DATASET_IDS_BY_PRIORITY.map((id) => {
             const provider = PROVIDERS.find((p) => p.datasetIds.includes(id))!
             const dataset = DATASETS.find((d) => d.id === id)!
-            return [id, provider.name + ' ' + dataset.label]
+            return [id, provider.name + ' ' + dataset.name]
           }),
         ),
         default: DATASET_IDS_BY_PRIORITY satisfies DatasetId[],

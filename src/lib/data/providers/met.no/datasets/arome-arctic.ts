@@ -3,8 +3,8 @@ import { Duration } from 'luxon'
 
 export default {
   id: 'met.no_arome-arctic',
-  name: 'AROME-Arctic',
-  label: 'Arctic region',
+  model: 'AROME-Arctic',
+  name: 'Arctic region',
   url: 'https://www.met.no/en/projects/The-weather-model-AROME-Arctic',
   parameters: [],
   baseForecastAge: null,

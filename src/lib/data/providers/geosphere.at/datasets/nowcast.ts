@@ -25,8 +25,8 @@ export const configs: TimeSeriesConfig<(typeof AVAILABLE_WEATHER_PARAMETERS)[num
 
 export default {
   id: 'geosphere.at_nowcast-v1-15min-1km',
-  name: 'INCA',
-  label: 'Nowcast',
+  model: 'INCA',
+  name: 'Nowcast',
   url: 'https://data.hub.geosphere.at/dataset/nowcast-v1-15min-1km',
   parameters: getForecastParametersFromConfig(configs),
   temporalResolution: Duration.fromObject({ minutes: 15 }),

@@ -1,5 +1,5 @@
 // lib/loaders/createTimeseriesForecastLoader.ts
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import { useCache } from '$lib/data/cache'
 import { transformTimeSeries } from '$lib/utils/data'
 import type { Coordinates, MultivariateTimeSeries } from '$lib/types/data'
@@ -45,10 +45,10 @@ export function createTimeseriesForecastLoader({
 
       const expiresAt =
         mode === 'forecast'
-          ? DateTime.fromISO(json.reference_time as string).plus(
-              dataset.updateFrequency.mapUnits((x) => (1 + x) * offset),
-            )
-          : now.endOf('hour')
+          ? DateTime.fromISO(json.reference_time as string)
+              .plus(dataset.baseForecastAge ?? Duration.fromObject({}))
+              .plus(dataset.updateFrequency.mapUnits((x) => x * offset))
+          : now.endOf('hour').plus({ milliseconds: 1 })
 
       return { data: json, expiresAt }
     })

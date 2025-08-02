@@ -18,7 +18,7 @@ export default {
   load: loadLocationforecast,
 } as const satisfies Loader<DatasetId>
 
-export async function loadLocationforecast(coordinates: Coordinates): Promise<ReturnType<Loader<string>['load']>> {
+export async function loadLocationforecast(coordinates: Coordinates): ReturnType<Loader<string>['load']> {
   if (coordinates.altitude === null) {
     console.warn(
       'Model met.no locationforecast should be provided an altitude!\n' +

@@ -83,7 +83,6 @@ export function createLoaderMetaForDataset<DatasetIdT extends string>(dataset: D
   return {
     id: dataset.id as DatasetIdT,
     name: dataset.name,
-    label: dataset.label,
     url: dataset.url,
     datasetIds: [dataset.id as DatasetIdT],
   } as const
