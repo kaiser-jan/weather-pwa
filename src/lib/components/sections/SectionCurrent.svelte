@@ -6,7 +6,7 @@
   import AsyncText from '$lib/components/AsyncText.svelte'
   import SkySimulation from '$lib/components/SkySimulation.svelte'
   import { currentFromMultiseries } from '$lib/data/utils'
-  import { forecastStore, loaderResults } from '$lib/stores/data'
+  import { forecastStore, loaderStates } from '$lib/stores/data'
   import type { ForecastParameter } from '$lib/types/data'
   import { autoFormatMetric } from '$lib/utils/units'
   import { settings } from '$lib/settings/store'
@@ -59,7 +59,7 @@
       {/await}
       <button
         onclick={() => forecastStore.update('manual')}
-        class={['p-2', $loaderResults.every((r) => r === null) ? 'animate-spin ' : '']}
+        class={['p-2', $loaderStates.every((r) => r === null) ? 'animate-spin ' : '']}
       >
         <RefreshCwIcon />
       </button>

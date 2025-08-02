@@ -4,7 +4,7 @@ import { useCache } from '$lib/data/cache'
 import { transformTimeSeries } from '$lib/utils/data'
 import type { Coordinates, MultivariateTimeSeries } from '$lib/types/data'
 import type { TimeseriesForecastGeoJsonSerializer } from '$lib/types/geosphere-at'
-import type { Dataset } from '$lib/types/data/providers'
+import type { Dataset, Loader } from '$lib/types/data/providers'
 
 type LoaderOptions = {
   dataset: Dataset
@@ -23,7 +23,7 @@ export function createTimeseriesForecastLoader({
   configs,
   isPressureSurfaceLevel = false,
 }: LoaderOptions) {
-  async function load(coordinates: Coordinates, offset = 0): Promise<MultivariateTimeSeries> {
+  async function load(coordinates: Coordinates, offset = 0): ReturnType<Loader<string>['load']> {
     const now = DateTime.now()
     const url = new URL(`https://dataset.api.hub.geosphere.at/v1/timeseries/${mode}/${model}`)
     url.searchParams.set('lat_lon', `${coordinates.latitude},${coordinates.longitude}`)
@@ -37,27 +37,27 @@ export function createTimeseriesForecastLoader({
       url.searchParams.set('end', now.toISO())
     }
 
-    const data = await useCache(dataset.id, { coordinates, offset }, async () => {
+    const result = await useCache(dataset.id, { coordinates, offset }, async () => {
       const response = await fetch(url.toString())
       const json = (await response.json()) as TimeseriesForecastGeoJsonSerializer
 
       if (!response.ok) throw (json as any).message ?? 'Fetch failed'
 
-      const expires =
+      const expiresAt =
         mode === 'forecast'
-          ? DateTime.fromISO(json.reference_time as string)
-              .plus(dataset.updateFrequency)
-              .plus(dataset.updateFrequency.mapUnits((x) => x * (1 + offset)))
+          ? DateTime.fromISO(json.reference_time as string).plus(
+              dataset.updateFrequency.mapUnits((x) => (1 + x) * offset),
+            )
           : now.endOf('hour')
 
-      return { data: json, expires }
+      return { data: json, expiresAt }
     })
 
-    const timestamps = data.timestamps.map((t) => DateTime.fromISO(t as string).toMillis())
+    const timestamps = result.data.timestamps.map((t) => DateTime.fromISO(t as string).toMillis())
 
     const transformed = transformTimeSeries(
       timestamps,
-      data.features[0].properties.parameters,
+      result.data.features[0].properties.parameters,
       configs,
       dataset.temporalResolution.toMillis(),
     )
@@ -77,7 +77,13 @@ export function createTimeseriesForecastLoader({
       }
     }
 
-    return transformed
+    return {
+      success: true,
+      data: transformed,
+      updatedAt: result.updatedAt,
+      cached: result.cached,
+      refreshAt: result.expiresAt,
+    }
   }
 
   return load

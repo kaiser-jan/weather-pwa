@@ -80,9 +80,6 @@
     'precipitation_amount',
     'cloud_coverage',
   ])
-
-  const hiddenMetrics = $derived(FORECAST_METRICS.filter((m) => !$settings.sections.components.metrics.includes(m)))
-  const hiddenSelectedMetrics = $derived($visibleSeries.filter((p) => hiddenMetrics.includes(p)))
 </script>
 
 <Drawer.Root

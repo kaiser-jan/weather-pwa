@@ -24,8 +24,8 @@ function getEntries<T, P>(key: string): CacheEntry<T, P>[] | null {
 export async function useCache<T, P>(
   key: string,
   params: P,
-  fetchFn: () => Promise<{ data: T; expires: DateTime }>,
-): Promise<T> {
+  fetchFn: () => Promise<{ data: T; expiresAt: DateTime }>,
+): Promise<{ data: T; expiresAt: DateTime; updatedAt: DateTime; cached: boolean }> {
   let entries: CacheEntry<T, P>[] = getEntries(key) ?? []
 
   if (!Array.isArray(entries)) entries = []
@@ -38,15 +38,21 @@ export async function useCache<T, P>(
     const valid = !expired || recent
     console.debug(`${key}: ${expired ? 'EXPIRED ' : ''}cache -> ${entry.expires}.`, JSON.stringify(entry.params))
 
-    if (valid) return entry.data
+    if (valid)
+      return {
+        data: entry.data,
+        expiresAt: DateTime.fromISO(entry.expires),
+        updatedAt: DateTime.fromISO(entry.updatedAt),
+        cached: true,
+      }
   }
 
   console.debug(`Fetching new data for ${key}...`, JSON.stringify(params))
-  const { data, expires } = await fetchFn()
+  const { data, expiresAt } = await fetchFn()
   const newEntry: CacheEntry<T, P> = {
     data,
     params,
-    expires: expires.toISO() ?? DateTime.now().toISO(),
+    expires: expiresAt.toISO() ?? DateTime.now().toISO(),
     updatedAt: DateTime.now().toISO(),
   }
 
@@ -54,5 +60,5 @@ export async function useCache<T, P>(
   if (entries.length > MAX_ENTRIES) entries.length = MAX_ENTRIES
   localStorage.setItem(key, JSON.stringify(entries))
 
-  return data
+  return { data, expiresAt: expiresAt, updatedAt: DateTime.now(), cached: false }
 }

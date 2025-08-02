@@ -1,4 +1,4 @@
-import type { Duration } from 'luxon'
+import type { DateTime, Duration } from 'luxon'
 import type { Coordinates, ForecastParameter, MultivariateTimeSeries } from '.'
 import type { Feature, Polygon } from 'geojson'
 
@@ -15,13 +15,26 @@ export interface Provider {
   datasetIds: DatasetId[]
 }
 
+export type LoaderResult =
+  | {
+      success: true
+      data: MultivariateTimeSeries
+      cached: boolean
+      updatedAt: DateTime
+      refreshAt: DateTime
+    }
+  | {
+      success: false
+      error: string
+    }
+
 export interface Loader<DatasetId extends string> {
   id: LoaderId
   name: string
   label?: string
   url?: string
   datasetIds: readonly DatasetId[]
-  load: (coordinates: Coordinates) => Promise<MultivariateTimeSeries>
+  load: (coordinates: Coordinates) => Promise<LoaderResult>
 }
 
 export interface Dataset {
