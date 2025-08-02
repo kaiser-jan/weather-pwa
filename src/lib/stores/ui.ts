@@ -2,8 +2,10 @@ import type { TimeBucket } from '$lib/types/data'
 import { page } from '$app/state'
 import { pushState } from '$app/navigation'
 import { forecastStore } from './data'
-import { get } from 'svelte/store'
+import { get, writable } from 'svelte/store'
 import { popUntil } from '$lib/utils'
+import type { ForecastMetric } from '$lib/config/metrics'
+import { settings } from '$lib/settings/store'
 
 export const locationSearch = {
   hide: () => popUntil((s) => !s.showLocationSearch),
@@ -12,7 +14,10 @@ export const locationSearch = {
 
 export const dayView = {
   _initialIndex: null as number | null,
+  visibleMetrics: writable<ForecastMetric[]>([]),
   hide: async () => {
+    dayView.visibleMetrics.set([])
+
     // fallback
     if (dayView._initialIndex === null) {
       popUntil((s) => !s.selectedDayIndex)
@@ -22,9 +27,12 @@ export const dayView = {
     const back = Math.abs(page.state.selectedDayIndex - dayView._initialIndex)
     history.go(-back - 1)
   },
-  open: (target: TimeBucket | null) => {
+  open: (target: TimeBucket | null, metrics: ForecastMetric[] = []) => {
     if (!target) return
     if (page.state.selectedDayIndex !== undefined) return
+
+    if (!metrics.length) dayView.visibleMetrics.set(structuredClone(get(settings).sections.components.chart.metrics))
+    else dayView.visibleMetrics.set(metrics)
 
     const forecast = get(forecastStore)
     if (!forecast) return

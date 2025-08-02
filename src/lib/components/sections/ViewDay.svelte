@@ -75,18 +75,16 @@
     }
   }
 
-  let visibleSeries = persist<ForecastMetric[]>('view-day-chart-parameters', [
-    'temperature',
-    'precipitation_amount',
-    'cloud_coverage',
-  ])
+  const visibleMetrics = dayView.visibleMetrics
 </script>
 
 <Drawer.Root
   bind:open={
     () => page.state.selectedDayIndex !== undefined,
-    (o) => {
-      if (!o) dayView.hide()
+    (open) => {
+      if (!open) {
+        dayView.hide()
+      }
     }
   }
 >
@@ -133,7 +131,7 @@
           {#if selectedDay}
             <WeatherChart
               multiseries={selectedDay.multiseries}
-              parameters={$visibleSeries}
+              parameters={$visibleMetrics}
               startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
               endTimestamp={selectedDay.timestamp + selectedDay.duration}
               timestamp={$NOW_MILLIS}
@@ -147,8 +145,8 @@
         <div class="border-foreground -mt-2 min-h-0 grow overflow-y-auto border-t-2 pt-2">
           <ExpandableList
             items={FORECAST_METRICS}
-            visibleItems={$settings.sections.components.metrics}
-            markedItems={$visibleSeries}
+            visibleItems={$settings.sections.views.day.metrics}
+            markedItems={$visibleMetrics}
           >
             {#snippet itemSnippet(metric)}
               <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
@@ -163,8 +161,8 @@
                       {...config}
                       parameter={metric}
                       day={selectedDay}
-                      selected={$visibleSeries.includes(metric)}
-                      onclick={() => visibleSeries.set(toggle($visibleSeries, metric))}
+                      selected={$visibleMetrics.includes(metric)}
+                      onclick={() => visibleMetrics.set(toggle($visibleMetrics, metric))}
                     />
                   {/if}
                 {/each}

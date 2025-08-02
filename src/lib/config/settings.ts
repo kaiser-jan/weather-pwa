@@ -41,6 +41,7 @@ import {
   MapPinIcon,
   MoveVerticalIcon,
   PaletteIcon,
+  PanelBottomOpenIcon,
   PencilLineIcon,
   PinIcon,
   RotateCwIcon,
@@ -399,6 +400,37 @@ export const settingsConfig = [
         ],
       },
       {
+        id: 'views',
+        label: 'Views',
+        type: 'group',
+        icon: PanelBottomOpenIcon,
+        children: [
+          {
+            id: 'day',
+            label: 'Day View',
+            type: 'page',
+            icon: CalendarDaysIcon,
+            children: [
+              {
+                id: 'metrics',
+                label: 'Visible Weather Metrics',
+                type: 'multiselect',
+                icon: LetterTextIcon,
+                options: FORECAST_METRICS,
+                default: [
+                  'temperature',
+                  'precipitation_amount',
+                  'relative_humidity',
+                  'wind_speed',
+                  'pressure',
+                  'cloud_coverage',
+                ] as ForecastParameter[],
+              },
+            ],
+          },
+        ],
+      },
+      {
         id: 'components',
         label: 'Components',
         type: 'group',
@@ -412,26 +444,19 @@ export const settingsConfig = [
             default: true,
           },
           {
-            id: 'metrics',
-            label: 'Weather Metrics',
-            type: 'multiselect',
-            icon: LetterTextIcon,
-            options: FORECAST_METRICS,
-            default: [
-              'temperature',
-              'precipitation_amount',
-              'relative_humidity',
-              'wind_speed',
-              'pressure',
-              'cloud_coverage',
-            ] as ForecastParameter[],
-          },
-          {
             id: 'chart',
             label: 'Chart',
             type: 'page',
             icon: ChartLineIcon,
             children: [
+              {
+                id: 'metrics',
+                label: 'Plotted Weather Metrics',
+                type: 'multiselect',
+                icon: LetterTextIcon,
+                options: FORECAST_METRICS,
+                default: ['temperature', 'precipitation_amount', 'cloud_coverage'] as ForecastParameter[],
+              },
               {
                 id: 'tooltip',
                 label: 'Show Tooltip',

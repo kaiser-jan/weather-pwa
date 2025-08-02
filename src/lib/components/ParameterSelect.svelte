@@ -2,16 +2,17 @@
   import * as ToggleGroup from '$lib/components/ui/toggle-group'
   import * as Popover from '$lib/components/ui/popover'
   import { EllipsisIcon, EyeIcon, EyeOffIcon, PinIcon, PinOffIcon } from '@lucide/svelte'
-  import { METRIC_DETAILS } from '$lib/config/metrics'
+  import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { type ForecastParameter, FORECAST_PARAMETERS } from '$lib/types/data'
   import { Button } from '$lib/components/ui/button'
   import { sortByReferenceOrder, toggle } from '$lib/utils'
   import IconOrAbbreviation from './IconOrAbbreviation.svelte'
+  import { settings } from '$lib/settings/store'
   import { persist } from '$lib/utils/state.svelte'
   import { get } from 'svelte/store'
 
   interface Props {
-    visible: ForecastParameter[]
+    visible: ForecastMetric[]
   }
   let { visible: visible = $bindable() }: Props = $props()
 
@@ -26,10 +27,10 @@
   let temporary = $derived(visible.filter((p) => !$pinned.includes(p)))
 
   function sortPinned() {
-    pinned.set(sortByReferenceOrder(get(pinned), FORECAST_PARAMETERS))
+    pinned.set(sortByReferenceOrder(get(pinned), FORECAST_METRICS))
   }
   function sortVisible() {
-    visible = sortByReferenceOrder(visible, FORECAST_PARAMETERS)
+    visible = sortByReferenceOrder(visible, FORECAST_METRICS)
   }
 </script>
 
@@ -62,7 +63,7 @@
     </Popover.Trigger>
     <Popover.Content class="flex w-fit flex-col gap-1 p-2">
       {#each Object.entries(METRIC_DETAILS) as [parameter, parameterDetails] (parameter)}
-        {@const parameterTyped = parameter as ForecastParameter}
+        {@const parameterTyped = parameter as ForecastMetric}
         {@const isActive = visible.includes(parameterTyped)}
         {@const isPinned = $pinned.includes(parameterTyped)}
         <button

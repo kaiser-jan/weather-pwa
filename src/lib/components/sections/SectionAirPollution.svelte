@@ -13,9 +13,11 @@
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import { EAQI } from '$lib/config/categorization'
   import { hslFromObject } from '$lib/utils/ui'
+  import { Button } from '../ui/button'
+  import { dayView } from '$lib/stores/ui'
 
-  const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS))
-  const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS))
+  const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS) ?? null)
+  const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS) ?? null)
 
   type ForecastParameterAirPollution = keyof typeof EAQI.limits
 
@@ -77,6 +79,12 @@
       tomorrow: tomorrow ? getEaqiDetailsForTimeBucket(tomorrow) : undefined,
     }
   })
+
+  const pollutants = $derived(
+    $eaqi?.current.levels
+      ? (Object.keys($eaqi.current.levels) as Array<keyof typeof EAQI.limits>)
+      : new Array<keyof typeof EAQI.limits>(),
+  )
 </script>
 
 {#snippet eaqiIndex({
@@ -90,7 +98,12 @@
 })}
   {#if index}
     {@const roundedIndex = Math.max(Math.floor(index) - 1, 0)}
-    <div class="flex flex-row items-center gap-2" class:opacity-70={type === 'tomorrow'}>
+    <Button
+      variant="ghost"
+      size="fit"
+      class={['flex grow flex-row items-center gap-2', type === 'tomorrow' ? 'opacity-70' : '']}
+      onclick={() => dayView.open(type === 'tomorrow' ? tomorrow : today, pollutants)}
+    >
       <span class="text-text" class:font-bold={type === 'now'}>{label}</span>
       <div
         class="ml-auto size-3 rounded-full"
@@ -98,7 +111,7 @@
       ></div>
       <!-- <span class="text-text-muted text-xs">{EAQI.labels[roundedIndex]}</span> -->
       <span class="text-text-muted">{index.toFixed(1)}</span>
-    </div>
+    </Button>
   {/if}
 {/snippet}
 
@@ -113,7 +126,7 @@
 </SectionTitle>
 <div class="bg-midground flex flex-row gap-4 rounded-md px-3 py-2">
   {#if $eaqi && $eaqi.current.levels}
-    <div class="flex grow flex-col justify-between gap-1">
+    <div class="flex grow flex-col justify-between">
       {@render eaqiIndex({ index: $eaqi.current.index, label: 'Now', type: 'now' })}
       {@render eaqiIndex({ index: $eaqi.today?.maxIndex, label: 'Today', type: 'today' })}
       {@render eaqiIndex({
@@ -125,7 +138,12 @@
 
     <span class="bg-overlay min-h-full w-0.5"></span>
 
-    <div class="flex grow flex-col">
+    <Button
+      variant="ghost"
+      size="fit"
+      class="flex grow flex-col gap-0 text-left"
+      onclick={() => dayView.open(today, pollutants)}
+    >
       {#each Object.keys($eaqi.current.levels) as _pollutant}
         {@const pollutant = _pollutant as ForecastParameterAirPollution}
         <div class="flex flex-row flex-nowrap items-center gap-2">
@@ -145,6 +163,6 @@
           </div>
         </div>
       {/each}
-    </div>
+    </Button>
   {/if}
 </div>

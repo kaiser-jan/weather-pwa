@@ -285,6 +285,9 @@
       }
 
       const points = updateXAxisPointer(timestamp ?? NOW, isManual)
+
+      if (!points) return
+
       const timebucket = Object.fromEntries(points.map((p) => [p.name, p.d])) as Record<
         ForecastParameter,
         TimeSeriesNumberEntry
