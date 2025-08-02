@@ -31,7 +31,6 @@ export type LoaderResult =
 export interface Loader<DatasetId extends string> {
   id: LoaderId
   name: string
-  label?: string
   url?: string
   datasetIds: readonly DatasetId[]
   load: (coordinates: Coordinates) => Promise<LoaderResult>
@@ -39,8 +38,8 @@ export interface Loader<DatasetId extends string> {
 
 export interface Dataset {
   id: DatasetId
+  model: string
   name: string
-  label: string
   url?: string
   parameters: ForecastParameter[]
   temporalResolution: Duration

@@ -25,8 +25,8 @@ export const configs: TimeSeriesConfig<(typeof AVAILABLE_WEATHER_PARAMETERS)[num
 
 export default {
   id: 'geosphere.at_inca-v1-1h-1km',
-  name: 'INCA',
-  label: 'Analysis',
+  model: 'INCA',
+  name: 'Analysis',
   url: 'https://data.hub.geosphere.at/dataset/inca-v1-1h-1km',
   parameters: getForecastParametersFromConfig(configs),
   temporalResolution: Duration.fromObject({ hours: 1 }),

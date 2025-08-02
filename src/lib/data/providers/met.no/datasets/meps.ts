@@ -3,8 +3,8 @@ import { Duration } from 'luxon'
 
 export default {
   id: 'met.no_meps',
-  name: 'MEPS',
-  label: 'Nordic area',
+  model: 'MEPS',
+  name: 'Nordic area',
   url: 'https://doi.org/10.1002/qj.3525',
   parameters: [
     'pressure',

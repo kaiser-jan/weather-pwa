@@ -48,8 +48,8 @@ export const configs: TimeSeriesConfig<(typeof AVAILABLE_WEATHER_PARAMETERS)[num
 
 export default {
   id: 'geosphere.at_nwp-v1-1h-2500m',
-  name: 'AROME',
-  label: 'NWP',
+  model: 'AROME',
+  name: 'NWP',
   url: 'https://data.hub.geosphere.at/dataset/nwp-v1-1h-2500m',
   parameters: getForecastParametersFromConfig(configs),
   temporalResolution: Duration.fromObject({ hours: 1 }),
