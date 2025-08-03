@@ -15,6 +15,7 @@
   import SectionTitle from './SectionTitle.svelte'
   import { CalendarDaysIcon } from '@lucide/svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
+  import FailSafeContainer from '../FailSafeContainer.svelte'
 
   const SHOW_PAST = false
 
@@ -27,7 +28,7 @@
 </script>
 
 <SectionTitle title="Upcoming" icon={CalendarDaysIcon} />
-<div class="flex flex-col overflow-hidden rounded-md">
+<FailSafeContainer name="Section Upcoming" class="flex flex-col overflow-hidden rounded-md">
   {#each days as day (day.timestamp)}
     <Button
       variant="midground"
@@ -82,4 +83,4 @@
   {:else}
     <Skeleton class="w-full h-32" />
   {/each}
-</div>
+</FailSafeContainer>

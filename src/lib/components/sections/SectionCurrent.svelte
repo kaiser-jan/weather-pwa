@@ -13,6 +13,7 @@
   import { reverseGeocoding, placeToWeatherLocation } from '$lib/data/location'
   import { NOW, NOW_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
+  import FailSafeContainer from '../FailSafeContainer.svelte'
 
   interface Props {
     shrink: boolean
@@ -52,7 +53,7 @@
   <SkySimulation class="absolute inset-0 z-0" coordinates={$coordinates} turbidity={4} datetime={$NOW} />
   <div class="shrink-0" style="height: min(2rem,env(safe-area-inset-top))"></div>
 
-  <div class="relative shrink grow">
+  <FailSafeContainer name="Section Current" class="relative shrink grow">
     <div class="text-text absolute inset-0 bottom-auto inline-flex w-full items-center justify-between text-xs">
       {#await locationNamePromise then locationName}
         <span class="drop-shadow-c-md ml-1 line-clamp-1">{locationName}</span>
@@ -102,5 +103,5 @@
         <WeatherItemCurrent {item} current={forecastCurrent} />
       {/each}
     </div>
-  </div>
+  </FailSafeContainer>
 </div>

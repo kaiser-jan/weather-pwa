@@ -8,6 +8,8 @@
   import { pushState, replaceState } from '$app/navigation'
   import { page } from '$app/state'
   import { getPageComponent, isWrapper } from '../registry'
+  import { debounce, throttle } from '$lib/utils'
+  import FailSafeContainer from '$lib/components/FailSafeContainer.svelte'
 
   interface Props {
     config: ConfigItem[]
@@ -70,6 +72,8 @@
     else pushState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
   }
 
+  const navigateToKeyThrottled = throttle(navigateToKey, 200)
+
   let scrollContainer: HTMLDivElement
   let historyElements: HTMLDivElement[] = $state([])
 
@@ -102,7 +106,7 @@
   })
 </script>
 
-<div class="flex min-h-0 grow flex-col gap-4 overflow-x-visible p-4 pb-0">
+<FailSafeContainer name="Settings" class="flex min-h-0 grow flex-col gap-4 overflow-x-visible p-4 pb-0">
   <Breadcrumb.Root>
     <Breadcrumb.List>
       {#each pages as settingsPage, index (settingsPage.id)}
@@ -149,12 +153,13 @@
         <div
           class="flex h-full w-full shrink-0 flex-col gap-2 overflow-hidden overflow-y-auto"
           bind:this={historyElements[i]}
+          class:pointer-events-none={i !== pages.length - 1}
         >
           <PageComponent
             item={settingsPage}
             path={page.state.settingsPath.slice(0, i)}
             value={settings.readSetting(settingsPage.path).value as Record<string, unknown>[]}
-            onnavigate={navigateToKey}
+            onnavigate={navigateToKeyThrottled}
             onchange={(v) => {
               settings.writeSetting(page.state.settingsPath, v)
             }}
@@ -163,4 +168,4 @@
       {/each}
     </div>
   </div>
-</div>
+</FailSafeContainer>

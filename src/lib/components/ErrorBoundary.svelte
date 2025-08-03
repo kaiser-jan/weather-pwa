@@ -1,19 +1,10 @@
 <script lang="ts">
-  import * as Accordion from '$lib/components/ui/accordion/index.js'
   import { Button } from '$lib/components/ui/button'
   import { pwa } from '$lib/stores/pwa'
   import { clearCache, resetApp } from '$lib/utils/cache'
-  import {
-    CircleArrowUpIcon,
-    CircleFadingArrowUpIcon,
-    ClipboardCheckIcon,
-    ClipboardCopyIcon,
-    EraserIcon,
-    InfoIcon,
-    PowerIcon,
-    RefreshCcwIcon,
-  } from '@lucide/svelte'
+  import { CircleArrowUpIcon, CircleFadingArrowUpIcon, EraserIcon, PowerIcon, RefreshCcwIcon } from '@lucide/svelte'
   import type { Snippet } from 'svelte'
+  import ErrorExpandable from './ErrorExpandable.svelte'
 
   interface Props {
     scope: 'page' | 'app'
@@ -21,13 +12,6 @@
   }
 
   let { scope, children }: Props = $props()
-
-  let copied = $state(false)
-  async function copy(err: Error) {
-    await navigator.clipboard.writeText(`${err.name}: ${err.message}\n\n${err.stack}`)
-    copied = true
-    setTimeout(() => (copied = false), 2000)
-  }
 
   const needRefresh = pwa.needRefresh
 </script>
@@ -114,32 +98,7 @@
         </li>
       </ol>
 
-      <Accordion.Root type="single">
-        <Accordion.Item>
-          <Accordion.Trigger>
-            <InfoIcon />
-            <span class="mr-auto">Error message</span>
-            <Button variant="outline" size="icon" onclick={() => copy(error)}>
-              {#if copied}
-                <ClipboardCheckIcon class="text-green-200" />
-              {:else}
-                <ClipboardCopyIcon />
-              {/if}
-            </Button>
-          </Accordion.Trigger>
-          <Accordion.Content>
-            {#if typeof error === 'object' && error !== null && 'name' in error}
-              <pre class="text-sm font-medium text-wrap text-red-300">{error.name}: 
-                {#if 'message' in error}
-                  {error.message}
-                {/if}
-              </pre>
-            {:else}
-              {error}
-            {/if}
-          </Accordion.Content>
-        </Accordion.Item>
-      </Accordion.Root>
+      <ErrorExpandable {error} />
     </main>
   {/snippet}
 </svelte:boundary>

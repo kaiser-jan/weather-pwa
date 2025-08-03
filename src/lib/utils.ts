@@ -147,6 +147,24 @@ export function debounce<F extends (...args: any[]) => void>(callback: F, wait: 
   return debounced as F
 }
 
+export function throttle<F extends (...args: any[]) => void>(callback: F, wait: number) {
+  let timeout: ReturnType<typeof setTimeout>
+  let lastTime: number = 0
+
+  const throttled = (...args: Parameters<F>) => {
+    clearTimeout(timeout)
+    const delay = Math.max(wait - (Date.now() - lastTime), 0)
+    timeout = setTimeout(() => {
+      if (Date.now() - lastTime >= wait) {
+        callback(...args)
+        lastTime = Date.now()
+      }
+    }, delay)
+  }
+
+  return throttled
+}
+
 export function deepEqual(a: unknown, b: unknown): boolean {
   return JSON.stringify(a) === JSON.stringify(b)
 }

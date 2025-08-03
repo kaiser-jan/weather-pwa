@@ -7,14 +7,15 @@
   import { SearchIcon } from '@lucide/svelte'
   import { locationSearch } from '$lib/stores/ui'
   import { selectedLocation } from '$lib/stores/location'
+  import FailSafeContainer from './FailSafeContainer.svelte'
 
   const geolocationDetails = geolocationStore.details
 
   const settingLocations = settings.select((s) => s.data.locations)
 </script>
 
-<div class="flex shrink grow flex-row items-center gap-1">
-  <div class="bg-midground flex flex-row gap-2 rounded-l-full p-2">
+<FailSafeContainer name="Location Selector" class="bg-midground flex shrink grow flex-row items-center rounded-full">
+  <div class="flex flex-row gap-2 p-2">
     <button
       class={[
         'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
@@ -34,7 +35,7 @@
       {/if}
     </button>
   </div>
-  <div class="bg-midground relative w-0 grow">
+  <div class="border-background relative w-0 grow border-x-4">
     {#if $settingLocations.length}
       <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
         {#each $settingLocations as location (location.id)}
@@ -67,7 +68,7 @@
     {/if}
     <div class="to-midground absolute top-0 right-0 h-full w-6 bg-linear-to-r from-transparent"></div>
   </div>
-  <div class="bg-midground flex flex-row gap-2 rounded-r-full p-2">
+  <div class="flex flex-row gap-2 p-2">
     <LocationSearch active={$selectedLocation?.type === 'search'} />
   </div>
-</div>
+</FailSafeContainer>

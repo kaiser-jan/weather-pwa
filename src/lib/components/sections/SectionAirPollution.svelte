@@ -15,6 +15,7 @@
   import { hslFromObject } from '$lib/utils/ui'
   import { Button } from '../ui/button'
   import { dayView } from '$lib/stores/ui'
+  import FailSafeContainer from '../FailSafeContainer.svelte'
 
   const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS) ?? null)
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS) ?? null)
@@ -65,6 +66,8 @@
 
   const eaqi = derived(forecastStore, ($f) => {
     if (!$f) return
+
+    throw new Error('test')
 
     const currentValues = currentFromMultiseries($f.multiseries, $NOW_MILLIS)
     const currentLevels = getEaqiLevels(currentValues)
@@ -124,7 +127,7 @@
     <InfoIcon class="size-[1em]" /> EAQI
   </a>
 </SectionTitle>
-<div class="bg-midground flex flex-row gap-4 rounded-md px-3 py-2">
+<FailSafeContainer name="Section Air Quality" class="bg-midground flex flex-row gap-4 rounded-md px-3 py-2">
   {#if $eaqi && $eaqi.current.levels}
     <div class="flex grow flex-col justify-between">
       {@render eaqiIndex({ index: $eaqi.current.index, label: 'Now', type: 'now' })}
@@ -165,4 +168,4 @@
       {/each}
     </Button>
   {/if}
-</div>
+</FailSafeContainer>
