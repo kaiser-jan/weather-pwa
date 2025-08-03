@@ -49,3 +49,13 @@ export interface Dataset {
   coverageArea: Feature<Polygon>
   spatialResolution: number // meters
 }
+
+export type LoaderState =
+  | {
+      done: false
+      loader: Loader<DatasetId>
+    }
+  | ({
+      done: true
+      loader: Loader<DatasetId>
+    } & LoaderResult)
