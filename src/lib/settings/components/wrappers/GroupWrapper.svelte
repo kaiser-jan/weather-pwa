@@ -5,7 +5,7 @@
   interface Props {
     path: string[]
     item: GroupWrapper
-    onnavigate: (target: string, replace?: true) => void
+    onnavigate: (target: string[]) => void
   }
 
   let { path, item, onnavigate }: Props = $props()
@@ -20,8 +20,7 @@
     {item}
     {path}
     onnavigate={(target) => {
-      onnavigate(item.id)
-      onnavigate(target, true)
+      onnavigate([item.id, ...target])
     }}
   />
 </section>

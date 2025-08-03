@@ -6,13 +6,13 @@
   interface Props {
     path: string[]
     item: BasePage
-    onnavigate: (target: string) => void
+    onnavigate: (target: string[]) => void
   }
 
   let { path, item, onnavigate }: Props = $props()
 </script>
 
-<Button variant="midground" onclick={() => onnavigate(item.id)} class="min-h-12 justify-between gap-3 text-base!">
+<Button variant="midground" onclick={() => onnavigate([item.id])} class="min-h-12 justify-between gap-3 text-base!">
   <item.icon />
   {item.label}
   <ChevronRightIcon class="ml-auto" />
