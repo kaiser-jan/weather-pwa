@@ -2,24 +2,32 @@
   import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Table from '$lib/components/ui/table/index.js'
   import { loaderStates, type LoaderState } from '$lib/stores/data'
-  import { CircleCheckBigIcon, CircleCheckIcon, CircleXIcon, DatabaseIcon, ExternalLinkIcon } from '@lucide/svelte'
+  import { CircleCheckBigIcon, CircleXIcon, DatabaseIcon, HourglassIcon } from '@lucide/svelte'
   import LoaderPulsatingRing from '../LoaderPulsatingRing.svelte'
   import { DATASETS, PROVIDERS } from '$lib/data/providers'
   import { formatRelativeDatetime } from '$lib/utils'
   import SectionTitle from './SectionTitle.svelte'
 
-  type State = 'success' | 'loading' | 'error'
+  type State = 'success' | 'loading' | 'error' | 'outdated'
+
+  function stateFromLoaderState(loaderState: LoaderState) {
+    if (!loaderState.done) return 'loading'
+    if (!loaderState.success) return 'error'
+    if (loaderState.refreshAt < loaderState.updatedAt) return 'outdated'
+    return 'success'
+  }
 
   const summaryState = $derived.by(() => {
-    for (const s of $loaderStates) {
-      if (!s.done) return 'loading'
-      if (!s.success) return 'error'
-    }
+    const states = $loaderStates.map(stateFromLoaderState)
+    if (states.some((s) => s === 'loading')) return 'loading'
+    if (states.some((s) => s === 'error')) return 'error'
+    if (states.some((s) => s === 'outdated')) return 'outdated'
     return 'success'
   })
 
   const labels: Record<State, string> = {
     error: 'Failed to load all datasets!',
+    outdated: 'Not everything up to date!',
     loading: 'Loading data...',
     success: 'All datasets up to date',
   }
@@ -30,6 +38,8 @@
     <LoaderPulsatingRing className="size-4 shrink-0" />
   {:else if state === 'error'}
     <CircleXIcon class="shrink-0 text-red-500" />
+  {:else if state === 'outdated'}
+    <HourglassIcon class="shrink-0 text-yellow-500" />
   {:else}
     <CircleCheckBigIcon class="shrink-0 text-green-500" />
   {/if}
