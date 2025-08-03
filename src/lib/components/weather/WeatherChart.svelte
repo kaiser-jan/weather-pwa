@@ -1,26 +1,22 @@
 <script lang="ts">
-  import { autoFormatMetric, getPreferredUnit } from '$lib/utils/units'
   import type { MultivariateTimeSeries, TimeSeries, TimeSeriesNumberEntry, ForecastParameter } from '$lib/types/data'
   import { onDestroy, onMount } from 'svelte'
   import * as d3 from 'd3'
-  import { DateTime } from 'luxon'
   import { createXAxis, createYAxis } from '$lib/utils/d3/axis'
   import type { Dimensions } from '$lib/utils/d3/types'
   import { createBars } from '$lib/utils/d3/bars'
   import { createLine } from '$lib/utils/d3/line'
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
-  import { METRIC_DETAILS, HIDE_AXIS_FOR_PARAMETERS, type ForecastMetric } from '$lib/config/metrics'
+  import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { settings } from '$lib/settings/store'
   import type { ColorStop, CreatedSeriesDetails, MetricDetails } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
-  import { createUUID, debounce, deepEqual } from '$lib/utils'
+  import { createUUID, debounce } from '$lib/utils'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
-  import { get } from 'svelte/store'
   import ChartValuesDisplay from './ChartValuesDisplay.svelte'
-  import type { Unit } from '$lib/config/units'
   import { useAutoAxis } from '$lib/utils/d3/autoAxis'
 
   interface Props {
@@ -82,17 +78,21 @@
     }
 
     dimensions = computeDimensions()
+
     const autoAxisFactory = useAutoAxis()
-    let computedAxisList: Partial<Record<ForecastMetric, ReturnType<typeof autoAxisFactory.compute>>> = {}
+    const computedAxisList: Partial<Record<ForecastMetric, ReturnType<typeof autoAxisFactory.compute>>> = {}
+    const displayedMetrics: ForecastMetric[] = []
+
     for (const parameter of parameters) {
       const series = data[parameter]
       const details = METRIC_DETAILS[parameter]
       if (!series || !details) continue
 
       const result = autoAxisFactory.compute({ dimensions, parameter, series, details })
-      console.log(dimensions.margin)
       computedAxisList[parameter] = result
+      displayedMetrics.push(parameter)
     }
+
     dimensions = computeDimensions()
 
     const svg = d3
@@ -100,6 +100,21 @@
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', `0 0 ${dimensions.widthFull} ${dimensions.heightFull}`)
+
+    if (!displayedMetrics.length) {
+      svg
+        .append('foreignObject')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', dimensions.widthFull)
+        .attr('height', dimensions.heightFull)
+        .append('xhtml:div')
+        .classed('flex justify-center items-center h-full w-full', true)
+        .append('xhtml:span')
+        .text(parameters.length ? 'No data available for your selection!' : 'Select a forecast metric to plot!')
+        .classed('text-lg text-center vertical-middle fill-text-muted font-bold', true)
+      return
+    }
 
     // Declare the x (horizontal position) scale.
     // const minTime = d3.min(data.multiseries.temperature, (d) => d.datetime.toMillis())!
@@ -306,7 +321,7 @@
       clearChart()
       return
     }
-    if (data && parameters.length) updateChart()
+    if (data && parameters) updateChart()
   })
 </script>
 
