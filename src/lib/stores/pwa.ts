@@ -44,8 +44,8 @@ function createSWStores() {
       toast.info('Update available!', {
         action: { label: 'Update', onClick: () => updateServiceWorker() },
         cancel: { label: 'Ignore', onClick: () => {} },
-        // description: 'You can update anytime in Settings > General > Version',
-        // duration: Infinity,
+        description: 'You can update anytime in Settings > General > Version',
+        duration: Number.POSITIVE_INFINITY,
       })
     },
     onOfflineReady() {
