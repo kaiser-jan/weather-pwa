@@ -7,7 +7,7 @@
     item: ListSettingPage
     value: Record<string, unknown>[]
     onchange: (v: unknown[]) => void
-    onnavigate: (target: string) => void
+    onnavigate: (target: string[]) => void
   }
 
   let { item, value, onchange, onnavigate }: Props = $props()
@@ -32,7 +32,7 @@
     <button
       class="bg-midground flex w-full flex-row items-center gap-2 px-3 py-2 not-last:border-b-2 first:rounded-t-md last:rounded-b-md"
       onclick={() => {
-        onnavigate(listIndex.toString())
+        onnavigate([listIndex.toString()])
       }}
       data-vaul-no-drag
     >

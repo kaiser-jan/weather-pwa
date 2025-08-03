@@ -66,13 +66,14 @@
     return _pages
   })
 
-  function navigateToKey(key: string, replace = false) {
-    const newPath = [...page.state.settingsPath, key]
-    if (replace) replaceState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
-    else pushState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
+  function navigateToPath(additionalPath: string[]) {
+    console.log(additionalPath)
+    const newPath = [...page.state.settingsPath, ...additionalPath]
+    pushState('', { ...page.state, settingsPath: $state.snapshot(newPath) })
+    console.info(newPath)
   }
 
-  const navigateToKeyThrottled = throttle(navigateToKey, 200)
+  const navigateToPathThrottled = throttle(navigateToPath, 200)
 
   let scrollContainer: HTMLDivElement
   let historyElements: HTMLDivElement[] = $state([])
@@ -159,7 +160,7 @@
             item={settingsPage}
             path={page.state.settingsPath.slice(0, i)}
             value={settings.readSetting(settingsPage.path).value as Record<string, unknown>[]}
-            onnavigate={navigateToKeyThrottled}
+            onnavigate={navigateToPathThrottled}
             onchange={(v) => {
               settings.writeSetting(page.state.settingsPath, v)
             }}

@@ -25,7 +25,7 @@ import TextInput from './components/inputs/TextInput.svelte'
 type SettingComponent = Component<
   {
     item: any
-    onnavigate: (key: string) => void
+    onnavigate: (path: string[]) => void
     path: string[]
   },
   {},
@@ -36,7 +36,7 @@ type SettingComponentInput = Component<
     item: any
     value: any
     onchange: (v: any) => void
-    onnavigate: (key: string) => void
+    onnavigate: (path: string[]) => void
     path: string[]
   },
   {},

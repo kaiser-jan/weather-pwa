@@ -6,7 +6,7 @@
     item: ListSettingPage
     value: Record<string, unknown>[]
     onchange: (v: unknown[]) => void
-    onnavigate: (target: string) => void
+    onnavigate: (target: string[]) => void
   }
 
   let { item, value, onchange, onnavigate }: Props = $props()
@@ -17,8 +17,7 @@
     <button
       class="bg-foreground flex w-full flex-row items-center gap-2 rounded-md px-3 py-2"
       onclick={() => {
-        onnavigate(item.id)
-        onnavigate(listIndex.toString())
+        onnavigate([item.id, listIndex.toString()])
       }}
     >
       {#if item.nameProperty && item.nameProperty in listItem}
