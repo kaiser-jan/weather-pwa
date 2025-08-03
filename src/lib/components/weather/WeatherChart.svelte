@@ -90,8 +90,9 @@
     let yScaleOffsets: Partial<Record<ForecastParameter, number>> = {}
     let yScaleRightCurrentOffset = 0
     let yScaleLeftCurrentOffset = 0
+    let axisIndex = 0
 
-    for (const [index, parameter] of [...parameters].entries()) {
+    for (const parameter of parameters) {
       const details = METRIC_DETAILS[parameter]
       if (!details || HIDE_AXIS_FOR_PARAMETERS.includes(parameter)) continue
       const unit = getPreferredUnit(parameter, get(settings))
@@ -106,7 +107,7 @@
       const requiredX = Math.max(textWidthMinValue, textWidthUnit, textWidthMaxValue) + 10
       console.debug(minString, maxString, unit)
 
-      const axisOnLeft = index % 2 === 0
+      const axisOnLeft = axisIndex % 2 === 0
       if (axisOnLeft) {
         margin['left'] += requiredX
         yScaleOffsets[parameter] = yScaleLeftCurrentOffset
@@ -116,6 +117,8 @@
         yScaleOffsets[parameter] = yScaleRightCurrentOffset
         yScaleRightCurrentOffset += requiredX
       }
+
+      axisIndex += 1
     }
     dimensions = computeDimensions()
 
@@ -134,10 +137,10 @@
 
     const createdSeriesDetails: CreatedSeriesDetails[] = []
 
-    for (const [index, parameter] of [...parameters].entries()) {
+    axisIndex = 0
+    for (const parameter of parameters) {
       const series = data[parameter]
       const details = METRIC_DETAILS[parameter]
-      const axisOnLeft = index % 2 === 0
       if (!series || !details) continue
 
       const unit = getPreferredUnit(parameter, get(settings))
@@ -160,6 +163,9 @@
       const scaleY = d3.scaleLinear(domain, rangeY) //.nice()
 
       if (!HIDE_AXIS_FOR_PARAMETERS.includes(parameter)) {
+        const axisOnLeft = axisIndex % 2 === 0
+        axisIndex += 1
+
         const xOffset =
           dimensions.margin.left +
           (axisOnLeft ? 0 : dimensions.width) +
