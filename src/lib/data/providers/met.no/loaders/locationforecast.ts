@@ -4,9 +4,9 @@ import type {
   ForecastTimePeriod as MetnoForecastTimePeriod,
   MetjsonForecast,
 } from '$lib/types/metno'
-import { useCache } from '$lib/data/cache'
+import { useCache } from '$lib/utils/cache'
 import { DateTime, Duration } from 'luxon'
-import { mergeMultivariateTimeSeries } from '$lib/utils/data'
+import { mergeMultivariateTimeSeries } from '$lib/utils/forecast/multiseries'
 import type { Loader } from '$lib/types/data/providers'
 import type { DatasetId } from '../datasets'
 

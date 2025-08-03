@@ -7,8 +7,7 @@
   import { Button } from '$lib/components/ui/button'
   import { sortByReferenceOrder, toggle } from '$lib/utils'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
-  import { settings } from '$lib/settings/store'
-  import { persist } from '$lib/utils/state.svelte'
+  import { persist } from '$lib/utils/stores'
   import { get } from 'svelte/store'
 
   interface Props {

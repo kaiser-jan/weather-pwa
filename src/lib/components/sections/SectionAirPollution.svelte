@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentFromMultiseries } from '$lib/data/utils'
+  import { currentFromMultiseries } from '$lib/utils/forecast/current'
   import { forecastStore } from '$lib/stores/data'
   import { NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
   import { autoFormatMetric, convertToUnit } from '$lib/utils/units'

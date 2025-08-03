@@ -2,7 +2,7 @@
   import { replaceState, pushState } from '$app/navigation'
   import { page } from '$app/state'
   import { debounce } from '$lib/utils'
-  import { persist } from '$lib/utils/state.svelte'
+  import { persist } from '$lib/utils/stores'
   import { type Snippet } from 'svelte'
   import { get } from 'svelte/store'
 

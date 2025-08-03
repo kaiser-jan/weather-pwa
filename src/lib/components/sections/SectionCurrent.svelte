@@ -1,19 +1,19 @@
 <script lang="ts">
   import { RefreshCwIcon } from '@lucide/svelte'
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
-  import { deriveWeatherSituationFromInstant } from '$lib/data/symbols'
+  import { deriveWeatherSituationFromInstant } from '$lib/utils/symbols'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
   import AsyncText from '$lib/components/snippets/AsyncText.svelte'
   import SkySimulation from '$lib/components/visualization/sky/SkySimulation.svelte'
-  import { currentFromMultiseries } from '$lib/data/utils'
   import { forecastStore, loaderStates } from '$lib/stores/data'
   import type { ForecastParameter } from '$lib/types/data'
   import { autoFormatMetric } from '$lib/utils/units'
   import { settings } from '$lib/settings/store'
-  import { reverseGeocoding, placeToWeatherLocation } from '$lib/data/location'
+  import { reverseGeocoding, placeToWeatherLocation } from '$lib/utils/location'
   import { NOW, NOW_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
+  import { currentFromMultiseries } from '$lib/utils/forecast/current'
 
   interface Props {
     shrink: boolean

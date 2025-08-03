@@ -1,4 +1,5 @@
-import { createLoaderMetaForDataset, getRequestedParametersFromConfig } from '$lib/utils/data'
+import { createLoaderMetaForDataset } from '$lib/data/providers'
+import { getRequestedParametersFromConfig } from '$lib/utils/forecast/transformTimeseries'
 import type { DatasetId } from '../datasets'
 import type { Loader } from '$lib/types/data/providers'
 import dataset, { configs } from '../datasets/chem-3km'

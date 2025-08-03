@@ -5,7 +5,7 @@
   import { CircleCheckBigIcon, CircleXIcon, DatabaseIcon, HourglassIcon } from '@lucide/svelte'
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import { DATASETS, PROVIDERS } from '$lib/data/providers'
-  import { formatRelativeDatetime } from '$lib/utils'
+  import { formatRelativeDatetime } from '$lib/utils/ui'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
 
   type State = 'success' | 'loading' | 'error' | 'outdated'

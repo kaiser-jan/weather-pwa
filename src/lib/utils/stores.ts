@@ -1,5 +1,7 @@
 import { deepEqual } from '$lib/utils'
-import { readable, type Readable } from 'svelte/store'
+import { readable, writable, type Readable, type Writable } from 'svelte/store'
+import { browser } from '$app/environment'
+import { registerLocalStorage } from './cache'
 
 export function select<T, U>(
   store: Readable<T>,
@@ -50,4 +52,34 @@ export function toReadable<T>(value: T | Readable<T> | AsyncFn<T>): Readable<T> 
   }
 
   return readable(value as T)
+}
+
+export function persist<T>(key: string, initial: T): Writable<T> {
+  let data = initial
+  if (browser) {
+    const stored = localStorage.getItem(key)
+    data = stored ? (JSON.parse(stored) as T) : initial
+  }
+
+  const store = writable<T>(data)
+
+  store.subscribe((value) => {
+    localStorage.setItem(key, JSON.stringify(value))
+  })
+
+  registerLocalStorage(key)
+
+  return store
+}
+
+export function subscribeNonImmediate<T>(store: Readable<T>, subscription: (value: T) => void) {
+  let isFirst = true
+
+  return store.subscribe((state) => {
+    if (isFirst) {
+      isFirst = false
+    } else {
+      subscription(state)
+    }
+  })
 }

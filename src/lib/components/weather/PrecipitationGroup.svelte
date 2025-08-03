@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatRelativeDatetime } from '$lib/utils'
+  import { formatRelativeDatetime } from '$lib/utils/ui'
   import type { PrecipitationGroup } from '$lib/stores/precipitationGroups'
   import { ArrowRightIcon } from '@lucide/svelte'
   import { NOW, NOW_MILLIS } from '$lib/stores/now'

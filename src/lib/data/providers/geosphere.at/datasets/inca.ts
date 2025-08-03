@@ -1,5 +1,5 @@
 import type { Dataset } from '$lib/types/data/providers'
-import { getForecastParametersFromConfig, type TimeSeriesConfig } from '$lib/utils/data'
+import { getForecastParametersFromConfig, type TimeSeriesConfig } from '$lib/utils/forecast/transformTimeseries'
 import { DateTime, Duration } from 'luxon'
 import type { ForecastParameter } from '$lib/types/data'
 

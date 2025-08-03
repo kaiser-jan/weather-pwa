@@ -1,7 +1,7 @@
 // lib/loaders/createTimeseriesForecastLoader.ts
 import { DateTime, Duration } from 'luxon'
-import { useCache } from '$lib/data/cache'
-import { transformTimeSeries } from '$lib/utils/data'
+import { useCache } from '$lib/utils/cache'
+import { transformTimeSeries } from '$lib/utils/forecast/transformTimeseries'
 import type { Coordinates, MultivariateTimeSeries } from '$lib/types/data'
 import type { TimeseriesForecastGeoJsonSerializer } from '$lib/types/geosphere-at'
 import type { Dataset, Loader } from '$lib/types/data/providers'
