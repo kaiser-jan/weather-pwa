@@ -1,5 +1,5 @@
 import type { DatasetId } from '$lib/data/providers'
-import type { WeatherSituation } from '$lib/data/symbols'
+import type { WeatherSituation } from '$lib/utils/symbols'
 
 export interface Coordinates {
   longitude: number
@@ -14,6 +14,10 @@ export interface Forecast {
   multiseries: MultivariateTimeSeries
   daily: TimeBucket[]
   total: TimeBucketSummary | null
+  inputs: ForecastInputs
+}
+
+export interface ForecastInputs {
   coordinates: Coordinates
   datasetIds: readonly DatasetId[]
 }

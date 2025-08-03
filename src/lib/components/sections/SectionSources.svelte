@@ -1,12 +1,13 @@
 <script lang="ts">
   import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Table from '$lib/components/ui/table/index.js'
-  import { loaderStates, type LoaderState } from '$lib/stores/data'
+  import { loaderStates } from '$lib/stores/data'
   import { CircleCheckBigIcon, CircleXIcon, DatabaseIcon, HourglassIcon } from '@lucide/svelte'
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import { DATASETS, PROVIDERS } from '$lib/data/providers'
   import { formatRelativeDatetime } from '$lib/utils/ui'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
+  import type { LoaderState } from '$lib/types/data/providers'
 
   type State = 'success' | 'loading' | 'error' | 'outdated'
 
@@ -69,7 +70,7 @@
             {@const provider = PROVIDERS.find((p) => p.loaderIds.includes(state.loader.id))}
             <Table.Row class="group gap-2 px-2 opacity-100">
               <Table.Cell class="w-4">
-                {@render stateIcon(state.done ? (state.success ? 'success' : 'error') : 'loading')}
+                {@render stateIcon(stateFromLoaderState(state))}
               </Table.Cell>
               <Table.Cell class="sticky left-0 z-50 max-w-48 p-0">
                 <a

@@ -51,7 +51,7 @@ export function getMinimalLoadersForDatasets(datasetIds: readonly DatasetId[]): 
 export function createLoaderMetaForDataset<DatasetIdT extends string>(dataset: Dataset) {
   return {
     id: dataset.id as DatasetIdT,
-    name: dataset.model,
+    name: dataset.name,
     url: dataset.url,
     datasetIds: [dataset.id as DatasetIdT],
   } as const
