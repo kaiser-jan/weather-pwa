@@ -1,6 +1,245 @@
 {
   "releases": [
     {
+      "version": "1.3.0",
+      "date": "2025-08-03",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "5afa13b514f8b31ce6beacf4fea8829600b2ced1",
+              "subject": "axis pointer not always snapping to nearest value",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5afa13b514f8b31ce6beacf4fea8829600b2ced1"
+            },
+            {
+              "hash": "a9ecd6a53a2924250e745e3fe6398d493ee008da",
+              "subject": "axis side alternation ignoring hidden axis",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a9ecd6a53a2924250e745e3fe6398d493ee008da"
+            },
+            {
+              "hash": "14b3751cfb54f3e0e77c0605013474fa1ce9f71c",
+              "subject": "snap axis pointer to nearest previous point",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/14b3751cfb54f3e0e77c0605013474fa1ce9f71c"
+            },
+            {
+              "hash": "9cae8c68f50e025f19b9fdab4386f265d811d16f",
+              "subject": "respect timezone for day start/end timestamp again",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/9cae8c68f50e025f19b9fdab4386f265d811d16f"
+            },
+            {
+              "hash": "4902562e2be2974e153632a0e8d4f5d84fd1a5bb",
+              "subject": "reverse dataset order to correctly respect priorities",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4902562e2be2974e153632a0e8d4f5d84fd1a5bb"
+            },
+            {
+              "hash": "e3be264b78b33ddbe55b0cfb3dd4ad7cf1305db6",
+              "subject": "make day view navigation more reliable",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e3be264b78b33ddbe55b0cfb3dd4ad7cf1305db6"
+            },
+            {
+              "hash": "d35a98f0df845e2f4e2d900068e0361c6fa732ce",
+              "subject": "still show metrics even if no value is available",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d35a98f0df845e2f4e2d900068e0361c6fa732ce"
+            },
+            {
+              "hash": "8b2836abe3698059c42d4699a1e315df9996dcdc",
+              "subject": "show when precipitationGroup reaches end of data",
+              "scope": "insights",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/8b2836abe3698059c42d4699a1e315df9996dcdc"
+            },
+            {
+              "hash": "1305230fe0102eff6d0bfc7e61f6adf02e01f8f1",
+              "subject": "throw on response not ok",
+              "scope": "loaders",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1305230fe0102eff6d0bfc7e61f6adf02e01f8f1"
+            },
+            {
+              "hash": "8d878007f4f24e1113bc4d674e3487f8083ed7c9",
+              "subject": "groups would open as separate pages",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/8d878007f4f24e1113bc4d674e3487f8083ed7c9"
+            },
+            {
+              "hash": "4127fd95d346fea57ed95a64756b6bd902661062",
+              "subject": "navigating into groups broken due to throttle",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4127fd95d346fea57ed95a64756b6bd902661062"
+            },
+            {
+              "hash": "0e503a33b0eb59841a7bae0c9587249470795b25",
+              "subject": "value display item not displaying",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0e503a33b0eb59841a7bae0c9587249470795b25"
+            },
+            {
+              "hash": "4cd5c456e2b4bb676b1f65474b61e93202d7db50",
+              "subject": "various small fixes",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4cd5c456e2b4bb676b1f65474b61e93202d7db50"
+            }
+          ]
+        },
+        {
+          "title": "Features",
+          "type": "feat",
+          "commits": [
+            {
+              "hash": "2cfa7e35257a7fed3fc6ebd0662fc99e3a97297f",
+              "subject": "add empty placeholder",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2cfa7e35257a7fed3fc6ebd0662fc99e3a97297f"
+            },
+            {
+              "hash": "920615c5184eec0b9ef1170377268d0fa2d68965",
+              "subject": "auto alternate side of axis",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/920615c5184eec0b9ef1170377268d0fa2d68965"
+            },
+            {
+              "hash": "b042f037a6e63ddcec4d8a335284cdee4fc0e51b",
+              "subject": "merge equal axis",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b042f037a6e63ddcec4d8a335284cdee4fc0e51b"
+            },
+            {
+              "hash": "8298737b4929e83932c9ff6bdc5142ed2a312dfe",
+              "subject": "make chart metrics depend on context or setting",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/8298737b4929e83932c9ff6bdc5142ed2a312dfe"
+            },
+            {
+              "hash": "e74bba941f3f53b061b16ce1408d6c1d7203266e",
+              "subject": "support hiding metrics in accordion",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e74bba941f3f53b061b16ce1408d6c1d7203266e"
+            },
+            {
+              "hash": "bd74f948578f7507c242b28add0e84c5777e948d",
+              "subject": "add error boundary with resolution instructions",
+              "scope": "error",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/bd74f948578f7507c242b28add0e84c5777e948d"
+            },
+            {
+              "hash": "acb1dd88bb6bbe624ac0d7c808c03f457c32e311",
+              "subject": "add fail safe wrappers to sections and views",
+              "scope": "error",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/acb1dd88bb6bbe624ac0d7c808c03f457c32e311"
+            },
+            {
+              "hash": "b722a588b19fa644616df8bf965f864a5bd9c0d0",
+              "subject": "add support for chem-v2-1h-3km and chem-v2-1h-9km",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b722a588b19fa644616df8bf965f864a5bd9c0d0"
+            },
+            {
+              "hash": "d7f34e604e0e19414bba137b079706d792745eef",
+              "subject": "add support for inca historical analysis",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d7f34e604e0e19414bba137b079706d792745eef"
+            },
+            {
+              "hash": "da4e560844f00c634c955de8a112e8d6f9d0dced",
+              "subject": "better integrated sources section",
+              "scope": "loaders",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/da4e560844f00c634c955de8a112e8d6f9d0dced"
+            },
+            {
+              "hash": "d87f7db7f44a82cecbaf2aa1ed3d2b17c75334ab",
+              "subject": "do not update forecastStore on cache hit",
+              "scope": "loaders",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d87f7db7f44a82cecbaf2aa1ed3d2b17c75334ab"
+            },
+            {
+              "hash": "c77eb3edf677e87a642e8717ea539e62cf58f29f",
+              "subject": "show outdated in sources section",
+              "scope": "loaders",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c77eb3edf677e87a642e8717ea539e62cf58f29f"
+            },
+            {
+              "hash": "df5eb3781477213d8f2ca28137f10810a2fea4c3",
+              "subject": "upgrade status display to table including datetimes",
+              "scope": "loaders",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/df5eb3781477213d8f2ca28137f10810a2fea4c3"
+            },
+            {
+              "hash": "0667ec1b2316049b73eb80049140963668768943",
+              "subject": "leafletjs map to visualize dataset coverageArea",
+              "scope": "playground",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0667ec1b2316049b73eb80049140963668768943"
+            },
+            {
+              "hash": "27e1ab22975172b07ebabe95981dc8afa30edecc",
+              "subject": "show selected location on map",
+              "scope": "playground",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/27e1ab22975172b07ebabe95981dc8afa30edecc"
+            },
+            {
+              "hash": "e0739e7b18f3788dd95ad86a1f12a14896522dc4",
+              "subject": "auto-select datasets based on location",
+              "scope": "providers",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e0739e7b18f3788dd95ad86a1f12a14896522dc4"
+            },
+            {
+              "hash": "aa8aec431b30bdb086dcd5d3b272a0ac865e85f1",
+              "subject": "display data sources with links and loading states",
+              "scope": "providers",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/aa8aec431b30bdb086dcd5d3b272a0ac865e85f1"
+            },
+            {
+              "hash": "0c9d702de485e51d2c93a3114d0c302526ad5dca",
+              "subject": "add air pollution section",
+              "scope": "sections",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0c9d702de485e51d2c93a3114d0c302526ad5dca"
+            },
+            {
+              "hash": "2b7b32248dead13ca20798e3446f80f4eee34cb4",
+              "subject": "better distinguish days as click targets",
+              "scope": "sections",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2b7b32248dead13ca20798e3446f80f4eee34cb4"
+            },
+            {
+              "hash": "d302dfaddb2a0afa12154613b8fed5ed1e124f1f",
+              "subject": "only show sun when there is cloud data",
+              "scope": "timeline-bar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d302dfaddb2a0afa12154613b8fed5ed1e124f1f"
+            },
+            {
+              "hash": "f7437a830b27d98628cafe7de9927856cffaf88f",
+              "subject": "various smaller improvements and fixes",
+              "scope": "ux",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f7437a830b27d98628cafe7de9927856cffaf88f"
+            }
+          ]
+        },
+        {
+          "title": "Performance Improvements",
+          "type": "perf",
+          "commits": [
+            {
+              "hash": "8655629f6602bced005cfae06ee3e724a476f466",
+              "subject": "use timestamp instead of DateTime everywhere",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/8655629f6602bced005cfae06ee3e724a476f466"
+            },
+            {
+              "hash": "2ad19e18aa590963ee86eef4afe866aaff5b6f18",
+              "subject": "directly provide current datetime as timestamp",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2ad19e18aa590963ee86eef4afe866aaff5b6f18"
+            }
+          ]
+        }
+      ],
+      "compareUrl": "https://github.com/kaiser-jan/weather-pwa/compare/v1.2.0...v1.3.0"
+    },
+    {
       "version": "1.2.0",
       "date": "2025-07-27",
       "commitGroups": [

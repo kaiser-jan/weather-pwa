@@ -1,3 +1,53 @@
+# [1.3.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.2.0...v1.3.0) (2025-08-03)
+
+
+### Bug Fixes
+
+* **chart:** axis pointer not always snapping to nearest value ([5afa13b](https://github.com/kaiser-jan/weather-pwa/commit/5afa13b514f8b31ce6beacf4fea8829600b2ced1))
+* **chart:** axis side alternation ignoring hidden axis ([a9ecd6a](https://github.com/kaiser-jan/weather-pwa/commit/a9ecd6a53a2924250e745e3fe6398d493ee008da))
+* **chart:** snap axis pointer to nearest previous point ([14b3751](https://github.com/kaiser-jan/weather-pwa/commit/14b3751cfb54f3e0e77c0605013474fa1ce9f71c))
+* **data:** respect timezone for day start/end timestamp again ([9cae8c6](https://github.com/kaiser-jan/weather-pwa/commit/9cae8c68f50e025f19b9fdab4386f265d811d16f))
+* **data:** reverse dataset order to correctly respect priorities ([4902562](https://github.com/kaiser-jan/weather-pwa/commit/4902562e2be2974e153632a0e8d4f5d84fd1a5bb))
+* **day:** make day view navigation more reliable ([e3be264](https://github.com/kaiser-jan/weather-pwa/commit/e3be264b78b33ddbe55b0cfb3dd4ad7cf1305db6))
+* **day:** still show metrics even if no value is available ([d35a98f](https://github.com/kaiser-jan/weather-pwa/commit/d35a98f0df845e2f4e2d900068e0361c6fa732ce))
+* **insights:** show when precipitationGroup reaches end of data ([8b2836a](https://github.com/kaiser-jan/weather-pwa/commit/8b2836abe3698059c42d4699a1e315df9996dcdc))
+* **loaders:** throw on response not ok ([1305230](https://github.com/kaiser-jan/weather-pwa/commit/1305230fe0102eff6d0bfc7e61f6adf02e01f8f1))
+* **settings:** groups would open as separate pages ([8d87800](https://github.com/kaiser-jan/weather-pwa/commit/8d878007f4f24e1113bc4d674e3487f8083ed7c9))
+* **settings:** navigating into groups broken due to throttle ([4127fd9](https://github.com/kaiser-jan/weather-pwa/commit/4127fd95d346fea57ed95a64756b6bd902661062))
+* **settings:** value display item not displaying ([0e503a3](https://github.com/kaiser-jan/weather-pwa/commit/0e503a33b0eb59841a7bae0c9587249470795b25))
+* various small fixes ([4cd5c45](https://github.com/kaiser-jan/weather-pwa/commit/4cd5c456e2b4bb676b1f65474b61e93202d7db50))
+
+
+### Features
+
+* **chart:** add empty placeholder ([2cfa7e3](https://github.com/kaiser-jan/weather-pwa/commit/2cfa7e35257a7fed3fc6ebd0662fc99e3a97297f))
+* **chart:** auto alternate side of axis ([920615c](https://github.com/kaiser-jan/weather-pwa/commit/920615c5184eec0b9ef1170377268d0fa2d68965))
+* **chart:** merge equal axis ([b042f03](https://github.com/kaiser-jan/weather-pwa/commit/b042f037a6e63ddcec4d8a335284cdee4fc0e51b))
+* **day:** make chart metrics depend on context or setting ([8298737](https://github.com/kaiser-jan/weather-pwa/commit/8298737b4929e83932c9ff6bdc5142ed2a312dfe))
+* **day:** support hiding metrics in accordion ([e74bba9](https://github.com/kaiser-jan/weather-pwa/commit/e74bba941f3f53b061b16ce1408d6c1d7203266e))
+* **error:** add error boundary with resolution instructions ([bd74f94](https://github.com/kaiser-jan/weather-pwa/commit/bd74f948578f7507c242b28add0e84c5777e948d))
+* **error:** add fail safe wrappers to sections and views ([acb1dd8](https://github.com/kaiser-jan/weather-pwa/commit/acb1dd88bb6bbe624ac0d7c808c03f457c32e311))
+* **geosphere.at:** add support for chem-v2-1h-3km and chem-v2-1h-9km ([b722a58](https://github.com/kaiser-jan/weather-pwa/commit/b722a588b19fa644616df8bf965f864a5bd9c0d0))
+* **geosphere.at:** add support for inca historical analysis ([d7f34e6](https://github.com/kaiser-jan/weather-pwa/commit/d7f34e604e0e19414bba137b079706d792745eef))
+* **loaders:** better integrated sources section ([da4e560](https://github.com/kaiser-jan/weather-pwa/commit/da4e560844f00c634c955de8a112e8d6f9d0dced))
+* **loaders:** do not update forecastStore on cache hit ([d87f7db](https://github.com/kaiser-jan/weather-pwa/commit/d87f7db7f44a82cecbaf2aa1ed3d2b17c75334ab))
+* **loaders:** show outdated in sources section ([c77eb3e](https://github.com/kaiser-jan/weather-pwa/commit/c77eb3edf677e87a642e8717ea539e62cf58f29f))
+* **loaders:** upgrade status display to table including datetimes ([df5eb37](https://github.com/kaiser-jan/weather-pwa/commit/df5eb3781477213d8f2ca28137f10810a2fea4c3))
+* **playground:** leafletjs map to visualize dataset coverageArea ([0667ec1](https://github.com/kaiser-jan/weather-pwa/commit/0667ec1b2316049b73eb80049140963668768943))
+* **playground:** show selected location on map ([27e1ab2](https://github.com/kaiser-jan/weather-pwa/commit/27e1ab22975172b07ebabe95981dc8afa30edecc))
+* **providers:** auto-select datasets based on location ([e0739e7](https://github.com/kaiser-jan/weather-pwa/commit/e0739e7b18f3788dd95ad86a1f12a14896522dc4))
+* **providers:** display data sources with links and loading states ([aa8aec4](https://github.com/kaiser-jan/weather-pwa/commit/aa8aec431b30bdb086dcd5d3b272a0ac865e85f1))
+* **sections:** add air pollution section ([0c9d702](https://github.com/kaiser-jan/weather-pwa/commit/0c9d702de485e51d2c93a3114d0c302526ad5dca))
+* **sections:** better distinguish days as click targets ([2b7b322](https://github.com/kaiser-jan/weather-pwa/commit/2b7b32248dead13ca20798e3446f80f4eee34cb4))
+* **timeline-bar:** only show sun when there is cloud data ([d302dfa](https://github.com/kaiser-jan/weather-pwa/commit/d302dfaddb2a0afa12154613b8fed5ed1e124f1f))
+* **ux:** various smaller improvements and fixes ([f7437a8](https://github.com/kaiser-jan/weather-pwa/commit/f7437a830b27d98628cafe7de9927856cffaf88f))
+
+
+### Performance Improvements
+
+* **data:** use timestamp instead of DateTime everywhere ([8655629](https://github.com/kaiser-jan/weather-pwa/commit/8655629f6602bced005cfae06ee3e724a476f466))
+* directly provide current datetime as timestamp ([2ad19e1](https://github.com/kaiser-jan/weather-pwa/commit/2ad19e18aa590963ee86eef4afe866aaff5b6f18))
+
 # [1.2.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.1.0...v1.2.0) (2025-07-27)
 
 
