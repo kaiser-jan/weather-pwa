@@ -39,7 +39,7 @@ export function refreshForecast({
   const debouncedUpdate = debounce(() => {
     const forecast = createForecastFromResults(states, inputs)
     if (!forecast) return
-    console.info(forecast)
+    update(forecast)
     setCachedForecast(forecast)
   }, 500)
   loaderStates.set(states)
@@ -59,8 +59,10 @@ export function refreshForecast({
         const allLoaded = states.filter(Boolean).length === loaders.length
         const wasCached = states[loaderIndex].done && states[loaderIndex].success && states[loaderIndex].cached
 
-        const needsRefresh = !wasCached || didParametersChange
+        const needsRefresh = !wasCached || didParametersChange || !current
         const shouldUpdate = stream || allLoaded
+
+        // console.debug(!wasCached, didParametersChange, !current, stream, allLoaded)
 
         if (shouldUpdate && needsRefresh) debouncedUpdate()
 
