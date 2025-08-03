@@ -60,9 +60,9 @@
       bottom="bottom-[calc(5.5rem+min(env(safe-area-inset-bottom),1rem))]"
       right="right-4"
     />
-    <div
-      class="from-background/50 pointer-events-none absolute right-0 bottom-22 left-0 flex h-8 flex-row gap-2 bg-linear-to-t to-transparent"
-    ></div>
+    <!-- <div -->
+    <!--   class="from-background/50 pointer-events-none absolute right-0 bottom-22 left-0 flex h-8 flex-row gap-2 bg-linear-to-t to-transparent" -->
+    <!-- ></div> -->
 
     <div class="bg-background flex h-22 shrink-0 flex-row items-center gap-2 p-4">
       <LocationSelector />

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
-  import LoaderStatusList from '$lib/components/LoaderStatusList.svelte'
   import SectionAirPollution from '$lib/components/sections/SectionAirPollution.svelte'
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
   import SectionOutlook from '$lib/components/sections/SectionOutlook.svelte'
+  import SectionSources from '$lib/components/sections/SectionSources.svelte'
   import SectionTodayChart from '$lib/components/sections/SectionTodayChart.svelte'
   import SectionUpcoming from '$lib/components/sections/SectionUpcoming.svelte'
   import ViewDay from '$lib/components/sections/ViewDay.svelte'
@@ -57,7 +57,7 @@
       <SectionAirPollution />
     {/if}
 
-    <LoaderStatusList />
+    <SectionSources />
   </div>
 
   <ViewDay />

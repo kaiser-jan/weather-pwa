@@ -1,19 +1,46 @@
-<script>
+<script lang="ts">
   import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Table from '$lib/components/ui/table/index.js'
-  import { loaderStates } from '$lib/stores/data'
+  import { loaderStates, type LoaderState } from '$lib/stores/data'
   import { CircleCheckBigIcon, CircleCheckIcon, CircleXIcon, DatabaseIcon, ExternalLinkIcon } from '@lucide/svelte'
-  import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
+  import LoaderPulsatingRing from '../LoaderPulsatingRing.svelte'
   import { DATASETS, PROVIDERS } from '$lib/data/providers'
-  import { DateTime } from 'luxon'
   import { formatRelativeDatetime } from '$lib/utils'
+  import SectionTitle from './SectionTitle.svelte'
+
+  type State = 'success' | 'loading' | 'error'
+
+  const summaryState = $derived.by(() => {
+    for (const s of $loaderStates) {
+      if (!s.done) return 'loading'
+      if (!s.success) return 'error'
+    }
+    return 'success'
+  })
+
+  const labels: Record<State, string> = {
+    error: 'Failed to load all datasets!',
+    loading: 'Loading data...',
+    success: 'All datasets up to date',
+  }
 </script>
 
-<Accordion.Root type="single" class="-my-4 min-h-10 w-full">
-  <Accordion.Item>
-    <Accordion.Trigger class="text-text-muted inline-flex justify-start">
-      <DatabaseIcon />
-      <span class="mr-auto">Data Sources</span>
+{#snippet stateIcon(state: State)}
+  {#if state === 'loading'}
+    <LoaderPulsatingRing className="size-4 shrink-0" />
+  {:else if state === 'error'}
+    <CircleXIcon class="shrink-0 text-red-500" />
+  {:else}
+    <CircleCheckBigIcon class="shrink-0 text-green-500" />
+  {/if}
+{/snippet}
+
+<SectionTitle title="Data Sources" icon={DatabaseIcon} />
+<Accordion.Root type="single" class="min-h-10 w-full">
+  <Accordion.Item class="bg-midground rounded-md">
+    <Accordion.Trigger class="text-text-muted inline-flex justify-start p-2">
+      {@render stateIcon(summaryState)}
+      {labels[summaryState]}
     </Accordion.Trigger>
     <Accordion.Content class="bg-midground rounded-md py-0">
       <Table.Root>
@@ -32,13 +59,7 @@
             {@const provider = PROVIDERS.find((p) => p.loaderIds.includes(state.loader.id))}
             <Table.Row class="group gap-2 px-2 opacity-100">
               <Table.Cell class="w-4">
-                {#if !state?.done}
-                  <LoaderPulsatingRing className="size-4 shrink-0" />
-                {:else if state.success}
-                  <CircleCheckBigIcon class="shrink-0 text-green-500" />
-                {:else}
-                  <CircleXIcon class="shrink-0 text-red-500" />
-                {/if}
+                {@render stateIcon(state.done ? (state.success ? 'success' : 'error') : 'loading')}
               </Table.Cell>
               <Table.Cell class="sticky left-0 z-50 max-w-48 p-0">
                 <a
