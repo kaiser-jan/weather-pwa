@@ -3,7 +3,7 @@
   import { cn } from '$lib/utils'
   import { DateTime } from 'luxon'
   import TimelineBarLayer from './TimelineBarLayer.svelte'
-  import Skeleton from './ui/skeleton/skeleton.svelte'
+  import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte'
 
   type Parameter =
     | Extract<

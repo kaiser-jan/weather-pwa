@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Skeleton } from './ui/skeleton'
+  import { Skeleton } from '$lib/components/ui/skeleton'
 
   interface Props {
     text?: string

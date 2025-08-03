@@ -15,8 +15,8 @@
   import { locationSearch } from '$lib/stores/ui'
   import { popUntil } from '$lib/utils'
   import type { PlaceOutput } from '$lib/types/nominatim'
-  import ApiSearchResult from './ApiSearchResult.svelte'
   import { pushState } from '$app/navigation'
+  import ApiSearchResult from '$lib/components/ApiSearchResult.svelte'
 
   const geolocationDetails = geolocationStore.details
 

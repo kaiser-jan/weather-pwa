@@ -9,7 +9,7 @@
   import { page } from '$app/state'
   import { getPageComponent, isWrapper } from '../registry'
   import { debounce, throttle } from '$lib/utils'
-  import FailSafeContainer from '$lib/components/FailSafeContainer.svelte'
+  import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
 
   interface Props {
     config: ConfigItem[]

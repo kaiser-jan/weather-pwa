@@ -2,7 +2,7 @@
   import { Button } from '$lib/components/ui/button'
   import { CircleCheckIcon, CircleXIcon } from '@lucide/svelte'
   import type { ActionItem } from '../../types'
-  import LoaderPulsatingRing from '$lib/components/LoaderPulsatingRing.svelte'
+  import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import { toReadable } from '$lib/utils/stores'
 
   interface Props {

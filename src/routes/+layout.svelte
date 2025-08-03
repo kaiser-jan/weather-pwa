@@ -4,11 +4,11 @@
   // https://vite-pwa-org.netlify.app/frameworks/sveltekit.html#pwa-assets
   import { pwaAssetsHead } from 'virtual:pwa-assets/head'
   import { Toaster } from '$lib/components/ui/sonner'
-  import LocationSelector from '$lib/components/LocationSelector.svelte'
-  import SettingsButton from '$lib/components/SettingsButton.svelte'
+  import LocationSelector from '$lib/components/layout/location/LocationSelector.svelte'
+  import SettingsButton from '$lib/components/layout/SettingsButton.svelte'
   import ContainerCorners from '$lib/components/ContainerCorners.svelte'
   import { Portal } from 'bits-ui'
-  import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'
+  import ErrorBoundary from '$lib/components/layout/errors/ErrorBoundary.svelte'
 
   let { children } = $props()
 

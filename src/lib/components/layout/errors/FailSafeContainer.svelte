@@ -11,7 +11,7 @@
   } from '@lucide/svelte'
   import { onMount, type Snippet, type SvelteComponent } from 'svelte'
   import type { HTMLAttributes } from 'svelte/elements'
-  import { Button, buttonVariants } from './ui/button'
+  import { Button, buttonVariants } from '$lib/components/ui/button'
   import ErrorExpandable from './ErrorExpandable.svelte'
   import { clearCache } from '$lib/utils/cache'
 

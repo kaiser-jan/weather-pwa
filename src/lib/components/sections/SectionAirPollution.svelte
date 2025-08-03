@@ -4,18 +4,18 @@
   import { NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
   import { autoFormatMetric, convertToUnit } from '$lib/utils/units'
   import { derived } from 'svelte/store'
-  import NumberRangeBar from '../NumberRangeBar.svelte'
+  import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
   import { settings } from '$lib/settings/store'
   import type { TimeBucket } from '$lib/types/data'
   import { DateTime } from 'luxon'
-  import SectionTitle from './SectionTitle.svelte'
   import { FactoryIcon, InfoIcon } from '@lucide/svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import { EAQI } from '$lib/config/categorization'
   import { hslFromObject } from '$lib/utils/ui'
   import { Button } from '../ui/button'
   import { dayView } from '$lib/stores/ui'
-  import FailSafeContainer from '../FailSafeContainer.svelte'
+  import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
+  import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
 
   const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS) ?? null)
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS) ?? null)

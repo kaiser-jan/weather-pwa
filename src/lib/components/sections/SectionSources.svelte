@@ -3,10 +3,10 @@
   import * as Table from '$lib/components/ui/table/index.js'
   import { loaderStates, type LoaderState } from '$lib/stores/data'
   import { CircleCheckBigIcon, CircleXIcon, DatabaseIcon, HourglassIcon } from '@lucide/svelte'
-  import LoaderPulsatingRing from '../LoaderPulsatingRing.svelte'
+  import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import { DATASETS, PROVIDERS } from '$lib/data/providers'
   import { formatRelativeDatetime } from '$lib/utils'
-  import SectionTitle from './SectionTitle.svelte'
+  import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
 
   type State = 'success' | 'loading' | 'error' | 'outdated'
 

@@ -2,7 +2,7 @@
   import type { Forecast, ForecastParameter } from '$lib/types/data'
   import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
   import FormattedMetric from '$lib/components/FormattedMetric.svelte'
-  import IconOrAbbreviation from '../IconOrAbbreviation.svelte'
+  import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
 
   interface Props {
     item: ForecastParameter

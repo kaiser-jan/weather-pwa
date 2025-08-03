@@ -3,8 +3,8 @@
   import WeatherItemCurrent from '$lib/components/weather/WeatherItemCurrent.svelte'
   import { deriveWeatherSituationFromInstant } from '$lib/data/symbols'
   import WeatherSymbol from '$lib/components/weather/WeatherSymbol.svelte'
-  import AsyncText from '$lib/components/AsyncText.svelte'
-  import SkySimulation from '$lib/components/SkySimulation.svelte'
+  import AsyncText from '$lib/components/snippets/AsyncText.svelte'
+  import SkySimulation from '$lib/components/visualization/sky/SkySimulation.svelte'
   import { currentFromMultiseries } from '$lib/data/utils'
   import { forecastStore, loaderStates } from '$lib/stores/data'
   import type { ForecastParameter } from '$lib/types/data'
@@ -13,7 +13,7 @@
   import { reverseGeocoding, placeToWeatherLocation } from '$lib/data/location'
   import { NOW, NOW_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
-  import FailSafeContainer from '../FailSafeContainer.svelte'
+  import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
 
   interface Props {
     shrink: boolean

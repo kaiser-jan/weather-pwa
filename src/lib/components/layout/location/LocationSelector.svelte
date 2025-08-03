@@ -1,13 +1,13 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
   import { geolocationStore } from '$lib/stores/geolocation'
-  import LoaderPulsatingRing from './LoaderPulsatingRing.svelte'
+  import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import LocationSearch from './LocationSearch.svelte'
   import { iconMap } from '$lib/utils/icons'
   import { SearchIcon } from '@lucide/svelte'
   import { locationSearch } from '$lib/stores/ui'
   import { selectedLocation } from '$lib/stores/location'
-  import FailSafeContainer from './FailSafeContainer.svelte'
+  import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
 
   const geolocationDetails = geolocationStore.details
 

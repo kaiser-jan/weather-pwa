@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Accordion from '$lib/components/ui/accordion/index.js'
   import { InfoIcon, ClipboardCheckIcon, ClipboardCopyIcon } from '@lucide/svelte'
-  import { Button } from './ui/button'
+  import { Button } from '$lib/components/ui/button'
 
   interface Props {
     error: unknown
