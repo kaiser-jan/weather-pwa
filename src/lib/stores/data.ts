@@ -1,6 +1,5 @@
 import { get, readable, readonly, writable } from 'svelte/store'
-import { combineMultiseriesToDailyForecast, forecastTotalFromDailyForecast } from '$lib/data/utils'
-import { mergeMultivariateTimeSeries } from '$lib/utils/data'
+import { mergeMultivariateTimeSeries } from '$lib/utils/forecast/multiseries'
 import type { Coordinates, Forecast, MultivariateTimeSeries } from '$lib/types/data'
 import { getLoadersForDataset, getMinimalLoadersForDatasets, type DatasetId } from '$lib/data/providers'
 import { debounce, deepEqual } from '$lib/utils'
@@ -8,10 +7,12 @@ import { DateTime, Duration } from 'luxon'
 import { coordinates } from './location'
 import { settings } from '$lib/settings/store'
 import { NOW } from './now'
-import { subscribeNonImmediate } from '$lib/utils/state.svelte'
 import { getSuggestedDatasetsForLocation } from '$lib/data/providers/suggestedDatasets'
 import { DATASET_IDS_BY_PRIORITY } from '$lib/config/datasets'
 import type { Loader, LoaderResult } from '$lib/types/data/providers'
+import { subscribeNonImmediate } from '$lib/utils/stores'
+import { combineMultiseriesToDailyForecast } from '$lib/utils/forecast/daily'
+import { forecastTotalFromDailyForecast } from '$lib/utils/forecast/total'
 
 // ensure cached forecasts are discarded if they use an older data format (e.g. DateTime and Duration)
 const CURRENT_FORECAST_DATA_VERSION = 2

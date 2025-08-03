@@ -1,5 +1,5 @@
 import type { Dataset } from '$lib/types/data/providers'
-import { getForecastParametersFromConfig } from '$lib/utils/data'
+import { getForecastParametersFromConfig, type TimeSeriesConfig } from '$lib/utils/forecast/transformTimeseries'
 import nwp, { configs, NWP_MAX_OFFSET } from './nwp'
 
 export default {

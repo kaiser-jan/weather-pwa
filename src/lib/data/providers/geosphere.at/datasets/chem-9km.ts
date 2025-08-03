@@ -1,6 +1,6 @@
 import type { Dataset } from '$lib/types/data/providers'
 import { Duration } from 'luxon'
-import { getForecastParametersFromConfig, type TimeSeriesConfig } from '$lib/utils/data'
+import { getForecastParametersFromConfig, type TimeSeriesConfig } from '$lib/utils/forecast/transformTimeseries'
 import type { ForecastParameter } from '$lib/types/data'
 
 const AVAILABLE_WEATHER_PARAMETERS = [

@@ -1,6 +1,5 @@
 import { page } from '$app/state'
 import clsx, { type ClassValue } from 'clsx'
-import { DateTime } from 'luxon'
 import { cubicOut } from 'svelte/easing'
 import type { TransitionConfig } from 'svelte/transition'
 import { twMerge } from 'tailwind-merge'
@@ -26,21 +25,6 @@ export type WithoutChildrenOrChild<T> = WithoutChildren<WithoutChild<T>>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, 'children'> : T
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { ref?: U | null }
-
-export function formatRelativeDatetime(datetime: DateTime, options?: { omitDate?: boolean }) {
-  const todayMidnight = DateTime.now().startOf('day')
-  const inputDayMidnight = datetime.startOf('day')
-  const isToday = inputDayMidnight.equals(todayMidnight)
-
-  if (isToday || options?.omitDate) {
-    return datetime.toFormat('HH:mm')
-    // NOTE: this requires translation
-    // } else if (inputDate.equals(today.plus({ days: 1 }))) {
-    //   return `Tomorrow, ${datetime.toFormat('HH:mm')}`
-  } else {
-    return datetime.toFormat('ccc HH:mm')
-  }
-}
 
 export function calculateVector(
   u: number | undefined,
@@ -104,11 +88,6 @@ export const flyAndScale = (
     },
     easing: cubicOut,
   }
-}
-
-export function capitalizeFirstChar(word: string | undefined) {
-  if (word === undefined || word.length === 0) return word
-  return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
 export function toggle<T extends string>(array: T[], value: T) {
@@ -196,4 +175,23 @@ export function getStartOfDayTimestamp(timestamp: number) {
 export function getEndOfDayTimestamp(timestamp: number) {
   const end = getStartOfDayTimestamp(timestamp - offset) + MS_PER_DAY + offset
   return end
+}
+
+export function mapRecord<KeyT extends string, ItemT, TargetT>(
+  input: Partial<Record<KeyT, ItemT[]>>,
+  fn: (arr: ItemT[]) => TargetT,
+): Record<KeyT, TargetT> {
+  const result = {} as Record<KeyT, TargetT>
+  for (const key in input) {
+    if (Object.prototype.hasOwnProperty.call(input, key)) {
+      result[key as KeyT] = fn(input[key]!)
+    }
+  }
+  return result
+}
+
+export function sum(numbers: (number | undefined)[]): number {
+  return numbers
+    .filter((num): num is number => num !== undefined)
+    .reduce((accumulator, current) => accumulator + current, 0)
 }

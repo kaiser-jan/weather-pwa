@@ -4,7 +4,7 @@ import { type DatasetId } from '../datasets'
 import nwpLoader from '../loaders/nwp'
 import type { Loader } from '$lib/types/data/providers'
 import dataset from '../datasets/nwp-offset'
-import { createLoaderMetaForDataset } from '$lib/utils/data'
+import { createLoaderMetaForDataset } from '$lib/data/providers'
 import { NWP_MAX_OFFSET } from '../datasets/nwp'
 
 export default {

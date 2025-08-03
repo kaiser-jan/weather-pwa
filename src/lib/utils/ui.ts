@@ -1,4 +1,5 @@
 import type { ColorStop } from '$lib/types/ui'
+import { DateTime } from 'luxon'
 
 export function generateCssRangeGradient(
   rangeMin: number,
@@ -44,4 +45,24 @@ export function interpolateColor(stops: ColorStop[], value: number): string {
   }
   const edge = value <= stops[0].value ? stops[0] : stops[stops.length - 1]
   return `hsl(${edge.h}, ${edge.s}%, ${edge.l}%)`
+}
+
+export function formatRelativeDatetime(datetime: DateTime, options?: { omitDate?: boolean }) {
+  const todayMidnight = DateTime.now().startOf('day')
+  const inputDayMidnight = datetime.startOf('day')
+  const isToday = inputDayMidnight.equals(todayMidnight)
+
+  if (isToday || options?.omitDate) {
+    return datetime.toFormat('HH:mm')
+    // NOTE: this requires translation
+    // } else if (inputDate.equals(today.plus({ days: 1 }))) {
+    //   return `Tomorrow, ${datetime.toFormat('HH:mm')}`
+  } else {
+    return datetime.toFormat('ccc HH:mm')
+  }
+}
+
+export function capitalizeFirstChar(word: string | undefined) {
+  if (word === undefined || word.length === 0) return word
+  return word.charAt(0).toUpperCase() + word.slice(1)
 }

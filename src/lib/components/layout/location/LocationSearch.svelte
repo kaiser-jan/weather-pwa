@@ -8,7 +8,7 @@
   import { iconMap } from '$lib/utils/icons'
   import { geolocationStore } from '$lib/stores/geolocation'
   import LocationList from './LocationList.svelte'
-  import { classIconMap, typeToString } from '$lib/data/location'
+  import { classIconMap, typeToString } from '$lib/utils/location'
   import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
   import { selectedLocation } from '$lib/stores/location'
   import { page } from '$app/state'

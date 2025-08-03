@@ -13,7 +13,7 @@
 
 <Switch
   bind:checked={
-    () => value,
+    () => value ?? false,
     (v) => {
       value = v
       onchange(v)

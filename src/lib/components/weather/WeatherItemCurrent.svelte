@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Forecast, ForecastParameter } from '$lib/types/data'
   import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
-  import FormattedMetric from '$lib/components/FormattedMetric.svelte'
+  import FormattedMetric from '$lib/components/snippets/FormattedMetric.svelte'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
 
   interface Props {
