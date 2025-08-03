@@ -67,8 +67,6 @@
   const eaqi = derived(forecastStore, ($f) => {
     if (!$f) return
 
-    throw new Error('test')
-
     const currentValues = currentFromMultiseries($f.multiseries, $NOW_MILLIS)
     const currentLevels = getEaqiLevels(currentValues)
 

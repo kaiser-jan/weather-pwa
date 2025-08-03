@@ -57,7 +57,7 @@ export const forecastStore = {
   update,
 }
 
-type LoaderState =
+export type LoaderState =
   | {
       done: false
       loader: Loader<DatasetId>
