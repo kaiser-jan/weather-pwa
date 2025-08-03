@@ -1,3 +1,13 @@
+## [1.3.1](https://github.com/kaiser-jan/weather-pwa/compare/v1.3.0...v1.3.1) (2025-08-03)
+
+
+### Bug Fixes
+
+* **data:** store not refreshing on new data ([2ef523c](https://github.com/kaiser-jan/weather-pwa/commit/2ef523c42538140540c81375868220728c2bc694))
+* **geosphere.at:** nowcast incorrect base forecast age ([4b0119c](https://github.com/kaiser-jan/weather-pwa/commit/4b0119ccfc93adcb120f1c0a2cf632303bc092f3))
+* **pwa:** keep update notification infinitely ([1e1eeae](https://github.com/kaiser-jan/weather-pwa/commit/1e1eeaee726d3c3c15cb6a27ae5af85c2e4d4dfe))
+* **ui:** add active styles to buttons ([74e823e](https://github.com/kaiser-jan/weather-pwa/commit/74e823e32dba0e4f80011fcee10dcf39d576d92d))
+
 # [1.3.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.2.0...v1.3.0) (2025-08-03)
 
 
