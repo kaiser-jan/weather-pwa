@@ -1,17 +1,17 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
-  import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
+  import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { dayView } from '$lib/stores/ui'
   import { Button } from '../ui/button'
   import { DateTime } from 'luxon'
   import { TODAY_MILLIS } from '$lib/stores/now'
   import { onMount } from 'svelte'
-  import SectionTitle from './SectionTitle.svelte'
   import { BinocularsIcon } from '@lucide/svelte'
+  import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
-  import FailSafeContainer from '../FailSafeContainer.svelte'
+  import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import type { HTMLAttributes } from 'svelte/elements'
 
   let container: HTMLDivElement

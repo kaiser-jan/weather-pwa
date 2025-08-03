@@ -4,7 +4,7 @@
   import type { ForecastParameter } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { autoFormatMetric } from '$lib/utils/units'
-  import IconOrAbbreviation from './IconOrAbbreviation.svelte'
+  import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
 
   interface Props {
     parameter: ForecastParameter

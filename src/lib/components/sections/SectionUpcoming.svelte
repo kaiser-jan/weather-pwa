@@ -1,21 +1,21 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
-  import TimelineBar from '$lib/components/TimelineBar.svelte'
+  import TimelineBar from '$lib/components/visualization/TimelineBar.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { interpolateColor } from '$lib/utils/ui'
   import { autoFormatMetric } from '$lib/utils/units'
   import { NOW, NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
-  import NumberRangeBar from '$lib/components/NumberRangeBar.svelte'
+  import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
   import { dayView } from '$lib/stores/ui'
   import { Button } from '../ui/button'
   import { getEndOfDayTimestamp, getStartOfDayTimestamp } from '$lib/utils'
   import { DateTime } from 'luxon'
-  import SectionTitle from './SectionTitle.svelte'
   import { CalendarDaysIcon } from '@lucide/svelte'
+  import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
-  import FailSafeContainer from '../FailSafeContainer.svelte'
+  import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
 
   const SHOW_PAST = false
 

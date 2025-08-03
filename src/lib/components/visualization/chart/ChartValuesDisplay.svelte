@@ -2,7 +2,7 @@
   import { settings } from '$lib/settings/store'
   import type { TimeSeriesNumberEntry, ForecastParameter } from '$lib/types/data'
   import { slide } from 'svelte/transition'
-  import ParameterValue from '$lib/components/ParameterValue.svelte'
+  import ParameterValue from '$lib/components/snippets/ParameterValue.svelte'
   import { DateTime } from 'luxon'
 
   const settingsChart = settings.select((s) => s.sections.components.chart)

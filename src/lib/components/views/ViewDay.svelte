@@ -1,5 +1,4 @@
 <script lang="ts">
-  import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Drawer from '$lib/components/ui/drawer'
   import { forecastStore } from '$lib/stores/data'
   import { NOW, NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
@@ -11,16 +10,15 @@
   import type { ParameterDaySummaryProps } from '$lib/types/ui'
   import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
   import { coordinates } from '$lib/stores/location'
-  import TimelineBar from '$lib/components/TimelineBar.svelte'
+  import TimelineBar from '$lib/components/visualization/TimelineBar.svelte'
   import { settings } from '$lib/settings/store'
   import { Skeleton } from '$lib/components/ui/skeleton'
-  import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
+  import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
   import { cn, getEndOfDayTimestamp, getStartOfDayTimestamp, toggle } from '$lib/utils'
   import { page } from '$app/state'
   import { dayView } from '$lib/stores/ui'
   import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
-  import { persist } from '$lib/utils/state.svelte'
-  import IconOrAbbreviation from '../IconOrAbbreviation.svelte'
+  import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import ExpandableList from '../ExpandableList.svelte'
 
   const selectedDay = $derived($forecastStore?.daily?.[page.state.selectedDayIndex])

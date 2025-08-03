@@ -1,16 +1,16 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
   import { NOW, NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
-  import ParameterSelect from '$lib/components/ParameterSelect.svelte'
+  import ParameterSelect from '$lib/components/visualization/chart/ParameterSelect.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
-  import WeatherChart from '$lib/components/weather/WeatherChart.svelte'
+  import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
   import { swipe } from 'svelte-gestures'
   import { settings } from '$lib/settings/store'
   import { dayView } from '$lib/stores/ui'
   import type { ForecastMetric } from '$lib/config/metrics'
-  import SectionTitle from './SectionTitle.svelte'
   import { ChevronRightIcon, ClockIcon } from '@lucide/svelte'
-  import FailSafeContainer from '../FailSafeContainer.svelte'
+  import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
+  import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
 
   const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS))
 
