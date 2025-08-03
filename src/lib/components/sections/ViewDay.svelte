@@ -156,15 +156,13 @@
               <div class="flex flex-row flex-wrap gap-2">
                 {#each metrics as metric (metric)}
                   {@const config = metricConfigs[metric]}
-                  {#if selectedDay?.summary[metric] && config}
-                    <ParameterDaySummary
-                      {...config}
-                      parameter={metric}
-                      day={selectedDay}
-                      selected={$visibleMetrics.includes(metric)}
-                      onclick={() => visibleMetrics.set(toggle($visibleMetrics, metric))}
-                    />
-                  {/if}
+                  <ParameterDaySummary
+                    {...config}
+                    parameter={metric}
+                    day={selectedDay}
+                    selected={$visibleMetrics.includes(metric)}
+                    onclick={() => visibleMetrics.set(toggle($visibleMetrics, metric))}
+                  />
                 {/each}
               </div>
             {/snippet}
