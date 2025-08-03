@@ -15,11 +15,13 @@
   import { settings } from '$lib/settings/store'
   import type { ColorStop, CreatedSeriesDetails, MetricDetails } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
-  import { createUUID, debounce } from '$lib/utils'
+  import { createUUID, debounce, deepEqual } from '$lib/utils'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
   import { get } from 'svelte/store'
   import ChartValuesDisplay from './ChartValuesDisplay.svelte'
+  import type { Unit } from '$lib/config/units'
+  import { useAutoAxis } from '$lib/utils/d3/autoAxis'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -50,7 +52,7 @@
 
   let container: HTMLDivElement
 
-  let margin = { top: 10, right: 40, bottom: 20, left: 40 }
+  let margin = { top: 10, right: 0, bottom: 20, left: 0 }
   let widthFull = 360
   let heightFull = 240
 
@@ -70,14 +72,6 @@
     d3.select(container).selectAll('*').remove()
   }
 
-  function estimateTextWidth(text: string, font: string = '10px sans-serif'): number {
-    const canvas = document.createElement('canvas')
-    const context = canvas.getContext('2d')
-    if (!context) return 0
-    context.font = font
-    return context.measureText(text).width
-  }
-
   function updateChart() {
     clearChart()
 
@@ -87,38 +81,17 @@
       margin.top += 10
     }
 
-    let yScaleOffsets: Partial<Record<ForecastParameter, number>> = {}
-    let yScaleRightCurrentOffset = 0
-    let yScaleLeftCurrentOffset = 0
-    let axisIndex = 0
-
+    dimensions = computeDimensions()
+    const autoAxisFactory = useAutoAxis()
+    let computedAxisList: Partial<Record<ForecastMetric, ReturnType<typeof autoAxisFactory.compute>>> = {}
     for (const parameter of parameters) {
+      const series = data[parameter]
       const details = METRIC_DETAILS[parameter]
-      if (!details || HIDE_AXIS_FOR_PARAMETERS.includes(parameter)) continue
-      const unit = getPreferredUnit(parameter, get(settings))
-      const hideUnit = $settingsChart.axisUnits !== 'inline'
-      const minString = autoFormatMetric(details.domain.min[0], parameter, get(settings), { hideUnit })
-      const maxString = autoFormatMetric(details.domain.max[details.domain.max.length - 1], parameter, get(settings), {
-        hideUnit,
-      })
-      const textWidthMinValue = estimateTextWidth(minString)
-      const textWidthUnit = estimateTextWidth(unit ?? '')
-      const textWidthMaxValue = estimateTextWidth(maxString)
-      const requiredX = Math.max(textWidthMinValue, textWidthUnit, textWidthMaxValue) + 10
-      console.debug(minString, maxString, unit)
+      if (!series || !details) continue
 
-      const axisOnLeft = axisIndex % 2 === 0
-      if (axisOnLeft) {
-        margin['left'] += requiredX
-        yScaleOffsets[parameter] = yScaleLeftCurrentOffset
-        yScaleLeftCurrentOffset -= requiredX
-      } else {
-        margin['right'] += requiredX
-        yScaleOffsets[parameter] = yScaleRightCurrentOffset
-        yScaleRightCurrentOffset += requiredX
-      }
-
-      axisIndex += 1
+      const result = autoAxisFactory.compute({ dimensions, parameter, series, details })
+      console.log(dimensions.margin)
+      computedAxisList[parameter] = result
     }
     dimensions = computeDimensions()
 
@@ -137,46 +110,24 @@
 
     const createdSeriesDetails: CreatedSeriesDetails[] = []
 
-    axisIndex = 0
     for (const parameter of parameters) {
       const series = data[parameter]
       const details = METRIC_DETAILS[parameter]
+      const { scaleY, format, axis, unit } = computedAxisList[parameter]!
       if (!series || !details) continue
 
-      const unit = getPreferredUnit(parameter, get(settings))
-      const format = (d: number) =>
-        autoFormatMetric(d, parameter, get(settings), {
-          hideUnit: get(settings).sections.components.chart.axisUnits !== 'inline',
-        })
-
-      const rangeY = [dimensions.height + dimensions.margin.top, margin.top]
-
-      const extent = d3.extent(series, (d) => d.value)
-      const min = extent[0] ?? 0
-      const max = extent[1] ?? 0
-
-      const domain = [
-        details.domain.min.findLast((t) => t <= min * 0.9) ?? details.domain.min[0],
-        details.domain.max.find((t) => t >= max * 1.1) ?? details.domain.max[0],
-      ]
-
-      const scaleY = d3.scaleLinear(domain, rangeY) //.nice()
-
-      if (!HIDE_AXIS_FOR_PARAMETERS.includes(parameter)) {
-        const axisOnLeft = axisIndex % 2 === 0
-        axisIndex += 1
-
+      if (axis) {
         const xOffset =
           dimensions.margin.left +
-          (axisOnLeft ? 0 : dimensions.width) +
-          (axisOnLeft ? -LINE_CORRECTION : LINE_CORRECTION) +
-          (yScaleOffsets[parameter] ?? 0)
+          (axis.side === 'left' ? 0 : dimensions.width) +
+          (axis.side === 'left' ? -LINE_CORRECTION : LINE_CORRECTION) +
+          axis.offset
 
         createYAxis({
           svg,
           dimensions,
           scale: scaleY,
-          side: axisOnLeft ? 'left' : 'right',
+          side: axis.side,
           addLines: false,
           unit,
           format,
