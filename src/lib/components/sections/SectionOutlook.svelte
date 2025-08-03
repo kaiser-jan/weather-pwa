@@ -11,6 +11,8 @@
   import SectionTitle from './SectionTitle.svelte'
   import { BinocularsIcon } from '@lucide/svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
+  import FailSafeContainer from '../FailSafeContainer.svelte'
+  import type { HTMLAttributes } from 'svelte/elements'
 
   let container: HTMLDivElement
 
@@ -19,7 +21,8 @@
   function scrollToToday() {
     if (container?.firstElementChild) {
       // TODO: only if this is a past day
-      container.scrollLeft = (container.firstElementChild as HTMLElement).offsetWidth
+      const oldDays = $forecastStore?.daily.filter((d) => d.timestamp < $TODAY_MILLIS)
+      container.scrollLeft = (oldDays?.length ?? 0) * (container.firstElementChild as HTMLElement).offsetWidth
     }
   }
 
@@ -33,7 +36,7 @@
 </script>
 
 <SectionTitle title="Outlook" icon={BinocularsIcon} />
-<div class="flex flex-row overflow-y-auto rounded-md" bind:this={container}>
+<FailSafeContainer name="Section Outlook" class="flex flex-row overflow-y-auto rounded-md" bind:this={container}>
   {#each $forecastStore?.daily.filter((d) => d.summary !== undefined) ?? [] as day (day.timestamp)}
     <Button
       variant="midground"
@@ -71,4 +74,4 @@
   {:else}
     <Skeleton class="w-full h-32" />
   {/each}
-</div>
+</FailSafeContainer>

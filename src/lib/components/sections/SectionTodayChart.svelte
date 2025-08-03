@@ -10,6 +10,7 @@
   import type { ForecastMetric } from '$lib/config/metrics'
   import SectionTitle from './SectionTitle.svelte'
   import { ChevronRightIcon, ClockIcon } from '@lucide/svelte'
+  import FailSafeContainer from '../FailSafeContainer.svelte'
 
   const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS))
 
@@ -23,7 +24,10 @@
 >
   <ChevronRightIcon class="ml-auto" />
 </SectionTitle>
-<div class="bg-midground flex w-full flex-col flex-wrap justify-between gap-2 gap-x-4 gap-y-2 rounded-lg p-2">
+<FailSafeContainer
+  name="Section Today"
+  class="bg-midground flex w-full flex-col flex-wrap justify-between gap-2 gap-x-4 gap-y-2 rounded-lg p-2"
+>
   {#if $settings.sections.today.showChartParameterSelect}
     <ParameterSelect bind:visible={visibleMetrics} />
   {/if}
@@ -50,4 +54,4 @@
   {:else}
     <Skeleton class="h-[25vh] w-full" />
   {/if}
-</div>
+</FailSafeContainer>
