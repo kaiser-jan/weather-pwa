@@ -34,7 +34,7 @@ export function autoFormatMetric(
   settings: SettingsSchema,
   options?: { hideUnit?: boolean; showDecimal?: boolean },
 ): string {
-  if (value === undefined || value === null) return 'N/A'
+  if (value === undefined || value === null) return '-'
   const unit = getPreferredUnit(key, settings)
   const converted = convertToUnit(value, key, unit)
   return formatMetric(converted, unit, options)

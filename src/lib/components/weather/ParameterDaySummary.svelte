@@ -33,7 +33,8 @@
   const details = $derived<MetricDetails | undefined>(METRIC_DETAILS[parameter])
 
   const domain = $derived.by(() => {
-    if (useTotalAsDomain || !day || !details) return $forecastStore?.total?.summary[parameter]
+    if (useTotalAsDomain || !day || !day.summary[parameter] || !details)
+      return $forecastStore?.total?.summary[parameter]
 
     const summary = day.summary[parameter]
     const min = details.domain.min.findLast((t) => t <= summary.min * 0.9) ?? details.domain.min[0]
@@ -86,7 +87,7 @@
       <IconOrAbbreviation {details} />
     {:else if item === 'min' || item === 'max' || item === 'avg' || item === 'sum'}
       <FormattedMetric
-        value={day?.summary[parameter][item]}
+        value={day?.summary[parameter]?.[item]}
         {parameter}
         class={items.includes('range-bar') ? 'w-16' : ''}
       />
@@ -101,7 +102,7 @@
       {@const values = day.multiseries[parameter]}
       {#if values && values[0].value < values[values.length - 1].value}
         <ArrowUpIcon />
-      {:else}
+      {:else if values}
         <ArrowDownIcon />
       {/if}
     {:else if item === 'precipitation-groups'}
