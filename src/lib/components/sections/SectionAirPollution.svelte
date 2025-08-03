@@ -140,7 +140,7 @@
     <span class="bg-overlay min-h-full w-0.5"></span>
 
     <Button
-      variant="ghost"
+      variant="midground"
       size="fit"
       class="flex grow flex-col gap-0 text-left"
       onclick={() => dayView.open(today, pollutants)}
