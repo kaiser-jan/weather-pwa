@@ -36,13 +36,16 @@ export function refreshForecast({
   console.debug('Using the following loaders: ', loaders)
 
   const states: LoaderState[] = loaders.map((loader) => ({ done: false, loader }))
-  const debouncedUpdate = debounce(() => {
+  loaderStates.set(states)
+
+  const applyUpdate = () => {
     const forecast = createForecastFromResults(states, inputs)
     if (!forecast) return
     update(forecast)
     setCachedForecast(forecast)
-  }, 500)
-  loaderStates.set(states)
+  }
+
+  const debouncedApplyUpdate = debounce(applyUpdate, 500)
 
   for (const [loaderIndex, loader] of loaders.entries()) {
     loader
@@ -59,12 +62,14 @@ export function refreshForecast({
         const allLoaded = states.filter(Boolean).length === loaders.length
         const wasCached = states[loaderIndex].done && states[loaderIndex].success && states[loaderIndex].cached
 
-        const needsRefresh = !wasCached || didParametersChange || !current
-        const shouldUpdate = stream || allLoaded
-
         // console.debug(!wasCached, didParametersChange, !current, stream, allLoaded)
 
-        if (shouldUpdate && needsRefresh) debouncedUpdate()
+        const needsRefresh = !wasCached || didParametersChange || !current
+        if (needsRefresh) {
+          // no need for debounce if this is the last update
+          if (allLoaded) applyUpdate()
+          else if (stream) debouncedApplyUpdate()
+        }
 
         if (allLoaded) clearTimeout(loadTimeout)
       })
@@ -73,7 +78,7 @@ export function refreshForecast({
   clearTimeout(loadTimeout)
   loadTimeout = setTimeout(() => {
     console.warn('Timed out while loading complete forecast, updating anyway!')
-    debouncedUpdate()
+    debouncedApplyUpdate()
   }, 15_000)
 }
 
