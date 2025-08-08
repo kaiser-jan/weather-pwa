@@ -397,6 +397,13 @@ export const settingsConfig = [
             icon: UmbrellaIcon,
             default: true,
           },
+          {
+            id: 'scrollToToday',
+            label: 'Start at Today',
+            type: 'boolean',
+            icon: CalendarDaysIcon,
+            default: true,
+          },
         ],
       },
       {

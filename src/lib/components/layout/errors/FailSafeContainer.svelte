@@ -18,9 +18,10 @@
   interface Props {
     children: Snippet
     name: string
+    element: HTMLDivElement
   }
 
-  let { children, name, ...props }: HTMLAttributes<HTMLDivElement> & Props = $props()
+  let { children, name, element = $bindable(), ...props }: HTMLAttributes<HTMLDivElement> & Props = $props()
 
   let open = $state(false)
 
@@ -33,7 +34,7 @@
 </script>
 
 <svelte:boundary>
-  <div {...props}>
+  <div {...props} bind:this={element}>
     {@render children()}
   </div>
 

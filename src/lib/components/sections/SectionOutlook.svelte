@@ -12,22 +12,29 @@
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
-  import type { HTMLAttributes } from 'svelte/elements'
 
-  let container: HTMLDivElement
+  let container = $state<HTMLDivElement>()
 
-  const forecastStoreSubscription = forecastStore.subscribe(scrollToToday)
+  const forecastStoreSubscription = forecastStore.subscribe(updateScroll)
 
-  function scrollToToday() {
-    if (container?.firstElementChild) {
-      // TODO: only if this is a past day
-      const oldDays = $forecastStore?.daily.filter((d) => d.timestamp < $TODAY_MILLIS)
-      container.scrollLeft = (oldDays?.length ?? 0) * (container.firstElementChild as HTMLElement).offsetWidth
-    }
+  function updateScroll() {
+    if (!container?.firstElementChild) return
+
+    const scrollToToday = $settings.sections.outlook.scrollToToday
+    const oldDays = $forecastStore?.daily.filter((d) => d.timestamp < $TODAY_MILLIS)
+    const scrollPastCount = scrollToToday ? (oldDays?.length ?? 0) : 0
+    container.scrollLeft = scrollPastCount * (container.firstElementChild as HTMLElement).offsetWidth
   }
 
+  $effect(() => {
+    const scrollToToday = $settings.sections.outlook.scrollToToday
+    if (scrollToToday || !scrollToToday) {
+      updateScroll()
+    }
+  })
+
   onMount(() => {
-    scrollToToday()
+    updateScroll()
 
     return () => {
       forecastStoreSubscription()
@@ -36,7 +43,7 @@
 </script>
 
 <SectionTitle title="Outlook" icon={BinocularsIcon} />
-<FailSafeContainer name="Section Outlook" class="flex flex-row overflow-y-auto rounded-md" bind:this={container}>
+<FailSafeContainer name="Section Outlook" class="flex flex-row overflow-y-auto rounded-md" bind:element={container}>
   {#each $forecastStore?.daily.filter((d) => d.summary !== undefined) ?? [] as day (day.timestamp)}
     <Button
       variant="midground"
