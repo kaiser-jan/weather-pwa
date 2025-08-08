@@ -45,7 +45,8 @@
     return levels
   }
 
-  function getTotalEaqiIndex(levels: Record<string, number>): number {
+  function getTotalEaqiIndex(levels: Record<string, number> | undefined): number {
+    if (!levels) return
     return Math.max(0, ...Object.values(levels))
   }
 

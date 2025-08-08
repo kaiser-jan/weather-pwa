@@ -160,7 +160,7 @@ const _METRIC_DETAILS = {
     abbreviation: 'PM2.5',
     domain: {
       min: [0],
-      max: [10 * 1e-6, 50 * 1e-6],
+      max: [EAQI.limits.pm25[3] * 1e-6, EAQI.limits.pm25[5] * 1e-6],
     },
     color: {
       gradient: createLimitsGradient(EAQI.limits.pm25, EAQI.colors),
@@ -172,7 +172,7 @@ const _METRIC_DETAILS = {
     abbreviation: 'PM10',
     domain: {
       min: [0],
-      max: [20 * 1e-6, 100 * 1e-6],
+      max: [EAQI.limits.pm10[3] * 1e-6, EAQI.limits.pm10[5] * 1e-6],
     },
     color: {
       gradient: createLimitsGradient(EAQI.limits.pm10, EAQI.colors),
@@ -184,7 +184,7 @@ const _METRIC_DETAILS = {
     abbreviation: 'O3',
     domain: {
       min: [0],
-      max: [120 * 1e-6, 240 * 1e-6],
+      max: [EAQI.limits.o3[3] * 1e-6, EAQI.limits.o3[5] * 1e-6],
     },
     color: {
       gradient: createLimitsGradient(EAQI.limits.o3, EAQI.colors),
@@ -196,7 +196,7 @@ const _METRIC_DETAILS = {
     abbreviation: 'NO2',
     domain: {
       min: [0],
-      max: [20 * 1e-6, 200 * 1e-6], // µg/m³: WHO annual limit, moderate, unhealthy
+      max: [EAQI.limits.no2[3] * 1e-6, EAQI.limits.no2[5] * 1e-6],
     },
     color: {
       gradient: createLimitsGradient(EAQI.limits.no2, EAQI.colors),
