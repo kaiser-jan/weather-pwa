@@ -43,6 +43,7 @@ export function refreshForecast({
     if (!forecast) return
     update(forecast)
     setCachedForecast(forecast)
+    console.info(forecast)
   }
 
   const debouncedApplyUpdate = debounce(applyUpdate, 500)

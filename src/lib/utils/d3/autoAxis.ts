@@ -60,7 +60,6 @@ export function useAutoAxis() {
       (a) =>
         a.unit === newAxisBase.unit && a.domain[0] === newAxisBase.domain[0] && a.domain[1] === newAxisBase.domain[1],
     )
-    console.log('existingSameAxis', existingSameAxis, existingAxisList, newAxisBase)
     if (existingSameAxis) return existingSameAxis
 
     const minString = format(details.domain.min[0])

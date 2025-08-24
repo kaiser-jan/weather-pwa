@@ -128,8 +128,9 @@
     for (const parameter of parameters) {
       const series = data[parameter]
       const details = METRIC_DETAILS[parameter]
-      const { scaleY, format, axis, unit } = computedAxisList[parameter]!
-      if (!series || !details) continue
+      const axisComputation = computedAxisList[parameter]
+      if (!series || !details || !axisComputation) continue
+      const { scaleY, format, axis, unit } = axisComputation
 
       if (axis) {
         const xOffset =
@@ -239,7 +240,7 @@
       .append('rect')
       .attr('x', dimensions.margin.left)
       .attr('y', dimensions.margin.top)
-      .attr('width', scaleX(NOW) - dimensions.margin.left)
+      .attr('width', Math.min(dimensions.width + dimensions.margin.left, scaleX(NOW)) - dimensions.margin.left)
       .attr('height', dimensions.height)
       .classed('fill-midground', true)
       .attr('opacity', 0.7)
