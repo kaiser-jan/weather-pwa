@@ -7,6 +7,7 @@ import {
   ShieldIcon,
   SunIcon,
   ThermometerIcon,
+  TornadoIcon,
   UmbrellaIcon,
   UmbrellaOffIcon,
   WindIcon,
@@ -83,7 +84,9 @@ const _METRIC_DETAILS = {
       class: 'opacity-80',
       include: {
         wind_speed_gust: {
+          icon: TornadoIcon,
           style: 'line',
+          showInTooltip: true,
           class: 'opacity-50 [stroke-dasharray:4_8]',
           color: { css: 'var(--color-blue-100)' },
         },

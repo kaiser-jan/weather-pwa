@@ -216,17 +216,23 @@
         }
       }
 
+      createdSeriesDetails.push({ ...details, name: parameter, scale: scaleY, data: series })
+
       if (details.chart.include) {
         for (const [includeParameter, includeDetails] of Object.entries(details.chart.include)) {
           const includeSeriesA = data[includeParameter as ForecastParameter]
           const includeSeriesB = data[includeDetails.areaSecondParameter as ForecastParameter]
-          addDataRepresentation(includeParameter, includeSeriesA, { ...details, chart: includeDetails }, includeSeriesB)
+          const mergedDetails = { ...details, chart: includeDetails, icon: includeDetails.icon }
+          if (!includeSeriesA) continue
+          // TODO: weather chart and axisPointer are too tighlty coupled via createdSeriesDetails
+          if (includeDetails.showInTooltip) {
+            createdSeriesDetails.push({ ...mergedDetails, name: includeParameter, scale: scaleY, data: includeSeriesA })
+          }
+          addDataRepresentation(includeParameter, includeSeriesA, mergedDetails, includeSeriesB)
         }
       }
 
       addDataRepresentation(parameter, series, details)
-
-      createdSeriesDetails.push({ ...details, name: parameter, scale: scaleY, data: series })
     }
 
     svg

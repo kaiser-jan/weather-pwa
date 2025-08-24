@@ -24,7 +24,12 @@ export interface MetricDetails {
   iconIfZero?: typeof ThermometerIcon
 
   chart: MetricDetailsChart & {
-    include?: Partial<Record<ForecastParameter, MetricDetailsChart & { color?: ColorDefinition }>>
+    include?: Partial<
+      Record<
+        ForecastParameter,
+        MetricDetailsChart & { color?: ColorDefinition; icon?: typeof ThermometerIcon; showInTooltip?: boolean }
+      >
+    >
   }
 }
 
