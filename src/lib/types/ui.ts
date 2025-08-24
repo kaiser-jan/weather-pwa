@@ -27,16 +27,17 @@ export interface MetricDetails {
     include?: Partial<
       Record<
         ForecastParameter,
-        MetricDetailsChart & { color?: ColorDefinition; icon?: typeof ThermometerIcon; showInTooltip?: boolean }
+        { chart: MetricDetailsChart; color?: ColorDefinition; icon?: typeof ThermometerIcon; showInTooltip?: boolean }
       >
     >
   }
 }
 
-export interface CreatedSeriesDetails extends MetricDetails {
-  name: string
-  scale: d3.ScaleLinear<number, number, never>
+export interface CreatedSeriesDetails {
+  parameter: string
+  details: MetricDetails
   data: TimeSeries<number>
+  scale: d3.ScaleLinear<number, number, never>
 }
 
 export interface ParameterDaySummaryProps {

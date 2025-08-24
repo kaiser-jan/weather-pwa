@@ -41,10 +41,12 @@ const _METRIC_DETAILS = {
 
       include: {
         temperature_max: {
-          style: 'area',
-          class: 'opacity-40',
           color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
-          areaSecondParameter: 'temperature_min',
+          chart: {
+            style: 'area',
+            class: 'opacity-40',
+            areaSecondParameter: 'temperature_min',
+          },
         },
       },
     },
@@ -85,10 +87,12 @@ const _METRIC_DETAILS = {
       include: {
         wind_speed_gust: {
           icon: TornadoIcon,
-          style: 'line',
           showInTooltip: true,
-          class: 'opacity-50 [stroke-dasharray:4_8]',
           color: { css: 'var(--color-blue-100)' },
+          chart: {
+            style: 'line',
+            class: 'opacity-50 [stroke-dasharray:4_8]',
+          },
         },
       },
     },

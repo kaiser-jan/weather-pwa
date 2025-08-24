@@ -217,17 +217,24 @@
         }
       }
 
-      createdSeriesDetails.push({ ...details, name: parameter, scale: scaleY, data: series })
+      createdSeriesDetails.push({ details, parameter, scale: scaleY, data: series })
 
       if (details.chart.include) {
         for (const [includeParameter, includeDetails] of Object.entries(details.chart.include)) {
           const includeSeriesA = data[includeParameter as ForecastParameter]
-          const includeSeriesB = data[includeDetails.areaSecondParameter as ForecastParameter]
-          const mergedDetails = { ...details, chart: includeDetails, icon: includeDetails.icon }
+          const includeSeriesB = data[includeDetails.chart.areaSecondParameter as ForecastParameter]
+          const mergedDetails = { ...details, ...includeDetails }
+
           if (!includeSeriesA) continue
+
           // TODO: weather chart and axisPointer are too tighlty coupled via createdSeriesDetails
           if (includeDetails.showInTooltip) {
-            createdSeriesDetails.push({ ...mergedDetails, name: includeParameter, scale: scaleY, data: includeSeriesA })
+            createdSeriesDetails.push({
+              parameter: includeParameter,
+              details: mergedDetails,
+              scale: scaleY,
+              data: includeSeriesA,
+            })
           }
           addDataRepresentation(includeParameter, includeSeriesA, mergedDetails, includeSeriesB)
         }
@@ -267,7 +274,7 @@
 
       if (!points) return
 
-      const timebucket = Object.fromEntries(points.map((p) => [p.name, p.d])) as Record<
+      const timebucket = Object.fromEntries(points.map((p) => [p.parameter, p.datum])) as Record<
         ForecastParameter,
         TimeSeriesNumberEntry
       >

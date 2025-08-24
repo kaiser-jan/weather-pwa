@@ -31,7 +31,7 @@ export function createAxisPointer(options: {
     if (!points.length) return
 
     const nearest = points.reduce((a, b) =>
-      Math.abs(b.d.timestamp - timestamp) < Math.abs(a.d.timestamp - timestamp) ? b : a,
+      Math.abs(b.datum.timestamp - timestamp) < Math.abs(a.datum.timestamp - timestamp) ? b : a,
     )
     const highest = points.reduce((a, b) => (b.y < a.y ? b : a))
     xAxisPointer.attr('transform', `translate(${nearest.x},0)`)
@@ -39,13 +39,13 @@ export function createAxisPointer(options: {
 
     points.forEach((p, i) =>
       xAxisPointer
-        .select(`circle#x-axis-pointer-circle-${p.name}`)
+        .select(`circle#x-axis-pointer-circle-${p.parameter}`)
         .attr('cy', p.y)
         .classed('fill-text!', i === 0 || !tooltip || !showTooltip),
     )
 
     if (tooltip) {
-      tooltip.updateTooltip(nearest.x, points[0].y, nearest.d.timestamp, points)
+      tooltip.updateTooltip(nearest.x, points[0].y, nearest.datum.timestamp, points)
       if (!showTooltip) tooltip.hideTooltip()
     }
 
@@ -69,7 +69,7 @@ export function createAxisPointer(options: {
       .attr('cy', 123)
       .attr('r', 4)
       .classed('stroke-midground fill-text-muted stroke-4', true)
-      .attr('id', 'x-axis-pointer-circle-' + series.name)
+      .attr('id', 'x-axis-pointer-circle-' + series.parameter)
     // only adding to the first item for now
     break
   }
@@ -94,17 +94,16 @@ function getNearestPointAtTimestamp(
   const i = bisect(series.data, x0) ?? series.data.length - 1
   // NOTE: using the previous point instead of using the next if its closer
   // this would cause the axis pointer to jump e.g. for hourly data around :30
-  const d = series.data[i - 1] ?? series.data[i]
+  const datum = series.data[i - 1] ?? series.data[i]
 
-  if (!d) return null
+  if (!datum) return null
 
   return {
-    x: scaleX(d.timestamp),
-    y: series.scale(d.value),
-    d,
-    name: series.name,
-    icon: series.icon,
-    abbreviation: series.abbreviation,
+    x: scaleX(datum.timestamp),
+    y: series.scale(datum.value),
+    datum,
+    parameter: series.parameter,
+    details: series.details,
   }
 }
 
@@ -167,8 +166,10 @@ export function createTooltip(options: {
     tooltip.html(
       `<b>${DateTime.fromMillis(timestamp).toFormat('HH:mm')}</b><br>${points
         .map((p) => {
-          const svg = p.icon ? renderIcon(p.name, p.icon) : (p.abbreviation ?? p.name)
-          const metric = autoFormatMetric(p.d.value, p.name as ForecastParameter, get(settings), { showDecimal: true })
+          const svg = p.details.icon ? renderIcon(p.parameter, p.details.icon) : (p.details.abbreviation ?? p.parameter)
+          const metric = autoFormatMetric(p.datum.value, p.parameter as ForecastParameter, get(settings), {
+            showDecimal: true,
+          })
           return `<div class="flex items-center gap-2">${svg} <span class='ml-auto'>${metric}</span></div>`
         })
         .join('')}`,
