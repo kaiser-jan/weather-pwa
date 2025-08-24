@@ -3,7 +3,7 @@
   import * as Drawer from '$lib/components/ui/drawer'
   import { Input } from '$lib/components/ui/input'
   import { cn } from '$lib/utils'
-  import { ChevronLeftIcon, MapPinnedIcon, PencilIcon, SearchIcon, XIcon } from '@lucide/svelte'
+  import { ChevronLeftIcon, HistoryIcon, MapPinnedIcon, PencilIcon, SearchIcon, XIcon } from '@lucide/svelte'
   import { settings } from '$lib/settings/store'
   import { iconMap } from '$lib/utils/icons'
   import { geolocationStore } from '$lib/stores/geolocation'
@@ -17,8 +17,11 @@
   import type { PlaceOutput } from '$lib/types/nominatim'
   import { pushState } from '$app/navigation'
   import ApiSearchResult from '$lib/components/ApiSearchResult.svelte'
+  import { persist } from '$lib/utils/stores'
 
   const geolocationDetails = geolocationStore.details
+
+  const SEARCH_CACHE_KEY = 'cache-location-search-results'
 
   interface Props {
     active: boolean
@@ -34,6 +37,8 @@
   let searchNow = $state<() => void>(() => {})
 
   const savedLocations = settings.select((s) => s.data.locations)
+
+  const cachedResults = persist<{ query: string; results: PlaceOutput[] }[]>($state.snapshot(SEARCH_CACHE_KEY), [])
 
   const geolocationItem = $derived({
     id: ITEM_ID_GEOLOCATION,
@@ -100,7 +105,7 @@
           <ApiSearchResult
             bind:liveQuery={currentQuery}
             bind:searchNow
-            cacheKey="cache-location-search-results"
+            cacheKey={SEARCH_CACHE_KEY}
             load={nominatimQuery}
           >
             {#snippet children({ isLoading, result })}
@@ -178,26 +183,50 @@
         </div>
       {/if}
 
-      <div class="relative mt-auto">
-        <Input
-          placeholder="Search any location..."
-          bind:value={currentQuery}
-          onkeypress={(e) => {
-            if (e.key === 'Enter') searchNow()
-          }}
-          class="h-12"
-        />
-        <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
-        {#if currentQuery}
-          <Button
-            size="icon"
-            variant="outline"
-            class="text-muted-foreground absolute top-1/2 right-2 size-8 -translate-y-1/2"
-            onclick={clearSearch}
-          >
-            <XIcon />
-          </Button>
+      <div class="mt-auto flex flex-col gap-4">
+        {#if !page.state.locationQuery && !currentQuery}
+          <h5 class="text-text-muted -mb-3 inline-flex items-center gap-2 text-sm">
+            <HistoryIcon />
+            Recent Searches
+          </h5>
+          <div class="flex flex-col gap-2">
+            {#each $cachedResults ?? [] as recentSearch}
+              <Button
+                variant="midground"
+                class="inline-flex items-center justify-start gap-2 px-2"
+                onclick={() => {
+                  currentQuery = recentSearch.query
+                  searchNow()
+                }}
+              >
+                <SearchIcon />
+                {recentSearch.query}
+              </Button>
+            {/each}
+          </div>
         {/if}
+
+        <div class="relative">
+          <Input
+            placeholder="Search any location..."
+            bind:value={currentQuery}
+            onkeypress={(e) => {
+              if (e.key === 'Enter') searchNow()
+            }}
+            class="h-12"
+          />
+          <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
+          {#if currentQuery}
+            <Button
+              size="icon"
+              variant="outline"
+              class="text-muted-foreground absolute top-1/2 right-2 size-8 -translate-y-1/2"
+              onclick={clearSearch}
+            >
+              <XIcon />
+            </Button>
+          {/if}
+        </div>
       </div>
     </div>
   </Drawer.Content>

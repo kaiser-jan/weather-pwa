@@ -85,6 +85,7 @@
     const MAX_ENTRIES = 10
     _cachedResults.unshift({ query: query!, results: newResults })
     if (_cachedResults.length > MAX_ENTRIES) _cachedResults.length = MAX_ENTRIES
+    cachedResults.set(_cachedResults)
 
     return newResults
   }
