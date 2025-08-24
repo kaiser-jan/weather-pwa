@@ -96,7 +96,12 @@ function getNearestPointAtTimestamp(
   // this would cause the axis pointer to jump e.g. for hourly data around :30
   const datum = series.data[i - 1] ?? series.data[i]
 
-  if (!datum) return null
+  if (!series.data.length || !datum) return null
+
+  // NOTE: checking if we are past the last is currently not required
+  // if it was, we would also need to check if this is the end of the charted timeperiod, otherwise the last timestamp is not accessible
+  const isNotDefined = x0 < series.data[0].timestamp // || x0 > series.data[series.data.length - 1].timestamp
+  if (isNotDefined) return null
 
   return {
     x: scaleX(datum.timestamp),
