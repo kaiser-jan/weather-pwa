@@ -51,7 +51,9 @@ export function useAutoAxis() {
     const rangeY = [dimensions.height + dimensions.margin.top, dimensions.margin.top]
     const scaleY = d3.scaleLinear(domain, rangeY) //.nice()
 
-    if (HIDE_AXIS_FOR_PARAMETERS.includes(parameter)) return { domain, unit, scaleY, format, axis: null }
+    const shouldHide = HIDE_AXIS_FOR_PARAMETERS.includes(parameter)
+    const hasNoValue = !series.length || series.every((e) => e.value === 0)
+    if (shouldHide || hasNoValue) return { domain, unit, scaleY, format, axis: null }
 
     const newAxisBase = { domain, unit }
     const existingSameAxis = existingAxisList.find(
