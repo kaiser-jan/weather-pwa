@@ -25,15 +25,15 @@
         <Accordion.Trigger class="p-auto">
           {hiddenItems.length} Hidden Metrics
           {#if markedHiddenItems.length}
-            <span class="text-text-muted mr-auto inline-flex items-center space-x-1">
+            <span class="text-text-muted mr-auto inline-flex items-baseline space-x-1">
               (
               {#each markedHiddenItems as item, i (item)}
                 {#if i !== 0}
-                  ,
+                  ,&nbsp;
                 {/if}
                 {@render itemSnippet(item)}
               {/each}
-              <span>selected)</span>
+              <span>&nbsp;selected)</span>
             </span>
           {/if}
         </Accordion.Trigger>

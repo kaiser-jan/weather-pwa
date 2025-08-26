@@ -14,7 +14,7 @@
 {#if details.icon}
   <ParameterIcon class="shrink-0" />
 {:else if details.abbreviation}
-  <span class="shrink-0 text-xs">{details.abbreviation}</span>
+  <span class="m-0 shrink-0 text-xs">{details.abbreviation}</span>
 {:else}
   {details.label}
 {/if}
