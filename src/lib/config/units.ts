@@ -39,6 +39,7 @@ export const METRIC_DIMENSION: Record<ForecastParameter, UnitDimension | null> =
   pm10: 'density',
   o3: 'density',
   no2: 'density',
+  dew_point: 'temperature',
 } as const
 
 export const UNIT_OPTIONS = {

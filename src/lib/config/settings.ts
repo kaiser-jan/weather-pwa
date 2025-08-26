@@ -427,10 +427,9 @@ export const settingsConfig = [
                 default: [
                   'temperature',
                   'precipitation_amount',
-                  'relative_humidity',
                   'wind_speed',
-                  'pressure',
                   'cloud_coverage',
+                  'dew_point',
                 ] as ForecastParameter[],
               },
             ],

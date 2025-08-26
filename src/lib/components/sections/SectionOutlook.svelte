@@ -44,7 +44,7 @@
 
 <SectionTitle title="Outlook" icon={BinocularsIcon} />
 <FailSafeContainer name="Section Outlook" class="flex flex-row overflow-y-auto rounded-md" bind:element={container}>
-  {#each $forecastStore?.daily.filter((d) => d.summary !== undefined) ?? [] as day (day.timestamp)}
+  {#each $forecastStore?.daily.filter((d) => d.summary !== undefined && d.summary.temperature) ?? [] as day (day.timestamp)}
     <Button
       variant="midground"
       size="fit"

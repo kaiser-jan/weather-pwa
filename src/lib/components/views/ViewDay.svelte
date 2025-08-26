@@ -140,7 +140,7 @@
           {/if}
         </div>
 
-        <div class="border-foreground -mt-2 min-h-0 grow overflow-y-auto border-t-2 pt-2">
+        <div class="-mt-2 min-h-0 grow overflow-y-auto pt-2">
           <ExpandableList
             items={FORECAST_METRICS}
             visibleItems={$settings.sections.views.day.metrics}

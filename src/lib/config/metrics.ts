@@ -2,6 +2,7 @@ import {
   CloudOffIcon,
   CloudyIcon,
   DropletIcon,
+  DropletsIcon,
   FactoryIcon,
   GaugeIcon,
   ShieldIcon,
@@ -15,7 +16,7 @@ import {
 } from '@lucide/svelte'
 import type { ForecastParameter } from '$lib/types/data'
 import type { ColorStop, MetricDetails } from '$lib/types/ui'
-import { EAQI } from './categorization'
+import { DEW_POINT_CATEGORIES, EAQI } from './categorization'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 
@@ -211,7 +212,27 @@ const _METRIC_DETAILS = {
     chart: { style: 'line', class: 'opacity-80' },
   },
   // TODO: make this use ForecastMetrics instead
+
+  dew_point: {
+    label: 'Dew Point',
+    domain: { min: [0], max: [30] },
+    icon: DropletsIcon,
+    color: { gradient: DEW_POINT_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsl(c.color) })) },
+    chart: {
+      style: 'line',
+      class: 'opacity-80',
+    },
+  },
 } as const satisfies Partial<Record<ForecastParameter, MetricDetails>>
+
+function parseHsl(str: string): { h: number; s: number; l: number } {
+  const match = str.match(/hsl\((\d+)[,\s]+([\d.]{1,3})%[,\s]+([\d.]{1,3})%\)/i)
+  if (!match) {
+    console.warn(`Invalid HSL string ${str}!`)
+    return { h: 0, s: 100, l: 50 }
+  }
+  return { h: parseFloat(match[1]), s: parseFloat(match[2]), l: parseFloat(match[3]) }
+}
 
 export type ForecastMetric = keyof typeof _METRIC_DETAILS
 

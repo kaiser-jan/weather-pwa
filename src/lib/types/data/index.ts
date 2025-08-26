@@ -67,6 +67,8 @@ export const FORECAST_PARAMETERS = [
   'o3',
   'pm10',
   'pm25',
+  // derived
+  'dew_point',
 ] as const
 
 export type ForecastParameter = (typeof FORECAST_PARAMETERS)[number]

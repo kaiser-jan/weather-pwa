@@ -7,6 +7,7 @@ import { combineMultiseriesToDailyForecast } from '$lib/utils/forecast/daily'
 import { mergeMultivariateTimeSeries } from '$lib/utils/forecast/multiseries'
 import { forecastTotalFromDailyForecast } from '$lib/utils/forecast/total'
 import { getCachedForecast, setCachedForecast } from './cache'
+import { addDerivedMetrics } from './deriveMetrics'
 
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
@@ -96,6 +97,8 @@ function createForecastFromResults(results: LoaderState[], inputs: ForecastInput
   for (let i = 1; i < parts.length; i++) {
     merged = mergeMultivariateTimeSeries(merged, parts[i])
   }
+
+  addDerivedMetrics(merged)
 
   const daily = combineMultiseriesToDailyForecast(merged)
   const total = forecastTotalFromDailyForecast(daily)

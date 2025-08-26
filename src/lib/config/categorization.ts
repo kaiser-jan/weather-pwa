@@ -37,6 +37,22 @@ export const RAIN_CATEGORIES: {
   { threshold: 50, color: 'hsla(270, 70%, 45%, 1)', description: 'Violent Rain' },
 ] as const
 
+// https://www.researchgate.net/figure/Dew-point-Humidity-and-corresponding-Human-Perception_tbl5_312498146
+export const DEW_POINT_CATEGORIES: {
+  threshold: number // °C
+  color: string // hsla
+  description: string
+}[] = [
+  { threshold: 0, color: 'hsl(197 54% 64%)', description: 'Dry' },
+  { threshold: 10, color: 'hsl(100 60% 60%)', description: 'Very Comfortable' },
+  { threshold: 12, color: 'hsl(80 75% 66%)', description: 'Comfortable' },
+  { threshold: 16, color: 'hsl(55 78% 63%)', description: 'Ok' },
+  { threshold: 18, color: 'hsl(35 79% 62%)', description: 'Humid' },
+  { threshold: 21, color: 'hsl(20 78% 68%)', description: 'Very Humid' },
+  { threshold: 24, color: 'hsl(10 80% 65%)', description: 'Extremely Humid' },
+  { threshold: 26, color: 'hsl(270 70% 62%)', description: 'Dangerously Humid' },
+] as const
+
 export const UVI_COLORS = [
   '#658D1B',
   '#84BD00',
