@@ -9,7 +9,7 @@ export function getEaqiLevel(value: number, scale: readonly number[]): number {
     const upper = scale[i + 1]
     if (value < upper) {
       const t = (value - lower) / (upper - lower)
-      return i + 1 + t
+      return i + t
     }
   }
   return scale.length - 1

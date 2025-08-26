@@ -70,7 +70,7 @@
   type: 'now' | 'today' | 'tomorrow'
 })}
   {#if index}
-    {@const roundedIndex = Math.max(Math.floor(index) - 1, 0)}
+    {@const roundedIndex = Math.max(Math.floor(index), 0)}
     <Button
       variant="ghost"
       size="fit"
