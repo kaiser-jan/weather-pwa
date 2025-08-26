@@ -8,7 +8,7 @@
   import { DateTime } from 'luxon'
   import { TODAY_MILLIS } from '$lib/stores/now'
   import { onMount } from 'svelte'
-  import { BinocularsIcon } from '@lucide/svelte'
+  import { BinocularsIcon, ChevronsRightIcon } from '@lucide/svelte'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
@@ -42,7 +42,7 @@
   })
 </script>
 
-<SectionTitle title="Outlook" icon={BinocularsIcon} />
+<SectionTitle title="Outlook" icon={ChevronsRightIcon} />
 <FailSafeContainer name="Section Outlook" class="flex flex-row overflow-y-auto rounded-md" bind:element={container}>
   {#each $forecastStore?.daily.filter((d) => d.summary !== undefined && d.summary.temperature) ?? [] as day (day.timestamp)}
     <Button

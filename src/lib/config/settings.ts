@@ -11,6 +11,7 @@ import {
   CalendarDaysIcon,
   ChartLineIcon,
   ChartNoAxesGanttIcon,
+  ChevronsRightIcon,
   ChevronsUpDownIcon,
   CircleArrowUpIcon,
   CircleFadingArrowUpIcon,
@@ -396,7 +397,7 @@ export const settingsConfig = [
         id: 'outlook',
         label: 'Outlook',
         type: 'page',
-        icon: BinocularsIcon,
+        icon: ChevronsRightIcon,
         children: [
           {
             id: 'showPrecipitation',
