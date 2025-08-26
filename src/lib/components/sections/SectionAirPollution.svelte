@@ -16,46 +16,17 @@
   import { dayView } from '$lib/stores/ui'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
+  import { getEaqiLevels, getTotalEaqiIndex, type ForecastParameterAirPollution } from '$lib/utils/forecast/aqi/eaqi'
 
   const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS) ?? null)
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS) ?? null)
-
-  type ForecastParameterAirPollution = keyof typeof EAQI.limits
-
-  function getEaqiLevel(value: number, scale: readonly number[]): number {
-    for (let i = 1; i < scale.length - 1; i++) {
-      const lower = scale[i]
-      const upper = scale[i + 1]
-      if (value < upper) {
-        const t = (value - lower) / (upper - lower)
-        return i + 1 + t
-      }
-    }
-    return scale.length - 1
-  }
-
-  function getEaqiLevels(values: Partial<Record<ForecastParameterAirPollution, number | undefined>>) {
-    const levels = {} as Record<ForecastParameterAirPollution, number>
-    for (const key in EAQI.limits) {
-      const param = key as ForecastParameterAirPollution
-      const value = values[param]
-      if (value === null || value === undefined) return
-      levels[param] = getEaqiLevel(convertToUnit(value, param, 'ug/m3'), EAQI.limits[param])
-    }
-    return levels
-  }
-
-  function getTotalEaqiIndex(levels: Record<string, number> | undefined): number {
-    if (!levels) return
-    return Math.max(0, ...Object.values(levels))
-  }
 
   function getEaqiDetailsForTimeBucket(day: TimeBucket) {
     const minValues = day ? Object.fromEntries(Object.entries(day.summary).map(([p, s]) => [p, s.min])) : {}
     const maxValues = day ? Object.fromEntries(Object.entries(day.summary).map(([p, s]) => [p, s.max])) : {}
 
     const maxLevels = getEaqiLevels(maxValues)
-    const maxIndex = getTotalEaqiIndex(maxLevels)
+    const maxIndex = day.summary.aqi.max
 
     return {
       minValues,
@@ -75,7 +46,7 @@
       current: {
         values: currentValues,
         levels: currentLevels,
-        index: currentLevels ? getTotalEaqiIndex(currentLevels) : undefined,
+        index: currentValues.aqi,
       },
       today: today ? getEaqiDetailsForTimeBucket(today) : undefined,
       tomorrow: tomorrow ? getEaqiDetailsForTimeBucket(tomorrow) : undefined,
@@ -144,7 +115,7 @@
       variant="midground"
       size="fit"
       class="flex grow flex-col gap-0 text-left"
-      onclick={() => dayView.open(today, pollutants)}
+      onclick={() => dayView.open(today, [...pollutants, 'aqi'])}
     >
       {#each Object.keys($eaqi.current.levels) as _pollutant}
         {@const pollutant = _pollutant as ForecastParameterAirPollution}

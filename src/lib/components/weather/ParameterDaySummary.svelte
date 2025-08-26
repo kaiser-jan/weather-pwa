@@ -96,8 +96,8 @@
           {item}
         </div>
       {/if}
-    {:else if item === 'range-bar'}
-      <NumberRangeBar total={domain} instance={day?.summary[parameter]} color={details?.color} className="h-2" />
+    {:else if item === 'range-bar' && day.summary[parameter]}
+      <NumberRangeBar total={domain} instance={day.summary[parameter]} color={details?.color} className="h-2" />
     {:else if item === 'trend'}
       {@const values = day.multiseries[parameter]}
       {#if values && values[0].value < values[values.length - 1].value}

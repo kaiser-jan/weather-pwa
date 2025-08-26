@@ -60,6 +60,7 @@
     pm10: { items: ['icon', 'avg', 'max'] },
     o3: { items: ['icon', 'avg', 'max'] },
     no2: { items: ['icon', 'avg', 'max'] },
+    aqi: { items: ['icon', 'avg', 'max'] },
   }
 
   function handleSwipe(event: SwipeCustomEvent) {

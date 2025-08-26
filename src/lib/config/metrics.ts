@@ -21,10 +21,10 @@ import { DEW_POINT_CATEGORIES, EAQI } from './categorization'
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 export const PREFER_MERGED_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['dew_point']
 
-function createLimitsGradient(limits: number[], colors: Omit<ColorStop, 'value'>[]) {
+function createLimitsGradient(limits: number[], colors: Omit<ColorStop, 'value'>[], factor = 1) {
   return limits.map(
     (l, i): ColorStop => ({
-      value: l * 1e-6,
+      value: l * factor,
       ...colors[i],
     }),
   )
@@ -172,7 +172,7 @@ const _METRIC_DETAILS = {
       max: [EAQI.limits.pm25[3] * 1e-6, EAQI.limits.pm25[5] * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(EAQI.limits.pm25, EAQI.colors),
+      gradient: createLimitsGradient(EAQI.limits.pm25, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -184,7 +184,7 @@ const _METRIC_DETAILS = {
       max: [EAQI.limits.pm10[3] * 1e-6, EAQI.limits.pm10[5] * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(EAQI.limits.pm10, EAQI.colors),
+      gradient: createLimitsGradient(EAQI.limits.pm10, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -196,7 +196,7 @@ const _METRIC_DETAILS = {
       max: [EAQI.limits.o3[3] * 1e-6, EAQI.limits.o3[5] * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(EAQI.limits.o3, EAQI.colors),
+      gradient: createLimitsGradient(EAQI.limits.o3, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -208,7 +208,19 @@ const _METRIC_DETAILS = {
       max: [EAQI.limits.no2[3] * 1e-6, EAQI.limits.no2[5] * 1e-6],
     },
     color: {
-      gradient: createLimitsGradient(EAQI.limits.no2, EAQI.colors),
+      gradient: createLimitsGradient(EAQI.limits.no2, EAQI.colors, 1e-6),
+    },
+    chart: { style: 'line', class: 'opacity-80' },
+  },
+  aqi: {
+    label: 'Air Quality',
+    icon: FactoryIcon,
+    domain: {
+      min: [0],
+      max: [0, 6],
+    },
+    color: {
+      gradient: createLimitsGradient([1, 2, 3, 4, 5, 6], EAQI.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },

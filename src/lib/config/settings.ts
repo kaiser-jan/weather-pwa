@@ -438,6 +438,7 @@ export const settingsConfig = [
                   'wind_speed',
                   'cloud_coverage',
                   'dew_point',
+                  'aqi',
                 ] as ForecastParameter[],
               },
             ],

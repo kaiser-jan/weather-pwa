@@ -24,7 +24,7 @@ export function formatMetric(
 
   const string = d3.format(showDecimal ? '.1f' : 'd')(value)
   // console.debug(value, unit, options, string)
-  if (options?.hideUnit) return string
+  if (options?.hideUnit || unit === null) return string
   return string + unit
 }
 

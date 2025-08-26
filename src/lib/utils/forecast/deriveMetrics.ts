@@ -1,5 +1,5 @@
-import type { ForecastMetric } from '$lib/config/metrics'
 import type { ForecastParameter, MultivariateTimeSeries, TimeSeries } from '$lib/types/data'
+import { getEaqiLevel, getEaqiLevels, getTotalEaqiIndex } from './aqi/eaqi'
 
 function calculateDewPoint({ temperature, relative_humidity }: { temperature: number; relative_humidity: number }) {
   const b = 17.625
@@ -10,10 +10,17 @@ function calculateDewPoint({ temperature, relative_humidity }: { temperature: nu
 
 const derivedMetrics = [
   { metric: 'dew_point', sourceMetrics: ['temperature', 'relative_humidity'], callback: calculateDewPoint },
+  {
+    metric: 'aqi',
+    sourceMetrics: ['pm25', 'pm10', 'o3', 'no2'],
+    notAllSourcesRequired: true,
+    callback: (values) => getTotalEaqiIndex(getEaqiLevels(values)) ?? null,
+  },
 ] as const satisfies {
   metric: ForecastParameter
+  notAllSourcesRequired?: boolean
   sourceMetrics: ForecastParameter[]
-  callback: (values: Record<ForecastParameter, number>) => number
+  callback: (values: Record<ForecastParameter, number>) => number | null
 }[]
 
 export function addDerivedMetrics(multiseries: MultivariateTimeSeries) {
@@ -27,7 +34,7 @@ export function addDerivedMetrics(multiseries: MultivariateTimeSeries) {
 function deriveTimeseriesFromMetrics<MetricT extends ForecastParameter>(
   multiseries: MultivariateTimeSeries,
   metrics: MetricT[],
-  callback: (values: Record<MetricT, number>) => number,
+  callback: (values: Record<MetricT, number>) => number | null,
 ) {
   if (metrics.some((m) => !multiseries[m])) return null
 
@@ -57,10 +64,16 @@ function deriveTimeseriesFromMetrics<MetricT extends ForecastParameter>(
     const endTimestamps = timebucketList.map((v) => v.timestamp + v.duration).sort()
     const earliestEndTimestamp = endTimestamps[0]
 
+    const value = callback(
+      Object.fromEntries(metrics.map((m) => [m, timebucketMap[m]?.value!])) as Record<MetricT, number>,
+    )
+
+    if (value === null) continue
+
     derivedTimeseries.push({
       timestamp,
       duration: earliestEndTimestamp - timestamp,
-      value: callback(Object.fromEntries(metrics.map((m) => [m, timebucketMap[m]?.value!])) as Record<MetricT, number>),
+      value,
     })
   }
 
