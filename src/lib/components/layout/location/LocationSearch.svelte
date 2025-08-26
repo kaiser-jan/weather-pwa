@@ -12,7 +12,7 @@
   import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
   import { selectedLocation } from '$lib/stores/location'
   import { page } from '$app/state'
-  import { locationSearch } from '$lib/stores/ui'
+  import { locationSearch, openSettingsAt } from '$lib/stores/ui'
   import { popUntil } from '$lib/utils'
   import type { PlaceOutput } from '$lib/types/nominatim'
   import { pushState } from '$app/navigation'
@@ -167,17 +167,7 @@
               },
             }))}
           />
-          <Button
-            variant="outline"
-            onclick={() => {
-              pushState('', {
-                ...page.state,
-                showLocationSearch: false,
-                showSettings: true,
-                settingsPath: ['data', 'locations'],
-              })
-            }}
-          >
+          <Button variant="outline" onclick={() => openSettingsAt(['data', 'locations'])}>
             <PencilIcon /> Edit saved locations
           </Button>
         </div>

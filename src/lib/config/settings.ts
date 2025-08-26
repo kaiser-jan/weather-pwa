@@ -11,6 +11,7 @@ import {
   CalendarDaysIcon,
   ChartLineIcon,
   ChartNoAxesGanttIcon,
+  ChartSplineIcon,
   ChevronsRightIcon,
   ChevronsUpDownIcon,
   CircleArrowUpIcon,
@@ -477,14 +478,6 @@ export const settingsConfig = [
             icon: ChartLineIcon,
             children: [
               {
-                id: 'metrics',
-                label: 'Plotted Weather Metrics',
-                type: 'multiselect',
-                icon: LetterTextIcon,
-                options: FORECAST_METRICS,
-                default: ['temperature', 'precipitation_amount', 'cloud_coverage'] as ForecastParameter[],
-              },
-              {
                 id: 'tooltip',
                 label: 'Show Tooltip',
                 type: 'boolean',
@@ -512,6 +505,23 @@ export const settingsConfig = [
                 icon: ArrowUpAz,
                 options: ['inline', 'above', 'replace', 'off'] as const,
                 default: 'replace',
+              },
+
+              {
+                id: 'plottedMetrics',
+                label: 'Plotted Weather Metrics',
+                type: 'multiselect',
+                icon: ChartSplineIcon,
+                options: FORECAST_METRICS,
+                default: ['temperature', 'precipitation_amount', 'cloud_coverage'] as ForecastParameter[],
+              },
+              {
+                id: 'pinnedMetrics',
+                label: 'Pinned Weather Metrics',
+                type: 'multiselect',
+                icon: ChartSplineIcon,
+                options: FORECAST_METRICS,
+                default: ['temperature', 'precipitation_amount', 'cloud_coverage', 'wind_speed'] as ForecastParameter[],
               },
             ],
           },

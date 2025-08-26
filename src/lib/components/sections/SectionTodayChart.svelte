@@ -14,7 +14,7 @@
 
   const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS))
 
-  let visibleMetrics = $state<ForecastMetric[]>($settings.sections.components.chart.metrics)
+  let visibleMetrics = $state<ForecastMetric[]>($settings.sections.components.chart.plottedMetrics)
 </script>
 
 <SectionTitle

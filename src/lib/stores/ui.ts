@@ -31,7 +31,8 @@ export const dayView = {
     if (!target) return
     if (page.state.selectedDayIndex !== undefined) return
 
-    if (!metrics.length) dayView.visibleMetrics.set(structuredClone(get(settings).sections.components.chart.metrics))
+    if (!metrics.length)
+      dayView.visibleMetrics.set(structuredClone(get(settings).sections.components.chart.plottedMetrics))
     else dayView.visibleMetrics.set(metrics)
 
     const forecast = get(forecastStore)
@@ -82,4 +83,13 @@ async function navigateBy(direction: number) {
   } else {
     navigateByFromInitial(currentIndex, direction)
   }
+}
+
+export function openSettingsAt(path: string[]) {
+  pushState('', {
+    ...page.state,
+    showLocationSearch: false,
+    showSettings: true,
+    settingsPath: path,
+  })
 }
