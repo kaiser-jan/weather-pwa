@@ -82,8 +82,11 @@
         class="ml-auto size-3 rounded-full"
         style="background-color: {hslFromObject(EAQI.colors[roundedIndex])}"
       ></div>
-      <!-- <span class="text-text-muted text-xs">{EAQI.labels[roundedIndex]}</span> -->
-      <span class="text-text-muted">{index.toFixed(1)}</span>
+      {#if $settings.data.forecast.aqi.showCategory}
+        <span class="text-text-muted w-[6ch] text-left text-xs">{EAQI.labels[roundedIndex]}</span>
+      {:else}
+        <span class="text-text-muted">{index.toFixed(1)}</span>
+      {/if}
     </Button>
   {/if}
 {/snippet}
