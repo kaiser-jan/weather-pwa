@@ -139,10 +139,9 @@
 
       if (axis) {
         const xOffset =
-          dimensions.margin.left +
-          (axis.side === 'left' ? 0 : dimensions.width) +
-          (axis.side === 'left' ? -LINE_CORRECTION : LINE_CORRECTION) +
-          axis.offset
+          axis.side === 'left'
+            ? dimensions.margin.left - axis.offset - LINE_CORRECTION
+            : dimensions.widthFull - dimensions.margin.right + axis.offset - LINE_CORRECTION
 
         createYAxis({
           svg,

@@ -99,7 +99,8 @@ export function computeAxesFor(axes: AxisDetails[], dimensions: Dimensions) {
     const side = axisOnLeft ? 'left' : 'right'
     dimensions.margin[side] += requiredX
     offset = sideOffsets[side]
-    sideOffsets[side] -= requiredX
+    sideOffsets[side] += requiredX
+    console.log(`adding ${requiredX} offset ${side}`)
 
     axisIndex += 1
 
