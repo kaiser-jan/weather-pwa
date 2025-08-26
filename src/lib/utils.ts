@@ -173,7 +173,7 @@ export function getStartOfDayTimestamp(timestamp: number) {
   return start
 }
 export function getEndOfDayTimestamp(timestamp: number) {
-  const end = getStartOfDayTimestamp(timestamp - offset) + MS_PER_DAY + offset
+  const end = getStartOfDayTimestamp(timestamp - offset) + MS_PER_DAY
   return end
 }
 
