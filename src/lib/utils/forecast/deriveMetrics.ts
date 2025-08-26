@@ -39,11 +39,11 @@ function deriveTimeseriesFromMetrics<MetricT extends ForecastParameter>(
   if (metrics.some((m) => !multiseries[m])) return null
 
   const timeseriesList = metrics.map((m) => multiseries[m as ForecastParameter]) as TimeSeries<number>[]
-  const timstamps = timeseriesList.flatMap((s) => s.map((d) => d.timestamp)).sort()
-  console.log(timstamps)
+  const timestamps = timeseriesList.flatMap((s) => s.map((d) => d.timestamp))
+  const timestampsSorted = Array.from(new Set(timestamps)).sort()
 
   const derivedTimeseries: TimeSeries<number> = []
-  for (const timestamp of timstamps) {
+  for (const timestamp of timestampsSorted) {
     const timebucketMap: Partial<Record<MetricT, TimeSeries<number>[number]>> = {}
 
     for (const metric of metrics) {
