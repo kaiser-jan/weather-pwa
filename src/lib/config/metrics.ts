@@ -19,6 +19,7 @@ import type { ColorStop, MetricDetails } from '$lib/types/ui'
 import { DEW_POINT_CATEGORIES, EAQI } from './categorization'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
+export const PREFER_MERGED_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['dew_point']
 
 function createLimitsGradient(limits: number[], colors: Omit<ColorStop, 'value'>[]) {
   return limits.map(

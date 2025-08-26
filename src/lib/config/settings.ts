@@ -324,7 +324,7 @@ export const settingsConfig = [
               { value: 15, h: 134, s: 47, l: 70 },
               { value: 20, h: 96, s: 67, l: 60 },
               { value: 25, h: 47, s: 83, l: 63 },
-              { value: 30, h: 25, s: 56, l: 48 },
+              { value: 30, h: 25, s: 62, l: 58 },
               { value: 40, h: 12, s: 66, l: 35 },
             ] as ColorStop[],
           },

@@ -17,7 +17,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
   import ChartValuesDisplay from './ChartValuesDisplay.svelte'
-  import { useAutoAxis } from '$lib/utils/d3/autoAxis'
+  import { computeAxesFor } from '$lib/utils/d3/autoAxis'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -79,19 +79,24 @@
 
     dimensions = computeDimensions()
 
-    const autoAxisFactory = useAutoAxis()
-    const computedAxisList: Partial<Record<ForecastMetric, ReturnType<typeof autoAxisFactory.compute>>> = {}
     const displayedMetrics: ForecastMetric[] = []
+
+    const axesToCompute: {
+      parameter: ForecastMetric
+      series: TimeSeries<number>
+      details: MetricDetails
+    }[] = []
 
     for (const parameter of parameters) {
       const series = data[parameter]
       const details = METRIC_DETAILS[parameter]
       if (!series || !details) continue
 
-      const result = autoAxisFactory.compute({ dimensions, parameter, series, details })
-      computedAxisList[parameter] = result
+      axesToCompute.push({ parameter, series, details })
       displayedMetrics.push(parameter)
     }
+
+    const computedAxisList = computeAxesFor(axesToCompute, dimensions)
 
     dimensions = computeDimensions()
 

@@ -1,4 +1,4 @@
-import { HIDE_AXIS_FOR_PARAMETERS, type ForecastMetric } from '$lib/config/metrics'
+import { HIDE_AXIS_FOR_PARAMETERS, PREFER_MERGED_AXIS_FOR_PARAMETERS, type ForecastMetric } from '$lib/config/metrics'
 import type { Unit } from '$lib/config/units'
 import type { TimeSeries } from '$lib/types/data'
 import type { MetricDetails } from '$lib/types/ui'
@@ -6,12 +6,9 @@ import { get } from 'svelte/store'
 import { autoFormatMetric, getPreferredUnit } from '../units'
 import { settings } from '$lib/settings/store'
 import type { Dimensions } from './types'
-import { createYAxis } from './axis'
 import * as d3 from 'd3'
-import { deepEqual } from '$lib/utils'
 
-type CreateOptions = {
-  dimensions: Dimensions
+type AxisDetails = {
   parameter: ForecastMetric
   series: TimeSeries<number>
   details: MetricDetails
@@ -28,12 +25,39 @@ type ComputedAxis = {
   } | null
 }
 
-export function useAutoAxis() {
+export function computeAxesFor(axes: AxisDetails[], dimensions: Dimensions) {
   let sideOffsets = { left: 0, right: 0 }
   let axisIndex = 0
-  let existingAxisList: ComputedAxis[] = []
+  // @ts-expect-error
+  let existingAxes: Record<ForecastMetric, ComputedAxis> = {}
 
-  function compute({ dimensions, parameter, series, details }: CreateOptions): ComputedAxis {
+  const delayedAxes: AxisDetails[] = []
+  for (const axis of axes) {
+    // some parameters have the same units and it makes sense to use existing axis, even the domain might not be perfect
+    if (PREFER_MERGED_AXIS_FOR_PARAMETERS.includes(axis.parameter)) {
+      delayedAxes.push(axis)
+      continue
+    }
+
+    existingAxes[axis.parameter] = compute(axis)
+  }
+
+  // for all axis which prefer using an existing axis, check if there is one that fits or create one otherwise
+  for (const axis of delayedAxes) {
+    const extent = d3.extent(axis.series, (d) => d.value)
+    const min = extent[0] ?? 0
+    const max = extent[1] ?? 0
+    const unit = getPreferredUnit(axis.parameter, get(settings))
+    const matchingAxis = Object.values(existingAxes).find(
+      (a) => a.unit === unit && a.domain[0] < min && a.domain[1] > max,
+    )
+    // if there already is a matching axis, use the same details but don't redraw the axis
+    existingAxes[axis.parameter] = matchingAxis ? { ...matchingAxis, axis: null } : compute(axis)
+  }
+
+  return existingAxes
+
+  function compute({ parameter, series, details }: AxisDetails): ComputedAxis {
     const extent = d3.extent(series, (d) => d.value)
     const min = extent[0] ?? 0
     const max = extent[1] ?? 0
@@ -56,7 +80,7 @@ export function useAutoAxis() {
     if (shouldHide || hasNoValue) return { domain, unit, scaleY, format, axis: null }
 
     const newAxisBase = { domain, unit }
-    const existingSameAxis = existingAxisList.find(
+    const existingSameAxis = Object.values(existingAxes).find(
       (a) =>
         a.unit === newAxisBase.unit && a.domain[0] === newAxisBase.domain[0] && a.domain[1] === newAxisBase.domain[1],
     )
@@ -90,13 +114,9 @@ export function useAutoAxis() {
       },
     } as const
 
-    existingAxisList.push(newAxis)
+    existingAxes[parameter] = newAxis
 
     return newAxis
-  }
-
-  return {
-    compute,
   }
 }
 
