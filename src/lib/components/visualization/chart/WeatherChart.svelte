@@ -96,7 +96,7 @@
       displayedMetrics.push(parameter)
     }
 
-    const computedAxisList = computeAxesFor(axesToCompute, dimensions)
+    const computedAxisList = computeAxesFor(axesToCompute, dimensions, data)
 
     dimensions = computeDimensions()
 

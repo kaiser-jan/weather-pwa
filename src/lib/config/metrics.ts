@@ -14,7 +14,7 @@ import {
   WindIcon,
   ZapIcon,
 } from '@lucide/svelte'
-import type { ForecastParameter } from '$lib/types/data'
+import type { ForecastParameter, MultivariateTimeSeries } from '$lib/types/data'
 import type { ColorStop, MetricDetails } from '$lib/types/ui'
 import { DEW_POINT_CATEGORIES, EAQI } from './categorization'
 
@@ -30,6 +30,14 @@ function createLimitsGradient(limits: number[], colors: Omit<ColorStop, 'value'>
   )
 }
 
+function createAirPollutantDomainCallback(limits: number[]) {
+  return (multiseries: MultivariateTimeSeries) => {
+    if (!multiseries.aqi) return null
+    const index = Math.ceil(Math.max(...multiseries.aqi.map((d) => d.value)))
+    return [0, limits[index] * 1e-6] as const
+  }
+}
+
 const _METRIC_DETAILS = {
   temperature: {
     label: 'Temperature',
@@ -38,7 +46,7 @@ const _METRIC_DETAILS = {
     color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
     chart: {
       style: 'line',
-      class: '',
+      class: 'opacity-100',
       markExtrema: true,
 
       include: {
@@ -164,6 +172,8 @@ const _METRIC_DETAILS = {
     },
   },
 
+  // TODO: to be precise, air quality metrics would need a non-linear scale
+  // the increments between the limits are not equal, resulting in a distorted chart
   pm25: {
     label: 'PM 2.5',
     abbreviation: 'PM2.5',
@@ -171,10 +181,11 @@ const _METRIC_DETAILS = {
       min: [0],
       max: [EAQI.limits.pm25[3] * 1e-6, EAQI.limits.pm25[5] * 1e-6],
     },
+    domainCallback: createAirPollutantDomainCallback(EAQI.limits.pm25),
     color: {
       gradient: createLimitsGradient(EAQI.limits.pm25, EAQI.colors, 1e-6),
     },
-    chart: { style: 'line', class: 'opacity-80' },
+    chart: { style: 'line', class: 'opacity-50 stroke-3' },
   },
   pm10: {
     label: 'PM 10',
@@ -183,10 +194,11 @@ const _METRIC_DETAILS = {
       min: [0],
       max: [EAQI.limits.pm10[3] * 1e-6, EAQI.limits.pm10[5] * 1e-6],
     },
+    domainCallback: createAirPollutantDomainCallback(EAQI.limits.pm10),
     color: {
       gradient: createLimitsGradient(EAQI.limits.pm10, EAQI.colors, 1e-6),
     },
-    chart: { style: 'line', class: 'opacity-80' },
+    chart: { style: 'line', class: 'opacity-50 stroke-3' },
   },
   o3: {
     label: 'Ozone',
@@ -195,10 +207,11 @@ const _METRIC_DETAILS = {
       min: [0],
       max: [EAQI.limits.o3[3] * 1e-6, EAQI.limits.o3[5] * 1e-6],
     },
+    domainCallback: createAirPollutantDomainCallback(EAQI.limits.o3),
     color: {
       gradient: createLimitsGradient(EAQI.limits.o3, EAQI.colors, 1e-6),
     },
-    chart: { style: 'line', class: 'opacity-80' },
+    chart: { style: 'line', class: 'opacity-50 stroke-3' },
   },
   no2: {
     label: 'Nitrogen Dioxide',
@@ -207,10 +220,11 @@ const _METRIC_DETAILS = {
       min: [0],
       max: [EAQI.limits.no2[3] * 1e-6, EAQI.limits.no2[5] * 1e-6],
     },
+    domainCallback: createAirPollutantDomainCallback(EAQI.limits.no2),
     color: {
       gradient: createLimitsGradient(EAQI.limits.no2, EAQI.colors, 1e-6),
     },
-    chart: { style: 'line', class: 'opacity-80' },
+    chart: { style: 'line', class: 'opacity-50 stroke-3' },
   },
   aqi: {
     label: 'Air Quality',

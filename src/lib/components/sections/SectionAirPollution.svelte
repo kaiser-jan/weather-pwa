@@ -75,7 +75,7 @@
       variant="ghost"
       size="fit"
       class={['flex grow flex-row items-center gap-2', type === 'tomorrow' ? 'opacity-70' : '']}
-      onclick={() => dayView.open(type === 'tomorrow' ? tomorrow : today, pollutants)}
+      onclick={() => dayView.open(type === 'tomorrow' ? tomorrow : today, ['aqi'])}
     >
       <span class="text-text" class:font-bold={type === 'now'}>{label}</span>
       <div

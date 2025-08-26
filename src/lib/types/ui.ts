@@ -1,5 +1,5 @@
 import type { Icon, ThermometerIcon } from '@lucide/svelte'
-import type { Coordinates, TimeSeries, ForecastParameter } from './data'
+import type { Coordinates, TimeSeries, ForecastParameter, MultivariateTimeSeries } from './data'
 
 export type ColorStop = { value: number; h: number; s: number; l: number }
 
@@ -18,6 +18,7 @@ export interface MetricDetailsChart {
 export interface MetricDetails {
   label: string
   domain: { min: number[]; max: number[] }
+  domainCallback?: (multiseries: MultivariateTimeSeries) => readonly [number, number] | null
   icon?: typeof ThermometerIcon
   abbreviation?: string
   color: ColorDefinition

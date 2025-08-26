@@ -1,6 +1,6 @@
 import { HIDE_AXIS_FOR_PARAMETERS, PREFER_MERGED_AXIS_FOR_PARAMETERS, type ForecastMetric } from '$lib/config/metrics'
 import type { Unit } from '$lib/config/units'
-import type { TimeSeries } from '$lib/types/data'
+import type { MultivariateTimeSeries, TimeSeries } from '$lib/types/data'
 import type { MetricDetails } from '$lib/types/ui'
 import { get } from 'svelte/store'
 import { autoFormatMetric, getPreferredUnit } from '../units'
@@ -25,7 +25,7 @@ type ComputedAxis = {
   } | null
 }
 
-export function computeAxesFor(axes: AxisDetails[], dimensions: Dimensions) {
+export function computeAxesFor(axes: AxisDetails[], dimensions: Dimensions, multiseries: MultivariateTimeSeries) {
   let sideOffsets = { left: 0, right: 0 }
   let axisIndex = 0
   // @ts-expect-error
@@ -61,10 +61,12 @@ export function computeAxesFor(axes: AxisDetails[], dimensions: Dimensions) {
     const extent = d3.extent(series, (d) => d.value)
     const min = extent[0] ?? 0
     const max = extent[1] ?? 0
-    const domain = [
-      details.domain.min.findLast((t) => t <= min * 0.9) ?? details.domain.min[0],
-      details.domain.max.find((t) => t >= max * 1.1) ?? details.domain.max[0],
-    ] as const
+    const domain =
+      details.domainCallback?.(multiseries) ??
+      ([
+        details.domain.min.findLast((t) => t <= min * 0.9) ?? details.domain.min[0],
+        details.domain.max.find((t) => t >= max * 1.1) ?? details.domain.max[0],
+      ] as const)
 
     const unit = getPreferredUnit(parameter, get(settings))
     const format = (d: number) =>
