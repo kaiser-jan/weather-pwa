@@ -144,8 +144,9 @@
         <div class="-mt-2 min-h-0 grow overflow-y-auto pt-2">
           <ExpandableList
             items={FORECAST_METRICS}
-            visibleItems={$settings.sections.views.day.metrics}
+            visibleItems={$settings.data.forecast.metrics}
             markedItems={$visibleMetrics}
+            contentClass="gap-2"
           >
             {#snippet itemSnippet(metric)}
               <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />

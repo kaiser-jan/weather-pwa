@@ -260,11 +260,20 @@ export const settingsConfig = [
         icon: CloudSunIcon,
         children: [
           {
-            id: 'preferDerivedSymbols',
-            label: 'Prefer Derived Symbols',
-            type: 'boolean',
-            icon: CalculatorIcon,
-            default: true,
+            id: 'metrics',
+            label: 'Visible Weather Metrics',
+            type: 'multiselect',
+            icon: LetterTextIcon,
+            options: FORECAST_METRICS,
+            default: [
+              'temperature',
+              'precipitation_amount',
+              'wind_speed',
+              'cloud_coverage',
+              'dew_point',
+              'aqi',
+              'pressure',
+            ] as ForecastParameter[],
           },
           {
             id: 'precipitation',
@@ -432,37 +441,22 @@ export const settingsConfig = [
           },
         ],
       },
-      {
-        id: 'views',
-        label: 'Views',
-        type: 'group',
-        icon: PanelBottomOpenIcon,
-        children: [
-          {
-            id: 'day',
-            label: 'Day View',
-            type: 'page',
-            icon: CalendarDaysIcon,
-            children: [
-              {
-                id: 'metrics',
-                label: 'Visible Weather Metrics',
-                type: 'multiselect',
-                icon: LetterTextIcon,
-                options: FORECAST_METRICS,
-                default: [
-                  'temperature',
-                  'precipitation_amount',
-                  'wind_speed',
-                  'cloud_coverage',
-                  'dew_point',
-                  'aqi',
-                ] as ForecastParameter[],
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   id: 'views',
+      //   label: 'Views',
+      //   type: 'group',
+      //   icon: PanelBottomOpenIcon,
+      //   children: [
+      //     {
+      //       id: 'day',
+      //       label: 'Day View',
+      //       type: 'page',
+      //       icon: CalendarDaysIcon,
+      //       children: [
+      //                     ],
+      //     },
+      //   ],
+      // },
       {
         id: 'components',
         label: 'Components',

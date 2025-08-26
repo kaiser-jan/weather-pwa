@@ -45,8 +45,8 @@ export const DEW_POINT_CATEGORIES: {
 }[] = [
   { threshold: 0, color: 'hsl(211 54% 53%)', description: 'Dry' },
   { threshold: 6, color: 'hsl(197 54% 64%)', description: 'Dry' },
-  { threshold: 10, color: 'hsl(100 60% 60%)', description: 'Perfect' },
-  { threshold: 12, color: 'hsl(80 75% 66%)', description: 'Comfortable' },
+  { threshold: 10, color: 'hsl(100 60% 60%)', description: 'Great' },
+  { threshold: 12, color: 'hsl(80 75% 66%)', description: 'Fair' },
   { threshold: 16, color: 'hsl(55 78% 63%)', description: 'Ok' },
   { threshold: 18, color: 'hsl(35 79% 62%)', description: 'Humid' },
   { threshold: 21, color: 'hsl(20 78% 68%)', description: 'Very Humid' },

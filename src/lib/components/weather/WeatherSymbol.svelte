@@ -28,8 +28,10 @@
   const settingSymbols = settings.select((s) => s.appearance.symbols)
 
   let icon = $derived.by(() => {
-    let weatherSitutation =
-      ($settings.data.forecast.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
+    // NOTE: currently using weather situation provided by the loader is not possible anymore
+    // let weatherSitutation =
+    //   ($settings.data.forecast.preferDerivedSymbols ? derivedSituation : providedSituation) ?? derivedSituation
+    const weatherSitutation = derivedSituation
 
     if (!weatherSitutation) return null
 

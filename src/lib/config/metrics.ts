@@ -119,6 +119,17 @@ const _METRIC_DETAILS = {
     },
   },
 
+  dew_point: {
+    label: 'Dew Point',
+    domain: { min: [0], max: [30] },
+    icon: DropletsIcon,
+    color: { gradient: DEW_POINT_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsl(c.color) })) },
+    chart: {
+      style: 'line',
+      class: 'opacity-80',
+    },
+  },
+
   pressure: {
     label: 'Pressure',
     domain: { min: [980 * 100], max: [1040 * 100] },
@@ -172,6 +183,18 @@ const _METRIC_DETAILS = {
     },
   },
 
+  aqi: {
+    label: 'Air Quality',
+    icon: FactoryIcon,
+    domain: {
+      min: [0],
+      max: [0, 6],
+    },
+    color: {
+      gradient: createLimitsGradient([1, 2, 3, 4, 5, 6], EAQI.colors),
+    },
+    chart: { style: 'line', class: 'opacity-80' },
+  },
   // TODO: to be precise, air quality metrics would need a non-linear scale
   // the increments between the limits are not equal, resulting in a distorted chart
   pm25: {
@@ -226,30 +249,8 @@ const _METRIC_DETAILS = {
     },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
   },
-  aqi: {
-    label: 'Air Quality',
-    icon: FactoryIcon,
-    domain: {
-      min: [0],
-      max: [0, 6],
-    },
-    color: {
-      gradient: createLimitsGradient([1, 2, 3, 4, 5, 6], EAQI.colors),
-    },
-    chart: { style: 'line', class: 'opacity-80' },
-  },
-  // TODO: make this use ForecastMetrics instead
 
-  dew_point: {
-    label: 'Dew Point',
-    domain: { min: [0], max: [30] },
-    icon: DropletsIcon,
-    color: { gradient: DEW_POINT_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsl(c.color) })) },
-    chart: {
-      style: 'line',
-      class: 'opacity-80',
-    },
-  },
+  // TODO: make this use ForecastMetrics instead
 } as const satisfies Partial<Record<ForecastParameter, MetricDetails>>
 
 function parseHsl(str: string): { h: number; s: number; l: number } {
