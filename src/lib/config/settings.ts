@@ -351,6 +351,14 @@ export const settingsConfig = [
             icon: PinIcon,
             default: true,
           },
+          {
+            id: 'metrics',
+            label: 'Weather Metrics',
+            type: 'multiselect',
+            icon: LetterTextIcon,
+            options: FORECAST_METRICS,
+            default: ['dew_point', 'wind_speed', 'pressure'] as ForecastParameter[],
+          },
         ],
       },
       {

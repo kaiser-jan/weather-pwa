@@ -1,37 +1,35 @@
 <script lang="ts">
   import type { Forecast, ForecastParameter } from '$lib/types/data'
-  import { CloudIcon, DropletIcon, DropletsIcon, GaugeIcon, Navigation2Icon, SunIcon, WindIcon } from '@lucide/svelte'
+  import { Navigation2Icon } from '@lucide/svelte'
   import FormattedMetric from '$lib/components/snippets/FormattedMetric.svelte'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
+  import { METRIC_DETAILS } from '$lib/config/metrics'
+  import { DEW_POINT_CATEGORIES } from '$lib/config/categorization'
 
   interface Props {
     item: ForecastParameter
     current: Forecast['current'] | null
   }
 
-  const { item, current }: Props = $props()
+  const { item: parameter, current }: Props = $props()
 
-  type Details = { icon?: typeof CloudIcon; datapoint: ForecastParameter }
-
-  const itemMap: Partial<Record<ForecastParameter, Details>> = {
-    cloud_coverage: { icon: CloudIcon, datapoint: 'cloud_coverage' },
-    uvi: { icon: SunIcon, datapoint: 'uvi' },
-    wind_speed: { icon: WindIcon, datapoint: 'wind_speed' },
-    precipitation_amount: { icon: DropletsIcon, datapoint: 'precipitation_amount' },
-    pressure: { icon: GaugeIcon, datapoint: 'pressure' },
-    relative_humidity: { icon: DropletIcon, datapoint: 'relative_humidity' },
-  }
-
-  const details = $derived<Details>(itemMap[item] ?? { datapoint: item })
+  const details = $derived(METRIC_DETAILS[parameter])
+  const value = $derived(current?.[parameter])
 </script>
 
-{#if current?.[details.datapoint] !== undefined}
+{#if current && value}
   <span class="inline-flex items-center gap-1.5">
-    <IconOrAbbreviation {details} />
+    {#if details}
+      <IconOrAbbreviation {details} />
+    {/if}
 
-    <FormattedMetric value={current[details.datapoint]!} parameter={item} />
+    {#if parameter === 'dew_point'}
+      {DEW_POINT_CATEGORIES.findLast((c) => c.threshold < value)?.description}
+    {:else}
+      <FormattedMetric {value} {parameter} />
+    {/if}
 
-    {#if item === 'wind_speed' && current.wind_degrees}
+    {#if parameter === 'wind_speed' && current.wind_degrees}
       <Navigation2Icon
         class="text-text-muted size-[0.8em]!"
         style={`transform: rotate(${current.wind_degrees - 180}deg)`}

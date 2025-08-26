@@ -30,7 +30,7 @@
     return string
   })
 
-  const ITEMS_CURRENT: ForecastParameter[] = ['relative_humidity', 'wind_speed', 'pressure']
+  const ITEMS_CURRENT: ForecastParameter[] = ['dew_point', 'wind_speed', 'pressure']
 
   const forecastCurrent = $derived.by(() => {
     if (!$forecastStore) return null
@@ -99,7 +99,7 @@
       class:h-0!={shrink}
       class:p-0!={shrink}
     >
-      {#each ITEMS_CURRENT as item (item)}
+      {#each $settings.sections.current.metrics as item (item)}
         <WeatherItemCurrent {item} current={forecastCurrent} />
       {/each}
     </div>
