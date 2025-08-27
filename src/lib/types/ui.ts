@@ -18,6 +18,7 @@ export interface MetricDetailsChart {
 export interface MetricDetails {
   label: string
   domain: { min: number[]; max: number[] }
+  domainDefault?: { min: number; max: number }
   domainCallback?: (multiseries: MultivariateTimeSeries) => readonly [number, number] | null
   icon?: typeof ThermometerIcon
   abbreviation?: string

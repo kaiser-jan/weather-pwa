@@ -42,6 +42,7 @@ const _METRIC_DETAILS = {
   temperature: {
     label: 'Temperature',
     domain: { min: [-40, -20, 0], max: [20, 40, 60] },
+    domainDefault: { min: 10, max: 35 },
     icon: ThermometerIcon,
     color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
     chart: {
@@ -122,6 +123,7 @@ const _METRIC_DETAILS = {
   dew_point: {
     label: 'Dew Point',
     domain: { min: [0], max: [30] },
+    domainDefault: { min: 8, max: 24 },
     icon: DropletsIcon,
     color: { gradient: DEW_POINT_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsl(c.color) })) },
     chart: {

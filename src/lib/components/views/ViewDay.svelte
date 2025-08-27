@@ -160,8 +160,7 @@
                     {...config}
                     parameter={metric}
                     day={selectedDay}
-                    selected={$visibleMetrics.includes(metric)}
-                    onclick={() => visibleMetrics.set(toggle($visibleMetrics, metric))}
+                    bind:visibleList={$visibleMetrics}
                   />
                 {/each}
               </div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { settings } from '$lib/settings/store'
   import type { TimeBucket, ForecastParameter } from '$lib/types/data'
   import { ArrowDownIcon, ArrowUpIcon } from '@lucide/svelte'
   import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
@@ -7,27 +6,23 @@
   import type { ColorStop, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FormattedMetric from '$lib/components/snippets/FormattedMetric.svelte'
-  import { cn } from '$lib/utils'
-  import { generateCssRangeGradient } from '$lib/utils/ui'
   import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
   import PrecipitationGroup from '$lib/components/weather/PrecipitationGroup.svelte'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
+  import ParameterToggle from './ParameterToggle.svelte'
 
   type Props = ParameterDaySummaryProps & {
     parameter: ForecastParameter
+    visibleList: ForecastParameter[]
     day: TimeBucket
-    selected: boolean
-    onclick: () => void
   }
 
   let {
     parameter,
-    icon,
     items = ['icon', 'min', 'range-bar', 'max'],
     day,
     useTotalAsDomain,
-    selected,
-    onclick,
+    visibleList = $bindable(),
   }: Props = $props()
 
   const details = $derived<MetricDetails | undefined>(METRIC_DETAILS[parameter])
@@ -42,46 +37,9 @@
 
     return { min, max }
   })
-
-  const colorStyle = $derived.by(() => {
-    if (!details?.color || !domain) return ''
-    // if ('tailwind' in details.color) return details.color.tailwind.bg
-
-    let gradientColorStops: ColorStop[] | null = null
-    if ('gradientSetting' in details.color) {
-      gradientColorStops = settings.readSetting(details.color.gradientSetting).value as ColorStop[]
-    } else if ('gradient' in details.color) {
-      gradientColorStops = details.color.gradient
-    } else if ('css' in details.color) {
-      return `background-color: ${details.color.css}`
-    }
-
-    if (gradientColorStops) {
-      const min = $forecastStore?.total?.summary[parameter].min ?? domain.min
-      const max = $forecastStore?.total?.summary[parameter].max ?? domain.max
-      return generateCssRangeGradient(min, max, gradientColorStops, 'top')
-    }
-
-    return ''
-  })
 </script>
 
-<button
-  class={cn(
-    'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
-    selected ? 'bg-midground border-midground' : '',
-  )}
-  style={`width: ${!items || items.includes('range-bar') || items.includes('precipitation-groups') ? 100 : 40}%`}
-  {onclick}
->
-  {#if details?.color}
-    <div class={'absolute left-0 h-full w-1'} style={colorStyle}></div>
-
-    {#if selected}
-      <div class={'absolute -top-4 right-0 h-10 w-4 -rotate-45'} style={colorStyle}></div>
-    {/if}
-  {/if}
-
+<ParameterToggle {parameter} bind:visibleList {domain}>
   {#each items as item (item)}
     {#if item === 'icon' && details}
       <IconOrAbbreviation {details} />
@@ -124,4 +82,4 @@
       ...
     {/if}
   {/each}
-</button>
+</ParameterToggle>

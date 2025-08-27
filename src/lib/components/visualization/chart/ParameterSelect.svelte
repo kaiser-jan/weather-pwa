@@ -1,27 +1,15 @@
 <script lang="ts">
   import * as ToggleGroup from '$lib/components/ui/toggle-group'
   import * as Popover from '$lib/components/ui/popover'
-  import {
-    ChartSplineIcon,
-    Edit2Icon,
-    EllipsisIcon,
-    EyeIcon,
-    EyeOffIcon,
-    PencilIcon,
-    PinIcon,
-    PinOffIcon,
-  } from '@lucide/svelte'
-  import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
-  import { type ForecastParameter, FORECAST_PARAMETERS } from '$lib/types/data'
+  import { ChartSplineIcon, EllipsisIcon, PencilIcon } from '@lucide/svelte'
+  import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
+  import { type ForecastParameter, type TimeBucket } from '$lib/types/data'
   import { Button } from '$lib/components/ui/button'
-  import { sortByReferenceOrder, toggle } from '$lib/utils'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
-  import { persist } from '$lib/utils/stores'
-  import { get } from 'svelte/store'
   import ExpandableList from '$lib/components/ExpandableList.svelte'
   import { settings } from '$lib/settings/store'
-  import type { MetricDetails } from '$lib/types/ui'
   import { openSettingsAt } from '$lib/stores/ui'
+  import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
 
   interface Props {
     visible: ForecastMetric[]
@@ -31,10 +19,6 @@
   let temporary = $derived(visible.filter((p) => !$settings.sections.components.chart.pinnedMetrics.includes(p)))
 
   let isOpen = $state(false)
-
-  function sortVisible() {
-    visible = sortByReferenceOrder(visible, FORECAST_METRICS)
-  }
 </script>
 
 <div class="flex h-fit w-full flex-row gap-2">
@@ -85,6 +69,7 @@
         visibleItems={$settings.data.forecast.metrics}
         markedItems={visible}
         triggerClass="p-2 min-h-0 mt-2"
+        contentClass="gap-1"
       >
         {#snippet itemSnippet(metric: ForecastParameter)}
           <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
@@ -95,29 +80,11 @@
             {@const parameterTyped = metric as ForecastMetric}
             {@const parameterDetails = METRIC_DETAILS[metric]!}
             {@const isActive = visible.includes(parameterTyped)}
-            <Button
-              variant="ghost"
-              class={[
-                'flex w-full grow flex-row items-center gap-2 rounded-md px-2 py-1',
-                isActive ? 'text-text' : 'text-text-muted',
-                // isActive ? 'bg-midground text-text' : 'text-text-muted',
-              ]}
-              onclick={() => {
-                toggle(visible, metric)
-                sortVisible()
-              }}
-            >
+            <ParameterToggle parameter={metric} visibleList={visible} class="h-8 w-full rounded-md px-3 py-2 text-sm">
               <IconOrAbbreviation details={parameterDetails} />
               {parameterDetails.label}
               <span class="grow"></span>
-              <Button variant={isActive ? 'secondary' : 'outline'} class="size-8 p-0">
-                {#if isActive}
-                  <EyeIcon />
-                {:else}
-                  <EyeOffIcon />
-                {/if}
-              </Button>
-            </Button>
+            </ParameterToggle>
           {/each}
         {/snippet}
       </ExpandableList>

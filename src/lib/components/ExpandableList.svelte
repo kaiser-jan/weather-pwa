@@ -20,7 +20,9 @@
 </script>
 
 <div class="min-h-0 grow overflow-y-auto">
-  {@render children(visibleItems)}
+  <div class={cn('flex flex-col', contentClass)}>
+    {@render children(visibleItems)}
+  </div>
 
   {#if hiddenItems.length}
     <Accordion.Root type="single" class="w-full">

@@ -28,8 +28,8 @@
   name="Section Today"
   class="bg-midground flex w-full flex-col flex-wrap justify-between gap-2 gap-x-4 gap-y-2 rounded-lg p-2"
 >
-  {#if $settings.sections.today.showChartParameterSelect}
-    <ParameterSelect bind:visible={visibleMetrics} />
+  {#if $settings.sections.today.showChartParameterSelect && today}
+    <ParameterSelect bind:visible={visibleMetrics} timebucket={today} />
   {/if}
 
   {#if today}
