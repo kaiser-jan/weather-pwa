@@ -28,10 +28,9 @@ export type SelectSetting = BaseConfigItem & {
 }
 
 export type MultiSelectSetting = BaseConfigItem & {
-  type: 'multiselect'
+  type: 'multiselect' | 'multiselect-reorder'
   options: readonly string[]
   labels?: Record<string, string>
-  reorder?: boolean
   default: string[]
 }
 

@@ -24,6 +24,8 @@
     value = e.detail.items
   }}
   onfinalize={(e) => {
+    console.log('finalize')
+    console.log(e.detail.items)
     value = e.detail.items
     onchange(value)
   }}

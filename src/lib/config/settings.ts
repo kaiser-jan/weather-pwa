@@ -177,7 +177,7 @@ export const settingsConfig = [
       {
         id: 'datasets',
         label: 'Datasets',
-        type: 'multiselect',
+        type: 'multiselect-reorder',
         icon: ListIcon,
         reorder: true,
         disabled: true,
@@ -382,7 +382,7 @@ export const settingsConfig = [
           {
             id: 'metrics',
             label: 'Weather Metrics',
-            type: 'multiselect',
+            type: 'multiselect-reorder',
             icon: LetterTextIcon,
             options: FORECAST_METRICS,
             default: ['dew_point', 'wind_speed', 'pressure'] as ForecastParameter[],
@@ -510,7 +510,7 @@ export const settingsConfig = [
               {
                 id: 'plottedMetrics',
                 label: 'Plotted Weather Metrics',
-                type: 'multiselect',
+                type: 'multiselect-reorder',
                 icon: ChartSplineIcon,
                 options: FORECAST_METRICS,
                 default: ['temperature', 'precipitation_amount', 'cloud_coverage'] as ForecastParameter[],
@@ -518,7 +518,7 @@ export const settingsConfig = [
               {
                 id: 'pinnedMetrics',
                 label: 'Pinned Weather Metrics',
-                type: 'multiselect',
+                type: 'multiselect-reorder',
                 icon: ChartSplineIcon,
                 options: FORECAST_METRICS,
                 default: ['temperature', 'precipitation_amount', 'cloud_coverage', 'wind_speed'] as ForecastParameter[],

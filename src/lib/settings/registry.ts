@@ -19,6 +19,7 @@ import BooleanInput from './components/inputs/BooleanInput.svelte'
 import SelectInput from './components/inputs/SelectInput.svelte'
 import NumberInput from './components/inputs/NumberInput.svelte'
 import MultiSelectInput from './components/inputs/MultiSelectInput.svelte'
+import MultiSelectReorderInput from './components/inputs/MultiSelectReorderInput.svelte'
 import TextInput from './components/inputs/TextInput.svelte'
 
 // TODO: refine this type; derive from the settings types
@@ -49,6 +50,7 @@ type SettingComponentInput = Component<
 const inputs: Record<SettingsInput['type'], SettingComponent> = {
   select: SelectInput,
   multiselect: MultiSelectInput,
+  'multiselect-reorder': MultiSelectReorderInput,
   boolean: BooleanInput,
   number: NumberInput,
   text: TextInput,
