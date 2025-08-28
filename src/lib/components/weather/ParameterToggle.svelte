@@ -54,9 +54,9 @@
   }}
 >
   {#if details?.color}
-    <div class={`absolute left-0 h-full w-1 ${isVisible ? '' : 'opacity-75'}`} style={colorStyle}></div>
+    <div class={`absolute left-0 h-full w-1 ${isVisible ? '' : 'opacity-60'}`} style={colorStyle}></div>
 
-    {#if isVisible}
+    {#if isVisible && $settings.appearance.accessibility.differentiateWithoutColor}
       <div class={'absolute -top-4 right-0 h-10 w-4 -rotate-45'} style={colorStyle}></div>
     {/if}
   {/if}

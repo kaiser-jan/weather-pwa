@@ -49,8 +49,8 @@
       </Button>
     </Popover.Trigger>
     <Popover.Content class="flex max-h-[50dvh] w-fit max-w-[90dvw] flex-col gap-1 p-2">
-      <h2 class="inline-flex shrink-0 items-center gap-2 pl-2 text-base font-semibold">
-        <ChartSplineIcon class="stroke-3" />
+      <h2 class="inline-flex shrink-0 items-center gap-2 pl-2 text-base">
+        <ChartSplineIcon />
         Plotted Metrics
         <Button
           variant="ghost"
