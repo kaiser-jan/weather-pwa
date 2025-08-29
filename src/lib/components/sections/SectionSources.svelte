@@ -66,7 +66,7 @@
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {#each $loaderStates as state (state.loader.id)}
+          {#each $loaderStates as state (state.loader.datasetIds.join(','))}
             {@const provider = PROVIDERS.find((p) => p.loaderIds.includes(state.loader.id))}
             <Table.Row class="group gap-2 px-2 opacity-100">
               <Table.Cell class="w-4">

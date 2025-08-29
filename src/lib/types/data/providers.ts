@@ -38,6 +38,7 @@ export interface Loader<DatasetId extends string> {
 
 export interface Dataset {
   id: DatasetId
+  internalId: string
   model: string
   name: string
   url?: string

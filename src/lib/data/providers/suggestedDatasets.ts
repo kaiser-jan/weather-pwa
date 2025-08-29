@@ -27,7 +27,8 @@ function matchDuration(value: Duration | null, filter?: DurationFilter): boolean
 
 function matchesCriterion(dataset: Dataset, criteria: Criterion): boolean {
   return (
-    matchDuration(dataset.updateFrequency, criteria.interval) &&
+    matchDuration(dataset.temporalResolution, criteria.interval) &&
+    // TODO: add a pastTimespan which replaces this
     matchDuration(dataset.baseForecastAge, criteria.offset) &&
     matchDuration(dataset.timespan, criteria.timespan) &&
     (!criteria.parameters || criteria.parameters.every((p) => dataset.parameters.includes(p)))
@@ -40,6 +41,7 @@ const criteria: Criterion[] = [
     interval: { lt: Duration.fromObject({ hours: 6 }) },
     timespan: { gt: Duration.fromObject({ days: 1 }) },
   },
+  { timespan: { gte: Duration.fromObject({ days: 3 }) } },
   { timespan: { gte: Duration.fromObject({ days: 5 }) } },
   { offset: { gte: Duration.fromObject({ hours: 6 }) } },
   { parameters: ['o3'] },

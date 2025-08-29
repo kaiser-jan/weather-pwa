@@ -53,7 +53,7 @@ function deriveTimeseriesFromMetrics<MetricT extends ForecastParameter>(
       if (nextBucketIndex === undefined || nextBucketIndex === -1) continue
       const currentBucket = metricTimeseries[nextBucketIndex - 1]
       // exit if the timebucket ends to early
-      if (currentBucket.timestamp + currentBucket.duration < timestamp) continue
+      if (!currentBucket || currentBucket.timestamp + currentBucket.duration < timestamp) continue
       timebucketMap[metric] = currentBucket
     }
 

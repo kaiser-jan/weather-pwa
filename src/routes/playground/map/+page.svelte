@@ -30,7 +30,7 @@
           L.marker([lat, lon], {
             icon: L.divIcon({
               className: 'label',
-              html: `<div class='w-fit bg-background/40 text-text h-fit py-0.5 px-1'>${dataset.label}</div>`,
+              html: `<div class='w-fit bg-background/40 text-text h-fit py-0.5 px-1'>${dataset.model}</div>`,
               iconAnchor: [0, 0],
             }),
           }).addTo(map)

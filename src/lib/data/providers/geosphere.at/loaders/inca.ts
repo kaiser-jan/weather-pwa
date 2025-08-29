@@ -10,7 +10,6 @@ export default {
   load: createTimeseriesForecastLoader({
     dataset,
     mode: 'historical',
-    model: 'inca-v1-1h-1km',
     parameters: getRequestedParametersFromConfig(configs),
     configs,
     isPressureSurfaceLevel: false,

@@ -73,7 +73,8 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
 
     // HACK: how to determine whether a day is complete?
     const firstTemperatureItem = g.series.temperature[0]
-    if (firstTemperatureItem.timestamp > getStartOfDayTimestamp(get(NOW_MILLIS))) return true
+    // use any past data
+    if (firstTemperatureItem.timestamp <= getStartOfDayTimestamp(get(NOW_MILLIS))) return true
     const lastTemperatureItem = g.series.temperature[g.series.temperature.length - 1]
     const temperatureEndTimestamp = lastTemperatureItem.timestamp + lastTemperatureItem.duration
     const isMissingEnd = temperatureEndTimestamp < getEndOfDayTimestamp(firstTemperatureItem.timestamp)

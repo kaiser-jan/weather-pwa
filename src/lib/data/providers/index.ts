@@ -1,10 +1,11 @@
 import type { Dataset, Loader, Provider } from '$lib/types/data/providers'
 import geosphereat from './geosphere.at'
 import metno from './met.no'
+import meteofrance from './meteofrance.fr'
 
-const _PROVIDERS = [metno.provider, geosphereat.provider] as const
-const _DATASETS = [...metno.datasets, ...geosphereat.datasets] as const
-const _LOADERS = [...metno.loaders, ...geosphereat.loaders] as const
+const _PROVIDERS = [metno.provider, geosphereat.provider, meteofrance.provider] as const
+const _DATASETS = [...metno.datasets, ...geosphereat.datasets, ...meteofrance.datasets] as const
+const _LOADERS = [...metno.loaders, ...geosphereat.loaders, ...meteofrance.loaders] as const
 
 export const DATASET_IDS = _DATASETS.map((d) => d.id)
 

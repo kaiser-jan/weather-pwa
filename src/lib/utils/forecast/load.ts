@@ -77,6 +77,12 @@ export function refreshForecast({
       })
   }
 
+  // fetchOpenMeteo({
+  //   coordinates: inputs.coordinates,
+  //   models: ['arpege_world', 'arpege_europe', 'arome_france', 'arome_france_hd'],
+  //   parameters: { hourly: ['temperature'], minutely15: ['temperature'] },
+  // })
+
   clearTimeout(loadTimeout)
   loadTimeout = setTimeout(() => {
     console.warn('Timed out while loading complete forecast, updating anyway!')

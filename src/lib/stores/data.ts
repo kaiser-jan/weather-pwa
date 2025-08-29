@@ -35,7 +35,7 @@ function update(cause: string) {
     return
   }
   // const datasetIds = get(settings).data.datasets
-  const datasetIds = getSuggestedDatasetsForLocation(_coordinates, DATASET_IDS_BY_PRIORITY)
+  const datasetIds = getSuggestedDatasetsForLocation(_coordinates, get(settings).data.datasets)
   const stream = get(settings).data.incrementalLoad
 
   refreshForecast({

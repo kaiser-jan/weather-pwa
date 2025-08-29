@@ -10,7 +10,6 @@ export default {
   load: createTimeseriesForecastLoader({
     dataset,
     mode: 'forecast',
-    model: 'nwp-v1-1h-2500m',
     parameters: getRequestedParametersFromConfig(configs),
     configs,
     isPressureSurfaceLevel: true,

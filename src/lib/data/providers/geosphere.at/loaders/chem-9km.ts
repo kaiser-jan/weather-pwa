@@ -10,7 +10,6 @@ export default {
   load: createTimeseriesForecastLoader({
     dataset,
     mode: 'forecast',
-    model: 'chem-v2-1h-9km',
     parameters: getRequestedParametersFromConfig(configs),
     configs,
     isPressureSurfaceLevel: false,

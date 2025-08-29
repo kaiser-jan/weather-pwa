@@ -19,6 +19,7 @@ export const configs: TimeSeriesConfig<(typeof AVAILABLE_WEATHER_PARAMETERS)[num
 
 export default {
   id: 'geosphere.at_chem-v2-1h-9km',
+  internalId: 'chem-v2-1h-9km',
   model: 'WRF-chem',
   name: 'Chemical Forecast Europe',
   url: 'https://data.hub.geosphere.at/dataset/chem-v2-1h-9km',

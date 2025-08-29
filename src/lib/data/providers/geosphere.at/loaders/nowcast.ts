@@ -10,7 +10,6 @@ export default {
   load: createTimeseriesForecastLoader({
     dataset,
     mode: 'forecast',
-    model: 'nowcast-v1-15min-1km',
     parameters: getRequestedParametersFromConfig(configs),
     configs,
     isPressureSurfaceLevel: false,

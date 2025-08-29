@@ -5,6 +5,7 @@ import nwp, { configs, NWP_MAX_OFFSET } from './nwp'
 export default {
   ...nwp,
   id: 'geosphere.at_nwp-v1-1h-2500m_offset',
+  internalId: 'nwp-v1-1h-2500m',
   model: 'AROME Offset',
   name: 'NWP Offset',
   parameters: getForecastParametersFromConfig(configs),

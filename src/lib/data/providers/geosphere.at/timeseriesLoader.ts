@@ -1,4 +1,3 @@
-// lib/loaders/createTimeseriesForecastLoader.ts
 import { DateTime, Duration } from 'luxon'
 import { useCache } from '$lib/utils/cache'
 import { transformTimeSeries } from '$lib/utils/forecast/transformTimeseries'
@@ -9,7 +8,6 @@ import type { Dataset, Loader } from '$lib/types/data/providers'
 type LoaderOptions = {
   dataset: Dataset
   mode: 'forecast' | 'historical'
-  model: string
   parameters: string[]
   configs: Parameters<typeof transformTimeSeries>[2]
   isPressureSurfaceLevel: boolean
@@ -18,14 +16,13 @@ type LoaderOptions = {
 export function createTimeseriesForecastLoader({
   dataset,
   mode,
-  model,
   parameters,
   configs,
   isPressureSurfaceLevel = false,
 }: LoaderOptions) {
   async function load(coordinates: Coordinates, offset = 0): ReturnType<Loader<string>['load']> {
     const now = DateTime.now()
-    const url = new URL(`https://dataset.api.hub.geosphere.at/v1/timeseries/${mode}/${model}`)
+    const url = new URL(`https://dataset.api.hub.geosphere.at/v1/timeseries/${mode}/${dataset.internalId}`)
     url.searchParams.set('lat_lon', `${coordinates.latitude},${coordinates.longitude}`)
     parameters.forEach((p) => url.searchParams.append('parameters', p))
 
@@ -89,6 +86,7 @@ export function createTimeseriesForecastLoader({
   return load
 }
 
+// TODO: have two parameters, pressure_surface and pressure_sea_level and do the conversion when deriving metrics
 function convertSurfacePressureToSeaLevel(P: number, h: number, t: number): number {
   const g = 9.80665 // m/s²
   const M = 0.0289644 // kg/mol
