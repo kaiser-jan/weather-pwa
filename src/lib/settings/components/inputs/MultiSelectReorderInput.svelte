@@ -20,6 +20,10 @@
 
   let items = $state(value.map((v) => ({ id: v })))
 
+  $effect(() => {
+    if (value) items = value.map((v) => ({ id: v }))
+  })
+
   const options = $derived.by(() => {
     return item.options.filter((o) => !value.includes(o))
   })
@@ -32,6 +36,7 @@
     items: items,
     flipDurationMs: 300,
     dragDisabled: $disabled,
+    dropTargetStyle: {},
   }}
   onconsider={(e) => {
     items = e.detail.items
@@ -55,6 +60,7 @@
         size="icon"
         variant="ghost"
         class="ml-auto"
+        disabled={$disabled}
         onclick={() => {
           items.splice(listIndex, 1)
           onchange(items.map((i) => i.id))
