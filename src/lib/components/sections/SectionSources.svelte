@@ -2,56 +2,20 @@
   import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Table from '$lib/components/ui/table/index.js'
   import { loaderStates } from '$lib/stores/data'
-  import { CircleCheckBigIcon, CircleXIcon, DatabaseIcon, HourglassIcon } from '@lucide/svelte'
-  import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
+  import { DatabaseIcon } from '@lucide/svelte'
   import { DATASETS, PROVIDERS } from '$lib/data/providers'
   import { formatRelativeDatetime } from '$lib/utils/ui'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
-  import type { LoaderState } from '$lib/types/data/providers'
-
-  type State = 'success' | 'loading' | 'error' | 'outdated'
-
-  function stateFromLoaderState(loaderState: LoaderState) {
-    if (!loaderState.done) return 'loading'
-    if (!loaderState.success) return 'error'
-    if (loaderState.refreshAt < loaderState.updatedAt) return 'outdated'
-    return 'success'
-  }
-
-  const summaryState = $derived.by(() => {
-    const states = $loaderStates.map(stateFromLoaderState)
-    if (states.some((s) => s === 'loading')) return 'loading'
-    if (states.some((s) => s === 'error')) return 'error'
-    if (states.some((s) => s === 'outdated')) return 'outdated'
-    return 'success'
-  })
-
-  const labels: Record<State, string> = {
-    error: 'Failed to load all datasets!',
-    outdated: 'Not everything up to date!',
-    loading: 'Loading data...',
-    success: 'All datasets up to date',
-  }
+  import LoaderState from '../snippets/LoaderState.svelte'
+  import { loaderSummaryLabels, loaderSummaryState, stateFromLoaderState } from '$lib/utils/loaderState'
 </script>
-
-{#snippet stateIcon(state: State)}
-  {#if state === 'loading'}
-    <LoaderPulsatingRing className="size-4 shrink-0" />
-  {:else if state === 'error'}
-    <CircleXIcon class="shrink-0 text-red-500" />
-  {:else if state === 'outdated'}
-    <HourglassIcon class="shrink-0 text-yellow-500" />
-  {:else}
-    <CircleCheckBigIcon class="shrink-0 text-green-500" />
-  {/if}
-{/snippet}
 
 <SectionTitle title="Data Sources" icon={DatabaseIcon} />
 <Accordion.Root type="single" class="min-h-10 w-full">
   <Accordion.Item class="bg-midground rounded-md">
     <Accordion.Trigger class="text-text-muted inline-flex justify-start p-2">
-      {@render stateIcon(summaryState)}
-      {labels[summaryState]}
+      <LoaderState state={$loaderSummaryState} />
+      {loaderSummaryLabels[$loaderSummaryState]}
     </Accordion.Trigger>
     <Accordion.Content class="bg-midground rounded-md py-0">
       <Table.Root>
@@ -70,7 +34,7 @@
             {@const provider = PROVIDERS.find((p) => p.loaderIds.includes(state.loader.id))}
             <Table.Row class="group gap-2 px-2 opacity-100">
               <Table.Cell class="w-4">
-                {@render stateIcon(stateFromLoaderState(state))}
+                <LoaderState state={stateFromLoaderState(state)} />
               </Table.Cell>
               <Table.Cell class="sticky left-0 z-50 max-w-48 p-0">
                 <a

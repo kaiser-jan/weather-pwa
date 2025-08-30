@@ -14,6 +14,8 @@
   import { coordinates } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import { currentFromMultiseries } from '$lib/utils/forecast/current'
+  import LoaderState from '../snippets/LoaderState.svelte'
+  import { loaderSummaryState } from '$lib/utils/loaderState'
 
   interface Props {
     shrink: boolean
@@ -62,7 +64,7 @@
         onclick={() => forecastStore.update('manual')}
         class={['p-2', $loaderStates.every((r) => r === null) ? 'animate-spin ' : '']}
       >
-        <RefreshCwIcon />
+        <LoaderState state={$loaderSummaryState} class="text-text" />
       </button>
     </div>
 
