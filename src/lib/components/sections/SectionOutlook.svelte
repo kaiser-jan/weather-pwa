@@ -27,7 +27,7 @@
   }
 
   $effect(() => {
-    const scrollToToday = $settings.sections.outlook.scrollToToday
+    const scrollToToday = $settings.sections.outlook.scrollToToday && $forecastStore?.daily
     if (scrollToToday || !scrollToToday) {
       updateScroll()
     }

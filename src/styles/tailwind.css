@@ -6,8 +6,8 @@
   --color-red: #f00;
 
   /* --color-background: hsl(220, 50%, 5%); */
-  --color-midground: hsl(220, 25%, 12%);
-  --color-foreground: hsl(220, 20%, 20%);
+  --color-midground: hsl(220, 20%, 14%);
+  --color-foreground: hsl(220, 16%, 24%);
   --color-overlay: hsl(220, 20%, 30%);
 
   --color-text: hsl(220, 8%, 98%);

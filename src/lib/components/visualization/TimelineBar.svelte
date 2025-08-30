@@ -64,12 +64,12 @@
   bind:clientHeight={barHeight}
 >
   <div
-    class="stripe-pattern absolute top-0 bottom-0 z-2"
+    class="stripe-pattern border-foreground absolute top-0 bottom-0 z-2 border-r-[1px]"
     style={`width: ${distanceFromTimestamps(NOW, startTimestamp)}%; left: 0;`}
   ></div>
   {#each marks as mark, i (i)}
     <div
-      class="bg-foreground absolute -top-1 -bottom-1 z-2 w-[0.05rem] mix-blend-difference"
+      class="bg-foreground absolute -top-1 -bottom-1 z-2 w-[0.06rem] opacity-50"
       style={`left: ${distanceFromTimestamps(mark.toMillis(), startTimestamp)}%;`}
     ></div>
   {/each}
@@ -101,8 +101,8 @@
       45deg,
       hsla(220, 20%, 20%, 25%),
       hsla(220, 20%, 20%, 25%) 4px,
-      hsla(220, 25%, 12%, 50%) 4px,
-      hsla(220, 25%, 12%, 50%) 8px
+      hsla(220, 25%, 12%, 40%) 4px,
+      hsla(220, 25%, 12%, 40%) 8px
     );
   }
 </style>
