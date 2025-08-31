@@ -3,7 +3,7 @@
 
 ### Bug Fixes
 
-* **ui:** shorter animation duration to make active state visible ([2b26b78](https://github.com/kaiser-jan/weather-pwa/commit/2b26b78524d6816ea2305c2bfe6ad1796f7e35b6))
+* **ui:** shorter animation duration to make active state visible ([bc3a300](https://github.com/kaiser-jan/weather-pwa/commit/bc3a3003a620969a9aebec726632b0b3763f59f0))
 
 ## [1.3.1](https://github.com/kaiser-jan/weather-pwa/compare/v1.3.0...v1.3.1) (2025-08-03)
 
