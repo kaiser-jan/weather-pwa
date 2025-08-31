@@ -1,3 +1,43 @@
+# [1.4.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.3.2...v1.4.0) (2025-08-31)
+
+
+### Bug Fixes
+
+* **build:** correct latest tag ([cc8c412](https://github.com/kaiser-jan/weather-pwa/commit/cc8c412b2fcaf161d5f5c970f0d0a19e4471bb5b))
+* **chart:** only show nearest value where there is data ([a2721fb](https://github.com/kaiser-jan/weather-pwa/commit/a2721fb9194be1eda6477781b688cae44a666de5))
+* **chart:** past days error due to axis ([e3f872a](https://github.com/kaiser-jan/weather-pwa/commit/e3f872ad97cb70688ff5353c3a4fc571ab8e0023))
+* **chart:** right axes not aligned besides the first one ([15512f4](https://github.com/kaiser-jan/weather-pwa/commit/15512f452c4bf6ebe67238fbbf48edc5b57531df))
+* **chart:** unify air quality domains ([8de4af0](https://github.com/kaiser-jan/weather-pwa/commit/8de4af0e19579707dc12a641250ef8d869325e2f))
+* **day:** better format list of hidden selected metrics ([5ff16f0](https://github.com/kaiser-jan/weather-pwa/commit/5ff16f004f6a15d5fbba05e0638faca0283e81fc))
+* **derived:** duplicate timebuckets causing choppy graph ([0637729](https://github.com/kaiser-jan/weather-pwa/commit/06377294cb9a72c5c971469b4a2719342c6116d6))
+* **derived:** eaqi one too high ([a580e32](https://github.com/kaiser-jan/weather-pwa/commit/a580e32a2119f2750d457adc1e7733e222dbacf7))
+* incorrect day end datetime ([180fa55](https://github.com/kaiser-jan/weather-pwa/commit/180fa55b15f2c15e02ee995a56cd37c0bbc8a646))
+* **loaders:** instantly apply final update leading to quicker ui load ([54e20b1](https://github.com/kaiser-jan/weather-pwa/commit/54e20b1ea1f7dab2b35661ce453d345d846f2686))
+* **open-meteo:** wind speed conversion ([d39eedd](https://github.com/kaiser-jan/weather-pwa/commit/d39eedddb79f2cd6de3e225e296c03ea78dd552c))
+* **outlook:** properly scroll to today by default ([6ce8c91](https://github.com/kaiser-jan/weather-pwa/commit/6ce8c91c71da4988ee526a95a6e3677da0058a4b))
+* **settings:** enable datasets setting ([c813ea8](https://github.com/kaiser-jan/weather-pwa/commit/c813ea85265736c3edad751ba8aeb33348fcfc15))
+* **settings:** reorder multiselect not updating on reset ([8b2672e](https://github.com/kaiser-jan/weather-pwa/commit/8b2672efc74270fef5ac25f66512edc4de3e5ea8))
+
+
+### Features
+
+* **chart:** allow reusing existing axis for e.g. dew point ([68fc427](https://github.com/kaiser-jan/weather-pwa/commit/68fc4279e7120d8f8c0d7d5d7fc94ae86a5ca70c))
+* **chart:** derive domains for air pollutants from total aqi ([2d78e85](https://github.com/kaiser-jan/weather-pwa/commit/2d78e8571fb465e0e3b7a802a0df0b11d36dc6c4))
+* **chart:** hide axis if there are no data points for it ([b592c4c](https://github.com/kaiser-jan/weather-pwa/commit/b592c4c0600c79fa75f41dc962eaba8a7f2cd5e8))
+* **chart:** hide hidden metrics in ParameterSelect ([b9489f2](https://github.com/kaiser-jan/weather-pwa/commit/b9489f2329f0e137e33bfda406953f0e8b728cd8))
+* **chart:** merge styling of ParameterDaySummary into ParameterSelect ([e525548](https://github.com/kaiser-jan/weather-pwa/commit/e5255489c2e7727f2e9cd8f81f56a90f42742845))
+* **chart:** move pinned metrics to settings ([4b5db32](https://github.com/kaiser-jan/weather-pwa/commit/4b5db3228a48b3679c203b980c1c332d6aee814d))
+* **chart:** show include parameters in tooltip ([3ce5795](https://github.com/kaiser-jan/weather-pwa/commit/3ce5795f4832281299dfbe866f66f309dfc0bde7))
+* **current:** allow choosing displayed metrics ([1c4698e](https://github.com/kaiser-jan/weather-pwa/commit/1c4698ea58082a0840c186a4afe11a0aecbb4260))
+* **derived:** add aqi ([b01de56](https://github.com/kaiser-jan/weather-pwa/commit/b01de568a26a1859e393209efa53fc430733ea1b))
+* **derived:** add dew point ([82d0f04](https://github.com/kaiser-jan/weather-pwa/commit/82d0f04e814a31947a57dd44c6fba221ffed37f6))
+* **location:** show recent searches ([e3acf31](https://github.com/kaiser-jan/weather-pwa/commit/e3acf31752619de13924de030daaa389353f4ea1))
+* **providers:** add meteo france via open-meteo ([d140045](https://github.com/kaiser-jan/weather-pwa/commit/d140045c9cf5fac188e846def752228ea2b72cc9))
+* **settings:** add reorderable multiselect ([11ee2f0](https://github.com/kaiser-jan/weather-pwa/commit/11ee2f091dd4ef03eea5c7764b9fbdbe8d61add4))
+* **settings:** show aqi label by default ([f686adf](https://github.com/kaiser-jan/weather-pwa/commit/f686adf256b4c46c17bd85ec8cf369861402ab2d))
+* show loader summary state instead of reload button ([618fde2](https://github.com/kaiser-jan/weather-pwa/commit/618fde2f9d9ba72abc24531014c042351abc0000))
+* various minor improvements and fixes ([bef6931](https://github.com/kaiser-jan/weather-pwa/commit/bef6931c1e9eeda6776ff2b9b4251de0601c8940))
+
 ## [1.3.2](https://github.com/kaiser-jan/weather-pwa/compare/v1.3.1...v1.3.2) (2025-08-03)
 
 

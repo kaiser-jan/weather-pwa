@@ -1,6 +1,213 @@
 {
   "releases": [
     {
+      "version": "1.4.0",
+      "date": "2025-08-31",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "cc8c412b2fcaf161d5f5c970f0d0a19e4471bb5b",
+              "subject": "correct latest tag",
+              "scope": "build",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/cc8c412b2fcaf161d5f5c970f0d0a19e4471bb5b"
+            },
+            {
+              "hash": "a2721fb9194be1eda6477781b688cae44a666de5",
+              "subject": "only show nearest value where there is data",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a2721fb9194be1eda6477781b688cae44a666de5"
+            },
+            {
+              "hash": "e3f872ad97cb70688ff5353c3a4fc571ab8e0023",
+              "subject": "past days error due to axis",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e3f872ad97cb70688ff5353c3a4fc571ab8e0023"
+            },
+            {
+              "hash": "15512f452c4bf6ebe67238fbbf48edc5b57531df",
+              "subject": "right axes not aligned besides the first one",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/15512f452c4bf6ebe67238fbbf48edc5b57531df"
+            },
+            {
+              "hash": "8de4af0e19579707dc12a641250ef8d869325e2f",
+              "subject": "unify air quality domains",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/8de4af0e19579707dc12a641250ef8d869325e2f"
+            },
+            {
+              "hash": "5ff16f004f6a15d5fbba05e0638faca0283e81fc",
+              "subject": "better format list of hidden selected metrics",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5ff16f004f6a15d5fbba05e0638faca0283e81fc"
+            },
+            {
+              "hash": "06377294cb9a72c5c971469b4a2719342c6116d6",
+              "subject": "duplicate timebuckets causing choppy graph",
+              "scope": "derived",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/06377294cb9a72c5c971469b4a2719342c6116d6"
+            },
+            {
+              "hash": "a580e32a2119f2750d457adc1e7733e222dbacf7",
+              "subject": "eaqi one too high",
+              "scope": "derived",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a580e32a2119f2750d457adc1e7733e222dbacf7"
+            },
+            {
+              "hash": "180fa55b15f2c15e02ee995a56cd37c0bbc8a646",
+              "subject": "incorrect day end datetime",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/180fa55b15f2c15e02ee995a56cd37c0bbc8a646"
+            },
+            {
+              "hash": "54e20b1ea1f7dab2b35661ce453d345d846f2686",
+              "subject": "instantly apply final update leading to quicker ui load",
+              "scope": "loaders",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/54e20b1ea1f7dab2b35661ce453d345d846f2686"
+            },
+            {
+              "hash": "d39eedddb79f2cd6de3e225e296c03ea78dd552c",
+              "subject": "wind speed conversion",
+              "scope": "open-meteo",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d39eedddb79f2cd6de3e225e296c03ea78dd552c"
+            },
+            {
+              "hash": "6ce8c91c71da4988ee526a95a6e3677da0058a4b",
+              "subject": "properly scroll to today by default",
+              "scope": "outlook",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6ce8c91c71da4988ee526a95a6e3677da0058a4b"
+            },
+            {
+              "hash": "c813ea85265736c3edad751ba8aeb33348fcfc15",
+              "subject": "enable datasets setting",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c813ea85265736c3edad751ba8aeb33348fcfc15"
+            },
+            {
+              "hash": "8b2672efc74270fef5ac25f66512edc4de3e5ea8",
+              "subject": "reorder multiselect not updating on reset",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/8b2672efc74270fef5ac25f66512edc4de3e5ea8"
+            }
+          ]
+        },
+        {
+          "title": "Features",
+          "type": "feat",
+          "commits": [
+            {
+              "hash": "68fc4279e7120d8f8c0d7d5d7fc94ae86a5ca70c",
+              "subject": "allow reusing existing axis for e.g. dew point",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/68fc4279e7120d8f8c0d7d5d7fc94ae86a5ca70c"
+            },
+            {
+              "hash": "2d78e8571fb465e0e3b7a802a0df0b11d36dc6c4",
+              "subject": "derive domains for air pollutants from total aqi",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2d78e8571fb465e0e3b7a802a0df0b11d36dc6c4"
+            },
+            {
+              "hash": "b592c4c0600c79fa75f41dc962eaba8a7f2cd5e8",
+              "subject": "hide axis if there are no data points for it",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b592c4c0600c79fa75f41dc962eaba8a7f2cd5e8"
+            },
+            {
+              "hash": "b9489f2329f0e137e33bfda406953f0e8b728cd8",
+              "subject": "hide hidden metrics in ParameterSelect",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b9489f2329f0e137e33bfda406953f0e8b728cd8"
+            },
+            {
+              "hash": "e5255489c2e7727f2e9cd8f81f56a90f42742845",
+              "subject": "merge styling of ParameterDaySummary into ParameterSelect",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e5255489c2e7727f2e9cd8f81f56a90f42742845"
+            },
+            {
+              "hash": "4b5db3228a48b3679c203b980c1c332d6aee814d",
+              "subject": "move pinned metrics to settings",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4b5db3228a48b3679c203b980c1c332d6aee814d"
+            },
+            {
+              "hash": "3ce5795f4832281299dfbe866f66f309dfc0bde7",
+              "subject": "show include parameters in tooltip",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3ce5795f4832281299dfbe866f66f309dfc0bde7"
+            },
+            {
+              "hash": "1c4698ea58082a0840c186a4afe11a0aecbb4260",
+              "subject": "allow choosing displayed metrics",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1c4698ea58082a0840c186a4afe11a0aecbb4260"
+            },
+            {
+              "hash": "b01de568a26a1859e393209efa53fc430733ea1b",
+              "subject": "add aqi",
+              "scope": "derived",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b01de568a26a1859e393209efa53fc430733ea1b"
+            },
+            {
+              "hash": "82d0f04e814a31947a57dd44c6fba221ffed37f6",
+              "subject": "add dew point",
+              "scope": "derived",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/82d0f04e814a31947a57dd44c6fba221ffed37f6"
+            },
+            {
+              "hash": "e3acf31752619de13924de030daaa389353f4ea1",
+              "subject": "show recent searches",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e3acf31752619de13924de030daaa389353f4ea1"
+            },
+            {
+              "hash": "d140045c9cf5fac188e846def752228ea2b72cc9",
+              "subject": "add meteo france via open-meteo",
+              "scope": "providers",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/d140045c9cf5fac188e846def752228ea2b72cc9"
+            },
+            {
+              "hash": "11ee2f091dd4ef03eea5c7764b9fbdbe8d61add4",
+              "subject": "add reorderable multiselect",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/11ee2f091dd4ef03eea5c7764b9fbdbe8d61add4"
+            },
+            {
+              "hash": "f686adf256b4c46c17bd85ec8cf369861402ab2d",
+              "subject": "show aqi label by default",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/f686adf256b4c46c17bd85ec8cf369861402ab2d"
+            },
+            {
+              "hash": "618fde2f9d9ba72abc24531014c042351abc0000",
+              "subject": "show loader summary state instead of reload button",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/618fde2f9d9ba72abc24531014c042351abc0000"
+            },
+            {
+              "hash": "bef6931c1e9eeda6776ff2b9b4251de0601c8940",
+              "subject": "various minor improvements and fixes",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/bef6931c1e9eeda6776ff2b9b4251de0601c8940"
+            }
+          ]
+        },
+        {
+          "title": "Reverts",
+          "type": null,
+          "commits": [
+            {
+              "hash": "a0f07320cbed589a7b38576c0459f555a1ce278d",
+              "subject": null,
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a0f07320cbed589a7b38576c0459f555a1ce278d"
+            }
+          ]
+        }
+      ],
+      "compareUrl": "https://github.com/kaiser-jan/weather-pwa/compare/v1.3.2...v1.4.0"
+    },
+    {
       "version": "1.3.2",
       "date": "2025-08-03",
       "commitGroups": [
