@@ -63,6 +63,7 @@ export function createOpenMeteoLoader({ dataset, parameters, interval }: LoaderO
             if (isNaN(value)) return
             // pressure: convert hPa to Pa
             if (parameter === 'pressure') value *= 1e2
+            if (parameter === 'wind_speed' || parameter === 'wind_speed_gust') value /= 3.6
             // precipitation: move to preceding hour
             timestamp -= durationMs
 
