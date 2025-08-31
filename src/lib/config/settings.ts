@@ -181,8 +181,6 @@ export const settingsConfig = [
         label: 'Datasets',
         type: 'multiselect-reorder',
         icon: ListIcon,
-        reorder: true,
-        disabled: true,
         options: DATASET_IDS_BY_PRIORITY,
         labels: Object.fromEntries(
           DATASET_IDS_BY_PRIORITY.map((id) => {
