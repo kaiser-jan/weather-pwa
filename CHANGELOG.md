@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/kaiser-jan/weather-pwa/compare/v1.4.0...v1.4.1) (2025-09-02)
+
+
+### Bug Fixes
+
+* **location:** only show up to three recent searches ([f6f02ed](https://github.com/kaiser-jan/weather-pwa/commit/f6f02ed994d7a10e821f1aa23dd9aac9bf78d012))
+
 # [1.4.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.3.2...v1.4.0) (2025-08-31)
 
 
