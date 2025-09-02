@@ -180,7 +180,7 @@
             Recent Searches
           </h5>
           <div class="flex flex-col gap-2">
-            {#each $cachedResults ?? [] as recentSearch}
+            {#each $cachedResults ? $cachedResults.slice(0, 3) : [] as recentSearch}
               <Button
                 variant="midground"
                 class="inline-flex items-center justify-start gap-2 px-2"
