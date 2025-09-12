@@ -13,8 +13,9 @@
 
   interface Props {
     visible: ForecastMetric[]
+    timebucket: TimeBucket
   }
-  let { visible: visible = $bindable() }: Props = $props()
+  let { visible: visible = $bindable(), timebucket }: Props = $props()
 
   let temporary = $derived(visible.filter((p) => !$settings.sections.components.chart.pinnedMetrics.includes(p)))
 
@@ -25,7 +26,11 @@
   <ToggleGroup.Root type="multiple" variant="outline" bind:value={visible} class="h-fit grow">
     {#each $settings.sections.components.chart.pinnedMetrics as parameter (parameter)}
       {@const details = METRIC_DETAILS[parameter]!}
-      <ToggleGroup.Item value={parameter} class="grow">
+      <ToggleGroup.Item
+        value={parameter}
+        class="grow"
+        disabled={!timebucket.multiseries[parameter] || timebucket.multiseries[parameter].length === 0}
+      >
         <IconOrAbbreviation {details} />
       </ToggleGroup.Item>
     {/each}
@@ -35,7 +40,10 @@
     <ToggleGroup.Root type="multiple" variant="outline" bind:value={visible}>
       {#each temporary as parameter (parameter)}
         {@const details = METRIC_DETAILS[parameter]!}
-        <ToggleGroup.Item value={parameter}>
+        <ToggleGroup.Item
+          value={parameter}
+          disabled={!timebucket.multiseries[parameter] || timebucket.multiseries[parameter].length === 0}
+        >
           <IconOrAbbreviation {details} />
         </ToggleGroup.Item>
       {/each}
