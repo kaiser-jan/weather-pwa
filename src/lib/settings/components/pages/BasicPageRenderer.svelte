@@ -6,7 +6,7 @@
   interface Props {
     path: string[]
     item: SettingsNested
-    onnavigate: (target: string, replace?: boolean) => void
+    onnavigate: (target: string[], replace?: boolean) => void
   }
 
   let { path: parentPath, item, onnavigate }: Props = $props()

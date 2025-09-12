@@ -71,26 +71,30 @@
   {/each}
 </div>
 
-<Popover.Root>
-  <Popover.Trigger>
-    <Button class="h-8 min-h-6 px-3 py-2" variant="secondary" disabled={$disabled}>
-      <PlusIcon />
-      Select more
-    </Button>
-  </Popover.Trigger>
-  <Popover.Content class="flex max-h-[50dvh] w-fit max-w-[90dvw] flex-col gap-1 overflow-y-scroll p-2">
-    {#each availableOptions as option (option)}
-      <Button
-        variant="ghost"
-        onclick={() => {
-          items.push({ id: option })
-          onchange(items.map((i) => i.id))
-        }}
-        class="justify-start px-3"
-      >
-        {option}
-        <PlusIcon class="ml-auto" />
+{#if !$disabled && availableOptions.length}
+  <Popover.Root>
+    <Popover.Trigger>
+      <Button class="h-8 min-h-6 px-3 py-2" variant="secondary">
+        <PlusIcon />
+        Select more
       </Button>
-    {/each}
-  </Popover.Content>
-</Popover.Root>
+    </Popover.Trigger>
+    <Popover.Content class="flex max-h-[50dvh] w-fit max-w-[90dvw] flex-col gap-1 overflow-y-scroll p-2">
+      {#each availableOptions as option (option)}
+        <Button
+          variant="ghost"
+          onclick={() => {
+            items.push({ id: option })
+            onchange(items.map((i) => i.id))
+          }}
+          class="justify-start px-3"
+        >
+          {option}
+          <PlusIcon class="ml-auto" />
+        </Button>
+      {:else}
+        No more options available!
+      {/each}
+    </Popover.Content>
+  </Popover.Root>
+{/if}

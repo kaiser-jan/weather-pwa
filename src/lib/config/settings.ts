@@ -180,6 +180,8 @@ export const settingsConfig = [
         id: 'datasets',
         label: 'Datasets',
         type: 'multiselect-reorder',
+        allowsFullscreen: true,
+        requiresFullscreen: true,
         icon: ListIcon,
         options: DATASET_IDS_BY_PRIORITY,
         labels: Object.fromEntries(

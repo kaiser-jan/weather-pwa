@@ -10,6 +10,7 @@
   import { getPageComponent, isWrapper } from '../registry'
   import { debounce, throttle } from '$lib/utils'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
+  import ItemPageRenderer from './pages/ItemPageRenderer.svelte'
 
   interface Props {
     config: ConfigItem[]
@@ -150,7 +151,7 @@
       bind:this={scrollContainer}
     >
       {#each pages as settingsPage, i (settingsPage.id)}
-        {@const PageComponent = getPageComponent(settingsPage.type)}
+        {@const PageComponent = getPageComponent(settingsPage.type) ?? ItemPageRenderer}
         <div
           class="flex h-full w-full shrink-0 flex-col gap-2 overflow-hidden overflow-y-auto"
           bind:this={historyElements[i]}

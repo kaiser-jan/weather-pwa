@@ -6,10 +6,11 @@
   interface Props {
     path: string[]
     item: SettingsInput
-    onnavigate: (target: string) => void
+    fullscreen?: boolean
+    onnavigate: (target: string[]) => void
   }
 
-  let { path, item, onnavigate }: Props = $props()
+  let { path, item, fullscreen, onnavigate }: Props = $props()
 
   const Component = getInputComponent(item.type)
 
@@ -20,7 +21,10 @@
 
 <button
   class="bg-midground relative flex min-h-12 shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-1 overflow-hidden rounded-md px-4 py-2"
-  onclick={() => item.action?.()}
+  onclick={() => {
+    if (item.action) return item.action
+    if (!fullscreen && item.allowsFullscreen) onnavigate([item.id])
+  }}
   ondblclick={() => {
     value = settings.resetSetting(path)
     hasChanged = false
@@ -37,6 +41,7 @@
       {item}
       {value}
       {onnavigate}
+      {fullscreen}
       onchange={(v: unknown) => {
         settings.writeSetting(path, v)
         hasChanged = true

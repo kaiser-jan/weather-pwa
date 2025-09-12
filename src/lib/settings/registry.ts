@@ -36,6 +36,7 @@ type SettingComponentInput = Component<
   {
     item: any
     value: any
+    fullscreen?: boolean
     onchange: (v: any) => void
     onnavigate: (path: string[]) => void
     path: string[]

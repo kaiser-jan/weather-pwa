@@ -12,6 +12,7 @@ type BaseConfigItem = {
   icon?: typeof Icon
   visible?: VisibilityCallback
   disabled?: boolean | Readable<boolean>
+  allowsFullscreen?: boolean
   action?: () => any
 }
 
@@ -32,6 +33,7 @@ export type MultiSelectSetting = BaseConfigItem & {
   options: readonly string[]
   labels?: Record<string, string>
   default: string[]
+  requiresFullscreen: boolean
 }
 
 export type BooleanSetting = BaseConfigItem & {
