@@ -27,6 +27,8 @@
     active: boolean
   }
 
+  type LocationResults = { query: string; results: PlaceOutput[] }[]
+
   let { active }: Props = $props()
 
   $effect(() => {
@@ -38,7 +40,7 @@
 
   const savedLocations = settings.select((s) => s.data.locations)
 
-  const cachedResults = persist<{ query: string; results: PlaceOutput[] }[]>($state.snapshot(SEARCH_CACHE_KEY), [])
+  const cachedResults = persist<LocationResults>($state.snapshot(SEARCH_CACHE_KEY), [])
 
   const geolocationItem = $derived({
     id: ITEM_ID_GEOLOCATION,
@@ -107,6 +109,7 @@
             bind:searchNow
             cacheKey={SEARCH_CACHE_KEY}
             load={nominatimQuery}
+            onresults={() => cachedResults.refresh()}
           >
             {#snippet children({ isLoading, result })}
               <LocationList
@@ -180,11 +183,11 @@
             Recent Searches
           </h5>
           <div class="flex flex-col gap-2">
-            {#each $cachedResults ? $cachedResults.slice(0, 3) : [] as recentSearch}
+            {#each $cachedResults ? $cachedResults.slice(0, 3).reverse() : [] as recentSearch}
               <Button
                 variant="midground"
                 class="inline-flex items-center justify-start gap-2 px-2"
-                onclick={() => {
+                onclick={async () => {
                   currentQuery = recentSearch.query
                   searchNow()
                 }}

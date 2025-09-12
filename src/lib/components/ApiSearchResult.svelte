@@ -11,6 +11,7 @@
     cacheKey: string
     searchNow: () => void
     load: (query: string) => Promise<ResultT[]>
+    onresults?: () => void
     children: Snippet<[{ isLoading: boolean; result: ResultT[] | null }]>
   }
 
@@ -19,6 +20,7 @@
     searchNow = $bindable(loadResultsForLiveQuery),
     cacheKey,
     load,
+    onresults,
     children,
   }: Props = $props()
 
@@ -47,13 +49,15 @@
     }
   }
 
-  async function loadResultsForLiveQuery() {
+  export async function loadResultsForLiveQuery() {
     if (!liveQuery || liveQuery === null) return
 
     isLoading = true
     saveToHistory()
     currentResults = await loadResults()
     isLoading = false
+
+    onresults?.()
   }
 
   async function tryLoadCachedResults(newQuery: string) {
