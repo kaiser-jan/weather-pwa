@@ -73,6 +73,7 @@ import { iconMap } from '$lib/utils/icons'
 import { FORECAST_METRICS } from './metrics'
 import { DATASET_IDS_BY_PRIORITY } from './datasets'
 import { clearCache, resetApp } from '$lib/utils/cache'
+import { SECTIONS, type SectionId } from '$lib/components/sections/registry'
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   temperature: '°C',
@@ -390,6 +391,14 @@ export const settingsConfig = [
     type: 'page',
     icon: LayoutPanelTopIcon,
     children: [
+      {
+        id: 'order',
+        label: 'Section Order',
+        type: 'multiselect-reorder',
+        icon: ListOrderedIcon,
+        options: Object.keys(SECTIONS),
+        default: ['notices', 'today', 'upcoming', 'outlook', 'air_pollution'] as SectionId[],
+      },
       {
         id: 'current',
         label: 'Current',

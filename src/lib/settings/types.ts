@@ -33,7 +33,7 @@ export type MultiSelectSetting = BaseConfigItem & {
   options: readonly string[]
   labels?: Record<string, string>
   default: string[]
-  requiresFullscreen: boolean
+  requiresFullscreen?: boolean
 }
 
 export type BooleanSetting = BaseConfigItem & {

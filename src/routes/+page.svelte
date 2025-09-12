@@ -12,6 +12,7 @@
   import { forecastStore } from '$lib/stores/data'
   import { geolocationStore } from '$lib/stores/geolocation'
   import { coordinates, selectedLocation } from '$lib/stores/location'
+  import { getComponent } from '$lib/components/sections/componentRegistry'
 
   let scrollContainer = $state<HTMLElement>()
   let shrinkHeader = $state(false)
@@ -44,20 +45,10 @@
   <SectionCurrent shrink={shrinkHeader} />
 
   <div class="flex flex-col gap-4 p-4" data-vaul-drawer-wrapper>
-    <NoticePrecipitation />
-
-    <SectionTodayChart />
-
-    <SectionUpcoming />
-
-    <SectionOutlook />
-
-    <!-- TODO: derive from datasets -> provided parameters -->
-    {#if $forecastStore?.multiseries.pm25 || $forecastStore?.multiseries.pm10 || $forecastStore?.multiseries.o3 || $forecastStore?.multiseries.no2}
-      <SectionAirPollution />
-    {/if}
-
-    <SectionSources />
+    {#each $settings.sections.order as sectionId}
+      {@const Component = getComponent(sectionId)}
+      <Component />
+    {/each}
   </div>
 
   <ViewDay />
