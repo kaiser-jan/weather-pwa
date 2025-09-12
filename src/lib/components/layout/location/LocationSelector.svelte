@@ -5,9 +5,10 @@
   import LocationSearch from './LocationSearch.svelte'
   import { iconMap } from '$lib/utils/icons'
   import { SearchIcon } from '@lucide/svelte'
-  import { locationSearch } from '$lib/stores/ui'
+  import { locationSearch, openSettingsAt } from '$lib/stores/ui'
   import { selectedLocation } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
+  import { press } from 'svelte-gestures'
 
   const geolocationDetails = geolocationStore.details
 
@@ -38,7 +39,7 @@
   <div class="border-background relative w-0 grow border-x-4">
     {#if $settingLocations.length}
       <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
-        {#each $settingLocations as location (location.id)}
+        {#each $settingLocations as location, locationIndex (location.id)}
           <button
             class={[
               'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
@@ -47,6 +48,10 @@
                 : 'bg-foreground text-text-muted',
             ]}
             onclick={() => selectedLocation.set({ type: 'saved', location })}
+            use:press={() => ({ timeframe: 500, triggerBeforeFinished: true })}
+            onpress={(_) => {
+              openSettingsAt(['data', 'locations', locationIndex.toString()])
+            }}
           >
             {#if location.icon}
               <svelte:component this={iconMap[location.icon]} />
