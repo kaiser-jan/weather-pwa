@@ -94,132 +94,135 @@
       class="flex h-0 grow flex-col gap-4 p-4"
       style="padding-bottom: calc(1rem + min(2rem, env(safe-area-inset-top)))"
     >
-      {#if page.state.locationQuery || currentQuery}
-        <button class="text-bold flex w-fit flex-row items-center gap-4" onclick={() => history.back()}>
-          <ChevronLeftIcon />
-          <span class="inline-flex flex-wrap">
-            <span>Search results for&nbsp;</span>
-            <span>"{page.state.locationQuery?.trim() ?? currentQuery}"</span>
-          </span>
-        </button>
+      <div class="flex h-0 grow flex-col gap-4 overflow-y-auto">
+        {#if page.state.locationQuery || currentQuery}
+          <button class="text-bold flex w-fit flex-row items-center gap-4" onclick={() => history.back()}>
+            <ChevronLeftIcon />
+            <span class="inline-flex flex-wrap">
+              <span>Search results for&nbsp;</span>
+              <span>"{page.state.locationQuery?.trim() ?? currentQuery}"</span>
+            </span>
+          </button>
 
-        <div class="flex grow flex-col gap-4 overflow-y-auto">
-          <ApiSearchResult
-            bind:liveQuery={currentQuery}
-            bind:searchNow
-            cacheKey={SEARCH_CACHE_KEY}
-            load={nominatimQuery}
-            onresults={() => cachedResults.refresh()}
-          >
-            {#snippet children({ isLoading, result })}
-              <LocationList
-                placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
-                placeholderNull="Search will start when you finish typing."
-                placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
-                loading={isLoading}
-                items={result?.map((r) => ({
-                  id: ITEM_ID_TEMPORARY,
-                  icon: classIconMap[r.category ?? r.class ?? ''],
-                  label: r.name !== '' ? r.name : typeToString(r.type),
-                  sublabel: r.display_name,
-                  coordinates: {
-                    latitude: parseFloat(r?.lat),
-                    longitude: parseFloat(r?.lon),
-                    altitude: null,
-                  },
-                  select: () => {
-                    selectedLocation.set({
-                      type: 'search',
-                      coordinates: {
-                        latitude: parseFloat(r?.lat),
-                        longitude: parseFloat(r?.lon),
-                        altitude: null,
-                      },
-                    })
-                    locationSearch.hide()
-                  },
-                })) ?? null}
-              />
-            {/snippet}
-          </ApiSearchResult>
-        </div>
-      {:else}
-        <h1 class="text-bold flex flex-row items-center gap-2 text-xl">
-          <MapPinnedIcon class="shrink-0" />
-          Your Locations
-        </h1>
-        <div class="flex grow flex-col gap-4 overflow-y-auto">
-          <LocationList
-            title="Geolocation"
-            placeholderLoading="Loading your geolocation..."
-            placeholderEmpty="Here should be your geolocation... :("
-            items={[geolocationItem]}
-          />
+          <div class="gap-4overflow-y-auto flex grow flex-col">
+            <ApiSearchResult
+              bind:liveQuery={currentQuery}
+              bind:searchNow
+              cacheKey={SEARCH_CACHE_KEY}
+              load={nominatimQuery}
+              onresults={() => cachedResults.refresh()}
+            >
+              {#snippet children({ isLoading, result })}
+                <LocationList
+                  placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
+                  placeholderNull="Search will start when you finish typing."
+                  placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
+                  loading={isLoading}
+                  items={result?.map((r) => ({
+                    id: ITEM_ID_TEMPORARY,
+                    icon: classIconMap[r.category ?? r.class ?? ''],
+                    label: r.name !== '' ? r.name : typeToString(r.type),
+                    sublabel: r.display_name,
+                    coordinates: {
+                      latitude: parseFloat(r?.lat),
+                      longitude: parseFloat(r?.lon),
+                      altitude: null,
+                    },
+                    select: () => {
+                      selectedLocation.set({
+                        type: 'search',
+                        coordinates: {
+                          latitude: parseFloat(r?.lat),
+                          longitude: parseFloat(r?.lon),
+                          altitude: null,
+                        },
+                      })
+                      locationSearch.hide()
+                    },
+                  })) ?? null}
+                />
+              {/snippet}
+            </ApiSearchResult>
+          </div>
+        {:else}
+          <h1 class="text-bold flex flex-row items-center gap-2 text-xl">
+            <MapPinnedIcon class="shrink-0" />
+            Your Locations
+          </h1>
+          <div class="flex grow flex-col gap-4">
+            <LocationList
+              title="Geolocation"
+              placeholderLoading="Loading your geolocation..."
+              placeholderEmpty="Here should be your geolocation... :("
+              items={[geolocationItem]}
+            />
 
-          <LocationList
-            title="Saved Locations"
-            placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
-            items={$savedLocations.map((location) => ({
-              id: location.id,
-              icon: iconMap[location.icon],
-              label: location.name,
-              coordinates: location,
-              select: () => {
-                selectedLocation.set({ type: 'saved', location })
-                locationSearch.hide()
-              },
-            }))}
-          />
-          <Button variant="outline" onclick={() => openSettingsAt(['data', 'locations'])}>
-            <PencilIcon /> Edit saved locations
-          </Button>
-        </div>
-      {/if}
+            <LocationList
+              title="Saved Locations"
+              placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
+              items={$savedLocations.map((location) => ({
+                id: location.id,
+                icon: iconMap[location.icon],
+                label: location.name,
+                coordinates: location,
+                select: () => {
+                  selectedLocation.set({ type: 'saved', location })
+                  locationSearch.hide()
+                },
+              }))}
+            />
+            <Button variant="outline" onclick={() => openSettingsAt(['data', 'locations'])}>
+              <PencilIcon /> Edit saved locations
+            </Button>
+          </div>
 
-      <div class="mt-auto flex flex-col gap-4">
-        {#if !page.state.locationQuery && !currentQuery}
-          <h5 class="text-text-muted -mb-3 inline-flex items-center gap-2 text-sm">
-            <HistoryIcon />
-            Recent Searches
-          </h5>
-          <div class="flex flex-col gap-2">
-            {#each $cachedResults ? $cachedResults.slice(0, 3).reverse() : [] as recentSearch}
-              <Button
-                variant="midground"
-                class="inline-flex items-center justify-start gap-2 px-2"
-                onclick={async () => {
-                  currentQuery = recentSearch.query
-                  searchNow()
-                }}
-              >
-                <SearchIcon />
-                {recentSearch.query}
-              </Button>
-            {/each}
+          <!-- TODO: only show recent results when search is highlighted? and already show the search view then?-->
+          <div class="mt-auto flex flex-col gap-4">
+            {#if !page.state.locationQuery && !currentQuery}
+              <h5 class="text-text-muted -mb-3 inline-flex items-center gap-2 text-sm">
+                <HistoryIcon />
+                Recent Searches
+              </h5>
+              <div class="flex flex-col gap-2">
+                {#each $cachedResults ? $cachedResults.slice(0, 3).reverse() : [] as recentSearch}
+                  <Button
+                    variant="midground"
+                    class="inline-flex items-center justify-start gap-2 px-2"
+                    onclick={async () => {
+                      currentQuery = recentSearch.query
+                      searchNow()
+                    }}
+                  >
+                    <SearchIcon />
+                    {recentSearch.query}
+                  </Button>
+                {/each}
+              </div>
+            {/if}
           </div>
         {/if}
+      </div>
 
-        <div class="relative">
-          <Input
-            placeholder="Search any location..."
-            bind:value={currentQuery}
-            onkeypress={(e) => {
-              if (e.key === 'Enter') searchNow()
-            }}
-            class="h-12"
-          />
-          <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
-          {#if currentQuery}
-            <Button
-              size="icon"
-              variant="outline"
-              class="text-muted-foreground absolute top-1/2 right-2 size-8 -translate-y-1/2"
-              onclick={clearSearch}
-            >
-              <XIcon />
-            </Button>
-          {/if}
-        </div>
+      <div class="relative">
+        <Input
+          placeholder="Search any location..."
+          bind:value={currentQuery}
+          onkeypress={(e) => {
+            if (e.key === 'Enter') searchNow()
+          }}
+          class="h-12"
+        />
+        <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
+        {#if currentQuery}
+          <Button
+            size="icon"
+            variant="outline"
+            class="text-muted-foreground absolute top-1/2 right-2 size-8 -translate-y-1/2"
+            onclick={clearSearch}
+          >
+            <XIcon />
+          </Button>
+        {/if}
       </div>
     </div>
   </Drawer.Content>
