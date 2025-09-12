@@ -9,6 +9,7 @@
   import { get } from 'svelte/store'
   import { createUUID } from '$lib/utils'
   import { selectedLocation } from '$lib/stores/location'
+  import { locationSearch } from '$lib/stores/ui'
 
   type Item = {
     id: string
@@ -96,6 +97,7 @@
 
     // select it
     selectedLocation.set({ type: 'saved', location: { ...newLocation } })
+    locationSearch.hide()
   }
 </script>
 
