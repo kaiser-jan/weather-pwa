@@ -186,7 +186,7 @@ export const settingsConfig = [
           DATASET_IDS_BY_PRIORITY.map((id) => {
             const provider = PROVIDERS.find((p) => p.datasetIds.includes(id))!
             const dataset = DATASETS.find((d) => d.id === id)!
-            return [id, provider.name + ' ' + dataset.name]
+            return [id, `${dataset.name} (${provider.id})`]
           }),
         ),
         default: DATASET_IDS_BY_PRIORITY satisfies DatasetId[],
@@ -263,7 +263,7 @@ export const settingsConfig = [
           {
             id: 'metrics',
             label: 'Visible Weather Metrics',
-            type: 'multiselect',
+            type: 'multiselect-reorder',
             icon: LetterTextIcon,
             options: FORECAST_METRICS,
             default: [

@@ -47,19 +47,19 @@
   }}
 >
   {#each items as listItem, listIndex (listItem.id)}
-    <div class="flex h-8 flex-row items-center gap-2" data-vaul-no-drag>
+    <div class="flex flex-row items-center gap-2" data-vaul-no-drag>
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div use:dragHandle onclick={(e) => e.stopPropagation()} data-vaul-no-drag>
         <GripHorizontalIcon data-vaul-no-drag />
       </div>
 
-      <Label for={listItem.id} class="leading-5">{item.labels?.[listItem.id] ?? listItem.id}</Label>
+      <Label for={listItem.id} class="text-left leading-4">{item.labels?.[listItem.id] ?? listItem.id}</Label>
 
       <Button
         size="icon"
         variant="ghost"
-        class="ml-auto"
+        class="ml-auto size-8"
         disabled={$disabled}
         onclick={() => {
           items.splice(listIndex, 1)
