@@ -16,15 +16,11 @@ export function createGradientDefinition(options: {
 
   const min = stops[0].value
   const max = stops[stops.length - 1].value
-  const steps = 50
-  const gradientStops = Array.from({ length: steps + 1 }, (_, i) => {
-    // the gradient is inverted, causing the 1 - Ans
-    const v = min + (1 - i / steps) * (max - min)
-    return {
-      offset: `${(i / steps) * 100}%`,
-      color: interpolateColor(stops, v),
-    }
-  })
+
+  const gradientStops = stops.map((s) => ({
+    offset: `${((s.value - min) / (max - min)) * 100}%`,
+    color: `hsla(${s.h}, ${s.s}%, ${s.l}%, ${s.a ?? 1})`,
+  }))
 
   const defs = svg.append('defs')
 
@@ -33,9 +29,9 @@ export function createGradientDefinition(options: {
     .attr('id', id)
     .attr('gradientUnits', 'userSpaceOnUse')
     .attr('x1', 0)
-    .attr('y1', scaleY(max))
+    .attr('y1', scaleY(min))
     .attr('x2', 0)
-    .attr('y2', scaleY(min))
+    .attr('y2', scaleY(max))
 
   gradient
     .selectAll('stop')
