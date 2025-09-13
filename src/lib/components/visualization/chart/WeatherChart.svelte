@@ -18,6 +18,7 @@
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
   import ChartValuesDisplay from './ChartValuesDisplay.svelte'
   import { computeAxesFor } from '$lib/utils/d3/autoAxis'
+  import { RAIN_CATEGORIES } from '$lib/config/categorization'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -183,8 +184,12 @@
             if (color) dataRepresentation.style('stroke', color)
             break
           case 'bars':
-            dataRepresentation = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
-            if (color) dataRepresentation.style('fill', color)
+            const bars = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
+            if (color) bars.style('fill', color)
+            if ('segments' in details.color)
+              bars.attr('fill', (d) => RAIN_CATEGORIES.findLast((c) => d.value > c.threshold)?.color ?? 'red')
+            // details.color.segments
+            dataRepresentation = bars
             break
           case 'area':
             if (!seriesB) return
@@ -212,8 +217,7 @@
             name: parameter,
           })
 
-          dataRepresentation.attr('stroke', `url(#${gradientId})`)
-          if (details.chart.style === 'area') dataRepresentation.attr('fill', `url(#${gradientId})`)
+          dataRepresentation.attr(details.chart.style === 'line' ? 'stroke' : 'fill', `url(#${gradientId})`)
         }
 
         if (details.chart.markExtrema && $settingsChart.highlightExtrema) {

@@ -27,14 +27,12 @@ export const RAIN_CATEGORIES: {
   color: string // hsla
   description: string
 }[] = [
-  { threshold: -1, color: 'hsla(0, 0%, 0%, 0)', description: 'No Rain' },
-  { threshold: 0.01, color: 'hsla(210, 50%, 55%, 0.4)', description: 'Drizzle' },
-  { threshold: 0.2, color: 'hsla(210, 50%, 55%, 0.7)', description: 'Light Rain' },
-  { threshold: 2.5, color: 'hsla(215, 50%, 55%, 1)', description: 'Moderate Rain' },
-  { threshold: 5, color: 'hsla(225, 50%, 40%, 1)', description: 'Heavy Rain' },
-  { threshold: 10, color: 'hsla(230, 65%, 32%, 1)', description: 'Very Heavy Rain' },
-  { threshold: 20, color: 'hsla(255, 60%, 35%, 1)', description: 'Extreme Rain' },
-  { threshold: 50, color: 'hsla(270, 70%, 45%, 1)', description: 'Violent Rain' },
+  { threshold: 0, color: 'hsla(210, 50%, 62%, 0.4)', description: 'Drizzle' },
+  { threshold: 0.2, color: 'hsla(215, 50%, 58%, 0.7)', description: 'Light Rain' },
+  { threshold: 2.5, color: 'hsla(225, 50%, 52%, 0.9)', description: 'Moderate Rain' },
+  { threshold: 7.2, color: 'hsla(250, 50%, 40%, 1)', description: 'Heavy Rain' },
+  { threshold: 25, color: 'hsla(270, 60%, 35%, 1)', description: 'Extreme Rain' },
+  { threshold: 50, color: 'hsla(280, 70%, 45%, 1)', description: 'Violent Rain' },
 ] as const
 
 // https://www.researchgate.net/figure/Dew-point-Humidity-and-corresponding-Human-Perception_tbl5_312498146

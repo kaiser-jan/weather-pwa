@@ -37,7 +37,6 @@
   <!-- {/if} -->
   <!-- TODO: color based on intensity -->
   <!-- TODO: units -->
-  <!-- TODO: only show amount from now on if isRestOfDayOnly -->
   <span class="text-blue-200">{amount.toFixed(precipitationGroup.amount < 0.1 ? 2 : 1)}mm</span>
   <!-- TODO: consider mini chart -->
 </div>

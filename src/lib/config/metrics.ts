@@ -16,7 +16,7 @@ import {
 } from '@lucide/svelte'
 import type { ForecastParameter, MultivariateTimeSeries } from '$lib/types/data'
 import type { ColorStop, MetricDetails } from '$lib/types/ui'
-import { DEW_POINT_CATEGORIES, EAQI } from './categorization'
+import { DEW_POINT_CATEGORIES, EAQI, RAIN_CATEGORIES } from './categorization'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 export const PREFER_MERGED_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['dew_point']
@@ -78,9 +78,11 @@ const _METRIC_DETAILS = {
   precipitation_amount: {
     label: 'Precipitation Amount',
     domain: { min: [0], max: [20, 50] },
+    domainDefault: { min: 0, max: 7.2 },
     icon: UmbrellaIcon,
     iconIfZero: UmbrellaOffIcon,
-    color: { css: 'var(--color-blue-300)' },
+    // color: { css: 'var(--color-blue-300)' },
+    color: { segments: RAIN_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsla(c.color) })) },
     chart: {
       style: 'bars',
       class: 'opacity-80',
@@ -262,6 +264,15 @@ function parseHsl(str: string): { h: number; s: number; l: number } {
     return { h: 0, s: 100, l: 50 }
   }
   return { h: parseFloat(match[1]), s: parseFloat(match[2]), l: parseFloat(match[3]) }
+}
+
+function parseHsla(str: string): { h: number; s: number; l: number; a: number } {
+  const match = str.match(/hsla\((\d+)[,\s]+([\d.]{1,3})%[,\s]+([\d.]{1,3})%[,\s]+([\d.]*)\)/i)
+  if (!match) {
+    console.warn(`Invalid HSLA string ${str}!`)
+    return { h: 0, s: 100, l: 50, a: 1 }
+  }
+  return { h: parseFloat(match[1]), s: parseFloat(match[2]), l: parseFloat(match[3]), a: parseFloat(match[4]) }
 }
 
 export type ForecastMetric = keyof typeof _METRIC_DETAILS

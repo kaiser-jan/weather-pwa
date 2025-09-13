@@ -1,11 +1,12 @@
 import type { Icon, ThermometerIcon } from '@lucide/svelte'
 import type { Coordinates, TimeSeries, ForecastParameter, MultivariateTimeSeries } from './data'
 
-export type ColorStop = { value: number; h: number; s: number; l: number }
+export type ColorStop = { value: number; h: number; s: number; l: number; a?: number }
 
 export type ColorDefinition =
   | { css: string } //
   | { gradient: ColorStop[] }
+  | { segments: ColorStop[] }
   | { gradientSetting: string[] }
 
 export interface MetricDetailsChart {

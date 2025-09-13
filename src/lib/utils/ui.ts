@@ -40,7 +40,8 @@ export function interpolateColor(stops: ColorStop[], value: number): string {
       const h = interpolate(a.h, b.h, t)
       const s = interpolate(a.s, b.s, t)
       const l = interpolate(a.l, b.l, t)
-      return `hsl(${h}, ${s}%, ${l}%)`
+      const alpha = interpolate(a.a ?? 1, b.a ?? 1, t)
+      return `hsla(${h}, ${s}%, ${l}%, ${alpha})`
     }
   }
   const edge = value <= stops[0].value ? stops[0] : stops[stops.length - 1]
