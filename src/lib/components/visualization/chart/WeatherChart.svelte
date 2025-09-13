@@ -177,7 +177,8 @@
 
         let dataRepresentation: d3.Selection<any, any, any, undefined>
 
-        const color = details.color && 'css' in details.color ? details.color.css : undefined
+        const colorStyle = details.color
+        const color = colorStyle && 'css' in colorStyle ? colorStyle.css : undefined
         switch (details.chart.style) {
           case 'line':
             dataRepresentation = createLine({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
@@ -186,8 +187,12 @@
           case 'bars':
             const bars = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
             if (color) bars.style('fill', color)
-            if ('categories' in details.color)
-              bars.attr('fill', (d) => RAIN_CATEGORIES.findLast((c) => d.value > c.threshold)?.color ?? 'red')
+            if ('categories' in colorStyle)
+              bars.attr('fill', (d) => {
+                const color = colorStyle.categories.findLast((c) => d.value > c.value)
+                if (!color) return 'red'
+                return `hsla(${color.h}, ${color.s}%, ${color.l}%, ${color.a ?? 1})`
+              })
             // details.color.segments
             dataRepresentation = bars
             break

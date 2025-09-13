@@ -67,7 +67,7 @@
       {@const precipitationGroups = $precipitationGroupsStore.filter(
         (g) => g.end > day.timestamp && g.start < day.timestamp + day.duration,
       )}
-      <div class="flex flex-col gap-1">
+      <div class="flex grow flex-col gap-1">
         {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}
           <PrecipitationGroup
             {precipitationGroup}

@@ -3,6 +3,7 @@ import { forecastStore } from './data'
 import { NOW, NOW_MILLIS } from './now'
 import { settings } from '$lib/settings/store'
 import { Duration } from 'luxon'
+import type { TimeSeries } from '$lib/types/data'
 
 const settingDataForecastPrecipitation = settings.select((s) => s.data.forecast.precipitation)
 
@@ -13,6 +14,7 @@ export interface PrecipitationGroup {
   amount: number
   amountAfterNow: number
   hasBreaks?: boolean
+  timeseries: TimeSeries<number>
 }
 
 export const precipitationGroupsStore = derived(
@@ -44,12 +46,19 @@ export const precipitationGroupsStore = derived(
           previousGroup.hasBreaks = true
         } else {
           // start a new group
-          groups.push({ start: timeBucket.timestamp, amount: 0, amountAfterNow: 0 } as PrecipitationGroup)
+          groups.push({
+            start: timeBucket.timestamp,
+            end: timeBucket.timestamp,
+            amount: 0,
+            amountAfterNow: 0,
+            timeseries: [],
+          })
         }
       }
 
       const currentGroup = groups[groups.length - 1]
       currentGroup.amount += timeBucket.value
+      currentGroup.timeseries.push(timeBucket)
       if (timeBucket.timestamp + timeBucket.duration > get(NOW_MILLIS)) currentGroup.amountAfterNow += timeBucket.value
     }
 

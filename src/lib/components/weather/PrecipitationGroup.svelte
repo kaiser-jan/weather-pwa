@@ -4,6 +4,7 @@
   import { ArrowRightIcon } from '@lucide/svelte'
   import { NOW, NOW_MILLIS } from '$lib/stores/now'
   import { DateTime } from 'luxon'
+  import MiniPrecipitationChart from './MiniPrecipitationChart.svelte'
 
   interface Props {
     precipitationGroup: PrecipitationGroup
@@ -32,11 +33,15 @@
       <span class="text-text-muted">+</span>
     {/if}
   </span>
+
+  <div class="w-16">
+    <MiniPrecipitationChart timeseries={precipitationGroup.timeseries} />
+  </div>
+
   <!-- {#if precipitationGroup.hasBreaks} -->
   <!--   <span class="text-text-muted text-sm italic">sporadic</span> -->
   <!-- {/if} -->
   <!-- TODO: color based on intensity -->
   <!-- TODO: units -->
-  <span class="text-blue-200">{amount.toFixed(precipitationGroup.amount < 0.1 ? 2 : 1)}mm</span>
-  <!-- TODO: consider mini chart -->
+  <span class="w-[6ch] text-right text-blue-200">{amount.toFixed(precipitationGroup.amount < 0.1 ? 2 : 1)}mm</span>
 </div>
