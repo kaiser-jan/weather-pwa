@@ -30,8 +30,8 @@ export const RAIN_CATEGORIES: {
   { threshold: 0, color: 'hsla(210, 50%, 62%, 0.4)', description: 'Drizzle' },
   { threshold: 0.2, color: 'hsla(215, 50%, 58%, 0.7)', description: 'Light Rain' },
   { threshold: 2.5, color: 'hsla(225, 50%, 52%, 0.9)', description: 'Moderate Rain' },
-  { threshold: 7.2, color: 'hsla(250, 50%, 40%, 1)', description: 'Heavy Rain' },
-  { threshold: 25, color: 'hsla(270, 60%, 35%, 1)', description: 'Extreme Rain' },
+  { threshold: 7.2, color: 'hsla(245, 55%, 42%, 1)', description: 'Heavy Rain' },
+  { threshold: 25, color: 'hsla(265, 60%, 35%, 1)', description: 'Extreme Rain' },
   { threshold: 50, color: 'hsla(280, 70%, 45%, 1)', description: 'Violent Rain' },
 ] as const
 

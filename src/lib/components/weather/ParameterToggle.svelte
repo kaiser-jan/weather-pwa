@@ -24,19 +24,19 @@
   const colorStyle = $derived.by(() => {
     if (!details?.color) return ''
 
-    let gradientColorStops: ColorStop[] | null = null
-    if ('gradientSetting' in details.color) {
-      gradientColorStops = settings.readSetting(details.color.gradientSetting).value as ColorStop[]
-    } else if ('gradient' in details.color) {
-      gradientColorStops = details.color.gradient
+    let categoryColorStops: ColorStop[] | null = null
+    if ('categoriesSetting' in details.color) {
+      categoryColorStops = settings.readSetting(details.color.categoriesSetting).value as ColorStop[]
+    } else if ('categories' in details.color) {
+      categoryColorStops = details.color.categories
     } else if ('css' in details.color) {
       return `background-color: ${details.color.css}`
     }
 
-    if (gradientColorStops) {
+    if (categoryColorStops) {
       const min = details.domainDefault?.min ?? details.domain.min[0]
       const max = details.domainDefault?.max ?? details.domain.max[details.domain.max.length - 1]
-      return generateCssRangeGradient(min, max, gradientColorStops, 'top')
+      return generateCssRangeGradient(min, max, categoryColorStops, 'top')
     }
 
     return ''

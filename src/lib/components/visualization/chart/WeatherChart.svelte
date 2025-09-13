@@ -186,7 +186,7 @@
           case 'bars':
             const bars = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
             if (color) bars.style('fill', color)
-            if ('segments' in details.color)
+            if ('categories' in details.color)
               bars.attr('fill', (d) => RAIN_CATEGORIES.findLast((c) => d.value > c.threshold)?.color ?? 'red')
             // details.color.segments
             dataRepresentation = bars
@@ -203,18 +203,19 @@
         dataRepresentation.attr('clip-path', `url(#${clipId})`)
 
         const gradientColorStops =
-          details.color && 'gradient' in details.color
-            ? details.color.gradient
-            : details.color && 'gradientSetting' in details.color
-              ? (settings.readSetting(details.color.gradientSetting).value as ColorStop[])
+          details.color && 'categories' in details.color
+            ? details.color.categories
+            : details.color && 'categoriesSetting' in details.color
+              ? (settings.readSetting(details.color.categoriesSetting).value as ColorStop[])
               : undefined
 
-        if (gradientColorStops) {
+        if (gradientColorStops && details.chart.style !== 'bars') {
           const gradientId = createGradientDefinition({
             svg,
             scaleY,
             stops: gradientColorStops,
             name: parameter,
+            abrupt: 'categories' in details.color && details.color.type === 'segments',
           })
 
           dataRepresentation.attr(details.chart.style === 'line' ? 'stroke' : 'fill', `url(#${gradientId})`)

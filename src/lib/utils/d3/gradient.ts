@@ -7,8 +7,9 @@ export function createGradientDefinition(options: {
   scaleY: d3.ScaleLinear<number, number, never>
   stops: ColorStop[]
   name: string
+  abrupt?: boolean
 }) {
-  const { svg, scaleY, stops, name } = options
+  const { svg, scaleY, stops, name, abrupt } = options
 
   const uuid = createUUID()
 
@@ -17,10 +18,24 @@ export function createGradientDefinition(options: {
   const min = stops[0].value
   const max = stops[stops.length - 1].value
 
-  const gradientStops = stops.map((s) => ({
+  let gradientStops = stops.map((s) => ({
     offset: `${((s.value - min) / (max - min)) * 100}%`,
     color: `hsla(${s.h}, ${s.s}%, ${s.l}%, ${s.a ?? 1})`,
   }))
+
+  if (abrupt) {
+    const duplicated: typeof gradientStops = []
+    for (let i = 0; i < gradientStops.length; i++) {
+      duplicated.push(gradientStops[i])
+      if (i < gradientStops.length - 1) {
+        duplicated.push({
+          offset: gradientStops[i].offset,
+          color: gradientStops[i + 1].color,
+        })
+      }
+    }
+    gradientStops = duplicated
+  }
 
   const defs = svg.append('defs')
 

@@ -5,9 +5,8 @@ export type ColorStop = { value: number; h: number; s: number; l: number; a?: nu
 
 export type ColorDefinition =
   | { css: string } //
-  | { gradient: ColorStop[] }
-  | { segments: ColorStop[] }
-  | { gradientSetting: string[] }
+  | { categories: ColorStop[]; type: 'gradient' | 'segments' }
+  | { categoriesSetting: string[] }
 
 export interface MetricDetailsChart {
   style: 'line' | 'bars' | 'area'

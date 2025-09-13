@@ -44,7 +44,7 @@ const _METRIC_DETAILS = {
     domain: { min: [-40, -20, 0], max: [20, 40, 60] },
     domainDefault: { min: 10, max: 35 },
     icon: ThermometerIcon,
-    color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
+    color: { categoriesSetting: ['appearance', 'colors', 'temperatureColorStops'] },
     chart: {
       style: 'line',
       class: 'opacity-100',
@@ -52,7 +52,7 @@ const _METRIC_DETAILS = {
 
       include: {
         temperature_max: {
-          color: { gradientSetting: ['appearance', 'colors', 'temperatureColorStops'] },
+          color: { categoriesSetting: ['appearance', 'colors', 'temperatureColorStops'] },
           chart: {
             style: 'area',
             class: 'opacity-40',
@@ -82,7 +82,10 @@ const _METRIC_DETAILS = {
     icon: UmbrellaIcon,
     iconIfZero: UmbrellaOffIcon,
     // color: { css: 'var(--color-blue-300)' },
-    color: { segments: RAIN_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsla(c.color) })) },
+    color: {
+      type: 'segments',
+      categories: RAIN_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsla(c.color) })),
+    },
     chart: {
       style: 'bars',
       class: 'opacity-80',
@@ -127,7 +130,10 @@ const _METRIC_DETAILS = {
     domain: { min: [0], max: [30] },
     domainDefault: { min: 8, max: 24 },
     icon: DropletsIcon,
-    color: { gradient: DEW_POINT_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsl(c.color) })) },
+    color: {
+      type: 'gradient',
+      categories: DEW_POINT_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsl(c.color) })),
+    },
     chart: {
       style: 'line',
       class: 'opacity-80',
@@ -195,7 +201,8 @@ const _METRIC_DETAILS = {
       max: [0, 6],
     },
     color: {
-      gradient: createLimitsGradient([1, 2, 3, 4, 5, 6], EAQI.colors),
+      type: 'segments',
+      categories: createLimitsGradient([1, 2, 3, 4, 5, 6], EAQI.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
   },
@@ -210,7 +217,8 @@ const _METRIC_DETAILS = {
     },
     domainCallback: createAirPollutantDomainCallback(EAQI.limits.pm25),
     color: {
-      gradient: createLimitsGradient(EAQI.limits.pm25, EAQI.colors, 1e-6),
+      type: 'segments',
+      categories: createLimitsGradient(EAQI.limits.pm25, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
   },
@@ -223,7 +231,8 @@ const _METRIC_DETAILS = {
     },
     domainCallback: createAirPollutantDomainCallback(EAQI.limits.pm10),
     color: {
-      gradient: createLimitsGradient(EAQI.limits.pm10, EAQI.colors, 1e-6),
+      type: 'segments',
+      categories: createLimitsGradient(EAQI.limits.pm10, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
   },
@@ -236,7 +245,8 @@ const _METRIC_DETAILS = {
     },
     domainCallback: createAirPollutantDomainCallback(EAQI.limits.o3),
     color: {
-      gradient: createLimitsGradient(EAQI.limits.o3, EAQI.colors, 1e-6),
+      type: 'segments',
+      categories: createLimitsGradient(EAQI.limits.o3, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
   },
@@ -249,7 +259,8 @@ const _METRIC_DETAILS = {
     },
     domainCallback: createAirPollutantDomainCallback(EAQI.limits.no2),
     color: {
-      gradient: createLimitsGradient(EAQI.limits.no2, EAQI.colors, 1e-6),
+      type: 'segments',
+      categories: createLimitsGradient(EAQI.limits.no2, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
   },

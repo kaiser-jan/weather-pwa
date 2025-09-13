@@ -22,10 +22,12 @@
   const colorCss = $derived.by(() => {
     if ('css' in color) return `background-color: ${color.css}`
 
-    const gradientColorStops =
-      color && 'gradient' in color ? color.gradient : (settings.readSetting(color.gradientSetting).value as ColorStop[])
+    const categoriesColorStops =
+      color && 'categories' in color
+        ? color.categories
+        : (settings.readSetting(color.categoriesSetting).value as ColorStop[])
 
-    return generateCssRangeGradient(instance.min, instance.max, gradientColorStops, vertical ? 'top' : 'right')
+    return generateCssRangeGradient(instance.min, instance.max, categoriesColorStops, vertical ? 'top' : 'right')
   })
 
   function scale(temperature: number) {
