@@ -1,11 +1,4 @@
-import {
-  AlertTriangleIcon,
-  CalendarDaysIcon,
-  ChevronsRightIcon,
-  ClockIcon,
-  DatabaseIcon,
-  type SunIcon,
-} from '@lucide/svelte'
+import { CalendarDaysIcon, ChevronsRightIcon, ClockIcon, DatabaseIcon, InfoIcon, type SunIcon } from '@lucide/svelte'
 
 type Section = {
   name: string
@@ -16,7 +9,7 @@ type Section = {
 export const SECTIONS = {
   notices: {
     name: 'Notices',
-    icon: AlertTriangleIcon,
+    icon: InfoIcon,
     description: '',
   },
   today: {
