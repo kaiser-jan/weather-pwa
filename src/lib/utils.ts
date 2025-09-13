@@ -153,9 +153,9 @@ export function createUUID() {
   return crypto?.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now()
 }
 
-export function popUntil(condition: (state: App.PageState) => boolean) {
+export function popUntil(condition: (state: App.PageState, data: typeof page.params, route: string | null) => boolean) {
   const handler = () => {
-    if (!page.state || condition(page.state)) {
+    if (!page.state || condition(page.state, page.params, page.route.id)) {
       window.removeEventListener('popstate', handler)
     } else {
       history.back()

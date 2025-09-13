@@ -1,15 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
-  import SectionAirPollution from '$lib/components/sections/SectionAirPollution.svelte'
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
-  import SectionOutlook from '$lib/components/sections/SectionOutlook.svelte'
-  import SectionSources from '$lib/components/sections/SectionSources.svelte'
-  import SectionTodayChart from '$lib/components/sections/SectionTodayChart.svelte'
-  import SectionUpcoming from '$lib/components/sections/SectionUpcoming.svelte'
-  import ViewDay from '$lib/components/views/ViewDay.svelte'
-  import NoticePrecipitation from '$lib/components/sections/notices/NoticePrecipitation.svelte'
   import { settings } from '$lib/settings/store'
-  import { forecastStore } from '$lib/stores/data'
   import { geolocationStore } from '$lib/stores/geolocation'
   import { coordinates, selectedLocation } from '$lib/stores/location'
   import { getComponent } from '$lib/components/sections/componentRegistry'
@@ -50,6 +42,4 @@
       <Component />
     {/each}
   </div>
-
-  <ViewDay />
 </main>

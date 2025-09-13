@@ -20,7 +20,7 @@
 
 html,
 body {
-  height: calc(100vh - 1px);
+  height: 100vh;
   padding: 0;
   margin: 0;
   user-select: none;
@@ -30,7 +30,7 @@ body {
   /* https://developer.chrome.com/blog/overscroll-behavior */
   /* NOTE: pull to refresh causes the app to exceed the available height on mobile chrome */
   /* TODO: add custom pull to refresh */
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: none;
 }
 
 .lucide-icon {

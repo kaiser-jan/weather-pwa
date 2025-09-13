@@ -9,6 +9,11 @@
   import ContainerCorners from '$lib/components/ContainerCorners.svelte'
   import { Portal } from 'bits-ui'
   import ErrorBoundary from '$lib/components/layout/errors/ErrorBoundary.svelte'
+  import { Button } from '$lib/components/ui/button'
+  import { ChevronLeftIcon, SettingsIcon } from '@lucide/svelte'
+  import { page } from '$app/state'
+  import { popUntil } from '$lib/utils'
+  import { goto } from '$app/navigation'
 
   let { children } = $props()
 
@@ -25,6 +30,8 @@
     },
     { passive: false },
   )
+
+  const isSubView = $derived(page.route.id !== '/' && !page.route.id?.startsWith('/setup'))
 </script>
 
 <svelte:head>
@@ -41,7 +48,7 @@
 
 <ErrorBoundary scope="app">
   <div
-    class="bg-background relative flex h-dvh w-dvw flex-col overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]"
+    class="bg-background relative flex h-full w-full flex-col overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]"
   >
     <!-- NOTE: this was only removed because the SectionCurrent should expand to the top -->
     <!-- <div class="h-[env(safe-area-inset-top)] shrink-0"></div> -->
@@ -65,8 +72,15 @@
     <!-- ></div> -->
 
     <div class="bg-background flex h-22 shrink-0 flex-row items-center gap-2 p-4">
+      {#if isSubView}
+        <Button class="size-14! grow-0 rounded-full text-lg!" variant="midground" size="icon" onclick={() => goto('/')}>
+          <ChevronLeftIcon />
+        </Button>
+      {/if}
       <LocationSelector />
-      <SettingsButton />
+      {#if !isSubView}
+        <SettingsButton />
+      {/if}
     </div>
 
     <!-- HACK: the safe area on iOS is quite large -->

@@ -1,6 +1,6 @@
 import type { TimeBucket } from '$lib/types/data'
 import { page } from '$app/state'
-import { pushState } from '$app/navigation'
+import { goto, pushState } from '$app/navigation'
 import { forecastStore } from './data'
 import { get, writable } from 'svelte/store'
 import { popUntil } from '$lib/utils'
@@ -15,21 +15,22 @@ export const locationSearch = {
 export const dayView = {
   _initialIndex: null as number | null,
   visibleMetrics: writable<ForecastMetric[]>([]),
+
   hide: async () => {
     dayView.visibleMetrics.set([])
 
     // fallback
     if (dayView._initialIndex === null) {
-      popUntil((s) => !s.selectedDayIndex)
+      popUntil((s, p) => !p.dayIndex)
       return
     }
 
-    const back = Math.abs(page.state.selectedDayIndex - dayView._initialIndex)
+    const back = Math.abs(parseInt(page.url.searchParams.get('dayIndex')!) - dayView._initialIndex)
     history.go(-back - 1)
   },
   open: (target: TimeBucket | null, metrics: ForecastMetric[] = []) => {
     if (!target) return
-    if (page.state.selectedDayIndex !== undefined) return
+    if (page.url.searchParams.get('dayIndex') !== null) return
 
     if (!metrics.length)
       dayView.visibleMetrics.set(structuredClone(get(settings).sections.components.chart.plottedMetrics))
@@ -43,45 +44,47 @@ export const dayView = {
     dayView.push(targetIndex)
   },
   push: (index: number) => {
-    pushState('', { ...page.state, selectedDayIndex: index })
+    goto(`/day?dayIndex=${index}`)
   },
   select: (target: TimeBucket) => {
     const forecast = get(forecastStore)
     if (!forecast) return
     const targetIndex = forecast.daily.findIndex((d) => d.timestamp === target.timestamp)
 
-    navigateBy(targetIndex - page.state.selectedDayIndex)
+    // go back to the initial index, then push the target index
+    if (dayView._initialIndex !== null) {
+      const back = Math.abs(parseInt(page.url.searchParams.get('dayIndex')!) - dayView._initialIndex)
+      history.go(-back)
+      if (dayView._initialIndex === targetIndex) return
+
+      // NOTE: the complexity is necessary as history is event based async
+      const handler = () => {
+        window.removeEventListener('popstate', handler)
+        dayView.push(targetIndex)
+      }
+      window.addEventListener('popstate', handler)
+    } else {
+      dayView.push(targetIndex)
+    }
   },
   previous: () => navigateBy(-1),
   next: () => navigateBy(1),
 }
 
-function navigateByFromInitial(currentIndex: number, delta: number) {
-  const forecast = get(forecastStore)
-  if (!forecast) return
+async function navigateBy(direction: 1 | -1) {
+  const currentIndex = parseInt(page.url.searchParams.get('dayIndex')!)
+  if (currentIndex === null) return
 
-  for (let i = 1; i <= Math.abs(delta); i++) {
-    dayView.push(currentIndex + (delta > 0 ? i : -i))
-  }
-}
-
-// NOTE: the complexity is necessary as history is event based async
-async function navigateBy(direction: number) {
-  if (direction === 0) return
-  let currentIndex = page.state.selectedDayIndex
+  if (dayView._initialIndex === null) dayView._initialIndex = currentIndex
   const initialIndex = dayView._initialIndex
-  if (currentIndex === null || initialIndex === null) return
 
   const initialIndexDelta = initialIndex - currentIndex
-  if (initialIndexDelta) {
-    const handler = () => {
-      window.removeEventListener('popstate', handler)
-      navigateByFromInitial(currentIndex + initialIndexDelta, direction - initialIndexDelta)
-    }
-    window.addEventListener('popstate', handler)
-    history.go(-Math.abs(initialIndexDelta))
+
+  // if we are navigating towards the initial index just pop state, otherwis push it
+  if ((direction > 0 && initialIndexDelta > 0) || (direction < 0 && initialIndexDelta < 0)) {
+    history.go(-Math.abs(direction))
   } else {
-    navigateByFromInitial(currentIndex, direction)
+    dayView.push(currentIndex + direction)
   }
 }
 
