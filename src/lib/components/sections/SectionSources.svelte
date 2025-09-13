@@ -7,7 +7,7 @@
   import { formatRelativeDatetime } from '$lib/utils/ui'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import LoaderState from '../snippets/LoaderState.svelte'
-  import { loaderSummaryLabels, loaderSummaryState, stateFromLoaderState } from '$lib/utils/loaderState'
+  import { loaderSummaryLabel, loaderSummaryState, stateFromLoaderState } from '$lib/utils/loaderState'
 </script>
 
 <SectionTitle title="Data Sources" icon={DatabaseIcon} />
@@ -15,7 +15,7 @@
   <Accordion.Item class="bg-midground rounded-md">
     <Accordion.Trigger class="text-text-muted inline-flex justify-start p-2">
       <LoaderState state={$loaderSummaryState} />
-      {loaderSummaryLabels[$loaderSummaryState]}
+      {$loaderSummaryLabel}
     </Accordion.Trigger>
     <Accordion.Content class="bg-midground rounded-md py-0">
       <Table.Root>
@@ -36,7 +36,7 @@
               <Table.Cell class="w-4">
                 <LoaderState state={stateFromLoaderState(state)} />
               </Table.Cell>
-              <Table.Cell class="sticky left-0 z-50 max-w-48 p-0">
+              <Table.Cell class="sticky left-0 z-20 max-w-48 p-0">
                 <a
                   class="bg-midground group-hover:bg-muted/50 flex h-full max-w-36 flex-nowrap items-center gap-1 px-2"
                   href={state.loader.url}

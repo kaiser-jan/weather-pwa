@@ -19,9 +19,21 @@ export const loaderSummaryState = derived([loaderStates], ([loaderStates]): Stat
   return 'success'
 })
 
-export const loaderSummaryLabels: Record<State, string> = {
-  error: 'Failed to load all datasets!',
-  outdated: 'Not everything up to date!',
-  loading: 'Loading data...',
-  success: 'All datasets up to date',
-}
+export const loaderSummaryLabel = derived([loaderStates, loaderSummaryState], ([loaderStates, loaderSummaryState]) => {
+  const states = loaderStates.map(stateFromLoaderState)
+
+  const failedCount = states.filter((s) => s === 'error').length
+  const loadedCount = states.filter((s) => s !== 'loading').length
+  const outdatedCount = states.filter((s) => s === 'outdated').length
+
+  function formatDatasetCount(count: number) {
+    if (count === 1) return '1 dataset'
+    return `${count} datasets`
+  }
+
+  if (loaderSummaryState === 'error') return `Failed to load ${formatDatasetCount(failedCount)}!`
+  if (loaderSummaryState === 'outdated') return `${formatDatasetCount(outdatedCount)} outdated!`
+  if (loaderSummaryState === 'loading') return `Loading data... (${loadedCount}/${states.length})`
+  if (loaderSummaryState === 'success') return 'All datasets up to date'
+  return ''
+})
