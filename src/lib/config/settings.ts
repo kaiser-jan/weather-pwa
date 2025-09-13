@@ -397,6 +397,7 @@ export const settingsConfig = [
         type: 'multiselect-reorder',
         icon: ListOrderedIcon,
         options: Object.keys(SECTIONS),
+        labels: Object.fromEntries(Object.entries(SECTIONS).map(([k, s]) => [k, s.name])),
         default: ['notices', 'today', 'upcoming', 'outlook', 'air_pollution'] as SectionId[],
       },
       {

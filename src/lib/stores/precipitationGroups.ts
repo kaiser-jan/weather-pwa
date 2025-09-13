@@ -1,6 +1,6 @@
-import { derived } from 'svelte/store'
+import { derived, get } from 'svelte/store'
 import { forecastStore } from './data'
-import { NOW } from './now'
+import { NOW, NOW_MILLIS } from './now'
 import { settings } from '$lib/settings/store'
 import { Duration } from 'luxon'
 
@@ -11,7 +11,8 @@ export interface PrecipitationGroup {
   end: number
   isEndOfData?: boolean
   amount: number
-  sporadic?: boolean
+  amountAfterNow: number
+  hasBreaks?: boolean
 }
 
 export const precipitationGroupsStore = derived(
@@ -36,19 +37,20 @@ export const precipitationGroupsStore = derived(
       if (!isInGroup) {
         isInGroup = true
         const threshold = Duration.fromDurationLike(settingDataForecastPrecipitation.groupInterval)
-        const isSporadic = previousGroup && timeBucket.timestamp - previousGroup.end < threshold.toMillis()
+        const hasBreaks = previousGroup && timeBucket.timestamp - previousGroup.end < threshold.toMillis()
 
-        if (isSporadic) {
+        if (hasBreaks) {
           // continue this group
-          previousGroup.sporadic = true
+          previousGroup.hasBreaks = true
         } else {
           // start a new group
-          groups.push({ start: timeBucket.timestamp, amount: 0 } as PrecipitationGroup)
+          groups.push({ start: timeBucket.timestamp, amount: 0, amountAfterNow: 0 } as PrecipitationGroup)
         }
       }
 
       const currentGroup = groups[groups.length - 1]
       currentGroup.amount += timeBucket.value
+      if (timeBucket.timestamp + timeBucket.duration > get(NOW_MILLIS)) currentGroup.amountAfterNow += timeBucket.value
     }
 
     if (groups.length && !groups[groups.length - 1].end) {

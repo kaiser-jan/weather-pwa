@@ -13,6 +13,8 @@
   }
 
   let { precipitationGroup, startTimestamp, endTimestamp, isRestOfDayOnly }: Props = $props()
+
+  let amount = $derived(isRestOfDayOnly ? precipitationGroup.amountAfterNow : precipitationGroup.amount)
 </script>
 
 <div class="flex flex-row items-center justify-between gap-2">
@@ -30,12 +32,12 @@
       <span class="text-text-muted">+</span>
     {/if}
   </span>
-  {#if precipitationGroup.sporadic}
-    <span class="text-text-muted text-sm italic">sporadic</span>
-  {/if}
+  <!-- {#if precipitationGroup.hasBreaks} -->
+  <!--   <span class="text-text-muted text-sm italic">sporadic</span> -->
+  <!-- {/if} -->
   <!-- TODO: color based on intensity -->
   <!-- TODO: units -->
   <!-- TODO: only show amount from now on if isRestOfDayOnly -->
-  <span class="text-blue-200">{precipitationGroup.amount.toFixed(precipitationGroup.amount < 0.1 ? 2 : 1)}mm</span>
+  <span class="text-blue-200">{amount.toFixed(precipitationGroup.amount < 0.1 ? 2 : 1)}mm</span>
   <!-- TODO: consider mini chart -->
 </div>

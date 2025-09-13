@@ -21,7 +21,7 @@
 </script>
 
 {#if precipitationGroups.length > 0}
-  <div class="bg-midground inline-flex items-center gap-4 rounded-md border-l-6 border-blue-300 px-4 py-3">
+  <div class="bg-midground inline-flex grow items-center gap-4 rounded-md border-l-6 border-blue-300 px-4 py-3">
     <UmbrellaIcon />
     <div class="flex grow flex-col gap-1">
       {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}

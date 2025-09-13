@@ -13,7 +13,9 @@
 </script>
 
 {#if state === 'loading'}
-  <LoaderPulsatingRing className={cn('size-4 shrink-0', className)} />
+  <div class="flex size-3 items-center justify-center">
+    <LoaderPulsatingRing className={cn('size-4 shrink-0', className)} />
+  </div>
 {:else if state === 'error'}
   <CircleXIcon class={cn('shrink-0 text-red-500', className)} />
 {:else if state === 'outdated'}
