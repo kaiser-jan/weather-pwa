@@ -47,7 +47,6 @@ import {
   MapPinIcon,
   MoveVerticalIcon,
   PaletteIcon,
-  PanelBottomOpenIcon,
   PencilLineIcon,
   PinIcon,
   RotateCwIcon,
@@ -70,7 +69,7 @@ import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import type { Changelog } from '$lib/types/changelog'
 import { iconMap } from '$lib/utils/icons'
-import { FORECAST_METRICS } from './metrics'
+import { FORECAST_METRICS, type ForecastMetric } from './metrics'
 import { DATASET_IDS_BY_PRIORITY } from './datasets'
 import { clearCache, resetApp } from '$lib/utils/cache'
 import { SECTIONS, type SectionId } from '$lib/components/sections/registry'
@@ -277,7 +276,7 @@ export const settingsConfig = [
               'dew_point',
               'aqi',
               'pressure',
-            ] as ForecastParameter[],
+            ] as ForecastMetric[],
           },
           {
             id: 'precipitation',
@@ -419,7 +418,7 @@ export const settingsConfig = [
             type: 'multiselect-reorder',
             icon: LetterTextIcon,
             options: FORECAST_METRICS,
-            default: ['dew_point', 'wind_speed', 'pressure'] as ForecastParameter[],
+            default: ['dew_point', 'wind_speed', 'pressure'] as ForecastMetric[],
           },
         ],
       },
@@ -547,7 +546,7 @@ export const settingsConfig = [
                 type: 'multiselect-reorder',
                 icon: ChartSplineIcon,
                 options: FORECAST_METRICS,
-                default: ['temperature', 'precipitation_amount', 'cloud_coverage'] as ForecastParameter[],
+                default: ['temperature', 'precipitation_amount', 'cloud_coverage'] as ForecastMetric[],
               },
               {
                 id: 'pinnedMetrics',
@@ -555,7 +554,7 @@ export const settingsConfig = [
                 type: 'multiselect-reorder',
                 icon: ChartSplineIcon,
                 options: FORECAST_METRICS,
-                default: ['temperature', 'precipitation_amount', 'cloud_coverage', 'wind_speed'] as ForecastParameter[],
+                default: ['temperature', 'precipitation_amount', 'cloud_coverage', 'wind_speed'] as ForecastMetric[],
               },
             ],
           },

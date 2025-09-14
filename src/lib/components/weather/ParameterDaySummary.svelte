@@ -4,7 +4,7 @@
   import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
   import type { ColorStop, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
-  import { METRIC_DETAILS } from '$lib/config/metrics'
+  import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import FormattedMetric from '$lib/components/snippets/FormattedMetric.svelte'
   import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
   import PrecipitationGroup from '$lib/components/weather/PrecipitationGroup.svelte'
@@ -12,26 +12,25 @@
   import ParameterToggle from './ParameterToggle.svelte'
 
   type Props = ParameterDaySummaryProps & {
-    parameter: ForecastParameter
+    metric: ForecastMetric
     visibleList: ForecastParameter[]
     day: TimeBucket
   }
 
   let {
-    parameter,
+    metric,
     items = ['icon', 'min', 'range-bar', 'max'],
     day,
     useTotalAsDomain,
     visibleList = $bindable(),
   }: Props = $props()
 
-  const details = $derived<MetricDetails | undefined>(METRIC_DETAILS[parameter])
+  const details = $derived<MetricDetails>(METRIC_DETAILS[metric])
 
   const domain = $derived.by(() => {
-    if (useTotalAsDomain || !day || !day.summary[parameter] || !details)
-      return $forecastStore?.total?.summary[parameter]
+    if (useTotalAsDomain || !day || !day.summary[metric] || !details) return $forecastStore?.total?.summary[metric]
 
-    const summary = day.summary[parameter]
+    const summary = day.summary[metric]
     const min = details.domain.min.findLast((t) => t <= summary.min * 0.9) ?? details.domain.min[0]
     const max = details.domain.max.find((t) => t >= summary.max * 1.1) ?? details.domain.max[0]
 
@@ -39,14 +38,14 @@
   })
 </script>
 
-<ParameterToggle {parameter} bind:visibleList {domain}>
+<ParameterToggle parameter={metric} bind:visibleList {domain}>
   {#each items as item (item)}
     {#if item === 'icon' && details}
       <IconOrAbbreviation {details} />
     {:else if item === 'min' || item === 'max' || item === 'avg' || item === 'sum'}
       <FormattedMetric
-        value={day?.summary[parameter]?.[item]}
-        {parameter}
+        value={day?.summary[metric]?.[item]}
+        parameter={metric}
         class={items.includes('range-bar') ? 'w-16' : ''}
       />
       {#if !items.includes('range-bar')}
@@ -54,10 +53,10 @@
           {item}
         </div>
       {/if}
-    {:else if item === 'range-bar' && day.summary[parameter]}
-      <NumberRangeBar total={domain} instance={day.summary[parameter]} color={details?.color} className="h-2" />
+    {:else if item === 'range-bar' && day.summary[metric]}
+      <NumberRangeBar total={domain} instance={day.summary[metric]} color={details.color} className="h-2" />
     {:else if item === 'trend'}
-      {@const values = day.multiseries[parameter]}
+      {@const values = day.multiseries[metric]}
       {#if values && values[0].value < values[values.length - 1].value}
         <ArrowUpIcon />
       {:else if values}

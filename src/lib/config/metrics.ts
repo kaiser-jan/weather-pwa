@@ -289,6 +289,6 @@ function parseHsla(str: string): { h: number; s: number; l: number; a: number } 
 export type ForecastMetric = keyof typeof _METRIC_DETAILS
 
 // HACK: get the keys out but still type the entries as MetricDetails
-export const METRIC_DETAILS = _METRIC_DETAILS as Partial<Record<ForecastParameter, MetricDetails>>
+export const METRIC_DETAILS = _METRIC_DETAILS as Record<ForecastMetric, MetricDetails>
 
 export const FORECAST_METRICS = Object.keys(METRIC_DETAILS) as ForecastMetric[]
