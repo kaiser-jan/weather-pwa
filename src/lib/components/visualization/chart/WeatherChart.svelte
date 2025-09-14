@@ -49,7 +49,8 @@
 
   let container: HTMLDivElement
 
-  let margin = { top: 10, right: 0, bottom: 20, left: 0 }
+  const INITIAL_MARGIN = { top: 12, right: 0, bottom: 20, left: 0 }
+  let margin = { ...INITIAL_MARGIN }
   let widthFull = 360
   let heightFull = 240
 
@@ -72,7 +73,7 @@
   function updateChart() {
     clearChart()
 
-    margin = { top: 10, right: 0, bottom: 20, left: 0 }
+    margin = { ...INITIAL_MARGIN }
 
     if ($settingsChart.axisUnits === 'above') {
       margin.top += 10
