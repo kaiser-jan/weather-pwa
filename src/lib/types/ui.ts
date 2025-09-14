@@ -33,6 +33,11 @@ export interface MetricDetails {
       >
     >
   }
+
+  summary: {
+    useTotalAsDomain?: boolean
+    items?: ('icon' | 'min' | 'max' | 'avg' | 'sum' | 'range-bar' | 'trend' | 'precipitation-groups')[]
+  }
 }
 
 export interface CreatedSeriesDetails {

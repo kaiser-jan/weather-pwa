@@ -57,8 +57,8 @@ export const precipitationGroupsStore = derived(
       }
 
       const currentGroup = groups[groups.length - 1]
-      currentGroup.amount += timeBucket.value
       currentGroup.timeseries.push(timeBucket)
+      currentGroup.amount += timeBucket.value
       if (timeBucket.timestamp + timeBucket.duration > get(NOW_MILLIS)) currentGroup.amountAfterNow += timeBucket.value
     }
 

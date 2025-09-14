@@ -49,7 +49,6 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-100',
       markExtrema: true,
-
       include: {
         temperature_max: {
           color: { categoriesSetting: ['appearance', 'colors', 'temperatureColorStops'] },
@@ -61,6 +60,7 @@ const _METRIC_DETAILS = {
         },
       },
     },
+    summary: { useTotalAsDomain: true },
   },
 
   cloud_coverage: {
@@ -73,6 +73,7 @@ const _METRIC_DETAILS = {
       style: 'bars',
       class: 'opacity-15',
     },
+    summary: { items: ['icon', 'avg'] },
   },
 
   precipitation_amount: {
@@ -90,6 +91,7 @@ const _METRIC_DETAILS = {
       style: 'bars',
       class: 'opacity-80',
     },
+    summary: { items: ['icon', 'precipitation-groups'] },
   },
 
   wind_speed: {
@@ -112,6 +114,7 @@ const _METRIC_DETAILS = {
         },
       },
     },
+    summary: { items: ['icon', 'avg', 'max'] },
   },
 
   relative_humidity: {
@@ -123,6 +126,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
+    summary: {},
   },
 
   dew_point: {
@@ -149,6 +153,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
+    summary: { items: ['icon', 'avg', 'trend'] },
   },
 
   // uvi_clear_sky: {
@@ -169,6 +174,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
+    summary: { items: ['icon', 'avg', 'max'] },
   },
 
   cin: {
@@ -180,6 +186,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
+    summary: { items: ['icon', 'max'] },
   },
 
   grad: {
@@ -191,6 +198,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
+    summary: { items: ['icon', 'max'] },
   },
 
   aqi: {
@@ -205,6 +213,7 @@ const _METRIC_DETAILS = {
       categories: createLimitsGradient([1, 2, 3, 4, 5, 6], EAQI.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
+    summary: { items: ['icon', 'avg', 'max'] },
   },
   // TODO: to be precise, air quality metrics would need a non-linear scale
   // the increments between the limits are not equal, resulting in a distorted chart
@@ -221,6 +230,7 @@ const _METRIC_DETAILS = {
       categories: createLimitsGradient(EAQI.limits.pm25, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
+    summary: { items: ['icon', 'avg', 'max'] },
   },
   pm10: {
     label: 'PM 10',
@@ -235,6 +245,7 @@ const _METRIC_DETAILS = {
       categories: createLimitsGradient(EAQI.limits.pm10, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
+    summary: { items: ['icon', 'avg', 'max'] },
   },
   o3: {
     label: 'Ozone',
@@ -249,6 +260,7 @@ const _METRIC_DETAILS = {
       categories: createLimitsGradient(EAQI.limits.o3, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
+    summary: { items: ['icon', 'avg', 'max'] },
   },
   no2: {
     label: 'Nitrogen Dioxide',
@@ -263,6 +275,7 @@ const _METRIC_DETAILS = {
       categories: createLimitsGradient(EAQI.limits.no2, EAQI.colors, 1e-6),
     },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
+    summary: { items: ['icon', 'avg', 'max'] },
   },
 
   // TODO: make this use ForecastMetrics instead

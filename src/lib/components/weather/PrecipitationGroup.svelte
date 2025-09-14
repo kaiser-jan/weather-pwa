@@ -5,20 +5,22 @@
   import { NOW, NOW_MILLIS } from '$lib/stores/now'
   import { DateTime } from 'luxon'
   import MiniPrecipitationChart from './MiniPrecipitationChart.svelte'
+  import { cn } from '$lib/utils'
 
   interface Props {
     precipitationGroup: PrecipitationGroup
     startTimestamp: number
     endTimestamp: number
     isRestOfDayOnly?: boolean
+    class?: string
   }
 
-  let { precipitationGroup, startTimestamp, endTimestamp, isRestOfDayOnly }: Props = $props()
+  let { precipitationGroup, startTimestamp, endTimestamp, isRestOfDayOnly, class: className }: Props = $props()
 
   let amount = $derived(isRestOfDayOnly ? precipitationGroup.amountAfterNow : precipitationGroup.amount)
 </script>
 
-<div class="flex flex-row items-center justify-between gap-2">
+<div class={cn('flex flex-row items-center justify-between gap-2', className)}>
   <span class="inline-flex items-center gap-1">
     {#if precipitationGroup.start > $NOW_MILLIS || (!isRestOfDayOnly && precipitationGroup.start >= startTimestamp)}
       {formatRelativeDatetime(DateTime.fromMillis(precipitationGroup.start), {

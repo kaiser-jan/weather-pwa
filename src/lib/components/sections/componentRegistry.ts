@@ -1,6 +1,7 @@
 import type { Component } from 'svelte'
 import SectionUpcoming from './SectionUpcoming.svelte'
-import SectionTodayChart from './SectionTodayChart.svelte'
+import SectionToday from './SectionToday.svelte'
+import SectionTomorrow from './SectionTomorrow.svelte'
 import SectionOutlook from './SectionOutlook.svelte'
 import SectionAirPollution from './SectionAirPollution.svelte'
 import SectionSources from './SectionSources.svelte'
@@ -10,7 +11,8 @@ import type { SectionId } from './registry'
 // NOTE: this is separate from the registry, as combining it would cause import issues
 const components: Record<SectionId, Component<{}, {}, ''>> = {
   notices: SectionNotices,
-  today: SectionTodayChart,
+  today: SectionToday,
+  tomorrow: SectionTomorrow,
   upcoming: SectionUpcoming,
   outlook: SectionOutlook,
   air_pollution: SectionAirPollution,

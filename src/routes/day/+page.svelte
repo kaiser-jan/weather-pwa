@@ -20,6 +20,7 @@
   import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import ExpandableList from '$lib/components/ExpandableList.svelte'
+  import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
 
   // TODO: 0 should be today
   const dayIndex = $derived(parseInt(page.url.searchParams.get('dayIndex') ?? '0'))
@@ -46,24 +47,6 @@
     const target = $forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS)
     if (!target) return
     dayView.select(target)
-  }
-
-  // TODO: integrate to metrics config
-  const metricConfigs: Partial<Record<ForecastParameter, ParameterDaySummaryProps>> = {
-    temperature: { useTotalAsDomain: true },
-    precipitation_amount: { items: ['icon', 'precipitation-groups'] },
-    relative_humidity: {},
-    wind_speed: { items: ['icon', 'avg', 'max'] },
-    pressure: { items: ['icon', 'avg', 'trend'] },
-    cloud_coverage: { items: ['icon', 'avg'] },
-    cape: { items: ['icon', 'avg', 'max'] },
-    cin: { items: ['icon', 'max'] },
-    grad: { items: ['icon', 'max'] },
-    pm25: { items: ['icon', 'avg', 'max'] },
-    pm10: { items: ['icon', 'avg', 'max'] },
-    o3: { items: ['icon', 'avg', 'max'] },
-    no2: { items: ['icon', 'avg', 'max'] },
-    aqi: { items: ['icon', 'avg', 'max'] },
   }
 
   function handleSwipe(event: SwipeCustomEvent) {
@@ -149,13 +132,11 @@
           {#snippet children(metrics: ForecastMetric[])}
             <div class="flex flex-row flex-wrap gap-2">
               {#each metrics as metric (metric)}
-                {@const config = metricConfigs[metric]}
-                <ParameterDaySummary
-                  {...config}
-                  parameter={metric}
-                  day={selectedDay}
-                  bind:visibleList={$visibleMetrics}
-                />
+                {@const config = METRIC_DETAILS[metric].summary}
+
+                <ParameterToggle {metric} bind:visibleList={$visibleMetrics}>
+                  <ParameterDaySummary {...config} {metric} day={selectedDay} fullDay />
+                </ParameterToggle>
               {/each}
             </div>
           {/snippet}

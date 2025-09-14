@@ -54,7 +54,7 @@
     const scaleX = d3.scaleTime().domain([start, end]).range([0, dimensions.width])
     const scaleY = d3
       .scaleSqrt()
-      // .exponent(1 / 2)
+      .exponent(1 / 4)
       .domain(domain)
       .range([dimensions.height, 0])
 

@@ -1,25 +1,23 @@
 <script lang="ts">
   import { settings } from '$lib/settings/store'
-  import type { ForecastParameter } from '$lib/types/data'
   import type { ColorStop, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
-  import { METRIC_DETAILS } from '$lib/config/metrics'
+  import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { cn, toggle } from '$lib/utils'
   import { generateCssRangeGradient } from '$lib/utils/ui'
   import type { Snippet } from 'svelte'
 
   type Props = ParameterDaySummaryProps & {
-    parameter: ForecastParameter
-    visibleList: ForecastParameter[]
-    domain?: { min: number; max: number }
+    metric: ForecastMetric
+    visibleList?: ForecastMetric[]
     class?: string
     children: Snippet
   }
 
-  let { parameter, visibleList = $bindable(), domain, class: className, children }: Props = $props()
+  let { metric, visibleList = $bindable(), class: className, children }: Props = $props()
 
-  const details = $derived<MetricDetails | undefined>(METRIC_DETAILS[parameter])
+  const details = $derived<MetricDetails>(METRIC_DETAILS[metric])
 
-  const isVisible = $derived(visibleList.includes(parameter))
+  const isVisible = $derived(visibleList?.includes(metric))
 
   const colorStyle = $derived.by(() => {
     if (!details?.color) return ''
@@ -50,7 +48,8 @@
     className,
   )}
   onclick={() => {
-    visibleList = toggle(visibleList, parameter)
+    if (!visibleList) return
+    visibleList = toggle(visibleList, metric)
   }}
 >
   {#if details?.color}
