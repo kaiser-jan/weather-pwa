@@ -104,7 +104,7 @@
         {#if selectedDay}
           <WeatherChart
             multiseries={selectedDay.multiseries}
-            parameters={$visibleMetrics}
+            bind:parameters={$visibleMetrics}
             startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
             endTimestamp={selectedDay.timestamp + selectedDay.duration}
             timestamp={$NOW_MILLIS}
