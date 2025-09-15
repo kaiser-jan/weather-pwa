@@ -6,12 +6,14 @@
   import { dayView } from '$lib/stores/ui'
   import { Button } from '../ui/button'
   import { DateTime } from 'luxon'
-  import { TODAY_MILLIS } from '$lib/stores/now'
+  import { NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { onMount } from 'svelte'
   import { BinocularsIcon, ChevronsRightIcon } from '@lucide/svelte'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
+  import WeatherChart from '../visualization/chart/WeatherChart.svelte'
+  import { goto } from '$app/navigation'
 
   let container = $state<HTMLDivElement>()
 
@@ -43,42 +45,64 @@
 </script>
 
 <SectionTitle title="Outlook" icon={ChevronsRightIcon} />
-<FailSafeContainer name="Section Outlook" class="flex flex-row overflow-y-auto rounded-md" bind:element={container}>
-  {#each $forecastStore?.daily.filter((d) => d.summary !== undefined && d.summary.temperature) ?? [] as day (day.timestamp)}
-    <Button
-      variant="midground"
-      size="fit"
-      class={[
-        'border-foreground flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1 rounded-none p-1 text-base not-last:border-r-2',
-        day.timestamp < $TODAY_MILLIS ? 'opacity-40' : '',
-      ]}
-      onclick={() => dayView.open(day)}
-    >
-      <span>{DateTime.fromMillis(day.timestamp).toFormat('ccc')}</span>
 
-      <span class="text-text-muted">{Math.round(day.summary.temperature.max)}</span>
-      <NumberRangeBar
-        total={$forecastStore?.total?.summary.temperature}
-        instance={day.summary.temperature}
-        color={METRIC_DETAILS.temperature!.color}
-        className="w-2 h-20"
-        vertical
-      />
-      <span class="text-text-muted">{Math.round(day.summary.temperature.min)}</span>
+{#if $settings.sections.outlook.showSummary}
+  <FailSafeContainer name="Section Outlook" class="flex flex-row overflow-y-auto rounded-md" bind:element={container}>
+    {#each $forecastStore?.daily.filter((d) => d.summary !== undefined && d.summary.temperature) ?? [] as day (day.timestamp)}
+      <Button
+        variant="midground"
+        size="fit"
+        class={[
+          'border-foreground flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1 rounded-none p-1 text-base not-last:border-r-2',
+          day.timestamp < $TODAY_MILLIS ? 'opacity-40' : '',
+        ]}
+        onclick={() => dayView.open(day)}
+      >
+        <span>{DateTime.fromMillis(day.timestamp).toFormat('ccc')}</span>
 
-      <!-- TODO: small bar to display intensity: for each category, color it and set the size to the percentage of time where preciptiation is in that range -->
-      {#if $settings.sections.outlook.showPrecipitation}
-        <span class="inline-flex items-baseline text-blue-200">
-          {#if day.summary.precipitation_amount}
-            <span>{Math.round(day.summary.precipitation_amount?.sum)}</span>
-            <span class="text-text-disabled text-xs">mm</span>
-          {:else}
-            <span>-</span>
-          {/if}
-        </span>
-      {/if}
-    </Button>
-  {:else}
-    <Skeleton class="w-full h-32" />
-  {/each}
-</FailSafeContainer>
+        <span class="text-text-muted">{Math.round(day.summary.temperature.max)}</span>
+        <NumberRangeBar
+          total={$forecastStore?.total?.summary.temperature}
+          instance={day.summary.temperature}
+          color={METRIC_DETAILS.temperature!.color}
+          className="w-2 h-20"
+          vertical
+        />
+        <span class="text-text-muted">{Math.round(day.summary.temperature.min)}</span>
+
+        <!-- TODO: small bar to display intensity: for each category, color it and set the size to the percentage of time where preciptiation is in that range -->
+        {#if $settings.sections.outlook.showPrecipitation}
+          <span class="inline-flex items-baseline text-blue-200">
+            {#if day.summary.precipitation_amount}
+              <span>{Math.round(day.summary.precipitation_amount?.sum)}</span>
+              <span class="text-text-disabled text-xs">mm</span>
+            {:else}
+              <span>-</span>
+            {/if}
+          </span>
+        {/if}
+      </Button>
+    {:else}
+      <Skeleton class="w-full h-32" />
+    {/each}
+  </FailSafeContainer>
+{/if}
+
+{#if $settings.sections.outlook.showChart}
+  <FailSafeContainer name="Section Outlook Chart" class="bg-midground flex flex-row overflow-y-auto rounded-md p-1">
+    {#if $forecastStore}
+      <button onclick={() => goto('/outlook')} class="grow">
+        <!-- TODO: metrics setting -->
+        <WeatherChart
+          multiseries={$forecastStore.multiseries}
+          parameters={$settings.sections.components.chart.plottedMetrics}
+          startTimestamp={$TODAY_MILLIS}
+          endTimestamp={$TODAY_MILLIS + 1000 * 3600 * 24 * 7}
+          timestamp={$NOW_MILLIS}
+          className="snap-center shrink-0 w-full h-[max(20vh,12rem)]"
+          hideYAxes={$settings.sections.components.chart.showYAxes !== 'always'}
+        />
+      </button>
+    {/if}
+  </FailSafeContainer>
+{/if}

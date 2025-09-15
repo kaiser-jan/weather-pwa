@@ -3,7 +3,7 @@
   import * as Popover from '$lib/components/ui/popover'
   import { ChartSplineIcon, EllipsisIcon, PencilIcon } from '@lucide/svelte'
   import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
-  import { type ForecastParameter, type TimeBucket } from '$lib/types/data'
+  import { type ForecastParameter, type MultivariateTimeSeries, type TimeBucket } from '$lib/types/data'
   import { Button } from '$lib/components/ui/button'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import ExpandableList from '$lib/components/ExpandableList.svelte'
@@ -13,9 +13,9 @@
 
   interface Props {
     visible: ForecastMetric[]
-    timebucket: TimeBucket
+    multiseries: MultivariateTimeSeries
   }
-  let { visible: visible = $bindable(), timebucket }: Props = $props()
+  let { visible: visible = $bindable(), multiseries }: Props = $props()
 
   let temporary = $derived(visible.filter((p) => !$settings.sections.components.chart.pinnedMetrics.includes(p)))
 
@@ -29,7 +29,7 @@
       <ToggleGroup.Item
         value={parameter}
         class="grow"
-        disabled={!timebucket.multiseries[parameter] || timebucket.multiseries[parameter].length === 0}
+        disabled={!multiseries[parameter] || multiseries[parameter].length === 0}
       >
         <IconOrAbbreviation {details} />
       </ToggleGroup.Item>
@@ -40,10 +40,7 @@
     <ToggleGroup.Root type="multiple" variant="outline" bind:value={visible}>
       {#each temporary as parameter (parameter)}
         {@const details = METRIC_DETAILS[parameter]!}
-        <ToggleGroup.Item
-          value={parameter}
-          disabled={!timebucket.multiseries[parameter] || timebucket.multiseries[parameter].length === 0}
-        >
+        <ToggleGroup.Item value={parameter} disabled={!multiseries[parameter] || multiseries[parameter].length === 0}>
           <IconOrAbbreviation {details} />
         </ToggleGroup.Item>
       {/each}
@@ -73,22 +70,22 @@
         </Button>
       </h2>
       <ExpandableList
-        items={Object.keys(METRIC_DETAILS) as ForecastParameter[]}
+        items={Object.keys(METRIC_DETAILS) as ForecastMetric[]}
         visibleItems={$settings.data.forecast.metrics}
         markedItems={visible}
         triggerClass="p-2 min-h-0 mt-2"
         contentClass="gap-1"
       >
-        {#snippet itemSnippet(metric: ForecastParameter)}
+        {#snippet itemSnippet(metric: ForecastMetric)}
           <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
         {/snippet}
 
-        {#snippet children(metrics: ForecastParameter[])}
+        {#snippet children(metrics: ForecastMetric[])}
           {#each metrics as metric (metric)}
             {@const parameterTyped = metric as ForecastMetric}
             {@const parameterDetails = METRIC_DETAILS[metric]!}
             {@const isActive = visible.includes(parameterTyped)}
-            <ParameterToggle parameter={metric} visibleList={visible} class="h-8 w-full rounded-md px-3 py-2 text-sm">
+            <ParameterToggle {metric} visibleList={visible} class="h-8 w-full rounded-md px-3 py-2 text-sm">
               <IconOrAbbreviation details={parameterDetails} />
               {parameterDetails.label}
               <span class="grow"></span>

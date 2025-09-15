@@ -69,7 +69,7 @@
       class="bg-midground flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg p-2"
     >
       {#if $settings.sections.today.showChartParameterSelect && timebucket}
-        <ParameterSelect bind:visible={metrics} {timebucket} />
+        <ParameterSelect bind:visible={metrics} multiseries={timebucket.multiseries} />
       {/if}
 
       <button

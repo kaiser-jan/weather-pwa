@@ -398,7 +398,7 @@ export const settingsConfig = [
         icon: ListOrderedIcon,
         options: Object.keys(SECTIONS),
         labels: Object.fromEntries(Object.entries(SECTIONS).map(([k, s]) => [k, s.name])),
-        default: ['today', 'tomorrow', 'outlook', 'air_pollution'] as SectionId[],
+        default: ['today', 'outlook', 'air_pollution'] as SectionId[],
       },
       {
         id: 'current',
@@ -532,6 +532,21 @@ export const settingsConfig = [
             label: 'Start at Today',
             type: 'boolean',
             icon: CalendarDaysIcon,
+            default: true,
+          },
+          {
+            id: 'showChart',
+            label: 'Show Chart',
+            type: 'boolean',
+            icon: ChartLineIcon,
+            default: true,
+          },
+
+          {
+            id: 'showSummary',
+            label: 'Show Summary',
+            type: 'boolean',
+            icon: SigmaIcon,
             default: true,
           },
         ],

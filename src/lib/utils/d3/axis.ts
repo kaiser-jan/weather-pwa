@@ -4,23 +4,33 @@ import { settings } from '$lib/settings/store'
 import { get } from 'svelte/store'
 import type { Unit } from '$lib/config/units'
 
-export function createXAxis<ScaleT extends d3.AxisDomain>(options: {
+export function createXAxis(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
   dimensions: Dimensions
-  scale: d3.AxisScale<ScaleT>
+  scale: d3.AxisScale<number>
   addLines?: boolean
 }) {
   const { svg, dimensions, scale } = options
-  // Add the x-axis.
+
+  const [start, end] = scale.domain()
+  const hours = (end - start) / 36e5
+
+  let ticks: { interval: d3.TimeInterval | null; format: string }
+  if (hours < 12) ticks = { interval: d3.timeHour.every(1), format: '%H' }
+  else if (hours < 24) ticks = { interval: d3.timeHour.every(3), format: '%H' }
+  else if (hours < 48) ticks = { interval: d3.timeHour.every(6), format: '%H' }
+  else if (hours < 96) ticks = { interval: d3.timeHour.every(12), format: '%a' }
+  else ticks = { interval: d3.timeHour.every(24), format: '%a' }
+
   const xAxis = svg
     .append('g')
     .call(
       d3
         .axisBottom(scale)
-        .ticks(d3.timeHour.every(6))
+        .ticks(ticks.interval)
         .tickSizeInner(16)
         .tickSizeOuter(0)
-        .tickFormat(d3.timeFormat('%H') as any),
+        .tickFormat(d3.timeFormat(ticks.format) as any),
     )
     .classed('text-overlay', true)
     .call((g) =>
