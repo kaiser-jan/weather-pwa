@@ -15,7 +15,7 @@ export function createArea(options: {
   const areaGenerator = d3
     .area<TimeSeriesNumberEntry>()
     .x((d) => scaleX(d.timestamp))
-    .y0((d, i) => scaleY(dataA.find((dA) => dA.timestamp === d.timestamp)?.value ?? 0))
+    .y0((d, i) => scaleY(dataB?.find((dB) => dB.timestamp === d.timestamp)?.value ?? 0))
     .y1((d) => scaleY(d.value))
     .curve(d3.curveBasis)
     .defined((d) => d.value !== null && !isNaN(d.value))
@@ -24,7 +24,7 @@ export function createArea(options: {
     .append('path')
     .attr('stroke-width', 4)
     .attr('stroke-linecap', 'round')
-    .attr('d', areaGenerator(dataB))
+    .attr('d', areaGenerator(dataA))
 
   return area
 }

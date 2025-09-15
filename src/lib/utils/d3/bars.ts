@@ -27,7 +27,7 @@ export function createBars(options: {
       const start = d.timestamp
       const end = start + d.duration
       const width = scaleX(end) - scaleX(start) - 2 * padding
-      return Math.max(width, 2)
+      return Math.max(width, padding)
     })
     .attr('y', (d) => scaleY(d.value))
     .attr('height', (d) => dimensions.height + dimensions.margin.top - scaleY(d.value))

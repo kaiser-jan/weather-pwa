@@ -200,7 +200,6 @@
             dataRepresentation = bars
             break
           case 'area':
-            if (!seriesB) return
             dataRepresentation = createArea({ svg, dimensions, scaleX, scaleY, dataA: seriesA, dataB: seriesB }) //
             if (color) dataRepresentation.style('fill', color)
             break
