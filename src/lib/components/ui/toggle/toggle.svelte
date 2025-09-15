@@ -8,7 +8,9 @@
     variants: {
       variant: {
         default: 'bg-transparent',
-        outline: 'border-input border-2 shadow-xs hover:bg-accent hover:text-accent-foreground border bg-transparent',
+        // HACK: data-[state=off]:bg-transparent as otherwise chrome on samsung re-applies the hover state
+        outline:
+          'border-input border-2 shadow-xs hover:bg-red data-[state=off]:bg-transparent hover:text-accent-foreground border bg-transparent',
       },
       size: {
         default: 'h-9 min-w-9 px-2',
