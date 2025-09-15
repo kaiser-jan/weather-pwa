@@ -48,7 +48,7 @@
 
 <ErrorBoundary scope="app">
   <div
-    class="bg-background relative flex h-full w-full flex-col overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]"
+    class="bg-background relative flex h-[100dvh] w-full flex-col overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]"
   >
     <!-- NOTE: this was only removed because the SectionCurrent should expand to the top -->
     <!-- <div class="h-[env(safe-area-inset-top)] shrink-0"></div> -->
