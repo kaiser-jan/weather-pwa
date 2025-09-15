@@ -82,7 +82,7 @@
       size="icon"
       variant="midground"
       onclick={() => dayView.next()}
-      disabled={currentIndex === $forecastStore!.daily.length - 1}
+      disabled={!$forecastStore || currentIndex === $forecastStore.daily.length - 1}
     >
       <ChevronRight />
     </Button>
