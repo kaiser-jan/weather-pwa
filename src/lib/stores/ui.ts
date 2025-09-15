@@ -80,6 +80,9 @@ async function navigateBy(direction: 1 | -1) {
 
   const initialIndexDelta = initialIndex - currentIndex
 
+  const targetIndex = currentIndex + direction
+  if (!get(forecastStore)?.daily[targetIndex]) return
+
   // if we are navigating towards the initial index just pop state, otherwis push it
   if ((direction > 0 && initialIndexDelta > 0) || (direction < 0 && initialIndexDelta < 0)) {
     history.go(-Math.abs(direction))
