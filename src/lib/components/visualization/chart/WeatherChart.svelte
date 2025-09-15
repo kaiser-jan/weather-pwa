@@ -368,6 +368,6 @@
   <ParameterSelect bind:visible={parameters} multiseries={data} />
 {/if}
 
-<button bind:this={container} class={['relative', className]} {onclick}>
+<button bind:this={container} class={['relative touch-pan-y', className]} {onclick}>
   <Skeleton class="h-full w-full" />
 </button>
