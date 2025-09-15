@@ -112,6 +112,7 @@
             endTimestamp={selectedDay.timestamp + selectedDay.duration}
             timestamp={$NOW_MILLIS}
             className="snap-center shrink-0 w-full h-[30vh]"
+            hideYAxes={$settings.sections.components.chart.showYAxes === 'never'}
           />
         {:else}
           <Skeleton class="h-full w-full" />

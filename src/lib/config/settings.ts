@@ -593,6 +593,14 @@ export const settingsConfig = [
                 default: true,
               },
               {
+                id: 'showYAxes',
+                label: 'Show Value Axes',
+                type: 'select',
+                icon: ArrowUpAz,
+                options: ['always', 'except-overview', 'never'] as const,
+                default: 'always', // 'except-overview',
+              },
+              {
                 id: 'axisUnits',
                 label: 'Axis Unit Location',
                 type: 'select',

@@ -68,7 +68,7 @@
           class={precipitationGroup.end < $NOW_MILLIS ? 'opacity-60' : ''}
         />
       {:else}
-        <span class="text-text-muted">No rain on this day!</span>
+        <span class="text-text-muted mr-auto">No rain on this day!</span>
       {/each}
     </div>
   {:else}

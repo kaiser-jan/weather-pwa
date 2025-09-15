@@ -88,6 +88,7 @@
           endTimestamp={timebucket.timestamp + timebucket.duration}
           timestamp={$NOW_MILLIS}
           className="snap-center shrink-0 w-full h-[max(20vh,12rem)]"
+          hideYAxes={$settings.sections.components.chart.showYAxes !== 'always'}
         />
       </button>
     </FailSafeContainer>

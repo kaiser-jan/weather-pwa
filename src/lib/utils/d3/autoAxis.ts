@@ -25,7 +25,12 @@ type ComputedAxis = {
   } | null
 }
 
-export function computeAxesFor(axes: AxisDetails[], dimensions: Dimensions, multiseries: MultivariateTimeSeries) {
+export function computeAxesFor(
+  axes: AxisDetails[],
+  dimensions: Dimensions,
+  multiseries: MultivariateTimeSeries,
+  hideAxes?: boolean,
+) {
   let sideOffsets = { left: 0, right: 0 }
   let axisIndex = 0
   // @ts-expect-error
@@ -79,7 +84,7 @@ export function computeAxesFor(axes: AxisDetails[], dimensions: Dimensions, mult
 
     const shouldHide = HIDE_AXIS_FOR_PARAMETERS.includes(parameter)
     const hasNoValue = !series.length || series.every((e) => e.value === 0)
-    if (shouldHide || hasNoValue) return { domain, unit, scaleY, format, axis: null }
+    if (shouldHide || hasNoValue || hideAxes) return { domain, unit, scaleY, format, axis: null }
 
     const newAxisBase = { domain, unit }
     const existingSameAxis = Object.values(existingAxes).find(

@@ -43,7 +43,7 @@
 
 <button
   class={cn(
-    'bg-background relative flex h-fit grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
+    'bg-background relative flex h-fit min-w-[calc(50%-0.25rem)] grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
     isVisible ? 'bg-midground border-midground' : '',
     className,
   )}
