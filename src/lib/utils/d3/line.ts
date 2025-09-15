@@ -15,7 +15,7 @@ export function createLine(options: {
     .line<TimeSeriesNumberEntry>()
     .x((d) => scaleX(d.timestamp))
     .y((d) => scaleY(d.value))
-    .curve(d3.curveBasis)
+    .curve(d3.curveMonotoneX) // or: curveNatural (may overshoot), curveCatmullRom (tunable)
     .defined((d) => d.value !== null && !isNaN(d.value))
 
   const line = svg

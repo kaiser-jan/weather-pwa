@@ -17,7 +17,7 @@ export function createArea(options: {
     .x((d) => scaleX(d.timestamp))
     .y0((d, i) => scaleY(dataB?.find((dB) => dB.timestamp === d.timestamp)?.value ?? 0))
     .y1((d) => scaleY(d.value))
-    .curve(d3.curveBasis)
+    .curve(d3.curveMonotoneX)
     .defined((d) => d.value !== null && !isNaN(d.value))
 
   const area = svg
