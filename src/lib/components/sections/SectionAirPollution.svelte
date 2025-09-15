@@ -26,7 +26,7 @@
     const maxValues = day ? Object.fromEntries(Object.entries(day.summary).map(([p, s]) => [p, s.max])) : {}
 
     const maxLevels = getEaqiLevels(maxValues)
-    const maxIndex = day.summary.aqi.max
+    const maxIndex = day.summary.aqi?.max
 
     return {
       minValues,

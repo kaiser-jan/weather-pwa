@@ -18,7 +18,7 @@
   interface Props {
     children: Snippet
     name: string
-    element: HTMLDivElement
+    element?: HTMLDivElement
   }
 
   let { children, name, element = $bindable(), ...props }: HTMLAttributes<HTMLDivElement> & Props = $props()

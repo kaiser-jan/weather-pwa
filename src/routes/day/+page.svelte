@@ -95,9 +95,6 @@
         startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
         endTimestamp={getEndOfDayTimestamp(selectedDay.timestamp)}
         parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-        marks={$settings.sections.components.timelineBar.marks.map((m) =>
-          DateTime.fromMillis(selectedDay!.timestamp).set(m),
-        )}
         coordinates={$coordinates}
         datetime={$NOW_MILLIS}
         className="h-2"

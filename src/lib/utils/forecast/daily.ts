@@ -5,12 +5,14 @@ import type {
   MultivariateTimeSeriesTimeBucket,
   NumberSummary,
   ForecastParameter,
+  TimeBucketSummary,
+  TimeBucket,
 } from '$lib/types/data'
 import { getEndOfDayTimestamp, getStartOfDayTimestamp, mapRecord, sum } from '$lib/utils'
 import { DateTime, Duration } from 'luxon'
 import { get } from 'svelte/store'
 
-function calculateStatisticalNumberSummary(values: number[]): NumberSummary {
+export function calculateStatisticalNumberSummary(values: number[]): NumberSummary {
   if (values.length === 0) return { min: Infinity, max: -Infinity, sum: 0, avg: NaN }
 
   const _sum = sum(values)

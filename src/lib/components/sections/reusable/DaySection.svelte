@@ -1,7 +1,6 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
   import { NOW, NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
-  import ParameterSelect from '$lib/components/visualization/chart/ParameterSelect.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
   import { swipe } from 'svelte-gestures'
@@ -12,11 +11,10 @@
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import { coordinates } from '$lib/stores/location'
-  import { getStartOfDayTimestamp, getEndOfDayTimestamp } from '$lib/utils'
-  import { DateTime } from 'luxon'
   import TimelineBar from '$lib/components/visualization/TimelineBar.svelte'
   import ParameterDaySummary from '$lib/components/weather/ParameterDaySummary.svelte'
   import type { TimeBucket } from '$lib/types/data'
+  import { getStartOfDayTimestamp } from '$lib/utils'
 
   interface Props {
     timebucket: TimeBucket | undefined
@@ -28,19 +26,33 @@
   }
 
   let { timebucket, metrics = $bindable(), title, icon, showChart, showSummary }: Props = $props()
+
+  function openThisDay() {
+    if (!timebucket) return
+    const thisDay = $forecastStore?.daily.find((d) => d.timestamp === getStartOfDayTimestamp(timebucket.timestamp))
+    if (!thisDay) return
+    dayView.open(thisDay)
+  }
+  function openNextDay() {
+    if (!timebucket) return
+    const nextDay = $forecastStore?.daily.find(
+      (d) => d.timestamp === getStartOfDayTimestamp(timebucket.timestamp + 24 * 3600 * 1000),
+    )
+    if (!nextDay) return
+    dayView.open(nextDay)
+  }
 </script>
 
-<SectionTitle {title} {icon} onclick={() => dayView.open(timebucket)}>
+<SectionTitle {title} {icon} onclick={openThisDay}>
   <ChevronRightIcon class="ml-auto" />
 </SectionTitle>
 
 {#if timebucket}
   <TimelineBar
     multiseries={timebucket.multiseries}
-    startTimestamp={getStartOfDayTimestamp(timebucket.timestamp)}
-    endTimestamp={getEndOfDayTimestamp(timebucket.timestamp)}
+    startTimestamp={timebucket.timestamp}
+    endTimestamp={timebucket.timestamp + timebucket.duration}
     parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-    marks={$settings.sections.components.timelineBar.marks.map((m) => DateTime.fromMillis(timebucket.timestamp).set(m))}
     coordinates={$coordinates}
     datetime={$NOW_MILLIS}
     className="h-2 mt-1"
@@ -50,7 +62,7 @@
     <FailSafeContainer
       name={`Section ${title}`}
       class="bg-midground flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg p-2 px-3"
-      onclick={() => dayView.open(timebucket)}
+      onclick={openThisDay}
     >
       <div class="flex flex-row flex-wrap gap-2">
         {#each $settings.sections.today.metrics as metric (metric)}
@@ -71,9 +83,7 @@
       <div
         use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30, touchAction: 'pan-y' })}
         onswipe={(e) => {
-          const tomorrow = $forecastStore?.daily.find((d) => d.timestamp === $TOMORROW_MILLIS)
-          if (!tomorrow) return
-          if (e.detail.direction === 'left') dayView.open(tomorrow)
+          if (e.detail.direction === 'left') openNextDay()
         }}
       >
         <WeatherChart
@@ -86,7 +96,7 @@
           hideYAxes={$settings.sections.components.chart.showYAxes !== 'always'}
           parameterSelect={$settings.sections.components.chart.parameterSelect === 'always' ||
             $settings.sections.components.chart.parameterSelect === 'overview'}
-          onclick={() => dayView.open(timebucket)}
+          onclick={openThisDay}
         />
       </div>
     </FailSafeContainer>

@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { Coordinates, MultivariateTimeSeries, ForecastParameter } from '$lib/types/data'
-  import { cn } from '$lib/utils'
+  import { cn, getStartOfDayTimestamp } from '$lib/utils'
   import { DateTime } from 'luxon'
   import TimelineBarLayer from './TimelineBarLayer.svelte'
   import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte'
+  import { timeDay, timeHour, timeMinute } from 'd3'
 
   type Parameter =
     | Extract<
@@ -19,21 +20,11 @@
     startTimestamp: number
     endTimestamp: number
     datetime: number
-    marks?: DateTime[]
     coordinates: Coordinates | null
     className: string
   }
 
-  let {
-    multiseries,
-    parameters,
-    startTimestamp,
-    endTimestamp,
-    datetime: NOW,
-    marks = [],
-    coordinates,
-    className,
-  }: Props = $props()
+  let { multiseries, parameters, startTimestamp, endTimestamp, datetime: NOW, coordinates, className }: Props = $props()
 
   let barHeight = $state<number>(0)
 
@@ -57,6 +48,13 @@
     if (!t || !t1 || !start || !end) return
     return ((t - t1) / (end - start)) * 100
   }
+
+  const marks = timeHour.every(6)!.range(
+    // start at 0:00 of the start timestamp
+    timeDay.floor(new Date(getStartOfDayTimestamp(startTimestamp))),
+    // end at the endTimestamp
+    timeDay.ceil(new Date(endTimestamp)),
+  )
 </script>
 
 <div
@@ -69,8 +67,8 @@
   ></div>
   {#each marks as mark, i (i)}
     <div
-      class="bg-foreground absolute -top-1 -bottom-1 z-2 w-[0.06rem] opacity-50"
-      style={`left: ${distanceFromTimestamps(mark.toMillis(), startTimestamp)}%;`}
+      class="bg-foreground absolute -top-1 -bottom-1 z-2 w-[0.1rem]"
+      style={`left: ${distanceFromTimestamps(mark.getTime(), startTimestamp)}%;`}
     ></div>
   {/each}
   {#each parameters as parameter (parameter)}

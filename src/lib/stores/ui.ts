@@ -28,7 +28,7 @@ export const dayView = {
     const back = Math.abs(parseInt(page.url.searchParams.get('dayIndex')!) - dayView._initialIndex)
     history.go(-back - 1)
   },
-  open: (target: TimeBucket | null, metrics: ForecastMetric[] = []) => {
+  open: (target: TimeBucket | undefined, metrics: ForecastMetric[] = []) => {
     if (!target) return
     if (page.url.searchParams.get('dayIndex') !== null) return
 

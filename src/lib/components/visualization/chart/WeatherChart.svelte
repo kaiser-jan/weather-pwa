@@ -281,7 +281,8 @@
     })
 
     function selectDatetime(timestamp: number | null) {
-      const isToday = NOW >= startTimestamp && NOW <= endTimestamp
+      // NOTE: using NOW > start to hide the axis pointer when starting at now
+      const isToday = NOW > startTimestamp && NOW <= endTimestamp
       const isManual = timestamp !== null
 
       if (!isManual && !isToday) {
