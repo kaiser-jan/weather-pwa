@@ -1,4 +1,4 @@
-import { NOW_MILLIS } from '$lib/stores/now'
+import { NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
 import type {
   Forecast,
   MultivariateTimeSeries,
@@ -81,7 +81,7 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
     const temperatureEndTimestamp = lastTemperatureItem.timestamp + lastTemperatureItem.duration
     const isMissingEnd = temperatureEndTimestamp < getEndOfDayTimestamp(firstTemperatureItem.timestamp)
     const isMissingStart = firstTemperatureItem.timestamp > getStartOfDayTimestamp(firstTemperatureItem.timestamp)
-    if (isMissingStart || isMissingEnd) return false
+    if ((isMissingStart && g.timestamp !== get(TODAY_MILLIS)) || isMissingEnd) return false
     return true
   })
 
