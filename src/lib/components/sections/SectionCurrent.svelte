@@ -70,10 +70,11 @@
 
     <div
       class="inset-0 flex h-full w-full flex-row items-center justify-center gap-4 transition-all"
-      class:mt-1.5={shrink}
+      class:mt-2.5={shrink}
+      class:-mt-1.5={!shrink}
     >
       <div
-        class={[shrink ? 'size-16' : 'size-30', 'relative shrink-0 grow-0 overflow-visible transition-all'].join(' ')}
+        class={[shrink ? 'size-12' : 'size-24', 'relative shrink-0 grow-0 overflow-visible transition-all'].join(' ')}
       >
         <div
           class="from-background/20 absolute top-1/2 left-1/2 size-[150%] -translate-1/2 bg-radial to-transparent to-70%"
