@@ -360,12 +360,12 @@
   })
 </script>
 
-{#if $settingsChart.indicator !== 'tooltip'}
-  <ChartValuesDisplay {parameters} {highlightedTimeBucket} />
-{/if}
-
 {#if parameterSelect}
   <ParameterSelect bind:visible={parameters} multiseries={data} />
+{/if}
+
+{#if $settingsChart.indicator !== 'tooltip'}
+  <ChartValuesDisplay {parameters} {highlightedTimeBucket} />
 {/if}
 
 <button bind:this={container} class={['relative touch-pan-y', className]} {onclick}>

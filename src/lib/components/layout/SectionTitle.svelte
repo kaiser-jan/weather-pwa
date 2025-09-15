@@ -22,3 +22,4 @@
     {/if}
   </button>
 {/if}
+<div class="bg-foreground h-0.5 w-full"></div>

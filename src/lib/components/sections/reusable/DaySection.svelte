@@ -61,7 +61,7 @@
   {#if showSummary}
     <FailSafeContainer
       name={`Section ${title}`}
-      class="bg-midground flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg p-2 px-3"
+      class="container flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg border-2 p-2"
       onclick={openThisDay}
     >
       <div class="flex flex-row flex-wrap gap-2">
@@ -76,11 +76,9 @@
   {/if}
 
   {#if showChart}
-    <FailSafeContainer
-      name={`Section ${title} Chart`}
-      class="bg-midground flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg p-2"
-    >
+    <FailSafeContainer name={`Section ${title} Chart`} class="container">
       <div
+        class="flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2"
         use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30, touchAction: 'pan-y' })}
         onswipe={(e) => {
           if (e.detail.direction === 'left') openNextDay()

@@ -32,8 +32,6 @@
     return string
   })
 
-  const ITEMS_CURRENT: ForecastParameter[] = ['dew_point', 'wind_speed', 'pressure']
-
   const forecastCurrent = $derived.by(() => {
     if (!$forecastStore) return null
     if ($forecastStore.current) return $forecastStore.current

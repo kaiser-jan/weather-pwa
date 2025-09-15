@@ -618,7 +618,7 @@ export const settingsConfig = [
                 type: 'select',
                 icon: ArrowUpAz,
                 options: ['always', 'except-overview', 'never'] as const,
-                default: 'always', // 'except-overview',
+                default: 'except-overview',
               },
               {
                 id: 'axisUnits',

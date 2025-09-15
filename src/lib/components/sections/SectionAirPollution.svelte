@@ -100,7 +100,7 @@
     <InfoIcon class="size-[1em]" /> EAQI
   </a>
 </SectionTitle>
-<FailSafeContainer name="Section Air Quality" class="bg-midground flex flex-row gap-4 rounded-md px-3 py-2">
+<FailSafeContainer name="Section Air Quality" class="container flex flex-row gap-4">
   {#if $eaqi && $eaqi.current.levels}
     <div class="flex grow flex-col justify-between">
       {@render eaqiIndex({ index: $eaqi.current.index, label: 'Now', type: 'now' })}
@@ -115,7 +115,7 @@
     <span class="bg-overlay min-h-full w-0.5"></span>
 
     <Button
-      variant="midground"
+      variant="ghost"
       size="fit"
       class="flex grow flex-col gap-0 text-left"
       onclick={() => dayView.open(today, [...pollutants, 'aqi'])}

@@ -20,11 +20,13 @@
 
 html,
 body {
+  /* HACK: changing this to 100dvh breaks on iOS */
   height: 100vh;
   padding: 0;
   margin: 0;
   user-select: none;
   -webkit-user-select: none;
+  background-color: transparent;
 
   /* Disables pull-to-refresh but allows overscroll glow effects. */
   /* https://developer.chrome.com/blog/overscroll-behavior */

@@ -31,6 +31,8 @@ export async function useCache<T, P>(
   params: P,
   fetchFn: () => Promise<{ data: T; expiresAt: DateTime }>,
 ): Promise<{ data: T; expiresAt: DateTime; updatedAt: DateTime; cached: boolean }> {
+  registerLocalStorage(key)
+
   let entries: CacheEntry<T, P>[] = getEntries(key) ?? []
 
   if (!Array.isArray(entries)) entries = []

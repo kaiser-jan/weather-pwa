@@ -12,17 +12,17 @@
 
 <SectionTitle title="Data Sources" icon={DatabaseIcon} />
 <Accordion.Root type="single" class="min-h-10 w-full">
-  <Accordion.Item class="bg-midground rounded-md">
+  <Accordion.Item class="container-unpadded">
     <Accordion.Trigger class="text-text-muted inline-flex justify-start p-2">
       <LoaderState state={$loaderSummaryState} />
       {$loaderSummaryLabel}
     </Accordion.Trigger>
-    <Accordion.Content class="bg-midground rounded-md py-0">
+    <Accordion.Content class="container-unpadded py-0">
       <Table.Root>
         <Table.Header>
           <Table.Row>
             <Table.Head class="w-4" />
-            <Table.Head class="bg-midground sticky left-0 z-10">Loader</Table.Head>
+            <Table.Head class="container-unpadded bg-background sticky left-0 z-10">Loader</Table.Head>
             <Table.Head>Updated At</Table.Head>
             <Table.Head>Refresh At</Table.Head>
             <Table.Head>Datasets</Table.Head>
@@ -38,7 +38,7 @@
               </Table.Cell>
               <Table.Cell class="sticky left-0 z-20 max-w-48 p-0">
                 <a
-                  class="bg-midground group-hover:bg-muted/50 flex h-full max-w-36 flex-nowrap items-center gap-1 px-2"
+                  class="container-unpadded bg-background group-hover:bg-muted/50 flex h-full max-w-36 flex-nowrap items-center gap-1 px-2"
                   href={state.loader.url}
                   target="_blank"
                 >

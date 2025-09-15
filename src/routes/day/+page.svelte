@@ -1,13 +1,10 @@
 <script lang="ts">
-  import * as Drawer from '$lib/components/ui/drawer'
   import { forecastStore } from '$lib/stores/data'
   import { NOW, NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { DateTime } from 'luxon'
   import { Button } from '$lib/components/ui/button'
   import { ChevronLeft, ChevronRight } from '@lucide/svelte'
   import ParameterDaySummary from '$lib/components/weather/ParameterDaySummary.svelte'
-  import type { ForecastParameter } from '$lib/types/data'
-  import type { ParameterDaySummaryProps } from '$lib/types/ui'
   import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
   import { coordinates } from '$lib/stores/location'
   import TimelineBar from '$lib/components/visualization/TimelineBar.svelte'
@@ -100,7 +97,7 @@
         className="h-2"
       />
 
-      <div class="bg-midground flex h-fit flex-col gap-2 rounded-lg p-2" data-vaul-no-drag>
+      <div class="container flex h-fit flex-col gap-2" data-vaul-no-drag>
         {#if selectedDay}
           <WeatherChart
             multiseries={selectedDay.multiseries}

@@ -5,6 +5,7 @@
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
   import ParameterSelect from '$lib/components/visualization/chart/ParameterSelect.svelte'
   import type { ForecastMetric } from '$lib/config/metrics'
+  import { swipe } from 'svelte-gestures'
 
   let visibleMetrics = $state<ForecastMetric[]>($settings.sections.components.chart.plottedMetrics)
 </script>
@@ -12,7 +13,7 @@
 <main class="flex grow flex-col justify-start overflow-x-hidden overflow-y-auto scroll-smooth p-4">
   <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
 
-  <div class="bg-midground flex flex-col gap-2 rounded-md p-2">
+  <div class="container flex flex-col gap-2">
     <WeatherChart
       multiseries={$forecastStore!.multiseries}
       parameters={visibleMetrics}

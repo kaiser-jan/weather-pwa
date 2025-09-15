@@ -48,10 +48,12 @@
 <main class="grow overflow-x-hidden overflow-y-auto scroll-smooth" bind:this={scrollContainer} onscroll={onScroll}>
   <SectionCurrent shrink={shrinkHeader} />
 
-  <div class="flex flex-col gap-4 p-4" data-vaul-drawer-wrapper>
-    {#each $settings.sections.order as sectionId}
+  <div class="flex flex-col gap-8 p-4" data-vaul-drawer-wrapper>
+    {#each $settings.sections.order as sectionId, sectionIndex}
       {@const Component = getComponent(sectionId)}
-      <Component />
+      <div class="flex flex-col gap-4">
+        <Component />
+      </div>
     {/each}
   </div>
 </main>
