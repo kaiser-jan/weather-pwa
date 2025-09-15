@@ -11,7 +11,7 @@ export default defineConfig({
     __DATE__: `'${new Date().toISOString()}'`,
   },
   server: {
-    allowedHosts: ['weather-debug.kjan.dev'],
+    allowedHosts: ['weather-debug.kjan.dev', 'weather-live.kjan.dev'],
     fs: {
       allow: ['./changelog.json'],
     },
@@ -42,8 +42,8 @@ export default defineConfig({
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        theme_color: colors.primary,
-        background_color: colors.background,
+        theme_color: 'transparent',
+        background_color: 'transparent',
       },
       injectManifest: {
         globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
