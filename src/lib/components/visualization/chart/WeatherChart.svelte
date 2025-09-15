@@ -273,7 +273,7 @@
       dimensions,
       scaleX,
       seriesList: createdSeriesDetails,
-      tooltip: $settingsChart.tooltip,
+      tooltip: $settingsChart.indicator !== 'display',
     })
 
     function selectDatetime(timestamp: number | null) {
@@ -355,7 +355,9 @@
   })
 </script>
 
-<ChartValuesDisplay {parameters} {highlightedTimeBucket} />
+{#if $settingsChart.indicator !== 'tooltip'}
+  <ChartValuesDisplay {parameters} {highlightedTimeBucket} />
+{/if}
 <div bind:this={container} class={['relative', className]}>
   <Skeleton class="h-full w-full" />
 </div>

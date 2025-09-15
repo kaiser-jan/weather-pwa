@@ -587,11 +587,12 @@ export const settingsConfig = [
             icon: ChartLineIcon,
             children: [
               {
-                id: 'tooltip',
-                label: 'Show Tooltip',
-                type: 'boolean',
+                id: 'indicator',
+                label: 'Indicator',
+                type: 'select',
                 icon: BadgeInfoIcon,
-                default: true,
+                options: ['tooltip', 'display', 'both'],
+                default: 'tooltip',
               },
               {
                 id: 'highlightExtrema',

@@ -1,11 +1,8 @@
 <script lang="ts">
-  import { settings } from '$lib/settings/store'
   import type { TimeSeriesNumberEntry, ForecastParameter } from '$lib/types/data'
   import { slide } from 'svelte/transition'
   import ParameterValue from '$lib/components/snippets/ParameterValue.svelte'
   import { DateTime } from 'luxon'
-
-  const settingsChart = settings.select((s) => s.sections.components.chart)
 
   interface Props {
     parameters: ForecastParameter[]
@@ -14,10 +11,7 @@
 
   const { parameters, highlightedTimeBucket }: Props = $props()
 
-  let timeBucket = $derived.by(() => {
-    if ($settingsChart.tooltip) return null
-    return highlightedTimeBucket ?? createEmptyTimeBucket()
-  })
+  let timeBucket = $derived(highlightedTimeBucket ?? createEmptyTimeBucket())
 
   function createEmptyTimeBucket() {
     let emptyTimeBucket: Record<ForecastParameter, undefined> = {} as any
