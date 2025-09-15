@@ -68,12 +68,7 @@
       name={`Section ${title} Chart`}
       class="bg-midground flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg p-2"
     >
-      {#if $settings.sections.today.showChartParameterSelect && timebucket}
-        <ParameterSelect bind:visible={metrics} multiseries={timebucket.multiseries} />
-      {/if}
-
-      <button
-        onclick={() => dayView.open(timebucket)}
+      <div
         use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30, touchAction: 'pan-y' })}
         onswipe={(e) => {
           const tomorrow = $forecastStore?.daily.find((d) => d.timestamp === $TOMORROW_MILLIS)
@@ -89,8 +84,11 @@
           timestamp={$NOW_MILLIS}
           className="snap-center shrink-0 w-full h-[max(20vh,12rem)]"
           hideYAxes={$settings.sections.components.chart.showYAxes !== 'always'}
+          parameterSelect={$settings.sections.components.chart.parameterSelect === 'always' ||
+            $settings.sections.components.chart.parameterSelect === 'overview'}
+          onclick={() => dayView.open(timebucket)}
         />
-      </button>
+      </div>
     </FailSafeContainer>
   {/if}
 {:else}

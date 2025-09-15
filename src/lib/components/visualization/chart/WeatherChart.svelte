@@ -18,7 +18,7 @@
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
   import ChartValuesDisplay from './ChartValuesDisplay.svelte'
   import { computeAxesFor } from '$lib/utils/d3/autoAxis'
-  import { RAIN_CATEGORIES } from '$lib/config/categorization'
+  import ParameterSelect from './ParameterSelect.svelte'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -29,17 +29,21 @@
     timestamp: number
     className: string
     hideYAxes?: boolean
+    parameterSelect: boolean
+    onclick?: () => void
   }
 
-  const {
+  let {
     multiseries: data,
-    parameters,
+    parameters = $bindable(),
     startTimestamp,
     endTimestamp,
     timestamp: NOW, // TODO: only update whats necessary
     className,
     unloaded,
     hideYAxes,
+    parameterSelect,
+    onclick,
   }: Props = $props()
 
   // move axis by half their line width to avoid overlap with content
@@ -49,7 +53,7 @@
 
   let highlightedTimeBucket = $state<Record<ForecastParameter, TimeSeriesNumberEntry> | undefined>()
 
-  let container: HTMLDivElement
+  let container: HTMLButtonElement
 
   const INITIAL_MARGIN = { top: hideYAxes ? 0 : 12, right: 0, bottom: 20, left: 0 }
   let margin = { ...INITIAL_MARGIN }
@@ -358,6 +362,11 @@
 {#if $settingsChart.indicator !== 'tooltip'}
   <ChartValuesDisplay {parameters} {highlightedTimeBucket} />
 {/if}
-<div bind:this={container} class={['relative', className]}>
+
+{#if parameterSelect}
+  <ParameterSelect bind:visible={parameters} multiseries={data} />
+{/if}
+
+<button bind:this={container} class={['relative', className]} {onclick}>
   <Skeleton class="h-full w-full" />
-</div>
+</button>

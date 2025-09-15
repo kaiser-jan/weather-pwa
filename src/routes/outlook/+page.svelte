@@ -13,7 +13,6 @@
   <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
 
   <div class="bg-midground flex flex-col gap-2 rounded-md p-2">
-    <ParameterSelect bind:visible={visibleMetrics} multiseries={$forecastStore!.multiseries} />
     <WeatherChart
       multiseries={$forecastStore!.multiseries}
       parameters={visibleMetrics}
@@ -22,6 +21,8 @@
       timestamp={$NOW_MILLIS}
       className="snap-center shrink-0 w-full h-[max(20vh,12rem)]"
       hideYAxes={$settings.sections.components.chart.showYAxes !== 'always'}
+      parameterSelect={$settings.sections.components.chart.parameterSelect === 'always' ||
+        $settings.sections.components.chart.parameterSelect === 'except-overview'}
     />
   </div>
 </main>

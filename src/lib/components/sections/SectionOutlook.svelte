@@ -89,20 +89,21 @@
 {/if}
 
 {#if $settings.sections.outlook.showChart}
-  <FailSafeContainer name="Section Outlook Chart" class="bg-midground flex flex-row overflow-y-auto rounded-md p-1">
+  <FailSafeContainer name="Section Outlook Chart" class="bg-midground flex flex-col overflow-y-auto rounded-md p-2">
     {#if $forecastStore}
-      <button onclick={() => goto('/outlook')} class="grow">
-        <!-- TODO: metrics setting -->
-        <WeatherChart
-          multiseries={$forecastStore.multiseries}
-          parameters={$settings.sections.components.chart.plottedMetrics}
-          startTimestamp={$TODAY_MILLIS}
-          endTimestamp={$TODAY_MILLIS + 1000 * 3600 * 24 * 7}
-          timestamp={$NOW_MILLIS}
-          className="snap-center shrink-0 w-full h-[max(20vh,12rem)]"
-          hideYAxes={$settings.sections.components.chart.showYAxes !== 'always'}
-        />
-      </button>
+      <!-- TODO: metrics setting -->
+      <WeatherChart
+        multiseries={$forecastStore.multiseries}
+        parameters={$settings.sections.components.chart.plottedMetrics}
+        startTimestamp={$TODAY_MILLIS}
+        endTimestamp={$TODAY_MILLIS + 1000 * 3600 * 24 * 7}
+        timestamp={$NOW_MILLIS}
+        className="snap-center shrink-0 w-full h-[max(20vh,12rem)]"
+        hideYAxes={$settings.sections.components.chart.showYAxes !== 'always'}
+        parameterSelect={$settings.sections.components.chart.parameterSelect === 'always' ||
+          $settings.sections.components.chart.parameterSelect === 'overview'}
+        onclick={() => goto('/outlook')}
+      />
     {/if}
   </FailSafeContainer>
 {/if}

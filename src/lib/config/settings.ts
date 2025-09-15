@@ -65,7 +65,6 @@ import {
   UmbrellaIcon,
 } from '@lucide/svelte'
 import type { ColorStop } from '$lib/types/ui'
-import { type ForecastParameter } from '$lib/types/data'
 import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import type { Changelog } from '$lib/types/changelog'
@@ -445,13 +444,6 @@ export const settingsConfig = [
             default: true,
           },
           {
-            id: 'showChartParameterSelect',
-            label: 'Show Chart Parameter Select',
-            type: 'boolean',
-            icon: ToggleRightIcon,
-            default: false,
-          },
-          {
             id: 'showSummary',
             label: 'Show Summary',
             type: 'boolean',
@@ -479,13 +471,6 @@ export const settingsConfig = [
             label: 'Show Chart',
             type: 'boolean',
             icon: ChartLineIcon,
-            default: false,
-          },
-          {
-            id: 'showChartParameterSelect',
-            label: 'Show Chart Parameter Select',
-            type: 'boolean',
-            icon: ToggleRightIcon,
             default: false,
           },
           {
@@ -593,6 +578,14 @@ export const settingsConfig = [
                 icon: BadgeInfoIcon,
                 options: ['tooltip', 'display', 'both'],
                 default: 'tooltip',
+              },
+              {
+                id: 'parameterSelect',
+                label: 'Parameter Select',
+                type: 'select',
+                icon: ToggleRightIcon,
+                options: ['always', 'overview', 'except-overview', 'never'],
+                default: 'never',
               },
               {
                 id: 'highlightExtrema',
