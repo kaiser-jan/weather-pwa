@@ -70,8 +70,8 @@ const _METRIC_DETAILS = {
     iconIfZero: CloudOffIcon,
     color: { css: 'var(--color-blue-200)' },
     chart: {
-      style: 'bars',
-      class: 'opacity-15',
+      style: 'area',
+      class: 'opacity-10',
     },
     summary: { items: ['icon', 'avg'] },
   },

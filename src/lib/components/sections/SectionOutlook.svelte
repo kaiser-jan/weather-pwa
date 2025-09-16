@@ -8,7 +8,7 @@
   import { DateTime } from 'luxon'
   import { NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { onMount } from 'svelte'
-  import { BinocularsIcon, ChevronsRightIcon } from '@lucide/svelte'
+  import { BinocularsIcon, ChevronRightIcon, ChevronsRightIcon } from '@lucide/svelte'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
@@ -44,7 +44,9 @@
   })
 </script>
 
-<SectionTitle title="Outlook" icon={ChevronsRightIcon} />
+<SectionTitle title="Outlook" icon={ChevronsRightIcon} onclick={() => goto('/outlook')}>
+  <ChevronRightIcon class="ml-auto" />
+</SectionTitle>
 
 {#if $settings.sections.outlook.showSummary}
   <FailSafeContainer name="Section Outlook" class="container flex flex-row overflow-y-auto " bind:element={container}>

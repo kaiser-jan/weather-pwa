@@ -13,7 +13,7 @@
 <SectionTitle title="Data Sources" icon={DatabaseIcon} />
 <Accordion.Root type="single" class="min-h-10 w-full">
   <Accordion.Item class="container-unpadded">
-    <Accordion.Trigger class="text-text-muted inline-flex justify-start p-2">
+    <Accordion.Trigger class="text-text-muted inline-flex justify-start px-2 py-0">
       <LoaderState state={$loaderSummaryState} />
       {$loaderSummaryLabel}
     </Accordion.Trigger>
@@ -32,7 +32,7 @@
         <Table.Body>
           {#each $loaderStates as state (state.loader.datasetIds.join(','))}
             {@const provider = PROVIDERS.find((p) => p.loaderIds.includes(state.loader.id))}
-            <Table.Row class="group gap-2 px-2 opacity-100">
+            <Table.Row class="group gap-2 opacity-100">
               <Table.Cell class="w-4">
                 <LoaderState state={stateFromLoaderState(state)} />
               </Table.Cell>

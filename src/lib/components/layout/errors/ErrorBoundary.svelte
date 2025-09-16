@@ -5,6 +5,7 @@
   import { CircleArrowUpIcon, CircleFadingArrowUpIcon, EraserIcon, PowerIcon, RefreshCcwIcon } from '@lucide/svelte'
   import type { Snippet } from 'svelte'
   import ErrorExpandable from './ErrorExpandable.svelte'
+  import { goto } from '$app/navigation'
 
   interface Props {
     scope: 'page' | 'app'
@@ -57,6 +58,7 @@
             onclick={() => {
               clearCache()
               window.location.reload()
+              goto('/')
             }}
           >
             <EraserIcon /> Clear Cache

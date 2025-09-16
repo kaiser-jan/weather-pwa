@@ -49,7 +49,7 @@
 
   <Popover.Root bind:open={isOpen}>
     <Popover.Trigger>
-      <Button size="icon" variant="secondary" class="size-9! border p-2">
+      <Button size="icon" variant="midground" class="size-9! p-2">
         <EllipsisIcon />
       </Button>
     </Popover.Trigger>
