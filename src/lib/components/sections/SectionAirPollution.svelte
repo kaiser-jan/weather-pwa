@@ -2,8 +2,7 @@
   import { currentFromMultiseries } from '$lib/utils/forecast/current'
   import { forecastStore } from '$lib/stores/data'
   import { NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
-  import { autoFormatMetric, convertToUnit } from '$lib/utils/units'
-  import { derived } from 'svelte/store'
+  import { autoFormatMetric } from '$lib/utils/units'
   import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
   import { settings } from '$lib/settings/store'
   import type { TimeBucket } from '$lib/types/data'
@@ -16,10 +15,10 @@
   import { dayView } from '$lib/stores/ui'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
-  import { getEaqiLevels, getTotalEaqiIndex, type ForecastParameterAirPollution } from '$lib/utils/forecast/aqi/eaqi'
+  import { getEaqiLevels, type ForecastParameterAirPollution } from '$lib/utils/forecast/aqi/eaqi'
 
-  const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS) ?? null)
-  const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS) ?? null)
+  const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS))
+  const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS))
 
   function getEaqiDetailsForTimeBucket(day: TimeBucket) {
     const minValues = day ? Object.fromEntries(Object.entries(day.summary).map(([p, s]) => [p, s.min])) : {}
@@ -36,10 +35,10 @@
     }
   }
 
-  const eaqi = derived(forecastStore, ($f) => {
-    if (!$f) return
+  const eaqi = $derived.by(() => {
+    if (!$forecastStore) return
 
-    const currentValues = currentFromMultiseries($f.multiseries, $NOW_MILLIS)
+    const currentValues = currentFromMultiseries($forecastStore.multiseries, $NOW_MILLIS)
     const currentLevels = getEaqiLevels(currentValues)
 
     return {
@@ -54,8 +53,8 @@
   })
 
   const pollutants = $derived(
-    $eaqi?.current.levels
-      ? (Object.keys($eaqi.current.levels) as Array<keyof typeof EAQI.limits>)
+    eaqi?.current.levels
+      ? (Object.keys(eaqi.current.levels) as Array<keyof typeof EAQI.limits>)
       : new Array<keyof typeof EAQI.limits>(),
   )
 </script>
@@ -101,12 +100,12 @@
   </a>
 </SectionTitle>
 <FailSafeContainer name="Section Air Quality" class="container flex flex-row gap-4">
-  {#if $eaqi && $eaqi.current.levels}
+  {#if eaqi && eaqi.current.levels && eaqi.today}
     <div class="flex grow flex-col justify-between">
-      {@render eaqiIndex({ index: $eaqi.current.index, label: 'Now', type: 'now' })}
-      {@render eaqiIndex({ index: $eaqi.today?.maxIndex, label: 'Today', type: 'today' })}
+      {@render eaqiIndex({ index: eaqi.current.index, label: 'Now', type: 'now' })}
+      {@render eaqiIndex({ index: eaqi.today?.maxIndex, label: 'Today', type: 'today' })}
       {@render eaqiIndex({
-        index: $eaqi.tomorrow?.maxIndex,
+        index: eaqi.tomorrow?.maxIndex,
         label: DateTime.fromMillis($TOMORROW_MILLIS).toFormat('ccc'),
         type: 'tomorrow',
       })}
@@ -120,22 +119,23 @@
       class="flex grow flex-col gap-0 text-left"
       onclick={() => dayView.open(today, [...pollutants, 'aqi'])}
     >
-      {#each Object.keys($eaqi.current.levels) as _pollutant}
+      {#each Object.keys(eaqi.current.levels) as _pollutant}
         {@const pollutant = _pollutant as ForecastParameterAirPollution}
         <div class="flex flex-row flex-nowrap items-center gap-2">
           <span class="w-22 text-sm font-medium">{METRIC_DETAILS[pollutant]?.abbreviation}</span>
           <NumberRangeBar
-            total={{ min: 0, max: EAQI.limits[pollutant][Math.ceil($eaqi.today?.maxIndex)] * 1e-6 }}
+            total={{ min: 0, max: EAQI.limits[pollutant][Math.ceil(eaqi.today.maxIndex)] * 1e-6 }}
             instance={{
-              min: $eaqi.today?.minValues[pollutant],
-              avg: $eaqi.current.values[pollutant],
-              max: $eaqi.today?.maxValues[pollutant],
+              min: eaqi.today.minValues[pollutant],
+              avg: eaqi.current.values[pollutant]!,
+              max: eaqi.today.maxValues[pollutant],
+              sum: 0,
             }}
             color={METRIC_DETAILS[pollutant]!.color}
             className="h-2"
           />
           <div class="text-muted-foreground w-20 text-right text-xs text-nowrap">
-            {autoFormatMetric($eaqi.current.values[pollutant], pollutant, $settings) ?? '–'}
+            {autoFormatMetric(eaqi.current.values[pollutant], pollutant, $settings) ?? '–'}
           </div>
         </div>
       {/each}

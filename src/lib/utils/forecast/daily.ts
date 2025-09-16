@@ -33,16 +33,18 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
   for (const [parameter, series] of Object.entries(multiseries)) {
     for (const item of series) {
       const dayStartTimestamp = getStartOfDayTimestamp(item.timestamp)
-      if (!groupedMap[dayStartTimestamp])
+      if (!groupedMap[dayStartTimestamp]) {
         groupedMap[dayStartTimestamp] = {
           timestamp: dayStartTimestamp,
           duration: Duration.fromObject({ hours: 24 }).toMillis(),
           series: {},
         }
+      }
 
       const parameterTyped = parameter as keyof MultivariateTimeSeries
-      if (!groupedMap[dayStartTimestamp].series[parameterTyped])
+      if (!groupedMap[dayStartTimestamp].series[parameterTyped]) {
         groupedMap[dayStartTimestamp].series[parameterTyped] = [] as any[]
+      }
       groupedMap[dayStartTimestamp].series[parameterTyped]!.push(item)
     }
   }
