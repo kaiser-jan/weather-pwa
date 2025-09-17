@@ -1,24 +1,13 @@
 <script lang="ts">
   import { geolocationStore } from '$lib/stores/geolocation'
-  import type { Coordinates } from '$lib/types/data'
   import { BookmarkIcon, ChevronRight, Trash2Icon, type Icon } from '@lucide/svelte'
   import { Button } from '$lib/components/ui/button'
-  import { ITEM_ID_GEOLOCATION, type Location } from '$lib/types/ui'
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import { settings } from '$lib/settings/store'
-  import { get } from 'svelte/store'
-  import { createUUID, getDistanceBetweenCoordinatesMeters } from '$lib/utils'
-  import { selectedLocation } from '$lib/stores/location'
+  import { getDistanceBetweenCoordinatesMeters } from '$lib/utils'
   import { locationSearch } from '$lib/stores/ui'
-
-  type Item = {
-    id: string
-    icon: typeof Icon | null
-    label: string
-    sublabel?: string
-    coordinates?: Coordinates
-    select: () => void
-  }
+  import { deleteSavedLocation, saveLocation } from '$lib/utils/location'
+  import type { Item } from 'svelte-dnd-action'
 
   interface Props {
     title?: string
@@ -45,47 +34,6 @@
     return $settings.data.locations.find(
       (l) => l.latitude === item.coordinates?.latitude && l.longitude === item.coordinates?.longitude,
     )
-  }
-
-  function deleteSavedLocation(item: Item) {
-    // TODO: this is made to be forgotten when changing this setting
-    const savedLocations = get(settings).data.locations
-
-    const index = savedLocations.findIndex(
-      (l) => l.latitude === item.coordinates?.latitude && l.longitude === item.coordinates?.longitude,
-    )
-    if (index === -1) return
-
-    savedLocations.splice(index, 1)
-    settings.writeSetting(['data', 'locations'], savedLocations)
-  }
-
-  function saveLocation(item: Item) {
-    if (item.id === ITEM_ID_GEOLOCATION) {
-      item.coordinates = get(geolocationStore).position?.coords
-    }
-
-    if (!item.coordinates) return
-    // TODO: this is made to be forgotten when changing this setting
-    const savedLocations = get(settings).data.locations
-
-    const newLocation: Location = {
-      id: createUUID(),
-      name: item.label,
-      latitude: item.coordinates.latitude,
-      longitude: item.coordinates.longitude,
-      // TODO: use the icon from the search result
-      icon: 'map-pin',
-      altitude: null,
-    }
-    if (item.coordinates.altitude) newLocation.altitude = item.coordinates.altitude
-    savedLocations.push(newLocation)
-
-    settings.writeSetting(['data', 'locations'], savedLocations)
-
-    // select it
-    selectedLocation.set({ type: 'saved', location: { ...newLocation } })
-    locationSearch.hide()
   }
 </script>
 
@@ -171,6 +119,8 @@
                 e.preventDefault()
                 e.stopPropagation()
                 saveLocation(item)
+
+                locationSearch.hide()
               }}
             >
               <BookmarkIcon />

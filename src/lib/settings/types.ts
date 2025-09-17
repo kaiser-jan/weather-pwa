@@ -47,7 +47,7 @@ export type NumberSetting = BaseConfigItem & {
   min?: number
   max?: number
   step?: number
-  unit: string
+  unit?: string
 }
 
 export type DescriptionItem = BaseConfigItem & {
