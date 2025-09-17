@@ -13,5 +13,5 @@
 
 <div class="inline-flex flex-row items-baseline gap-1">
   <Input type="number" bind:value onblur={() => onchange(value)} min={item.min} max={item.max} step={item.step} />
-  <span>{item.unit}</span>
+  <span class="whitespace-nowrap">{item.unit}</span>
 </div>

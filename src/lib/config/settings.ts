@@ -182,6 +182,7 @@ export const settingsConfig = [
       {
         id: 'datasets',
         label: 'Datasets',
+        description: 'Select where to get weather data from and order by priority.',
         type: 'multiselect-reorder',
         allowsFullscreen: true,
         requiresFullscreen: true,
@@ -199,6 +200,7 @@ export const settingsConfig = [
       {
         id: 'incrementalLoad',
         label: 'Incremental Load',
+        description: 'Update the view while loading data, instead of waiting for all data.',
         type: 'boolean',
         icon: SquareSplitHorizontalIcon,
         default: true,
@@ -262,6 +264,7 @@ export const settingsConfig = [
       {
         id: 'locationSnapDistance',
         label: 'Snap to nearby Location',
+        description: 'When using geolocation, switch to a saved location if there is one within this distance.',
         icon: MagnetIcon,
         type: 'number',
         unit: 'm',
@@ -271,6 +274,8 @@ export const settingsConfig = [
       {
         id: 'locationSuggestDistance',
         label: 'Suggest saving Location',
+        description:
+          'Suggest saving frequently used locations, when geolocations within this radius were used recently.',
         icon: RulerDimensionLineIcon,
         type: 'number',
         unit: 'm',
@@ -286,6 +291,7 @@ export const settingsConfig = [
           {
             id: 'metrics',
             label: 'Visible Weather Metrics',
+            description: 'Which metrics are important to you. Others will need to be expanded.',
             type: 'multiselect-reorder',
             icon: LetterTextIcon,
             options: FORECAST_METRICS,
@@ -308,15 +314,17 @@ export const settingsConfig = [
               {
                 id: 'threshold',
                 label: 'Threshold',
+                description: 'Precipitation under this threshold is ignored.',
                 icon: SquareSplitVerticalIcon,
                 type: 'number',
                 default: 0.05,
                 step: 0.01,
+                unit: 'mm/h',
               },
               {
                 id: 'groupInterval',
                 label: 'Group Interval',
-                description: 'Group precipitation if the duration between is less than',
+                description: 'Breaks in precipitation under this limit are ignored.',
                 icon: HourglassIcon,
                 type: 'not-implemented',
                 // type: 'duration',
@@ -333,6 +341,7 @@ export const settingsConfig = [
               {
                 id: 'showCategory',
                 label: 'Show Category Label',
+                description: 'Show the AQI label instead of the index number.',
                 type: 'boolean',
                 icon: ListOrderedIcon,
                 default: true,
@@ -430,7 +439,8 @@ export const settingsConfig = [
         children: [
           {
             id: 'sticky',
-            label: 'Keep Visible',
+            label: 'Stick to top',
+            description: 'Keep current weather visible at the top instead of scrolling.',
             type: 'boolean',
             icon: PinIcon,
             default: true,
@@ -438,6 +448,7 @@ export const settingsConfig = [
           {
             id: 'metrics',
             label: 'Weather Metrics',
+            description: 'What metrics to display for the current weather.',
             type: 'multiselect-reorder',
             icon: LetterTextIcon,
             options: FORECAST_METRICS,
@@ -454,6 +465,7 @@ export const settingsConfig = [
           {
             id: 'metrics',
             label: 'Weather Metrics',
+            description: 'What metrics to display in the summary for today.',
             type: 'multiselect-reorder',
             icon: LetterTextIcon,
             options: FORECAST_METRICS,
@@ -476,6 +488,7 @@ export const settingsConfig = [
           {
             id: 'fullDay',
             label: 'Show Full Day',
+            description: 'Whether to start at 00:00 or at the current time.',
             type: 'select',
             icon: CalendarClockIcon,
             options: ['always', 'when-available', 'never'],
@@ -492,6 +505,7 @@ export const settingsConfig = [
           {
             id: 'metrics',
             label: 'Weather Metrics',
+            description: 'What metrics to display in the summary for tomorrow.',
             type: 'multiselect-reorder',
             icon: LetterTextIcon,
             options: FORECAST_METRICS,
@@ -523,6 +537,7 @@ export const settingsConfig = [
           {
             id: 'temperature',
             label: 'Temperature Display',
+            description: 'How to indicate temperature by color.',
             type: 'select',
             icon: ThermometerIcon,
             options: ['hidden', 'dots', 'range-bar'],
@@ -546,6 +561,7 @@ export const settingsConfig = [
           {
             id: 'scrollToToday',
             label: 'Start at Today',
+            description: 'Whether to align today at the left.',
             type: 'boolean',
             icon: CalendarDaysIcon,
             default: true,
@@ -605,6 +621,7 @@ export const settingsConfig = [
               {
                 id: 'indicator',
                 label: 'Indicator',
+                description: 'How to display the values at the hovered timestamp.',
                 type: 'select',
                 icon: BadgeInfoIcon,
                 options: ['tooltip', 'display', 'both'],
@@ -613,6 +630,7 @@ export const settingsConfig = [
               {
                 id: 'parameterSelect',
                 label: 'Parameter Select',
+                description: 'Where to show the parameter toggle bar.',
                 type: 'select',
                 icon: ToggleRightIcon,
                 options: ['always', 'overview', 'except-overview', 'never'],
@@ -621,13 +639,15 @@ export const settingsConfig = [
               {
                 id: 'highlightExtrema',
                 label: 'Highlight Extrema',
+                description: 'Add labels to the highs and lows of temperature.',
                 type: 'boolean',
                 icon: ChevronsUpDownIcon,
                 default: true,
               },
               {
                 id: 'alwaysShowValuesDisplay',
-                label: 'Pin Value Display',
+                label: 'Pin Display Indicator',
+                description: 'Keep the display indicator visible even when not hovering the chart.',
                 type: 'boolean',
                 icon: HashIcon,
                 default: true,
@@ -643,6 +663,7 @@ export const settingsConfig = [
               {
                 id: 'axisUnits',
                 label: 'Axis Unit Location',
+                description: 'Where to position the units relative to the axes',
                 type: 'select',
                 icon: ArrowUpAz,
                 options: ['inline', 'above', 'replace', 'off'] as const,
@@ -652,6 +673,7 @@ export const settingsConfig = [
               {
                 id: 'plottedMetrics',
                 label: 'Plotted Weather Metrics',
+                description: 'What metrics to chart by default.',
                 type: 'multiselect-reorder',
                 icon: ChartSplineIcon,
                 options: FORECAST_METRICS,
@@ -660,6 +682,7 @@ export const settingsConfig = [
               {
                 id: 'pinnedMetrics',
                 label: 'Pinned Weather Metrics',
+                description: 'What metrics should always be visible in the parameter select.',
                 type: 'multiselect-reorder',
                 icon: ChartSplineIcon,
                 options: FORECAST_METRICS,

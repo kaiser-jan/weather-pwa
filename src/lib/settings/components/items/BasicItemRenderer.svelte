@@ -30,8 +30,8 @@
     hasChanged = false
   }}
 >
-  <span class="flex flex-row items-center gap-3">
-    <item.icon class={hasChanged ? 'text-text' : 'text-text-muted'} />
+  <span class="flex flex-row items-center gap-3 font-medium">
+    <item.icon class="text-text" />
     {item.label}
   </span>
 
@@ -52,6 +52,12 @@
     {item.type}
     {item.id}
     {value}
+  {/if}
+
+  {#if item.description}
+    <p class="text-text-muted text-left text-sm opacity-80">
+      {item.description}
+    </p>
   {/if}
 
   {#if hasChanged}
