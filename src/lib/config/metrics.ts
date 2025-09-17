@@ -71,7 +71,7 @@ const _METRIC_DETAILS = {
     color: { css: 'var(--color-blue-200)' },
     chart: {
       style: 'area',
-      class: 'opacity-10',
+      class: 'opacity-20',
     },
     summary: { items: ['icon', 'avg'] },
   },
@@ -142,10 +142,23 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
+    summary: { useTotalAsDomain: true },
   },
 
-  pressure: {
-    label: 'Pressure',
+  pressure_surface: {
+    label: 'Pressure (Surface)',
+    // TODO: find a better way to select a domain here, as the value range depends on the altitude
+    domain: { min: [980 * 100], max: [1040 * 100] },
+    icon: GaugeIcon,
+    color: { css: 'var(--color-purple-300)' },
+    chart: {
+      style: 'line',
+      class: 'opacity-80',
+    },
+    summary: { items: ['icon', 'avg', 'trend'] },
+  },
+  pressure_sealevel: {
+    label: 'Pressure (Sea Level)',
     domain: { min: [980 * 100], max: [1040 * 100] },
     icon: GaugeIcon,
     color: { css: 'var(--color-purple-300)' },

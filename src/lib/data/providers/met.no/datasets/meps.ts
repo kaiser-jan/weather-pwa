@@ -7,7 +7,7 @@ export default {
   name: 'Nordic area',
   url: 'https://doi.org/10.1002/qj.3525',
   parameters: [
-    'pressure',
+    'pressure_sealevel',
     'temperature',
     'temperature_min',
     'temperature_max',

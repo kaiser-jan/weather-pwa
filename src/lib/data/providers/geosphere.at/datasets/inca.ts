@@ -16,7 +16,7 @@ const AVAILABLE_WEATHER_PARAMETERS = [
 
 export const configs: TimeSeriesConfig<(typeof AVAILABLE_WEATHER_PARAMETERS)[number], ForecastParameter>[] = [
   { outKey: 'grad', inKey: 'GL', type: 'normal' },
-  { outKey: 'pressure', inKey: 'P0', type: 'normal' },
+  { outKey: 'pressure_sealevel', inKey: 'P0', type: 'normal' },
   { outKey: 'relative_humidity', inKey: 'RH2M', type: 'normal' },
   { outKey: 'temperature', inKey: 'T2M', type: 'normal' },
   { outKey: 'precipitation_amount', inKey: 'RR', type: 'normal' },

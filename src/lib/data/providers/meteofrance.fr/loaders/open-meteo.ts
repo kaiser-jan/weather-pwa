@@ -16,7 +16,8 @@ const parameters: ForecastParameter[] = [
   'wind_speed',
   'wind_degrees',
   'wind_speed_gust',
-  'pressure',
+  'pressure_surface',
+  'pressure_sealevel',
   'cloud_coverage',
 ] as const
 

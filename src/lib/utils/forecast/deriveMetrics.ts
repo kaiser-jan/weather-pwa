@@ -1,5 +1,6 @@
-import type { ForecastParameter, MultivariateTimeSeries, TimeSeries } from '$lib/types/data'
+import type { Coordinates, ForecastParameter, MultivariateTimeSeries, TimeSeries } from '$lib/types/data'
 import { getEaqiLevel, getEaqiLevels, getTotalEaqiIndex } from './aqi/eaqi'
+import { mergeTimeSeries } from './multiseries'
 
 function calculateDewPoint({ temperature, relative_humidity }: { temperature: number; relative_humidity: number }) {
   const b = 17.625
@@ -8,33 +9,91 @@ function calculateDewPoint({ temperature, relative_humidity }: { temperature: nu
   return (c * gamma) / (b - gamma)
 }
 
-const derivedMetrics = [
+const g = 9.80665 // m/s²
+const M = 0.0289644 // kg/mol
+const R = 8.31432 // J/(mol·K)
+const L = 0.0065 // K/m (lapse rate)
+
+function convertSurfacePressureToSeaLevel(
+  { temperature, pressure_surface }: { temperature: number; pressure_surface: number },
+  coordinates: Coordinates,
+): number {
+  const T = temperature + 273.15
+
+  const factor = (g * M) / (R * L)
+  const base = 1 - (L * coordinates.altitude!) / T
+
+  return pressure_surface * Math.pow(base, -factor)
+}
+function convertSealevelPressureToSurface(
+  { temperature, pressure_sealevel }: { temperature: number; pressure_sealevel: number },
+  coordinates: Coordinates,
+): number {
+  console.log(temperature, pressure_sealevel, coordinates.altitude)
+  const T = temperature + 273.15
+
+  const factor = (g * M) / (R * L)
+  const base = 1 - (L * coordinates.altitude!) / T
+
+  return pressure_sealevel * Math.pow(base, factor)
+}
+
+interface DerivedMetric {
+  metric: ForecastParameter
+  notAllSourcesRequired?: boolean
+  sourceMetrics: ForecastParameter[]
+  requiresAltitude?: boolean
+  callback: (values: Record<ForecastParameter, number>, coordinates: Coordinates) => number | null
+}
+
+const derivedMetrics: DerivedMetric[] = [
   { metric: 'dew_point', sourceMetrics: ['temperature', 'relative_humidity'], callback: calculateDewPoint },
+  {
+    metric: 'pressure_surface',
+    sourceMetrics: ['temperature', 'pressure_sealevel'],
+    requiresAltitude: true,
+    callback: convertSealevelPressureToSurface,
+  },
+  {
+    metric: 'pressure_sealevel',
+    sourceMetrics: ['temperature', 'pressure_surface'],
+    requiresAltitude: true,
+    callback: convertSurfacePressureToSeaLevel,
+  },
   {
     metric: 'aqi',
     sourceMetrics: ['pm25', 'pm10', 'o3', 'no2'],
     notAllSourcesRequired: true,
     callback: (values) => getTotalEaqiIndex(getEaqiLevels(values)) ?? null,
   },
-] as const satisfies {
-  metric: ForecastParameter
-  notAllSourcesRequired?: boolean
-  sourceMetrics: ForecastParameter[]
-  callback: (values: Record<ForecastParameter, number>) => number | null
-}[]
+] as const
 
-export function addDerivedMetrics(multiseries: MultivariateTimeSeries) {
+export function addDerivedMetrics(multiseries: MultivariateTimeSeries, coordinates: Coordinates) {
   for (const derivedMetric of derivedMetrics) {
-    const result = deriveTimeseriesFromMetrics(multiseries, derivedMetric.sourceMetrics, derivedMetric.callback)
+    if (derivedMetric.requiresAltitude && coordinates.altitude === null) continue
+
+    const result = deriveTimeseriesFromMetrics(
+      multiseries,
+      coordinates,
+      derivedMetric.sourceMetrics,
+      derivedMetric.callback,
+    )
     if (!result) continue
-    multiseries[derivedMetric.metric] = result
+
+    const existingTimeseries = multiseries[derivedMetric.metric]
+    if (!existingTimeseries) {
+      multiseries[derivedMetric.metric] = result
+    } else {
+      multiseries[derivedMetric.metric] = mergeTimeSeries(existingTimeseries, result)
+    }
   }
 }
 
 function deriveTimeseriesFromMetrics<MetricT extends ForecastParameter>(
   multiseries: MultivariateTimeSeries,
+  coordinates: Coordinates,
   metrics: MetricT[],
-  callback: (values: Record<MetricT, number>) => number | null,
+  callback: (values: Record<MetricT, number>, coordinates: Coordinates) => number | null,
 ) {
   if (metrics.some((m) => !multiseries[m])) return null
 
@@ -57,6 +116,7 @@ function deriveTimeseriesFromMetrics<MetricT extends ForecastParameter>(
       timebucketMap[metric] = currentBucket
     }
 
+    console.log(timebucketMap)
     const timebucketList = Object.values(timebucketMap) as TimeSeries<number>[number][]
 
     if (timebucketList.length < metrics.length) continue
@@ -66,6 +126,7 @@ function deriveTimeseriesFromMetrics<MetricT extends ForecastParameter>(
 
     const value = callback(
       Object.fromEntries(metrics.map((m) => [m, timebucketMap[m]?.value!])) as Record<MetricT, number>,
+      coordinates,
     )
 
     if (value === null) continue

@@ -7,7 +7,7 @@ export default {
   name: 'Global',
   url: 'https://www.ecmwf.int/en/forecasts/datasets/set-i',
   parameters: [
-    'pressure',
+    'pressure_sealevel',
     'temperature',
     'cloud_coverage',
     // 'cloud_coverage_low',

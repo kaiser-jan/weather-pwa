@@ -104,7 +104,7 @@ function createForecastFromResults(results: LoaderState[], inputs: ForecastInput
     merged = mergeMultivariateTimeSeries(merged, parts[i])
   }
 
-  addDerivedMetrics(merged)
+  addDerivedMetrics(merged, inputs.coordinates)
 
   const daily = combineMultiseriesToDailyForecast(merged)
   const total = forecastTotalFromDailyForecast(daily)

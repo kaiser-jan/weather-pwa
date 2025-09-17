@@ -62,7 +62,7 @@ export function createOpenMeteoLoader({ dataset, parameters, interval }: LoaderO
 
             if (isNaN(value)) return
             // pressure: convert hPa to Pa
-            if (parameter === 'pressure') value *= 1e2
+            if (parameter === 'pressure_surface' || parameter === 'pressure_sealevel') value *= 1e2
             if (parameter === 'wind_speed' || parameter === 'wind_speed_gust') value /= 3.6
             // precipitation: move to preceding hour
             timestamp -= durationMs
@@ -118,7 +118,8 @@ export const parameterMapToOpenMeteo = {
   temperature_min: 'temperature_2m_min',
   temperature_max: 'temperature_2m_max',
   temperature_feel: 'apparent_temperature',
-  pressure: 'surface_pressure',
+  pressure_surface: 'surface_pressure',
+  pressure_sealevel: 'pressure_msl',
   relative_humidity: 'relative_humidity_2m',
   uvi: 'uv_index',
   uvi_clear_sky: 'uv_index_clear_sky',

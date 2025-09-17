@@ -9,7 +9,15 @@ export default {
   url: '',
   // https://meteofrance.github.io/meteonet/english/data/weather-models/
   // TODO: sea level pressure!
-  parameters: ['temperature', 'relative_humidity', 'wind_speed', 'wind_degrees', 'pressure', 'precipitation_amount'],
+  parameters: [
+    'temperature',
+    'relative_humidity',
+    'wind_speed',
+    'wind_degrees',
+    'pressure_surface',
+    'pressure_sealevel',
+    'precipitation_amount',
+  ],
   baseForecastAge: null,
   temporalResolution: Duration.fromObject({ hours: 1 }),
   updateFrequency: Duration.fromObject({ hours: 3 }),

@@ -66,11 +66,12 @@ export function computeAxesFor(
     const extent = d3.extent(series, (d) => d.value)
     const min = extent[0] ?? 0
     const max = extent[1] ?? 0
+    const safeArea = (max - min) * 0.1
     const domain =
       details.domainCallback?.(multiseries) ??
       ([
-        details.domain.min.findLast((t) => t <= min * 0.9) ?? details.domain.min[0],
-        details.domain.max.find((t) => t >= max * 1.1) ?? details.domain.max[0],
+        details.domain.min.findLast((t) => t <= min - safeArea) ?? details.domain.min[0],
+        details.domain.max.find((t) => t >= max + safeArea) ?? details.domain.max[details.domain.max.length - 1],
       ] as const)
 
     const unit = getPreferredUnit(parameter, get(settings))

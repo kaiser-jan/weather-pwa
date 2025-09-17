@@ -269,8 +269,8 @@
       .attr('y', dimensions.margin.top)
       .attr('width', Math.min(dimensions.width + dimensions.margin.left, scaleX(NOW)) - dimensions.margin.left)
       .attr('height', dimensions.height)
-      .classed('fill-midground', true)
-      .attr('opacity', 0.7)
+      .classed('fill-background', true)
+      .attr('opacity', 0.6)
 
     const { updateXAxisPointer, hideXAxisPointer } = createAxisPointer({
       svg,

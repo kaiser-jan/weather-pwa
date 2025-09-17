@@ -85,18 +85,3 @@ export function createTimeseriesForecastLoader({
 
   return load
 }
-
-// TODO: have two parameters, pressure_surface and pressure_sea_level and do the conversion when deriving metrics
-function convertSurfacePressureToSeaLevel(P: number, h: number, t: number): number {
-  const g = 9.80665 // m/s²
-  const M = 0.0289644 // kg/mol
-  const R = 8.31432 // J/(mol·K)
-  const L = 0.0065 // K/m (lapse rate)
-
-  const T = t + 273.15
-
-  const factor = (g * M) / (R * L)
-  const base = 1 - (L * h) / T
-
-  return P * Math.pow(base, -factor)
-}

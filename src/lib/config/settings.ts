@@ -276,7 +276,7 @@ export const settingsConfig = [
               'cloud_coverage',
               'dew_point',
               'aqi',
-              'pressure',
+              'pressure_sealevel',
             ] as ForecastMetric[],
           },
           {
@@ -421,7 +421,7 @@ export const settingsConfig = [
             type: 'multiselect-reorder',
             icon: LetterTextIcon,
             options: FORECAST_METRICS,
-            default: ['dew_point', 'wind_speed', 'pressure'] as ForecastMetric[],
+            default: ['dew_point', 'wind_speed', 'pressure_sealevel'] as ForecastMetric[],
           },
         ],
       },

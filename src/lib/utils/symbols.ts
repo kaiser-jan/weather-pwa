@@ -84,7 +84,8 @@ export function deriveWeatherSituationFromPeriod(data: TimeBucketSummary): Weath
 
   return deriveWeatherSituationFromInstant({
     temperature: summary.temperature?.max,
-    pressure: summary.pressure?.avg,
+    pressure_sealevel: summary.pressure_sealevel?.avg,
+    pressure_surface: summary.pressure_surface?.avg,
     relative_humidity: summary.relative_humidity?.avg,
     uvi_clear_sky: summary.uvi_clear_sky?.max,
     cloud_coverage: summary.cloud_coverage?.avg,

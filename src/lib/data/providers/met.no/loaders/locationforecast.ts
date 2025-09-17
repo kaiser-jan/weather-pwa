@@ -126,7 +126,7 @@ export async function loadLocationforecast(coordinates: Coordinates): ReturnType
 
 function transformTimeInstant(instant: MetnoForecastTimeInstant): Partial<WeatherInstant> {
   return {
-    pressure: (instant.air_pressure_at_sea_level ?? 0) * 100, // convert from hPa to Pa
+    pressure_sealevel: (instant.air_pressure_at_sea_level ?? 0) * 100, // convert from hPa to Pa
     temperature: instant.air_temperature,
     // @ts-expect-error this does exist
     temperature_min: instant.air_temperature_percentile_10,
