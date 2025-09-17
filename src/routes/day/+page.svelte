@@ -18,6 +18,7 @@
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import ExpandableList from '$lib/components/ExpandableList.svelte'
   import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
+  import { queryParam, ssp } from 'sveltekit-search-params'
 
   // TODO: 0 should be today
   const dayIndex = $derived(parseInt(page.url.searchParams.get('dayIndex') ?? '0'))
@@ -57,7 +58,7 @@
     }
   }
 
-  const visibleMetrics = dayView.visibleMetrics
+  const visibleMetrics = queryParam<ForecastMetric[]>('metrics', ssp.array([] as ForecastMetric[]))
 </script>
 
 <main

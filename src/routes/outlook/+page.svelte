@@ -3,11 +3,14 @@
   import { NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { settings } from '$lib/settings/store'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
-  import ParameterSelect from '$lib/components/visualization/chart/ParameterSelect.svelte'
   import type { ForecastMetric } from '$lib/config/metrics'
-  import { swipe } from 'svelte-gestures'
+  import { queryParam, ssp } from 'sveltekit-search-params'
+  import { get } from 'svelte/store'
 
-  let visibleMetrics = $state<ForecastMetric[]>($settings.sections.components.chart.plottedMetrics)
+  const visibleMetrics = queryParam<ForecastMetric[]>(
+    'metrics',
+    ssp.array(get(settings).sections.components.chart.plottedMetrics as ForecastMetric[]),
+  )
 </script>
 
 <main class="flex grow flex-col justify-start overflow-x-hidden overflow-y-auto scroll-smooth p-4">
@@ -16,7 +19,7 @@
   <div class="container flex flex-col gap-2">
     <WeatherChart
       multiseries={$forecastStore!.multiseries}
-      parameters={visibleMetrics}
+      parameters={$visibleMetrics}
       startTimestamp={$TODAY_MILLIS}
       endTimestamp={$TODAY_MILLIS + 1000 * 3600 * 24 * 7}
       timestamp={$NOW_MILLIS}

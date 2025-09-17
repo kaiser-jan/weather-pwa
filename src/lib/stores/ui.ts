@@ -14,11 +14,8 @@ export const locationSearch = {
 
 export const dayView = {
   _initialIndex: null as number | null,
-  visibleMetrics: writable<ForecastMetric[]>([]),
 
   hide: async () => {
-    dayView.visibleMetrics.set([])
-
     // fallback
     if (dayView._initialIndex === null) {
       popUntil((s, p) => !p.dayIndex)
@@ -32,19 +29,19 @@ export const dayView = {
     if (!target) return
     if (page.url.searchParams.get('dayIndex') !== null) return
 
-    if (!metrics.length)
-      dayView.visibleMetrics.set(structuredClone(get(settings).sections.components.chart.plottedMetrics))
-    else dayView.visibleMetrics.set(metrics)
+    const metricsToDisplay = metrics.length
+      ? metrics
+      : structuredClone(get(settings).sections.components.chart.plottedMetrics)
 
     const forecast = get(forecastStore)
     if (!forecast) return
     const targetIndex = forecast.daily.findIndex((d) => d.timestamp === target.timestamp)
 
     dayView._initialIndex = targetIndex
-    dayView.push(targetIndex)
+    dayView.push(targetIndex, metricsToDisplay)
   },
-  push: (index: number) => {
-    goto(`/day?dayIndex=${index}`)
+  push: (index: number, metrics?: ForecastMetric[]) => {
+    goto(`/day?dayIndex=${index}&metrics=${JSON.stringify(metrics)}`)
   },
   select: (target: TimeBucket) => {
     const forecast = get(forecastStore)
