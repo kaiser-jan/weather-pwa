@@ -9,10 +9,39 @@
   import { selectedLocation } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import { press } from 'svelte-gestures'
+  import { onMount } from 'svelte'
+  import { getDistanceBetweenCoordinatesMeters } from '$lib/utils'
+  import { get } from 'svelte/store'
 
   const geolocationDetails = geolocationStore.details
 
   const settingLocations = settings.select((s) => s.data.locations)
+
+  function checkSnapGeolocationToSaved() {
+    const geoposition = get(geolocationStore).position?.coords
+    if (!geoposition) return
+
+    const locationsByProximity = $settingLocations.sort((a, b) => {
+      const distanceA = getDistanceBetweenCoordinatesMeters(geoposition, a)
+      if (distanceA === null) return 1
+      const distanceB = getDistanceBetweenCoordinatesMeters(geoposition, b)
+      if (distanceB === null) return -1
+      // sort ascending distance
+      return distanceA - distanceB
+    })
+    const closestLocation = locationsByProximity[0]
+    const distance = getDistanceBetweenCoordinatesMeters(geoposition, closestLocation)!
+    if (distance > $settings.data.locationSnapDistance) return
+    selectedLocation.set({ type: 'saved', location: closestLocation })
+  }
+
+  onMount(() => {
+    const geolocationStoreSnap = geolocationStore.subscribe(checkSnapGeolocationToSaved)
+
+    return () => {
+      geolocationStoreSnap()
+    }
+  })
 </script>
 
 <FailSafeContainer name="Location Selector" class="bg-midground flex shrink grow flex-row items-center rounded-full">
@@ -26,6 +55,7 @@
         if ($selectedLocation?.type === 'geolocation') geolocationStore.refresh()
         else selectedLocation?.set({ type: 'geolocation' })
         geolocationStore.start()
+        checkSnapGeolocationToSaved()
       }}
     >
       {#if $geolocationDetails.icon}

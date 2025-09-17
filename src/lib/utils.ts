@@ -3,6 +3,7 @@ import clsx, { type ClassValue } from 'clsx'
 import { cubicOut } from 'svelte/easing'
 import type { TransitionConfig } from 'svelte/transition'
 import { twMerge } from 'tailwind-merge'
+import type { Coordinates } from './types/data'
 
 export type DeepPartial<T> = T extends object
   ? {
@@ -194,4 +195,16 @@ export function sum(numbers: (number | undefined)[]): number {
   return numbers
     .filter((num): num is number => num !== undefined)
     .reduce((accumulator, current) => accumulator + current, 0)
+}
+
+export function getDistanceBetweenCoordinatesMeters(a: Coordinates | null, b: Coordinates | null): number | null {
+  if (!a || !b) return null
+  const R = 6371000 // Earth radius in meters
+  const toRad = (deg: number) => (deg * Math.PI) / 180
+  const dLat = toRad(b.latitude - a.latitude)
+  const dLon = toRad(b.longitude - a.longitude)
+  const x =
+    Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.latitude)) * Math.cos(toRad(b.latitude)) * Math.sin(dLon / 2) ** 2
+  const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x))
+  return R * c
 }

@@ -116,7 +116,6 @@ function deriveTimeseriesFromMetrics<MetricT extends ForecastParameter>(
       timebucketMap[metric] = currentBucket
     }
 
-    console.log(timebucketMap)
     const timebucketList = Object.values(timebucketMap) as TimeSeries<number>[number][]
 
     if (timebucketList.length < metrics.length) continue

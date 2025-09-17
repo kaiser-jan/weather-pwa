@@ -7,7 +7,7 @@
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import { settings } from '$lib/settings/store'
   import { get } from 'svelte/store'
-  import { createUUID } from '$lib/utils'
+  import { createUUID, getDistanceBetweenCoordinatesMeters } from '$lib/utils'
   import { selectedLocation } from '$lib/stores/location'
   import { locationSearch } from '$lib/stores/ui'
 
@@ -31,18 +31,6 @@
   }
 
   let { title, items, loading, placeholderEmpty, placeholderLoading, placeholderNull, disabled }: Props = $props()
-
-  function distanceMeters(a: Coordinates | null, b: Coordinates | null): number | null {
-    if (!a || !b) return null
-    const R = 6371000 // Earth radius in meters
-    const toRad = (deg: number) => (deg * Math.PI) / 180
-    const dLat = toRad(b.latitude - a.latitude)
-    const dLon = toRad(b.longitude - a.longitude)
-    const x =
-      Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.latitude)) * Math.cos(toRad(b.latitude)) * Math.sin(dLon / 2) ** 2
-    const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x))
-    return R * c
-  }
 
   function formatDistance(meters: number | null) {
     if (meters === null) return null
@@ -152,7 +140,7 @@
         {#if $geolocationStore.position?.coords && item?.coordinates}
           <span class="text-text-muted">
             {formatDistance(
-              distanceMeters($geolocationStore.position.coords, {
+              getDistanceBetweenCoordinatesMeters($geolocationStore.position.coords, {
                 latitude: item.coordinates.latitude,
                 longitude: item.coordinates.longitude,
                 altitude: null,

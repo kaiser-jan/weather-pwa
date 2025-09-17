@@ -44,6 +44,7 @@ import {
   ListIcon,
   ListOrderedIcon,
   LockIcon,
+  MagnetIcon,
   MailIcon,
   MapPinIcon,
   MoveVerticalIcon,
@@ -256,6 +257,14 @@ export const settingsConfig = [
           // latitude: number
           // altitude: number
         ],
+      },
+      {
+        id: 'locationSnapDistance',
+        label: 'Snap to nearby Location',
+        icon: MagnetIcon,
+        type: 'number',
+        unit: 'm',
+        default: 100,
       },
       {
         id: 'forecast',
