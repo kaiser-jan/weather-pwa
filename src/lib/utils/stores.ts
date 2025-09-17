@@ -1,8 +1,6 @@
 import { deepEqual } from '$lib/utils'
 import { readable, writable, type Readable, type Writable } from 'svelte/store'
 import { browser } from '$app/environment'
-import { registerLocalStorage } from './cache'
-import { settings } from '$lib/settings/store'
 
 export function select<T, U>(
   store: Readable<T>,
@@ -71,8 +69,6 @@ export function persist<T>(key: string, initial: T): Writable<T> & { refresh: ()
   store.subscribe((value) => {
     localStorage.setItem(key, JSON.stringify(value))
   })
-
-  registerLocalStorage(key)
 
   return {
     ...store,

@@ -1,10 +1,7 @@
 import { deepEqual } from '$lib/utils'
 import { DateTime } from 'luxon'
 
-const registeredLocalStorageKeys = new Set<string>()
-export function registerLocalStorage(key: string) {
-  registeredLocalStorageKeys.add(key)
-}
+const PERSISTANT_LOCAL_STORAGE_KEYS: string[] = ['settings'] as const
 
 type CacheEntry<T, P> = {
   data: T
@@ -31,8 +28,6 @@ export async function useCache<T, P>(
   params: P,
   fetchFn: () => Promise<{ data: T; expiresAt: DateTime }>,
 ): Promise<{ data: T; expiresAt: DateTime; updatedAt: DateTime; cached: boolean }> {
-  registerLocalStorage(key)
-
   let entries: CacheEntry<T, P>[] = getEntries(key) ?? []
 
   if (!Array.isArray(entries)) entries = []
@@ -71,8 +66,11 @@ export async function useCache<T, P>(
 }
 
 export function clearCache() {
-  for (const key of registeredLocalStorageKeys) {
-    localStorage.removeItem(key)
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const key = localStorage.key(i)!
+    if (!PERSISTANT_LOCAL_STORAGE_KEYS.includes(key)) {
+      localStorage.removeItem(key)
+    }
   }
 }
 
