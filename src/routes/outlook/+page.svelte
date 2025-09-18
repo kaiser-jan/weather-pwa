@@ -3,9 +3,12 @@
   import { NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { settings } from '$lib/settings/store'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
-  import type { ForecastMetric } from '$lib/config/metrics'
+  import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { queryParam, ssp } from 'sveltekit-search-params'
   import { get } from 'svelte/store'
+  import ExpandableList from '$lib/components/ExpandableList.svelte'
+  import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
+  import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
 
   const visibleMetrics = queryParam<ForecastMetric[]>(
     'metrics',
@@ -13,20 +16,46 @@
   )
 </script>
 
-<main class="flex grow flex-col justify-start overflow-x-hidden overflow-y-auto scroll-smooth p-4">
-  <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
+<main class="flex grow flex-col justify-start gap-4 overflow-x-hidden overflow-y-auto scroll-smooth p-4">
+  <div class="-mb-4 shrink-0" style="height: env(safe-area-inset-top)"></div>
 
   <div class="container flex flex-col gap-2">
     <WeatherChart
       multiseries={$forecastStore!.multiseries}
-      parameters={$visibleMetrics}
+      bind:parameters={$visibleMetrics}
       startTimestamp={$TODAY_MILLIS}
       endTimestamp={$TODAY_MILLIS + 1000 * 3600 * 24 * 7}
       timestamp={$NOW_MILLIS}
-      className="snap-center shrink-0 w-full h-[max(20vh,12rem)]"
+      className="snap-center shrink-0 w-full h-[max(25vh,12rem)]"
       hideYAxes={$settings.sections.components.chart.showYAxes === 'never'}
       parameterSelect={$settings.sections.components.chart.parameterSelect === 'always' ||
         $settings.sections.components.chart.parameterSelect === 'except-overview'}
     />
+  </div>
+
+  <div class="-mt-2 min-h-0 grow overflow-y-auto pt-2">
+    <ExpandableList
+      items={FORECAST_METRICS}
+      visibleItems={$settings.data.forecast.metrics}
+      markedItems={$visibleMetrics}
+      contentClass="gap-2"
+    >
+      {#snippet itemSnippet(metric)}
+        <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
+      {/snippet}
+
+      {#snippet children(metrics: ForecastMetric[])}
+        <div class="flex flex-row flex-wrap gap-2">
+          {#each metrics as metric (metric)}
+            {@const details = METRIC_DETAILS[metric]}
+
+            <ParameterToggle {metric} bind:visibleList={$visibleMetrics} class="w-full">
+              <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
+              <span class="overflow-hidden text-ellipsis whitespace-nowrap"> {details.label} </span>
+            </ParameterToggle>
+          {/each}
+        </div>
+      {/snippet}
+    </ExpandableList>
   </div>
 </main>
