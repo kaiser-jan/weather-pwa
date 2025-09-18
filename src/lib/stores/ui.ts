@@ -40,8 +40,9 @@ export const dayView = {
     dayView._initialIndex = targetIndex
     dayView.push(targetIndex, metricsToDisplay)
   },
-  push: (index: number, metrics?: ForecastMetric[]) => {
-    goto(`/day?dayIndex=${index}&metrics=${JSON.stringify(metrics)}`)
+  push: (index: number, newMetrics?: ForecastMetric[]) => {
+    const metrics = newMetrics ?? page.url.searchParams.get('metrics') ?? []
+    goto(`/day?dayIndex=${index}&metrics=${metrics.toString()}`)
   },
   select: (target: TimeBucket) => {
     const forecast = get(forecastStore)
