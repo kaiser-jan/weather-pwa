@@ -101,11 +101,8 @@
             bind:parameters={$visibleMetrics}
             startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
             endTimestamp={selectedDay.timestamp + selectedDay.duration}
-            timestamp={$NOW_MILLIS}
-            className="snap-center shrink-0 w-full h-[30vh]"
-            hideYAxes={$settings.sections.components.chart.showYAxes === 'never'}
-            parameterSelect={$settings.sections.components.chart.parameterSelect === 'always' ||
-              $settings.sections.components.chart.parameterSelect === 'except-overview'}
+            className="h-[30vh]"
+            location="day"
           />
         {:else}
           <Skeleton class="h-full w-full" />

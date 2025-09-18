@@ -19,17 +19,15 @@
   import ChartValuesDisplay from './ChartValuesDisplay.svelte'
   import { computeAxesFor } from '$lib/utils/d3/autoAxis'
   import ParameterSelect from './ParameterSelect.svelte'
+  import { NOW_MILLIS } from '$lib/stores/now'
 
   interface Props {
     multiseries: MultivariateTimeSeries
-    unloaded?: boolean
     parameters: ForecastMetric[]
     startTimestamp: number
     endTimestamp: number
-    timestamp: number
     className: string
-    hideYAxes?: boolean
-    parameterSelect: boolean
+    location: 'overview' | 'day' | 'outlook'
     onclick?: () => void
   }
 
@@ -38,13 +36,34 @@
     parameters = $bindable(),
     startTimestamp,
     endTimestamp,
-    timestamp: NOW, // TODO: only update whats necessary
     className,
-    unloaded,
-    hideYAxes,
-    parameterSelect,
+    location,
     onclick,
   }: Props = $props()
+
+  const parameterSelect = $derived.by(() => {
+    switch ($settingsChart.parameterSelect) {
+      case 'overview':
+        return location === 'overview'
+      case 'except-overview':
+        return location !== 'overview'
+      case 'always':
+        return true
+      case 'never':
+        return false
+    }
+  })
+
+  const hideYAxes = $derived.by(() => {
+    switch ($settingsChart.showYAxes) {
+      case 'except-overview':
+        return location !== 'overview'
+      case 'always':
+        return true
+      case 'never':
+        return false
+    }
+  })
 
   // move axis by half their line width to avoid overlap with content
   const LINE_CORRECTION = 0.5
@@ -76,6 +95,7 @@
     d3.select(container).selectAll('*').remove()
   }
 
+  // TODO: only update whats necessary
   function updateChart() {
     clearChart()
 
@@ -87,7 +107,7 @@
 
     dimensions = computeDimensions()
 
-    const displayedMetrics: ForecastMetric[] = []
+    const availableMetrics: ForecastMetric[] = []
 
     const axesToCompute: {
       parameter: ForecastMetric
@@ -95,17 +115,21 @@
       details: MetricDetails
     }[] = []
 
+    // iterate over the parameters and prepare axis computations
+    // this is required as it needs to be clear what axes are required before computing them
     for (const parameter of parameters) {
       const series = data[parameter]
       const details = METRIC_DETAILS[parameter]
       if (!series || !details) continue
 
       axesToCompute.push({ parameter, series, details })
-      displayedMetrics.push(parameter)
+      // only display metrics which are available / have data
+      availableMetrics.push(parameter)
     }
 
     const computedAxisList = computeAxesFor(axesToCompute, dimensions, data, hideYAxes)
 
+    // compute new dimensions with margin changed by axes
     dimensions = computeDimensions()
 
     const svg = d3
@@ -114,7 +138,8 @@
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', `0 0 ${dimensions.widthFull} ${dimensions.heightFull}`)
 
-    if (!displayedMetrics.length) {
+    // add a placeholder if no metric is available
+    if (!availableMetrics.length) {
       svg
         .append('foreignObject')
         .attr('x', 0)
@@ -129,12 +154,10 @@
       return
     }
 
-    // Declare the x (horizontal position) scale.
-    // const minTime = d3.min(data.multiseries.temperature, (d) => d.datetime.toMillis())!
     const scaleX = d3.scaleUtc([startTimestamp, endTimestamp], [dimensions.margin.left, dimensions.width + margin.left])
 
     createXAxis({ svg, dimensions, scale: scaleX, addLines: true }) //
-      .attr('transform', `translate(0,${dimensions.margin.top + dimensions.height + 0.5})`)
+      .attr('transform', `translate(0,${dimensions.margin.top + dimensions.height + LINE_CORRECTION})`)
 
     const createdSeriesDetails: CreatedSeriesDetails[] = []
 
@@ -143,8 +166,10 @@
       const details = METRIC_DETAILS[parameter]
       const axisComputation = computedAxisList[parameter]
       if (!series || !details || !axisComputation) continue
+
       const { scaleY, format, axis, unit } = axisComputation
 
+      // add the y axis
       if (axis) {
         const xOffset =
           axis.side === 'left'
@@ -163,6 +188,7 @@
           .attr('transform', `translate(${xOffset},${LINE_CORRECTION})`)
       }
 
+      // create a clip path to hide overflow
       const clipId = 'clip-' + createUUID()
       svg
         .append('defs')
@@ -186,23 +212,26 @@
 
         const colorStyle = details.color
         const color = colorStyle && 'css' in colorStyle ? colorStyle.css : undefined
+
         switch (details.chart.style) {
           case 'line':
             dataRepresentation = createLine({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
             if (color) dataRepresentation.style('stroke', color)
             break
+
           case 'bars':
             const bars = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
             if (color) bars.style('fill', color)
+            // color each bar based on its value
             if ('categories' in colorStyle)
               bars.attr('fill', (d) => {
                 const color = colorStyle.categories.findLast((c) => d.value > c.value)
                 if (!color) return 'red'
                 return `hsla(${color.h}, ${color.s}%, ${color.l}%, ${color.a ?? 1})`
               })
-            // details.color.segments
             dataRepresentation = bars
             break
+
           case 'area':
             dataRepresentation = createArea({ svg, dimensions, scaleX, scaleY, dataA: seriesA, dataB: seriesB }) //
             if (color) dataRepresentation.style('fill', color)
@@ -213,6 +242,7 @@
 
         dataRepresentation.attr('clip-path', `url(#${clipId})`)
 
+        // TODO: unify with other color usages
         const gradientColorStops =
           details.color && 'categories' in details.color
             ? details.color.categories
@@ -220,13 +250,18 @@
               ? (settings.readSetting(details.color.categoriesSetting).value as ColorStop[])
               : undefined
 
-        if (gradientColorStops && details.chart.style !== 'bars') {
+        // create and apply the gradient color
+        const isAbrupt = 'categories' in details.color && details.color.type === 'segments'
+        // segmented color for bars colors them by height instead of applying an abrupt gradient
+        const isSegmentedBars = details.chart.style !== 'bars' && isAbrupt
+
+        if (gradientColorStops && !isSegmentedBars) {
           const gradientId = createGradientDefinition({
             svg,
             scaleY,
             stops: gradientColorStops,
             name: parameter,
-            abrupt: 'categories' in details.color && details.color.type === 'segments',
+            abrupt: isAbrupt,
           })
 
           dataRepresentation.attr(details.chart.style === 'line' ? 'stroke' : 'fill', `url(#${gradientId})`)
@@ -239,13 +274,14 @@
 
       createdSeriesDetails.push({ details, parameter, scale: scaleY, data: series })
 
+      // add the additional series a metric requires (e.g. wind gust speed)
       if (details.chart.include) {
         for (const [includeParameter, includeDetails] of Object.entries(details.chart.include)) {
           const includeSeriesA = data[includeParameter as ForecastParameter]
           const includeSeriesB = data[includeDetails.chart.areaSecondParameter as ForecastParameter]
           const mergedDetails = { ...details, ...includeDetails }
 
-          if (!includeSeriesA) continue
+          if (!includeSeriesA || (!includeSeriesB && includeDetails.chart.areaSecondParameter)) continue
 
           // TODO: weather chart and axisPointer are too tighlty coupled via createdSeriesDetails
           if (includeDetails.showInTooltip) {
@@ -260,14 +296,16 @@
         }
       }
 
+      // finally add the data representation for the current metric
       addDataRepresentation(parameter, series, details)
     }
 
+    // add a transparent rect to darken passed time
     svg
       .append('rect')
       .attr('x', dimensions.margin.left)
       .attr('y', dimensions.margin.top)
-      .attr('width', Math.min(dimensions.width + dimensions.margin.left, scaleX(NOW)) - dimensions.margin.left)
+      .attr('width', Math.min(dimensions.width + dimensions.margin.left, scaleX($NOW_MILLIS)) - dimensions.margin.left)
       .attr('height', dimensions.height)
       .classed('fill-background', true)
       .attr('opacity', 0.6)
@@ -282,26 +320,27 @@
 
     function selectDatetime(timestamp: number | null) {
       // NOTE: using NOW > start to hide the axis pointer when starting at now
-      const isToday = NOW > startTimestamp && NOW <= endTimestamp
-      const isManual = timestamp !== null
+      const isToday = $NOW_MILLIS > startTimestamp && $NOW_MILLIS <= endTimestamp
+      const isUserCaused = timestamp !== null
 
-      if (!isManual && !isToday) {
+      // hide the pointer for other days by default
+      if (!isToday && !isUserCaused) {
         hideXAxisPointer()
         highlightedTimeBucket = undefined
         return
       }
 
-      const points = updateXAxisPointer(timestamp ?? NOW, isManual)
-
+      const points = updateXAxisPointer(timestamp ?? $NOW_MILLIS, isUserCaused)
       if (!points) return
 
-      const timebucket = Object.fromEntries(points.map((p) => [p.parameter, p.datum])) as Record<
+      highlightedTimeBucket = Object.fromEntries(points.map((p) => [p.parameter, p.datum])) as Record<
         ForecastParameter,
         TimeSeriesNumberEntry
       >
-
-      highlightedTimeBucket = timebucket
     }
+
+    // auto-set by default
+    selectDatetime(null)
 
     handleInteraction({
       svg,
@@ -320,8 +359,6 @@
         selectDatetime(null)
       },
     })
-
-    selectDatetime(null)
 
     const node = svg.node()
     if (!node) {
@@ -352,10 +389,6 @@
   })
 
   $effect(() => {
-    if (unloaded) {
-      clearChart()
-      return
-    }
     if (data && parameters) updateChart()
   })
 </script>
@@ -368,6 +401,6 @@
   <ChartValuesDisplay {parameters} {highlightedTimeBucket} />
 {/if}
 
-<button bind:this={container} class={['relative touch-pan-y', className]} {onclick}>
+<button bind:this={container} class={['relative w-full shrink-0 touch-pan-y snap-center', className]} {onclick}>
   <Skeleton class="h-full w-full" />
 </button>
