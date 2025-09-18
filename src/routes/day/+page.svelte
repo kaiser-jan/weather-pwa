@@ -19,6 +19,7 @@
   import ExpandableList from '$lib/components/ExpandableList.svelte'
   import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
   import { queryParam, ssp } from 'sveltekit-search-params'
+  import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
 
   // TODO: 0 should be today
   const dayIndex = $derived(parseInt(page.url.searchParams.get('dayIndex') ?? '0'))
@@ -61,12 +62,7 @@
   const visibleMetrics = queryParam<ForecastMetric[]>('metrics', ssp.array([] as ForecastMetric[]))
 </script>
 
-<main
-  class="flex grow flex-col justify-start overflow-x-hidden overflow-y-auto scroll-smooth"
-  use:swipe={() => ({ touchAction: 'pan-y' })}
-  onswipe={handleSwipe}
->
-  <div class="shrink-0" style="height: calc(env(safe-area-inset-top) + 5rem)"></div>
+<PageWrapper onswipe={handleSwipe} class="pt-[5rem]">
   <header
     class="bg-background border-muted absolute top-0 z-10 flex h-[calc(4.5rem+env(safe-area-inset-top))] w-full justify-between gap-4 border-b-2 p-4 pt-[calc(1rem+env(safe-area-inset-top))] text-xl font-bold"
   >
@@ -142,4 +138,4 @@
       </div>
     {/if}
   </section>
-</main>
+</PageWrapper>

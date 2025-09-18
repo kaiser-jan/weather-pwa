@@ -40,7 +40,7 @@
 </script>
 
 {#if $settingCurrentSticky}
-  <div style="height: calc(min(2rem, env(safe-area-inset-top)) + 25vh)"></div>
+  <div class="shrink-0" style="height: calc(min(2rem, env(safe-area-inset-top)) + 25vh)"></div>
 {/if}
 
 <div

@@ -9,6 +9,7 @@
   import ExpandableList from '$lib/components/ExpandableList.svelte'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
+  import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
 
   const visibleMetrics = queryParam<ForecastMetric[]>(
     'metrics',
@@ -16,9 +17,7 @@
   )
 </script>
 
-<main class="flex grow flex-col justify-start gap-4 overflow-x-hidden overflow-y-auto scroll-smooth p-4">
-  <div class="-mb-4 shrink-0" style="height: env(safe-area-inset-top)"></div>
-
+<PageWrapper class="p-4">
   <div class="container flex flex-col gap-2">
     <WeatherChart
       multiseries={$forecastStore!.multiseries}
@@ -58,4 +57,4 @@
       {/snippet}
     </ExpandableList>
   </div>
-</main>
+</PageWrapper>

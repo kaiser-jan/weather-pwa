@@ -1,5 +1,6 @@
 <script>
   import { goto } from '$app/navigation'
+  import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
   import { Button } from '$lib/components/ui/button'
   import { geolocationStore } from '$lib/stores/geolocation'
   import { coordinates, selectedLocation } from '$lib/stores/location'
@@ -17,8 +18,7 @@
   })
 </script>
 
-<main class="grow overflow-x-hidden overflow-y-auto scroll-smooth p-4 pb-0">
-  <div class="shrink-0" style="height: env(safe-area-inset-top)"></div>
+<PageWrapper class="p-4 pb-0">
   <section
     class="bg-midground flex h-full w-full max-w-prose flex-col items-center justify-center gap-4 rounded-xl p-4"
   >
@@ -40,4 +40,4 @@
       <SearchIcon /> Search a location
     </Button>
   </section>
-</main>
+</PageWrapper>

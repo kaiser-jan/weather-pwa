@@ -5,6 +5,7 @@
   import { geolocationStore } from '$lib/stores/geolocation'
   import { coordinates, selectedLocation } from '$lib/stores/location'
   import { getComponent } from '$lib/components/sections/componentRegistry'
+  import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
 
   let scrollContainer = $state<HTMLElement>()
   const settingCurrentSticky = settings.select((s) => s.sections.current.sticky)
@@ -33,7 +34,7 @@
   })
 </script>
 
-<main class="grow overflow-x-hidden overflow-y-auto scroll-smooth" bind:this={scrollContainer} onscroll={onScroll}>
+<PageWrapper bind:element={scrollContainer} onscroll={onScroll} safeArea={{ top: true, bottom: false }}>
   <SectionCurrent shrink={shrinkHeader} />
 
   <div class="flex flex-col gap-8 p-4" data-vaul-drawer-wrapper>
@@ -44,4 +45,4 @@
       </div>
     {/each}
   </div>
-</main>
+</PageWrapper>

@@ -5,6 +5,7 @@
   import L from 'leaflet'
   import { coordinates } from '$lib/stores/location'
   import { DATASETS } from '$lib/data/providers'
+  import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
 
   let map: L.Map
   let marker: L.Marker
@@ -50,4 +51,6 @@
   })
 </script>
 
-<div id="map" class="h-dvh w-dvw"></div>
+<PageWrapper>
+  <div id="map" class="h-dvh w-dvw"></div>
+</PageWrapper>
