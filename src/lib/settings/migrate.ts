@@ -1,11 +1,11 @@
 import { SETTINGS_MIGRATIONS } from '$lib/config/settings-migrations'
 
-export function performMigrations() {
+export function performMigrations({ remigrate }: { remigrate?: boolean }) {
   console.debug('Checking for settings migrations...')
 
   let settings = JSON.parse(localStorage.getItem('settings') ?? '{}')
   let version = settings.configVersion
-  if (typeof version !== 'number') version = 0
+  if (typeof version !== 'number' || remigrate) version = 0
   const initialVersion = version
 
   const requiredMigrationSteps = SETTINGS_MIGRATIONS.slice(version + 1)

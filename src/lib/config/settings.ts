@@ -51,6 +51,7 @@ import {
   PaletteIcon,
   PencilLineIcon,
   PinIcon,
+  RedoIcon,
   RotateCwIcon,
   RulerDimensionLineIcon,
   RulerIcon,
@@ -76,6 +77,7 @@ import { FORECAST_METRICS, type ForecastMetric } from './metrics'
 import { DATASET_IDS_BY_PRIORITY } from './datasets'
 import { clearCache, resetApp } from '$lib/utils/cache'
 import { SECTIONS, type SectionId } from '$lib/components/sections/registry'
+import { performMigrations } from '$lib/settings/migrate'
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   temperature: '°C',
@@ -734,6 +736,16 @@ export const settingsConfig = [
             label: 'Clear Cache',
             icon: EraserIcon,
             action: () => clearCache(),
+          },
+          {
+            id: 'migrate-settings',
+            type: 'action',
+            label: 'Re-Migrate Settings',
+            icon: RedoIcon,
+            action: () => {
+              performMigrations({ remigrate: true })
+              window.location.reload()
+            },
           },
           {
             id: 'reset-app',
