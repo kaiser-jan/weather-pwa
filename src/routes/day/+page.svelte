@@ -120,7 +120,7 @@
         <ExpandableList
           items={FORECAST_METRICS}
           visibleItems={$settings.data.forecast.metrics}
-          markedItems={$visibleMetrics}
+          markedItems={$visibleMetrics ?? []}
           contentClass="gap-2"
         >
           {#snippet itemSnippet(metric)}
