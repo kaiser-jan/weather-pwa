@@ -1,50 +1,19 @@
 <script lang="ts">
-  // https://vite-pwa-org.netlify.app/frameworks/sveltekit.html#sveltekit-pwa-plugin
-  import { pwaInfo } from 'virtual:pwa-info'
-  // https://vite-pwa-org.netlify.app/frameworks/sveltekit.html#pwa-assets
-  import { pwaAssetsHead } from 'virtual:pwa-assets/head'
   import { Toaster } from '$lib/components/ui/sonner'
-  import LocationSelector from '$lib/components/layout/location/LocationSelector.svelte'
-  import SettingsButton from '$lib/components/layout/SettingsButton.svelte'
   import ContainerCorners from '$lib/components/ContainerCorners.svelte'
   import { Portal } from 'bits-ui'
   import ErrorBoundary from '$lib/components/layout/errors/ErrorBoundary.svelte'
-  import { Button } from '$lib/components/ui/button'
-  import { ChevronLeftIcon, SettingsIcon } from '@lucide/svelte'
-  import { page } from '$app/state'
-  import { popUntil } from '$lib/utils'
-  import { goto } from '$app/navigation'
+  import ViewTransitionProvider from '$lib/components/layout/ViewTransitionProvider.svelte'
+  import PwaHead from '$lib/components/layout/PwaHead.svelte'
+  import NavigationBar from '$lib/components/layout/NavigationBar.svelte'
+  import { onMount } from 'svelte'
 
   let { children } = $props()
-
-  const webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
-
-  // HACK: disable swipe back navigation
-  // https://github.com/w3c/manifest/issues/1041
-  window.addEventListener(
-    'touchstart',
-    function (e) {
-      if (e.touches.length > 1) return
-      const touch = e.touches[0]
-      if (touch.clientX < 20) e.preventDefault()
-    },
-    { passive: false },
-  )
-
-  const isSubView = $derived(page.route.id !== '/' && !page.route.id?.startsWith('/setup'))
 </script>
 
-<svelte:head>
-  {#if pwaAssetsHead.themeColor}
-    <meta name="theme-color" content={pwaAssetsHead.themeColor.content} />
-  {/if}
-  {#each pwaAssetsHead.links as link (link.href)}
-    <link {...link} href={`${link.href}?v=${new Date(__DATE__).getTime()}`} />
-  {/each}
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-  {@html webManifestLink}
-</svelte:head>
+<PwaHead />
+
+<ViewTransitionProvider />
 
 <ErrorBoundary scope="app">
   <div
@@ -67,21 +36,11 @@
       bottom="bottom-[calc(5.5rem+min(env(safe-area-inset-bottom),1rem))]"
       right="right-4"
     />
-    <!-- <div -->
-    <!--   class="from-background/50 pointer-events-none absolute right-0 bottom-22 left-0 flex h-8 flex-row gap-2 bg-linear-to-t to-transparent" -->
-    <!-- ></div> -->
+    <div
+      class="from-background/80 pointer-events-none absolute right-0 bottom-22 left-0 flex h-16 flex-row gap-2 bg-linear-to-t to-transparent opacity-100 transition-opacity"
+    ></div>
 
-    <div class="bg-background flex h-22 shrink-0 flex-row items-center gap-2 p-4">
-      {#if isSubView}
-        <Button class="size-14! grow-0 rounded-full text-lg!" variant="midground" size="icon" onclick={() => goto('/')}>
-          <ChevronLeftIcon />
-        </Button>
-      {/if}
-      <LocationSelector />
-      {#if !isSubView}
-        <SettingsButton />
-      {/if}
-    </div>
+    <NavigationBar />
 
     <!-- HACK: the safe area on iOS is quite large -->
     <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
