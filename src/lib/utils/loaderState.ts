@@ -4,6 +4,9 @@ import { derived } from 'svelte/store'
 
 export type State = 'success' | 'loading' | 'error' | 'outdated'
 
+/**
+ * Checks the properties of a LoaderState to determine an easy to use string state
+ */
 export function stateFromLoaderState(loaderState: LoaderState) {
   if (!loaderState.done) return 'loading'
   if (!loaderState.success) return 'error'
@@ -11,6 +14,9 @@ export function stateFromLoaderState(loaderState: LoaderState) {
   return 'success'
 }
 
+/**
+ * Provides the "worst" state out of the loaderStates
+ */
 export const loaderSummaryState = derived([loaderStates], ([loaderStates]): State => {
   const states = loaderStates.map(stateFromLoaderState)
   if (states.some((s) => s === 'loading')) return 'loading'
@@ -18,7 +24,9 @@ export const loaderSummaryState = derived([loaderStates], ([loaderStates]): Stat
   if (states.some((s) => s === 'outdated')) return 'outdated'
   return 'success'
 })
-
+/**
+ * Determines a fitting label based on the loaderSummaryState
+ */
 export const loaderSummaryLabel = derived([loaderStates, loaderSummaryState], ([loaderStates, loaderSummaryState]) => {
   const states = loaderStates.map(stateFromLoaderState)
 

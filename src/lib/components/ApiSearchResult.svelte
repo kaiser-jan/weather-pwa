@@ -1,9 +1,9 @@
 <script lang="ts" generics="ResultT">
   import { replaceState, pushState } from '$app/navigation'
   import { page } from '$app/state'
-  import { debounce } from '$lib/utils'
-  import { persist } from '$lib/utils/stores'
+  import { debounce } from '$lib/utils/common'
   import { type Snippet } from 'svelte'
+  import { persisted } from 'svelte-persisted-store'
   import { get } from 'svelte/store'
 
   interface Props {
@@ -28,7 +28,7 @@
 
   let currentQuery = $state<string | null>(null)
   let currentResults = $state<ResultT[] | null>(null)
-  const cachedResults = persist<{ query: string; results: ResultT[] }[]>($state.snapshot(cacheKey), [])
+  const cachedResults = persisted<{ query: string; results: ResultT[] }[]>($state.snapshot(cacheKey), [])
 
   const debouncedLoadResults = debounce(loadResultsForLiveQuery, 1000)
 

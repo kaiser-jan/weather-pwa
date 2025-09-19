@@ -4,7 +4,7 @@
   import { Button } from '$lib/components/ui/button'
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import { settings } from '$lib/settings/store'
-  import { getDistanceBetweenCoordinatesMeters } from '$lib/utils'
+  import { getDistanceBetweenCoordinatesMeters } from '$lib/utils/location'
   import { locationSearch } from '$lib/stores/ui'
   import { deleteSavedLocation, saveLocation } from '$lib/utils/location'
   import type { Item } from 'svelte-dnd-action'

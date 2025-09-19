@@ -1,6 +1,8 @@
-import { deepEqual } from '$lib/utils'
-import { DateTime } from 'luxon'
+import { deepEqual } from '$lib/utils/common'
+import { DateTime, Duration } from 'luxon'
 
+const MAX_ENTRIES = 10
+const MIN_INTERVAL = Duration.fromObject({ minutes: 5 })
 const PERSISTANT_LOCAL_STORAGE_KEYS: string[] = ['settings'] as const
 
 type CacheEntry<T, P> = {
@@ -10,36 +12,44 @@ type CacheEntry<T, P> = {
   updatedAt: string
 }
 
-const MAX_ENTRIES = 10
-
-function getEntries<T, P>(key: string): CacheEntry<T, P>[] | null {
-  try {
-    const raw = localStorage.getItem(key)
-    if (!raw) return null
-    const json = JSON.parse(raw)
-    return json
-  } catch {
-    return null
-  }
-}
-
+/**
+ * Handles caching and refetching when necessary.
+ *
+ * Tries to retrieve a cached value from localStorage which matches the params.
+ * If there is one, validates its expiry.
+ * If no valid cache entry was found, initiates the fetch callback and adds it to the cache.
+ *
+ * The number of cache entries is limited per key.
+ * There is a minimum interval between refetches, so servers serving outdated data don't get spammed.
+ */
 export async function useCache<T, P>(
   key: string,
   params: P,
   fetchFn: () => Promise<{ data: T; expiresAt: DateTime }>,
 ): Promise<{ data: T; expiresAt: DateTime; updatedAt: DateTime; cached: boolean }> {
-  let entries: CacheEntry<T, P>[] = getEntries(key) ?? []
+  let entries: CacheEntry<T, P>[] = []
+
+  // try to retrieve json from localStorage
+  try {
+    const raw = localStorage.getItem(key)
+    if (raw) {
+      const json = JSON.parse(raw)
+      entries = json
+    }
+  } catch {}
 
   if (!Array.isArray(entries)) entries = []
 
   for (const entry of entries) {
+    // ensure the params match
     if (!deepEqual(entry.params, params)) continue
 
     const expired = DateTime.fromISO(entry.expires) < DateTime.now()
-    const recent = DateTime.fromISO(entry.updatedAt) > DateTime.now().minus({ minutes: 5 })
-    const valid = !expired || recent
+    const recent = DateTime.fromISO(entry.updatedAt) > DateTime.now().minus(MIN_INTERVAL)
     console.debug(`${key}: ${expired ? 'EXPIRED ' : ''}cache -> ${entry.expires}.`, JSON.stringify(entry.params))
 
+    // return a valid cache hit
+    const valid = !expired || recent
     if (valid)
       return {
         data: entry.data,
@@ -58,6 +68,7 @@ export async function useCache<T, P>(
     updatedAt: DateTime.now().toISO(),
   }
 
+  // adds to the cache and limits the cache size
   entries.unshift(newEntry)
   if (entries.length > MAX_ENTRIES) entries.length = MAX_ENTRIES
   localStorage.setItem(key, JSON.stringify(entries))
@@ -65,6 +76,9 @@ export async function useCache<T, P>(
   return { data, expiresAt: expiresAt, updatedAt: DateTime.now(), cached: false }
 }
 
+/**
+ * Deletes everything from localStorage which is not in PERSISTANT_LOCAL_STORAGE_KEYS
+ */
 export function clearCache() {
   for (let i = localStorage.length - 1; i >= 0; i--) {
     const key = localStorage.key(i)!
@@ -74,6 +88,9 @@ export function clearCache() {
   }
 }
 
+/**
+ * Deletes the whole localStorage, sessionStorage and indexedDB.
+ */
 export function resetApp() {
   localStorage.clear()
   sessionStorage.clear()

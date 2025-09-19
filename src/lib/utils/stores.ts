@@ -1,7 +1,14 @@
-import { deepEqual } from '$lib/utils'
+import { deepEqual } from '$lib/utils/common'
 import { readable, writable, type Readable, type Writable } from 'svelte/store'
 import { browser } from '$app/environment'
 
+/**
+ * Creates a subscription to a nested part of the store according to the selector.
+ * The subscription only fires when this part changes, and ignores changes to the rest of the store.
+ *
+ * @param selector A function which returns the part of the store to subscribe to. Being a callback allows for type support.
+ * @param isEqual A callback which allows for overriding the equality checks, e.g. for objects.
+ */
 export function select<T, U>(
   store: Readable<T>,
   selector: (s: T) => U,
@@ -32,6 +39,10 @@ export function isStore<T = unknown>(value: unknown): value is { subscribe: (run
 }
 
 type AsyncFn<T> = () => Promise<T>
+
+/**
+ * A helper to convert either a value, a value callback or a Readable to a Readable.
+ */
 export function toReadable<T>(value: T | Readable<T> | AsyncFn<T>): Readable<T> {
   if (isStore(value)) {
     return value
@@ -53,29 +64,9 @@ export function toReadable<T>(value: T | Readable<T> | AsyncFn<T>): Readable<T> 
   return readable(value as T)
 }
 
-export function persist<T>(key: string, initial: T): Writable<T> & { refresh: () => void } {
-  function readData() {
-    let data = initial
-    if (browser) {
-      const stored = localStorage.getItem(key)
-      data = stored ? (JSON.parse(stored) as T) : initial
-    }
-
-    return data
-  }
-
-  const store = writable<T>(readData())
-
-  store.subscribe((value) => {
-    localStorage.setItem(key, JSON.stringify(value))
-  })
-
-  return {
-    ...store,
-    refresh: () => store.set(readData()),
-  }
-}
-
+/**
+ * Subscribes to a store but ignores the first callback which is fired when the subscription is created.
+ */
 export function subscribeNonImmediate<T>(store: Readable<T>, subscription: (value: T) => void) {
   let isFirst = true
 

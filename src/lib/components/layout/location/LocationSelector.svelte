@@ -11,19 +11,19 @@
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import { press } from 'svelte-gestures'
   import { onMount } from 'svelte'
-  import { debounce, getDistanceBetweenCoordinatesMeters } from '$lib/utils'
+  import { debounce } from '$lib/utils/common'
   import { get } from 'svelte/store'
-  import { persist } from '$lib/utils/stores'
   import type { Coordinates } from '$lib/types/data'
   import { ITEM_ID_GEOLOCATION, type Location } from '$lib/types/ui'
-  import { saveLocation } from '$lib/utils/location'
+  import { getDistanceBetweenCoordinatesMeters, saveLocation } from '$lib/utils/location'
+  import { persisted } from 'svelte-persisted-store'
 
   const geolocationDetails = geolocationStore.details
 
   const settingLocations = settings.select((s) => s.data.locations)
 
   let suggestCurrentGeolocation = $state(false)
-  const recentGeolocations = persist<Coordinates[]>('recent-geolocations', [])
+  const recentGeolocations = persisted<Coordinates[]>('recent-geolocations', [])
 
   function checkSnapGeolocationToSaved() {
     const geoposition = get(geolocationStore).position?.coords

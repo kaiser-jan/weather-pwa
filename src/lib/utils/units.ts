@@ -3,6 +3,9 @@ import type { ForecastParameter } from '$lib/types/data'
 import { CONVERTERS, DECIMAL_RECOMMENDED_FOR, METRIC_DIMENSION, type Unit } from '$lib/config/units'
 import * as d3 from 'd3'
 
+/**
+ * Converts the given value from the internal unit to the target unit
+ */
 export function convertToUnit(value: number, key: ForecastParameter, unit: Unit | null): number {
   const dimension = METRIC_DIMENSION[key]
   if (!dimension || !unit) return value
@@ -10,6 +13,10 @@ export function convertToUnit(value: number, key: ForecastParameter, unit: Unit 
   return converter(value)
 }
 
+/**
+ * Formats the given value to a string with the given unit.
+ * Does NOT perfor unit conversion.
+ */
 export function formatMetric(
   value: number,
   unit: Unit | null,
@@ -28,6 +35,9 @@ export function formatMetric(
   return string + unit
 }
 
+/**
+ * Formats the given value to a string with the unit according to the users preferences.
+ */
 export function autoFormatMetric(
   value: number | undefined | null,
   key: ForecastParameter,
@@ -40,7 +50,10 @@ export function autoFormatMetric(
   return formatMetric(converted, unit, options)
 }
 
-// NOTE: passing in settings allows for deciding on reactivity
+/**
+ * Retrieves the users preferred unit for the given metric.
+ * NOTE: passing in settings allows for deciding on reactivity
+ */
 export function getPreferredUnit(key: ForecastParameter, settings: SettingsSchema) {
   const dimension = METRIC_DIMENSION[key]
   if (!dimension) return null

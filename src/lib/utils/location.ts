@@ -4,7 +4,7 @@ import { selectedLocation } from '$lib/stores/location'
 import type { Coordinates } from '$lib/types/data'
 import type { PlaceOutput } from '$lib/types/nominatim'
 import { ITEM_ID_GEOLOCATION, type Location } from '$lib/types/ui'
-import { createUUID } from '$lib/utils'
+import { createUUID } from '$lib/utils/common'
 import {
   type Icon as IconType,
   AlertCircleIcon,
@@ -26,6 +26,9 @@ import {
 } from '@lucide/svelte'
 import { get } from 'svelte/store'
 
+/**
+ * Uses nominatem.openstreetmap.org to retrieve the location details for the given coordinates
+ */
 export async function reverseGeocoding(coordinates: Coordinates) {
   const cacheKey = 'known-locations'
   const knownLocations = JSON.parse(localStorage.getItem(cacheKey) ?? '{}') as Record<string, PlaceOutput>
@@ -50,6 +53,9 @@ export async function reverseGeocoding(coordinates: Coordinates) {
   return json
 }
 
+/**
+ * Tries to convert a PlaceOutput to a human readable string containing up to three area names in decreasing specificity
+ */
 export function placeToWeatherLocation(place: PlaceOutput) {
   const { road, house_number, hamlet, neighbourhood, suburb, town, county, city, village } = place.address!
   const name = place.name !== '' ? place.name : undefined
@@ -90,6 +96,24 @@ export const classIconMap: Record<string, typeof IconType> = {
   leisure: DumbbellIcon,
   aeroway: PlaneIcon,
 }
+/**
+ * Calculates the great circle distance between two coordinates on earth and converts it to meters
+ */
+export function getDistanceBetweenCoordinatesMeters(a: Coordinates | null, b: Coordinates | null): number | null {
+  if (!a || !b) return null
+  const R = 6371000 // Earth radius in meters
+  const toRad = (deg: number) => (deg * Math.PI) / 180
+  const dLat = toRad(b.latitude - a.latitude)
+  const dLon = toRad(b.longitude - a.longitude)
+  const x =
+    Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.latitude)) * Math.cos(toRad(b.latitude)) * Math.sin(dLon / 2) ** 2
+  const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x))
+  return R * c
+}
+
+// -----------------------------------------------------
+// ------------ TODO: refactor and decouple ------------
+// -----------------------------------------------------
 
 export type Item = {
   id: string
@@ -112,7 +136,6 @@ export function deleteSavedLocation(item: Item) {
   settings.writeSetting(['data', 'locations'], savedLocations)
 }
 
-// TODO: refactor and decouple
 export function saveLocation(item: Item) {
   if (item.id === ITEM_ID_GEOLOCATION) {
     item.coordinates = get(geolocationStore).position?.coords

@@ -15,9 +15,8 @@
   import { locationSearch, openSettingsAt } from '$lib/stores/ui'
   import { popUntil } from '$lib/utils'
   import type { PlaceOutput } from '$lib/types/nominatim'
-  import { pushState } from '$app/navigation'
   import ApiSearchResult from '$lib/components/ApiSearchResult.svelte'
-  import { persist } from '$lib/utils/stores'
+  import { persisted } from 'svelte-persisted-store'
 
   const geolocationDetails = geolocationStore.details
 
@@ -40,7 +39,7 @@
 
   const savedLocations = settings.select((s) => s.data.locations)
 
-  const cachedResults = persist<LocationResults>($state.snapshot(SEARCH_CACHE_KEY), [])
+  const cachedResults = persisted<LocationResults>($state.snapshot(SEARCH_CACHE_KEY), [])
 
   const geolocationItem = $derived({
     id: ITEM_ID_GEOLOCATION,

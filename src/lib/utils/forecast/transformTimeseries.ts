@@ -12,6 +12,9 @@ interface TimeValue {
   value: number | null
 }
 
+/**
+ * Transforms a list of timestamps and a record of parameters with the values at the respective timestamps to the internal format.
+ */
 export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT extends string>(
   timestamps: number[],
   values: Record<string, { data: (number | null)[] }>,
@@ -30,7 +33,7 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
     }
   }
 
-  // fill data
+  // iterate over the timestamps and parameters to fill the respective timeseries
   timestamps.forEach((timestamp, i) => {
     for (const item of configs) {
       if (item.type === 'normal') {
@@ -54,9 +57,9 @@ export function transformTimeSeries<ConfigInKeyT extends string, ConfigOutKeyT e
         const vy = values[item.yKey].data[i]
 
         const isComplete = vx !== null || vy !== null
-
         const length = isComplete ? Math.hypot(vx!, vy!) : null
         const angle = isComplete ? (Math.atan2(vy!, vx!) * 180) / Math.PI : null
+
         output[item.outKeyLength].push({ timestamp, duration, value: length })
         output[item.outKeyAngle].push({ timestamp, duration, value: angle })
       }
@@ -71,6 +74,7 @@ export function getForecastParametersFromConfig<ConfigInKeyT extends string, Con
 ) {
   return configs.flatMap((c) => (c.type === 'vector' ? [c.outKeyLength, c.outKeyAngle] : [c.outKey]))
 }
+
 export function getRequestedParametersFromConfig<ConfigInKeyT extends string, ConfigOutKeyT extends string>(
   configs: TimeSeriesConfig<ConfigInKeyT, ConfigOutKeyT>[],
 ) {

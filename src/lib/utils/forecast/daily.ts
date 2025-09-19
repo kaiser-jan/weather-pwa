@@ -5,13 +5,18 @@ import type {
   MultivariateTimeSeriesTimeBucket,
   NumberSummary,
   ForecastParameter,
-  TimeBucketSummary,
-  TimeBucket,
 } from '$lib/types/data'
 import { getEndOfDayTimestamp, getStartOfDayTimestamp, mapRecord, sum } from '$lib/utils'
-import { DateTime, Duration } from 'luxon'
+import { Duration } from 'luxon'
 import { get } from 'svelte/store'
 
+/**
+ * Calculate statistically relevant properties for the given number list.
+ * - Minimum
+ * - Maximum
+ * - Average
+ * - Sum
+ */
 export function calculateStatisticalNumberSummary(values: number[]): NumberSummary {
   if (values.length === 0) return { min: Infinity, max: -Infinity, sum: 0, avg: NaN }
 
@@ -27,12 +32,18 @@ export function calculateStatisticalNumberSummary(values: number[]): NumberSumma
   }
 }
 
+/**
+ * Creates a list of day-timebuckets with their part of the multiseries.
+ * Ensures that all data relevant for a day is present, including items which span across multiple days
+ */
 export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): MultivariateTimeSeriesTimeBucket[] {
   const groupedMap: Record<number, MultivariateTimeSeriesTimeBucket> = {}
 
+  // iterate over each series and its items and assign them to the correct day bucket
   for (const [parameter, series] of Object.entries(multiseries)) {
     for (const item of series) {
       const dayStartTimestamp = getStartOfDayTimestamp(item.timestamp)
+      // initiate the timebucket
       if (!groupedMap[dayStartTimestamp]) {
         groupedMap[dayStartTimestamp] = {
           timestamp: dayStartTimestamp,
@@ -42,9 +53,11 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
       }
 
       const parameterTyped = parameter as keyof MultivariateTimeSeries
+      // create the series on the timebucket
       if (!groupedMap[dayStartTimestamp].series[parameterTyped]) {
         groupedMap[dayStartTimestamp].series[parameterTyped] = [] as any[]
       }
+      // add the item to the timebuckets series
       groupedMap[dayStartTimestamp].series[parameterTyped]!.push(item)
     }
   }
@@ -53,36 +66,50 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
 
   // add one item from the neighboring day at each
   for (let i = 1; i < grouped.length; i++) {
+    // for each series
     for (const key of Object.keys(grouped[i].series)) {
       const keyTyped = key as ForecastParameter
-      const previousSeries = grouped[i - 1].series[keyTyped]
-      const currentSeries = grouped[i].series[keyTyped]
-      if (!previousSeries || !currentSeries) continue
-      const lastItemPrevious = previousSeries[previousSeries.length - 1]
-      const firstItemCurrent = currentSeries[0]
+
+      const previousGroupSeries = grouped[i - 1].series[keyTyped]
+      const currentGroupSeries = grouped[i].series[keyTyped]
+      if (!previousGroupSeries || !currentGroupSeries) continue
+
+      const lastItemPrevious = previousGroupSeries[previousGroupSeries.length - 1]
+      const firstItemCurrent = currentGroupSeries[0]
+
       const startOfDayTimestamp = getStartOfDayTimestamp(firstItemCurrent.timestamp)
+
+      // if the last item of the previous group overlaps the current group, add it
       if (lastItemPrevious.timestamp + lastItemPrevious.duration > startOfDayTimestamp) {
-        currentSeries.unshift({
+        currentGroupSeries.unshift({
           value: lastItemPrevious.value,
           timestamp: startOfDayTimestamp,
           duration: firstItemCurrent.timestamp - startOfDayTimestamp,
         })
       }
-      previousSeries.push(currentSeries[0])
+
+      // add the first item of the current group to the end of the previous group
+      previousGroupSeries.push(currentGroupSeries[0])
     }
   }
 
+  // TODO: mark the incomplete items instead of removing them
+  // Completeness doesn't matter e.g. for a chart, but does matter for a daily summary.
   const groupedCompleteOnly = grouped.filter((g) => {
     if (!g.series.temperature?.length) return true
 
-    // HACK: how to determine whether a day is complete?
+    // HACK: how to determine whether a day is complete? currently using temperature
     const firstTemperatureItem = g.series.temperature[0]
+
     // use any past data
     if (firstTemperatureItem.timestamp <= getStartOfDayTimestamp(get(NOW_MILLIS))) return true
+
     const lastTemperatureItem = g.series.temperature[g.series.temperature.length - 1]
     const temperatureEndTimestamp = lastTemperatureItem.timestamp + lastTemperatureItem.duration
+
     const isMissingEnd = temperatureEndTimestamp < getEndOfDayTimestamp(firstTemperatureItem.timestamp)
     const isMissingStart = firstTemperatureItem.timestamp > getStartOfDayTimestamp(firstTemperatureItem.timestamp)
+
     if ((isMissingStart && g.timestamp !== get(TODAY_MILLIS)) || isMissingEnd) return false
     return true
   })
@@ -90,6 +117,9 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
   return groupedCompleteOnly
 }
 
+/**
+ * Creates daily summaries from the given multiseries.
+ */
 export function combineMultiseriesToDailyForecast(multiseries: MultivariateTimeSeries): Forecast['daily'] {
   const grouped = groupMultiseriesByDay(multiseries)
 

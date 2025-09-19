@@ -8,7 +8,7 @@
   import { pushState, replaceState } from '$app/navigation'
   import { page } from '$app/state'
   import { getPageComponent, isWrapper } from '../registry'
-  import { debounce, throttle } from '$lib/utils'
+  import { debounce, throttle } from '$lib/utils/common'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import ItemPageRenderer from './pages/ItemPageRenderer.svelte'
 

@@ -2,7 +2,7 @@ import { getMinimalLoadersForDatasets } from '$lib/data/providers'
 import { loaderStates } from '$lib/stores/data'
 import type { Forecast, ForecastInputs } from '$lib/types/data'
 import type { LoaderState } from '$lib/types/data/providers'
-import { debounce, deepEqual } from '$lib/utils'
+import { debounce, deepEqual } from '$lib/utils/common'
 import { combineMultiseriesToDailyForecast } from '$lib/utils/forecast/daily'
 import { mergeMultivariateTimeSeries } from '$lib/utils/forecast/multiseries'
 import { forecastTotalFromDailyForecast } from '$lib/utils/forecast/total'
@@ -26,8 +26,8 @@ export function refreshForecast({
 
   const didParametersChange = !deepEqual(inputs, current?.inputs)
 
+  // show cached data for this location while loading
   if (!current || didParametersChange) {
-    // show cached data for this location while loading
     const cachedForecast = getCachedForecast(inputs)
     if (cachedForecast) update(cachedForecast)
     else update(null)
@@ -39,7 +39,7 @@ export function refreshForecast({
   const states: LoaderState[] = loaders.map((loader) => ({ done: false, loader }))
   loaderStates.set(states)
 
-  const applyUpdate = () => {
+  function applyUpdate() {
     const forecast = createForecastFromResults(states, inputs)
     if (!forecast) return
     update(forecast)
@@ -49,6 +49,7 @@ export function refreshForecast({
 
   const debouncedApplyUpdate = debounce(applyUpdate, 500)
 
+  // handle loading and status updates for each loader
   for (const [loaderIndex, loader] of loaders.entries()) {
     loader
       .load(inputs.coordinates)
@@ -63,12 +64,11 @@ export function refreshForecast({
       .finally(() => {
         const allLoaded = states.filter(Boolean).length === loaders.length
         const wasCached = states[loaderIndex].done && states[loaderIndex].success && states[loaderIndex].cached
-
         // console.debug(!wasCached, didParametersChange, !current, stream, allLoaded)
 
         const needsRefresh = !wasCached || didParametersChange || !current
         if (needsRefresh) {
-          // no need for debounce if this is the last update
+          // no need to debounce if this is the last update
           if (allLoaded) applyUpdate()
           else if (stream) debouncedApplyUpdate()
         }
@@ -77,21 +77,19 @@ export function refreshForecast({
       })
   }
 
-  // fetchOpenMeteo({
-  //   coordinates: inputs.coordinates,
-  //   models: ['arpege_world', 'arpege_europe', 'arome_france', 'arome_france_hd'],
-  //   parameters: { hourly: ['temperature'], minutely15: ['temperature'] },
-  // })
-
+  // set a timeout to update with partial data even when streaming data is disabled
   clearTimeout(loadTimeout)
-  loadTimeout = setTimeout(() => {
-    console.warn('Timed out while loading complete forecast, updating anyway!')
-    debouncedApplyUpdate()
-  }, 15_000)
+  if (stream) {
+    loadTimeout = setTimeout(() => {
+      console.warn('Timed out while loading complete forecast, updating anyway!')
+      debouncedApplyUpdate()
+    }, 15_000)
+  }
 }
 
 function createForecastFromResults(results: LoaderState[], inputs: ForecastInputs) {
-  // NOTE: reverse, so the first items take priority
+  // get the data pieces from the loader results
+  // reverse, so the first items take priority
   const parts = results
     .filter((p) => p.done && p.success)
     .reverse()
@@ -99,6 +97,7 @@ function createForecastFromResults(results: LoaderState[], inputs: ForecastInput
 
   if (parts.length === 0) return
 
+  // merge them
   let merged = parts[0]
   for (let i = 1; i < parts.length; i++) {
     merged = mergeMultivariateTimeSeries(merged, parts[i])

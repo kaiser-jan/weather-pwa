@@ -1,5 +1,5 @@
 import type { Coordinates, ForecastParameter, MultivariateTimeSeries, TimeSeries } from '$lib/types/data'
-import { getEaqiLevel, getEaqiLevels, getTotalEaqiIndex } from './aqi/eaqi'
+import { getEaqiLevels, getTotalEaqiIndex } from './aqi/eaqi'
 import { mergeTimeSeries } from './multiseries'
 
 function calculateDewPoint({ temperature, relative_humidity }: { temperature: number; relative_humidity: number }) {
@@ -68,10 +68,14 @@ const derivedMetrics: DerivedMetric[] = [
   },
 ] as const
 
+/**
+ * Adds the declared derived metrics to the given multiseries, where available.
+ */
 export function addDerivedMetrics(multiseries: MultivariateTimeSeries, coordinates: Coordinates) {
   for (const derivedMetric of derivedMetrics) {
     if (derivedMetric.requiresAltitude && coordinates.altitude === null) continue
 
+    // create a new derived timeseries
     const result = deriveTimeseriesFromMetrics(
       multiseries,
       coordinates,
@@ -80,6 +84,7 @@ export function addDerivedMetrics(multiseries: MultivariateTimeSeries, coordinat
     )
     if (!result) continue
 
+    // either merge the new into an existing timeseries, or just add the new one
     const existingTimeseries = multiseries[derivedMetric.metric]
     if (!existingTimeseries) {
       multiseries[derivedMetric.metric] = result
@@ -89,40 +94,51 @@ export function addDerivedMetrics(multiseries: MultivariateTimeSeries, coordinat
   }
 }
 
+/**
+ * Creates a new timeseries by using the callback with the relevant metrics and adding the value with its timebucket.
+ * @param metrics the metrics required for calculating the derived metric
+ * @param callback the function which calculates the derived metric
+ */
 function deriveTimeseriesFromMetrics<MetricT extends ForecastParameter>(
   multiseries: MultivariateTimeSeries,
   coordinates: Coordinates,
   metrics: MetricT[],
   callback: (values: Record<MetricT, number>, coordinates: Coordinates) => number | null,
 ) {
+  // all required metrics must exist
   if (metrics.some((m) => !multiseries[m])) return null
 
+  // create a sorted list of all timestamps of any series
   const timeseriesList = metrics.map((m) => multiseries[m as ForecastParameter]) as TimeSeries<number>[]
   const timestamps = timeseriesList.flatMap((s) => s.map((d) => d.timestamp))
   const timestampsSorted = Array.from(new Set(timestamps)).sort()
 
+  // iterate over the timestamps and create the derived timebuckets for them
   const derivedTimeseries: TimeSeries<number> = []
   for (const timestamp of timestampsSorted) {
     const timebucketMap: Partial<Record<MetricT, TimeSeries<number>[number]>> = {}
 
+    // collect all required
     for (const metric of metrics) {
       const metricTimeseries = multiseries[metric as ForecastParameter]!
-      const nextBucketIndex = metricTimeseries?.findIndex((d) => d.timestamp > timestamp)
-      // exit if there is no matching timebucket
-      if (nextBucketIndex === undefined || nextBucketIndex === -1) continue
-      const currentBucket = metricTimeseries[nextBucketIndex - 1]
+      // get the last timebucket with a matching start
+      const currentBucket = metricTimeseries?.findLast((d) => d.timestamp <= timestamp)
       // exit if the timebucket ends to early
       if (!currentBucket || currentBucket.timestamp + currentBucket.duration < timestamp) continue
+      // add the metrics timebucket
       timebucketMap[metric] = currentBucket
     }
 
     const timebucketList = Object.values(timebucketMap) as TimeSeries<number>[number][]
 
+    // exit if not all metrics have a matching timebucket
     if (timebucketList.length < metrics.length) continue
 
+    // find the earliest end timestamp
     const endTimestamps = timebucketList.map((v) => v.timestamp + v.duration).sort()
     const earliestEndTimestamp = endTimestamps[0]
 
+    // calculate the value
     const value = callback(
       Object.fromEntries(metrics.map((m) => [m, timebucketMap[m]?.value!])) as Record<MetricT, number>,
       coordinates,

@@ -13,7 +13,7 @@
   import { settings } from '$lib/settings/store'
   import type { ColorStop, CreatedSeriesDetails, MetricDetails } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
-  import { createUUID, debounce } from '$lib/utils'
+  import { createUUID, debounce } from '$lib/utils/common'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import { createExtremaMarkers } from '$lib/utils/d3/extrema'
   import ChartValuesDisplay from './ChartValuesDisplay.svelte'

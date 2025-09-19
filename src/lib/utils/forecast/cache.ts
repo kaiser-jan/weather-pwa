@@ -1,5 +1,5 @@
 import type { Forecast, ForecastInputs } from '$lib/types/data'
-import { deepEqual } from '$lib/utils'
+import { deepEqual } from '$lib/utils/common'
 import { DateTime, Duration } from 'luxon'
 
 // ensure cached forecasts are discarded if they use an older data format (e.g. DateTime and Duration)

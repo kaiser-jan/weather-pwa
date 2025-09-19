@@ -1,6 +1,9 @@
 import type { ColorStop } from '$lib/types/ui'
 import { DateTime } from 'luxon'
 
+/**
+ * Constructs a linear css gradient from the given stops in the given range.
+ */
 export function generateCssRangeGradient(
   rangeMin: number,
   rangeMax: number,
@@ -9,7 +12,7 @@ export function generateCssRangeGradient(
 ): string {
   const includedStops = stops.filter((s) => s.value >= rangeMin && s.value <= rangeMax)
 
-  const before = [...stops].reverse().find((s) => s.value < rangeMin)
+  const before = stops.findLast((s) => s.value < rangeMin)
   const after = stops.find((s) => s.value > rangeMax)
 
   if (before) includedStops.unshift(before)
@@ -45,9 +48,14 @@ export function interpolateColor(stops: ColorStop[], value: number): string {
     }
   }
   const edge = value <= stops[0].value ? stops[0] : stops[stops.length - 1]
-  return `hsl(${edge.h}, ${edge.s}%, ${edge.l}%)`
+  return `hsl(${edge.h}, ${edge.s}%, ${edge.l}, ${edge.a ?? 1}%)`
 }
 
+/**
+ * Tries to format a datetime in the near future in a human readable way.
+ * For today: HH:mm
+ * For other days: short weekday with HH:mm
+ */
 export function formatRelativeDatetime(datetime: DateTime, options?: { omitDate?: boolean }) {
   const todayMidnight = DateTime.now().startOf('day')
   const inputDayMidnight = datetime.startOf('day')

@@ -3,7 +3,6 @@ import clsx, { type ClassValue } from 'clsx'
 import { cubicOut } from 'svelte/easing'
 import type { TransitionConfig } from 'svelte/transition'
 import { twMerge } from 'tailwind-merge'
-import type { Coordinates } from './types/data'
 
 export type DeepPartial<T> = T extends object
   ? {
@@ -102,58 +101,6 @@ export function sortByReferenceOrder<T extends string>(items: T[], reference: re
   return items.slice().sort((a, b) => reference.indexOf(a) - reference.indexOf(b))
 }
 
-export function debounce<F extends (...args: any[]) => void>(callback: F, wait: number, immediate = false): F {
-  let timeout: ReturnType<typeof setTimeout> | null = null
-
-  const debounced = (...args: Parameters<F>) => {
-    const shouldCallNow = immediate && !timeout
-
-    if (timeout) {
-      clearTimeout(timeout)
-    }
-
-    timeout = setTimeout(() => {
-      timeout = null
-      if (!shouldCallNow) {
-        callback(...args)
-      }
-    }, wait)
-
-    if (shouldCallNow) {
-      callback(...args)
-    }
-  }
-
-  return debounced as F
-}
-
-export function throttle<F extends (...args: any[]) => void>(callback: F, wait: number) {
-  let timeout: ReturnType<typeof setTimeout>
-  let lastTime: number = 0
-
-  const throttled = (...args: Parameters<F>) => {
-    clearTimeout(timeout)
-    const delay = Math.max(wait - (Date.now() - lastTime), 0)
-    timeout = setTimeout(() => {
-      if (Date.now() - lastTime >= wait) {
-        callback(...args)
-        lastTime = Date.now()
-      }
-    }, delay)
-  }
-
-  return throttled
-}
-
-export function deepEqual(a: unknown, b: unknown): boolean {
-  return JSON.stringify(a) === JSON.stringify(b)
-}
-
-export function createUUID() {
-  // NOTE: crypto.randomUUID is not available over http
-  return crypto?.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now()
-}
-
 export function popUntil(condition: (state: App.PageState, data: typeof page.params, route: string | null) => boolean) {
   const handler = () => {
     if (!page.state || condition(page.state, page.params, page.route.id)) {
@@ -195,16 +142,4 @@ export function sum(numbers: (number | undefined)[]): number {
   return numbers
     .filter((num): num is number => num !== undefined)
     .reduce((accumulator, current) => accumulator + current, 0)
-}
-
-export function getDistanceBetweenCoordinatesMeters(a: Coordinates | null, b: Coordinates | null): number | null {
-  if (!a || !b) return null
-  const R = 6371000 // Earth radius in meters
-  const toRad = (deg: number) => (deg * Math.PI) / 180
-  const dLat = toRad(b.latitude - a.latitude)
-  const dLon = toRad(b.longitude - a.longitude)
-  const x =
-    Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.latitude)) * Math.cos(toRad(b.latitude)) * Math.sin(dLon / 2) ** 2
-  const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x))
-  return R * c
 }

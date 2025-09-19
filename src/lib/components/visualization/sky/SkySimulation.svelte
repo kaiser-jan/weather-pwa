@@ -9,7 +9,7 @@
     deg2rad,
   } from '$lib/utils/sky-simulation'
   import type { Coordinates } from '$lib/types/data'
-  import { debounce } from '$lib/utils'
+  import { debounce } from '$lib/utils/common'
 
   interface Props {
     class: string

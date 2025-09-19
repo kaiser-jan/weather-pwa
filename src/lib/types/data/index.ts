@@ -32,6 +32,7 @@ export interface TimePeriod {
 export type WeatherInstant = Partial<Record<ForecastParameter, number>>
 
 export type MultivariateTimeSeries = Partial<Record<ForecastParameter, TimeSeries<number>>>
+// TODO: rename series to multiseries
 export type MultivariateTimeSeriesTimeBucket = TimePeriod & { series: MultivariateTimeSeries }
 
 export type TimeSeries<T> = (TimePeriod & { value: T })[]

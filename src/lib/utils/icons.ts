@@ -12,7 +12,7 @@ import {
   TreesIcon,
 } from '@lucide/svelte'
 
-// TODO:
+// TODO: consider bundling all icons, as we already use a lot of them
 export const iconMap: Record<string, typeof IconType> = {
   home: HomeIcon,
   briefcase: BriefcaseIcon,

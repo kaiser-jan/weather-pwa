@@ -13,6 +13,10 @@ export type WeatherSituation = {
   timeOfDay?: 'day' | 'night'
 }
 
+/**
+ * Determines the weather icon to use for the given weather situation.
+ * Evaluates based on custom logic following the perceived importance of events.
+ */
 export function getWeatherIcon(s: WeatherSituation): string {
   /* time of day specifier */
   const t = s.timeOfDay ? '-' + s.timeOfDay : ''
@@ -45,12 +49,16 @@ export function getWeatherIcon(s: WeatherSituation): string {
 
   if (s.cloudiness === 'partly') return `partly-cloudy${tF}`
   // NOTE: overcast-day looks less cloudy than 'cloudy'
+  // TODO: this depends on the icon set
   if (s.cloudiness === 'cloudy') return `overcast${tF}`
   if (s.cloudiness === 'overcast') return `overcast`
 
   return `clear${tF}`
 }
 
+/**
+ * Determines
+ */
 export function deriveWeatherSituationFromInstant(data: Partial<WeatherInstant>): WeatherSituation {
   const situation: WeatherSituation = {}
 
@@ -77,24 +85,4 @@ export function deriveWeatherSituationFromInstant(data: Partial<WeatherInstant>)
   }
 
   return situation
-}
-
-export function deriveWeatherSituationFromPeriod(data: TimeBucketSummary): WeatherSituation {
-  const { summary } = data
-
-  return deriveWeatherSituationFromInstant({
-    temperature: summary.temperature?.max,
-    pressure_sealevel: summary.pressure_sealevel?.avg,
-    pressure_surface: summary.pressure_surface?.avg,
-    relative_humidity: summary.relative_humidity?.avg,
-    uvi_clear_sky: summary.uvi_clear_sky?.max,
-    cloud_coverage: summary.cloud_coverage?.avg,
-    fog: summary.fog?.avg,
-    wind_speed: summary.wind_speed?.max,
-    wind_speed_gust: summary.wind_speed_gust?.max,
-    // TODO: rain vs. snow
-    precipitation_amount: summary.precipitation_amount?.max,
-    precipitation_probability: summary.precipitation_amount?.max,
-    thunder_probability: summary.thunder_probability?.max,
-  })
 }

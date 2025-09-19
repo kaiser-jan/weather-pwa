@@ -1,5 +1,5 @@
 import type { ColorStop } from '$lib/types/ui'
-import { createUUID } from '$lib/utils'
+import { createUUID } from '$lib/utils/common'
 import { interpolateColor } from '$lib/utils/ui'
 
 export function createGradientDefinition(options: {
