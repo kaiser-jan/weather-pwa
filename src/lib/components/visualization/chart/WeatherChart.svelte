@@ -74,8 +74,10 @@
 
   let container: HTMLButtonElement
 
-  const INITIAL_MARGIN = { top: hideYAxes ? 0 : 12, right: 0, bottom: 20, left: 0 }
-  let margin = { ...INITIAL_MARGIN }
+  function getInitialMargin() {
+    return { top: hideYAxes ? 0 : 12, right: 0, bottom: 20, left: 0 }
+  }
+  let margin = { ...getInitialMargin() }
   let widthFull = 360
   let heightFull = 240
 
@@ -99,7 +101,7 @@
   function updateChart() {
     clearChart()
 
-    margin = { ...INITIAL_MARGIN }
+    margin = { ...getInitialMargin() }
 
     if ($settingsChart.axisUnits === 'above') {
       margin.top += 10
