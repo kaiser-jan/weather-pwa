@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { Coordinates, MultivariateTimeSeries, ForecastParameter } from '$lib/types/data'
+  import type { MultivariateTimeSeries, ForecastParameter } from '$lib/types/data'
   import { cn, getStartOfDayTimestamp } from '$lib/utils'
-  import { DateTime } from 'luxon'
   import TimelineBarLayer from './TimelineBarLayer.svelte'
   import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte'
-  import { timeDay, timeHour, timeMinute } from 'd3'
+  import { timeDay, timeHour } from 'd3'
+  import { NOW_MILLIS } from '$lib/stores/now'
 
   type Parameter =
     | Extract<
@@ -16,15 +16,14 @@
 
   interface Props {
     multiseries: MultivariateTimeSeries | null
+    // TODO: make this dependent on whats displayed e.g. in today?
     parameters: Parameter[]
     startTimestamp: number
     endTimestamp: number
-    datetime: number
-    coordinates: Coordinates | null
     className: string
   }
 
-  let { multiseries, parameters, startTimestamp, endTimestamp, datetime: NOW, coordinates, className }: Props = $props()
+  let { multiseries, parameters, startTimestamp, endTimestamp, className }: Props = $props()
 
   let barHeight = $state<number>(0)
 
@@ -55,22 +54,33 @@
     // end at the endTimestamp
     timeDay.ceil(new Date(endTimestamp)),
   )
+
+  function limitStartTimestamp(parameter: (typeof parameters)[number]) {
+    // sun/moon requires cloud_coverage data, otherwise its irritating
+    if ((parameter === 'sun' || parameter === 'moon') && parameters.includes('cloud_coverage')) {
+      return multiseries?.cloud_coverage?.[0]?.timestamp ?? startTimestamp
+    }
+    return startTimestamp
+  }
 </script>
 
 <div
-  class={cn('bg-foreground relative h-full w-full shrink-0 overflow-hidden rounded-full', className)}
+  class={cn('bg-foreground relative h-2 w-full shrink-0 overflow-hidden rounded-full', className)}
   bind:clientHeight={barHeight}
 >
+  <!-- mark passed time -->
   <div
     class="stripe-pattern border-foreground absolute top-0 bottom-0 z-2 border-r-[1px]"
-    style={`width: ${distanceFromTimestamps(NOW, startTimestamp)}%; left: 0;`}
+    style={`width: ${distanceFromTimestamps($NOW_MILLIS, startTimestamp)}%; left: 0;`}
   ></div>
+
   {#each marks as mark, i (i)}
     <div
       class="bg-foreground absolute -top-1 -bottom-1 z-2 w-[0.1rem]"
       style={`left: ${distanceFromTimestamps(mark.getTime(), startTimestamp)}%;`}
     ></div>
   {/each}
+
   {#each parameters as parameter (parameter)}
     <!-- TODO: properly handle sun and moon -->
     {#if multiseries?.[parameter as keyof typeof multiseries]?.length || ['sun', 'moon'].includes(parameter)}
@@ -78,11 +88,8 @@
         {parameter}
         series={multiseries![parameter as keyof typeof multiseries] ?? []}
         style={parameterStyleMap[parameter]}
-        startTimestamp={(['sun', 'moon'].includes(parameter)
-          ? multiseries?.cloud_coverage?.[0]?.timestamp
-          : startTimestamp) ?? startTimestamp}
+        startTimestamp={limitStartTimestamp(parameter)}
         {endTimestamp}
-        {coordinates}
         {barHeight}
         {distanceFromTimestamps}
       />

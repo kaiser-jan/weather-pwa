@@ -53,9 +53,6 @@
     startTimestamp={timebucket.timestamp}
     endTimestamp={timebucket.timestamp + timebucket.duration}
     parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-    coordinates={$coordinates}
-    datetime={$NOW_MILLIS}
-    className="h-2 mt-1"
   />
 
   {#if showSummary}

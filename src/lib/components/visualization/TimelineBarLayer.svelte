@@ -2,6 +2,7 @@
   import { interpolateColor } from '$lib/utils/ui'
   import type { Coordinates, TimeSeries } from '$lib/types/data'
   import { settings } from '$lib/settings/store'
+  import { coordinates } from '$lib/stores/location'
   import { DateTime, Duration } from 'luxon'
 
   interface Props {
@@ -10,7 +11,6 @@
     style: 'gradient' | 'blocks'
     startTimestamp: number
     endTimestamp: number
-    coordinates: Coordinates | null
     barHeight: number
     distanceFromTimestamps: (t: number, t1?: number) => number | undefined
   }
@@ -22,7 +22,6 @@
     style,
     startTimestamp,
     endTimestamp,
-    coordinates,
     barHeight,
     distanceFromTimestamps,
   }: Props = $props()
@@ -33,6 +32,7 @@
 
   const COLOR_ERROR = 'hsla(0, 100%, 50%, 0%)'
 
+  // TODO: use METRICS_DETAILS for this
   function getDetailsForValue(value: number): { color: string; size?: string } {
     if (value === undefined) {
       if (parameter === 'uvi_clear_sky') return { color: 'hsl(55, 65%, 65%)' }
@@ -56,6 +56,7 @@
     }
   }
 
+  // TODO: consider adding these calculated metrics to the multiseries
   function createDatalessGradient(
     colorCallback: (datetime: number) => string,
     interval = Duration.fromObject({ hour: 1 }),
@@ -63,18 +64,21 @@
     const gradientStops = []
     let cursor = startTimestamp
 
+    // add a color stops at the given interval
     while (cursor < endTimestamp) {
       gradientStops.push(`${colorCallback(cursor)} ${distanceFromTimestamps(cursor)}%`)
       cursor = cursor + interval.toMillis()
     }
+
+    // add start stops
     gradientStops.unshift(`${COLOR_ERROR} 0%`)
     gradientStops.unshift(`${COLOR_ERROR} ${distanceFromTimestamps(startTimestamp)}%`)
     return `background: linear-gradient(to right, ${gradientStops.join(', ')});`
   }
 
   function createTimelineGradient(): string {
-    if (parameter === 'sun') return createDatalessGradient((d) => getSunlightColor(d, coordinates))
-    if (parameter === 'moon') return createDatalessGradient((d) => getMoonlightColor(d, coordinates))
+    if (parameter === 'sun') return createDatalessGradient((d) => getSunlightColor(d, $coordinates))
+    if (parameter === 'moon') return createDatalessGradient((d) => getMoonlightColor(d, $coordinates))
 
     if (series.length === 0) return ''
 
@@ -133,6 +137,7 @@
   <div class={[parameter, 'absolute inset-0']} style={createTimelineGradient()}></div>
 {:else if style === 'blocks'}
   <div class={[parameter, 'absolute inset-0 flex flex-row justify-end']}>
+    <!-- NOTE: blocks are absolutely positioned instead of relative, as relative positioning causes tiny gaps -->
     <div style={`width: ${distanceFromTimestamps(firstTimestamp, startTimestamp)}%;`}></div>
     {#each getBlocksForSeries().entries() as [i, stop] (i)}
       <div class={`flex h-full items-end justify-center ${i}`} style={`width: ${getWidthForSeriesItem(i)};`}>

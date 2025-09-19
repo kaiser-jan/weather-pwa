@@ -89,9 +89,6 @@
         startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
         endTimestamp={getEndOfDayTimestamp(selectedDay.timestamp)}
         parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
-        coordinates={$coordinates}
-        datetime={$NOW_MILLIS}
-        className="h-2"
       />
 
       <div class="container flex h-fit flex-col gap-2" data-vaul-no-drag>

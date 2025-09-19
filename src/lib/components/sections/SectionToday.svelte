@@ -1,16 +1,12 @@
 <script lang="ts">
-  import type { ForecastMetric } from '$lib/config/metrics'
   import { settings } from '$lib/settings/store'
   import { forecastStore } from '$lib/stores/data'
-  import { NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
-  import { Duration } from 'luxon'
+  import { TODAY_MILLIS } from '$lib/stores/now'
   import { SECTIONS } from './registry'
   import DaySection from './reusable/DaySection.svelte'
   import { next24Hours } from '$lib/stores/next24Hours'
 
   const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS))
-
-  let visibleMetrics = $state<ForecastMetric[]>($settings.sections.components.chart.plottedMetrics)
 
   const firstDatapointTimestamp = $derived.by(() => {
     if (!today) return null
@@ -30,7 +26,7 @@
 
 <DaySection
   timebucket={showFullDay ? today : $next24Hours}
-  bind:metrics={visibleMetrics}
+  bind:metrics={$settings.sections.components.chart.plottedMetrics}
   icon={SECTIONS.today.icon}
   title={SECTIONS.today.name}
   showChart={$settings.sections.today.showChart}
