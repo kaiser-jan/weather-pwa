@@ -253,7 +253,7 @@
         // create and apply the gradient color
         const isAbrupt = 'categories' in details.color && details.color.type === 'segments'
         // segmented color for bars colors them by height instead of applying an abrupt gradient
-        const isSegmentedBars = details.chart.style !== 'bars' && isAbrupt
+        const isSegmentedBars = details.chart.style === 'bars' && isAbrupt
 
         if (gradientColorStops && !isSegmentedBars) {
           const gradientId = createGradientDefinition({
