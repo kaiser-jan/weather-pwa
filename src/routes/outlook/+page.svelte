@@ -1,6 +1,6 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
-  import { NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
+  import { TODAY_MILLIS } from '$lib/stores/now'
   import { settings } from '$lib/settings/store'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
   import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
@@ -17,41 +17,37 @@
   )
 </script>
 
-<PageWrapper class="p-4">
-  <div class="container flex flex-col gap-2">
-    <WeatherChart
-      multiseries={$forecastStore!.multiseries}
-      bind:parameters={$visibleMetrics}
-      startTimestamp={$TODAY_MILLIS}
-      endTimestamp={$TODAY_MILLIS + 1000 * 3600 * 24 * 7}
-      className="h-[max(25vh,12rem)]"
-      location="outlook"
-    />
-  </div>
+<PageWrapper class="gap-4 p-4">
+  <WeatherChart
+    multiseries={$forecastStore!.multiseries}
+    bind:parameters={$visibleMetrics}
+    startTimestamp={$TODAY_MILLIS}
+    endTimestamp={$TODAY_MILLIS + 1000 * 3600 * 24 * 7}
+    className="h-[max(25vh,12rem)]"
+    location="outlook"
+  />
 
-  <div class="-mt-2 min-h-0 grow overflow-y-auto pt-2">
-    <ExpandableList
-      items={FORECAST_METRICS}
-      visibleItems={$settings.data.forecast.metrics}
-      markedItems={$visibleMetrics}
-      contentClass="gap-2"
-    >
-      {#snippet itemSnippet(metric)}
-        <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
-      {/snippet}
+  <ExpandableList
+    items={FORECAST_METRICS}
+    visibleItems={$settings.data.forecast.metrics}
+    markedItems={$visibleMetrics}
+    contentClass="gap-2"
+  >
+    {#snippet itemSnippet(metric)}
+      <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
+    {/snippet}
 
-      {#snippet children(metrics: ForecastMetric[])}
-        <div class="flex flex-row flex-wrap gap-2">
-          {#each metrics as metric (metric)}
-            {@const details = METRIC_DETAILS[metric]}
+    {#snippet children(metrics: ForecastMetric[])}
+      <div class="flex flex-row flex-wrap gap-2">
+        {#each metrics as metric (metric)}
+          {@const details = METRIC_DETAILS[metric]}
 
-            <ParameterToggle {metric} bind:visibleList={$visibleMetrics} class="w-full">
-              <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
-              <span class="overflow-hidden text-ellipsis whitespace-nowrap"> {details.label} </span>
-            </ParameterToggle>
-          {/each}
-        </div>
-      {/snippet}
-    </ExpandableList>
-  </div>
+          <ParameterToggle {metric} bind:visibleList={$visibleMetrics} class="w-full">
+            <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
+            <span class="overflow-hidden text-ellipsis whitespace-nowrap"> {details.label} </span>
+          </ParameterToggle>
+        {/each}
+      </div>
+    {/snippet}
+  </ExpandableList>
 </PageWrapper>

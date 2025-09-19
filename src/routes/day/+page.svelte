@@ -1,17 +1,16 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
-  import { NOW, NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
+  import { TODAY_MILLIS } from '$lib/stores/now'
   import { DateTime } from 'luxon'
   import { Button } from '$lib/components/ui/button'
   import { ChevronLeft, ChevronRight } from '@lucide/svelte'
   import ParameterDaySummary from '$lib/components/weather/ParameterDaySummary.svelte'
-  import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
-  import { coordinates } from '$lib/stores/location'
+  import { type SwipeCustomEvent } from 'svelte-gestures'
   import TimelineBar from '$lib/components/visualization/TimelineBar.svelte'
   import { settings } from '$lib/settings/store'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
-  import { cn, getEndOfDayTimestamp, getStartOfDayTimestamp, toggle } from '$lib/utils'
+  import { getEndOfDayTimestamp, getStartOfDayTimestamp } from '$lib/utils'
   import { page } from '$app/state'
   import { dayView } from '$lib/stores/ui'
   import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
@@ -110,7 +109,7 @@
         <ExpandableList
           items={FORECAST_METRICS}
           visibleItems={$settings.data.forecast.metrics}
-          markedItems={$visibleMetrics ?? []}
+          markedItems={$visibleMetrics}
           contentClass="gap-2"
         >
           {#snippet itemSnippet(metric)}

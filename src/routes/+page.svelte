@@ -1,9 +1,7 @@
 <script lang="ts">
-  import { goto, onNavigate } from '$app/navigation'
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
   import { settings } from '$lib/settings/store'
   import { geolocationStore } from '$lib/stores/geolocation'
-  import { coordinates, selectedLocation } from '$lib/stores/location'
   import { getComponent } from '$lib/components/sections/componentRegistry'
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
 
@@ -17,21 +15,6 @@
     scroll = scrollContainer.scrollTop ?? 0
     shrinkHeader = $settingCurrentSticky && scroll > scrollContainer.clientHeight * 0.1
   }
-
-  const geolocationDetails = geolocationStore.details
-
-  $effect(() => {
-    if ($coordinates) return
-    switch ($selectedLocation?.type) {
-      case 'geolocation':
-        if ($geolocationDetails.stateCategory === 'inactive') goto('/setup/geolocation')
-        if ($geolocationDetails.stateCategory === 'failed') goto('/setup')
-        break
-      case undefined:
-        goto('/setup')
-        break
-    }
-  })
 </script>
 
 <PageWrapper bind:element={scrollContainer} onscroll={onScroll} safeArea={{ top: true, bottom: false }}>

@@ -20,7 +20,7 @@
     parameters: Parameter[]
     startTimestamp: number
     endTimestamp: number
-    className: string
+    className?: string
   }
 
   let { multiseries, parameters, startTimestamp, endTimestamp, className }: Props = $props()

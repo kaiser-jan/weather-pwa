@@ -19,25 +19,25 @@
 </script>
 
 <PageWrapper class="p-4 pb-0">
-  <section
-    class="bg-midground flex h-full w-full max-w-prose flex-col items-center justify-center gap-4 rounded-xl p-4"
-  >
-    <h1 class="text-4xl font-bold">Welcome!</h1>
-    <p class="text-center text-lg">Where do you want to check the weather at?</p>
-    <Button
-      class="text-base"
-      disabled={$geolocationDetails.stateCategory === 'failed'}
-      onclick={() => {
-        geolocationStore.refresh()
-        selectedLocation.set({ type: 'geolocation' })
-        goto('/')
-      }}
-    >
-      <NavigationIcon /> Use current location
-    </Button>
-    or
-    <Button class="text-base" onclick={locationSearch.show}>
-      <SearchIcon /> Search a location
-    </Button>
-  </section>
+  <div class="bg-midground flex size-full justify-center rounded-xl p-4">
+    <section class="flex h-full max-w-prose flex-col items-center justify-center gap-4">
+      <h1 class="text-4xl font-bold">Welcome!</h1>
+      <p class="text-center text-lg">Where do you want to check the weather at?</p>
+      <Button
+        class="text-base"
+        disabled={$geolocationDetails.stateCategory === 'failed'}
+        onclick={() => {
+          geolocationStore.refresh()
+          selectedLocation.set({ type: 'geolocation' })
+          goto('/')
+        }}
+      >
+        <NavigationIcon /> Use current location
+      </Button>
+      or
+      <Button class="text-base" onclick={locationSearch.show}>
+        <SearchIcon /> Search a location
+      </Button>
+    </section>
+  </div>
 </PageWrapper>
