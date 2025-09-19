@@ -34,7 +34,9 @@ export const dayView = {
     dayView.push(targetIndex, metricsToDisplay, {})
   },
   push: (index: number, newMetrics: ForecastMetric[] | null, opts: Parameters<typeof goto>[1]) => {
-    const metrics = JSON.stringify(newMetrics) ?? page.url.searchParams.get('metrics') ?? []
+    let metrics
+    if (newMetrics) metrics = JSON.stringify(newMetrics)
+    else metrics = page.url.searchParams.get('metrics') ?? []
     goto(`/day?dayIndex=${index}&metrics=${metrics}`, opts)
   },
   replace: (index: number, newMetrics: ForecastMetric[] | null) => {
