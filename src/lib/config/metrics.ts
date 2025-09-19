@@ -219,11 +219,11 @@ const _METRIC_DETAILS = {
     icon: FactoryIcon,
     domain: {
       min: [0],
-      max: [0, 6],
+      max: [0, 5],
     },
     color: {
       type: 'segments',
-      categories: createLimitsGradient([1, 2, 3, 4, 5, 6], EAQI.colors),
+      categories: createLimitsGradient([0, 1, 2, 3, 4, 5], EAQI.colors),
     },
     chart: { style: 'line', class: 'opacity-80' },
     summary: { items: ['icon', 'avg', 'max'] },
