@@ -29,8 +29,8 @@ export function createGradientDefinition(options: {
       duplicated.push(gradientStops[i])
       if (i < gradientStops.length - 1) {
         duplicated.push({
-          offset: gradientStops[i].offset,
-          color: gradientStops[i + 1].color,
+          offset: gradientStops[i + 1].offset,
+          color: gradientStops[i].color,
         })
       }
     }
