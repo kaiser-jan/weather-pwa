@@ -75,7 +75,7 @@ NOTE: This is not part of the root layout, because both pages as well as the lay
 
   <NavigationBar />
 
-  {#if safeArea?.top !== false}
+  {#if safeArea?.bottom !== false}
     <!-- HACK: the safe area on iOS is quite large -->
     <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
   {/if}
