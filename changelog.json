@@ -1,6 +1,337 @@
 {
   "releases": [
     {
+      "version": "1.5.0",
+      "date": "2025-09-19",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "228b0d0bdae8b726002d049f7d431c491df1ff80",
+              "subject": "app extending beyond bottom bar on android",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/228b0d0bdae8b726002d049f7d431c491df1ff80"
+            },
+            {
+              "hash": "2ccf3f903ea0d0f075f52571cfddaa721501b466",
+              "subject": "section aqi store not reactive causing partially empty section",
+              "scope": "aqi",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2ccf3f903ea0d0f075f52571cfddaa721501b466"
+            },
+            {
+              "hash": "2fc3bd79ee3284b7d354b5941a975223c96dc92e",
+              "subject": "properly clear cache by wiping localStorage except settings",
+              "scope": "cache",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2fc3bd79ee3284b7d354b5941a975223c96dc92e"
+            },
+            {
+              "hash": "4ff0a4fd51f638f290ed531340f264ec6e43f301",
+              "subject": "axis pointer broken on chrome mobile due to touch-action",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4ff0a4fd51f638f290ed531340f264ec6e43f301"
+            },
+            {
+              "hash": "2b15d1fe66f5aaf90ee7fe338f4cbeabe5d95417",
+              "subject": "disable parameter select if there are no values for it",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2b15d1fe66f5aaf90ee7fe338f4cbeabe5d95417"
+            },
+            {
+              "hash": "32420211b74674d096125792a4b50a7e3c40f585",
+              "subject": "segmented chart color broken after refactor",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/32420211b74674d096125792a4b50a7e3c40f585"
+            },
+            {
+              "hash": "03cfa204f70517f94ccda42163d4ede0401f59bd",
+              "subject": "segmented colors shifted by one",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/03cfa204f70517f94ccda42163d4ede0401f59bd"
+            },
+            {
+              "hash": "e1fae05c47e97b79cefbaff34b72b5c4be5b2d8d",
+              "subject": "use curveMonotoneX for a more accurate representation",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e1fae05c47e97b79cefbaff34b72b5c4be5b2d8d"
+            },
+            {
+              "hash": "9bb4fd1280c3dbae21f81a0537a585170ec88ff1",
+              "subject": "correct safe area prop check",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/9bb4fd1280c3dbae21f81a0537a585170ec88ff1"
+            },
+            {
+              "hash": "4c10be7dde3feb1a62cf85e49700c6f9f0c58cae",
+              "subject": "incorrect spacer height including safe area",
+              "scope": "current",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4c10be7dde3feb1a62cf85e49700c6f9f0c58cae"
+            },
+            {
+              "hash": "4bf6314ddaf2401c96ad6f945d8f30bd704cbdd4",
+              "subject": "omitting incomplete days causing current day to be missing",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4bf6314ddaf2401c96ad6f945d8f30bd704cbdd4"
+            },
+            {
+              "hash": "ef5b1e80a95cb2f423683db670e1d900a81daae8",
+              "subject": "day navigation broken due to unset metrics param",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ef5b1e80a95cb2f423683db670e1d900a81daae8"
+            },
+            {
+              "hash": "32fa06177a75db8871d478e45727835f57086a66",
+              "subject": "day view crashing due to access on undefined forecastStore",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/32fa06177a75db8871d478e45727835f57086a66"
+            },
+            {
+              "hash": "5e85fa16827d93ff03324d4697134476516b482e",
+              "subject": "disable swiping to a nonexistent day",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5e85fa16827d93ff03324d4697134476516b482e"
+            },
+            {
+              "hash": "3ce8ab3416067b1e8d04ef2836fd2eeba02ec243",
+              "subject": "metrics selection lost when changing days",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3ce8ab3416067b1e8d04ef2836fd2eeba02ec243"
+            },
+            {
+              "hash": "ad9bed9370a9563288f29d04bbbd42d46c3ba5cb",
+              "subject": "parameter summary toggles not working due to missing bind",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ad9bed9370a9563288f29d04bbbd42d46c3ba5cb"
+            },
+            {
+              "hash": "7d90b3f3b40d56bce7d7225657f9c4f8a4e0723f",
+              "subject": "total eaqi colors shifted by one",
+              "scope": "derived",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/7d90b3f3b40d56bce7d7225657f9c4f8a4e0723f"
+            },
+            {
+              "hash": "0e0d8e47a82b2882f439f01c8c5158878fa5d1dd",
+              "subject": "disable pull-to-refresh via css overscroll-behavior",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0e0d8e47a82b2882f439f01c8c5158878fa5d1dd"
+            },
+            {
+              "hash": "0bf029298ad8cbbc5976806a4bd03ff7f67ab28d",
+              "subject": "go to main view after saving a location",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0bf029298ad8cbbc5976806a4bd03ff7f67ab28d"
+            },
+            {
+              "hash": "5240ab40d558bca47b2ee5066084bc46007c8208",
+              "subject": "make recent searches properly reactive",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5240ab40d558bca47b2ee5066084bc46007c8208"
+            },
+            {
+              "hash": "6efff375c832c58ff41c8ee324029ff042d9bdb3",
+              "subject": "scroll complete content, not just saved locations",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6efff375c832c58ff41c8ee324029ff042d9bdb3"
+            },
+            {
+              "hash": "e13b1968d54d26b39ba89b901469e3993a780851",
+              "subject": "hide title as a workaround for empty section",
+              "scope": "notices",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e13b1968d54d26b39ba89b901469e3993a780851"
+            },
+            {
+              "hash": "e250d798943839b27947610c5fcca31515e95d93",
+              "subject": "parameter toggle keeping hover state in chrome on samsung",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e250d798943839b27947610c5fcca31515e95d93"
+            },
+            {
+              "hash": "04585aa4cb2a347d28f31ca47aa09734346bec3c",
+              "subject": "remove text uncolored:boolean from loaderState",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/04585aa4cb2a347d28f31ca47aa09734346bec3c"
+            }
+          ]
+        },
+        {
+          "title": "Features",
+          "type": "feat",
+          "commits": [
+            {
+              "hash": "594b50e938dad73c4b921f4a37d7f3c8a300911b",
+              "subject": "basic view transition when navigating away from /",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/594b50e938dad73c4b921f4a37d7f3c8a300911b"
+            },
+            {
+              "hash": "c393a5e0d408d5962a3d4a3f2bec6c08faf8be85",
+              "subject": "add option to hide y axes",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/c393a5e0d408d5962a3d4a3f2bec6c08faf8be85"
+            },
+            {
+              "hash": "3e5a3c327752074c06a863739a56406f3f0fb1ae",
+              "subject": "next 24 hours mode",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3e5a3c327752074c06a863739a56406f3f0fb1ae"
+            },
+            {
+              "hash": "e2c3d439c868c555d75a2f8c2f9c1558daf70cae",
+              "subject": "add separate pressure_surface and pressure_sealevel",
+              "scope": "data",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e2c3d439c868c555d75a2f8c2f9c1558daf70cae"
+            },
+            {
+              "hash": "1104213b86afb5d0b61dfcb1b1608b2402826a03",
+              "subject": "move day view from drawer to full page",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1104213b86afb5d0b61dfcb1b1608b2402826a03"
+            },
+            {
+              "hash": "fdff26d83f46d6587b2afdc0aa971c79e207e48c",
+              "subject": "simplify navigation by replacing state when changing day",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/fdff26d83f46d6587b2afdc0aa971c79e207e48c"
+            },
+            {
+              "hash": "14a15b9fa339b83c9196fc6fbf029f61e779471a",
+              "subject": "write chart params to url to persist during page reload",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/14a15b9fa339b83c9196fc6fbf029f61e779471a"
+            },
+            {
+              "hash": "2a47d27553830f2b6d479851f8581250b8c4d195",
+              "subject": "remove background color from containers",
+              "scope": "design",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/2a47d27553830f2b6d479851f8581250b8c4d195"
+            },
+            {
+              "hash": "5efa1bd0e575cf156d6770e7e603a779b8321efc",
+              "subject": "snap to nearby location if within limit",
+              "scope": "geolocation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5efa1bd0e575cf156d6770e7e603a779b8321efc"
+            },
+            {
+              "hash": "628548931c3b5c8ae4ad07477c0c6960a58ac1b8",
+              "subject": "add mini chart to PrecipitationGroup",
+              "scope": "insights",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/628548931c3b5c8ae4ad07477c0c6960a58ac1b8"
+            },
+            {
+              "hash": "1cf2159ab9fe3f118ab8ff63579db69317fac7e0",
+              "subject": "change view transitions so pages slide in and out",
+              "scope": "interactions",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1cf2159ab9fe3f118ab8ff63579db69317fac7e0"
+            },
+            {
+              "hash": "7fab1ea01951a66826f4dce161004e8ac3b7928c",
+              "subject": "show counts in loader summary label",
+              "scope": "loaders",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/7fab1ea01951a66826f4dce161004e8ac3b7928c"
+            },
+            {
+              "hash": "254f187e038d8dbdf3368718d73d05848ed54138",
+              "subject": "open setting when long pressing location in bottom bar",
+              "scope": "locations",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/254f187e038d8dbdf3368718d73d05848ed54138"
+            },
+            {
+              "hash": "4ee38da9babeed3da0d21971f4480e8538b2a615",
+              "subject": "suggest saving geolocation when used frequently",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/4ee38da9babeed3da0d21971f4480e8538b2a615"
+            },
+            {
+              "hash": "af8662482c0532b35c7c57a208705425c8cd6f24",
+              "subject": "rework color categories with gradient and segments",
+              "scope": "metrics",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/af8662482c0532b35c7c57a208705425c8cd6f24"
+            },
+            {
+              "hash": "35deea5222cbc336fac2acc0b8f1c8871a07bfa2",
+              "subject": "large parameter select like day view in outlook view",
+              "scope": "outlook",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/35deea5222cbc336fac2acc0b8f1c8871a07bfa2"
+            },
+            {
+              "hash": "5470f8cc0cb401444269b58aa7a2b23c5bd80690",
+              "subject": "very basic outlook chart",
+              "scope": "outlook",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5470f8cc0cb401444269b58aa7a2b23c5bd80690"
+            },
+            {
+              "hash": "678e64fce15df2fa04b116de10309532ed166c0a",
+              "subject": "color based on categorization",
+              "scope": "precipitation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/678e64fce15df2fa04b116de10309532ed166c0a"
+            },
+            {
+              "hash": "5340e88970834de6fc80abfc07be938f0dac0065",
+              "subject": "only show remaining amount for groups today",
+              "scope": "precipitation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5340e88970834de6fc80abfc07be938f0dac0065"
+            },
+            {
+              "hash": "28f53bf024e4ee3d291464a30bc04c8f0a888b77",
+              "subject": "change theme colors to transparent",
+              "scope": "pwa",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/28f53bf024e4ee3d291464a30bc04c8f0a888b77"
+            },
+            {
+              "hash": "703a7bb1e3dec9dc66da636c1a8a58215db9203f",
+              "subject": "add action to re-run all settings migrations",
+              "scope": "sections",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/703a7bb1e3dec9dc66da636c1a8a58215db9203f"
+            },
+            {
+              "hash": "48568b21e7b7d8cbbe5c399152a4ce09852fa481",
+              "subject": "allow reordering and hiding sections",
+              "scope": "sections",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/48568b21e7b7d8cbbe5c399152a4ce09852fa481"
+            },
+            {
+              "hash": "20e6bcc53bce309ecd3d847063faf7f532ea4cc3",
+              "subject": "upgrade today section, add tomorrow section",
+              "scope": "sections",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/20e6bcc53bce309ecd3d847063faf7f532ea4cc3"
+            },
+            {
+              "hash": "96b9353140b06c69f060707a7929b90e70789bd9",
+              "subject": "add colors for negative temperatures",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/96b9353140b06c69f060707a7929b90e70789bd9"
+            },
+            {
+              "hash": "96b944baf0eb9d4aaf0c9eb391147ca7735ceec0",
+              "subject": "add descriptions for most settings",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/96b944baf0eb9d4aaf0c9eb391147ca7735ceec0"
+            },
+            {
+              "hash": "e182cfa67f06be96b72fe3707094100594209a39",
+              "subject": "add version migration logic and current migrations",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e182cfa67f06be96b72fe3707094100594209a39"
+            },
+            {
+              "hash": "6950917edcfbf37a45e7923ea4f8454aec18687a",
+              "subject": "better format dataset names",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/6950917edcfbf37a45e7923ea4f8454aec18687a"
+            },
+            {
+              "hash": "a86bad81e23d77c89a9c6b4443941ce7eff88e17",
+              "subject": "convert chart tooltip boolean to select",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a86bad81e23d77c89a9c6b4443941ce7eff88e17"
+            },
+            {
+              "hash": "b0655108316cf133f7e4f191a8746ad2d8fe745c",
+              "subject": "edit datasets in fullscreen",
+              "scope": "settings",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/b0655108316cf133f7e4f191a8746ad2d8fe745c"
+            }
+          ]
+        }
+      ],
+      "compareUrl": "https://github.com/kaiser-jan/weather-pwa/compare/v1.4.1...v1.5.0"
+    },
+    {
       "version": "1.4.1",
       "date": "2025-09-02",
       "commitGroups": [
