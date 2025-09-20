@@ -54,7 +54,7 @@
     }
   })
 
-  const hideYAxes = $derived.by(() => {
+  const showYAxes = $derived.by(() => {
     switch ($settingsChart.showYAxes) {
       case 'except-overview':
         return location !== 'overview'
@@ -75,7 +75,7 @@
   let container: HTMLButtonElement
 
   function getInitialMargin() {
-    return { top: hideYAxes ? 0 : 12, right: 0, bottom: 20, left: 0 }
+    return { top: showYAxes ? 12 : 0, right: 0, bottom: 20, left: 0 }
   }
   let margin = { ...getInitialMargin() }
   let widthFull = 360
@@ -129,7 +129,7 @@
       availableMetrics.push(parameter)
     }
 
-    const computedAxisList = computeAxesFor(axesToCompute, dimensions, data, hideYAxes)
+    const computedAxisList = computeAxesFor(axesToCompute, dimensions, data, !showYAxes)
 
     // compute new dimensions with margin changed by axes
     dimensions = computeDimensions()
