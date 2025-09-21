@@ -9,7 +9,6 @@
   import { locationSearch, openSettingsAt } from '$lib/stores/ui'
   import { selectedLocation } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
-  import { press } from 'svelte-gestures'
   import { onMount } from 'svelte'
   import { debounce } from '$lib/utils/common'
   import { get } from 'svelte/store'
@@ -17,6 +16,7 @@
   import { ITEM_ID_GEOLOCATION, type Location } from '$lib/types/ui'
   import { getDistanceBetweenCoordinatesMeters, saveLocation } from '$lib/utils/location'
   import { persisted } from 'svelte-persisted-store'
+  import { usePress } from 'svelte-gestures'
 
   const geolocationDetails = geolocationStore.details
 
@@ -120,11 +120,15 @@
                 : 'bg-foreground text-text-muted',
             ]}
             onclick={() => selectedLocation.set({ type: 'saved', location })}
-            use:press={() => ({ timeframe: 500, triggerBeforeFinished: true })}
-            onpress={(_) => {
-              openSettingsAt(['data', 'locations', locationIndex.toString()])
-            }}
+            {...usePress(
+              () => {},
+              () => ({ timeframe: 500, triggerBeforeFinished: true }),
+            )}
           >
+            <!-- use:press={() => ({ timeframe: 500, triggerBeforeFinished: true })} -->
+            <!-- onpress={(_) => { -->
+            <!--   openSettingsAt(['data', 'locations', locationIndex.toString()]) -->
+            <!-- }} -->
             {#if location.icon}
               <svelte:component this={iconMap[location.icon]} />
             {:else}

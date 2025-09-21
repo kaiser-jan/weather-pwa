@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
+  import { useSwipe, type SwipeCustomEvent } from 'svelte-gestures'
   import ContainerCorners from '$lib/components/ContainerCorners.svelte'
   import ErrorBoundary from '$lib/components/layout/errors/ErrorBoundary.svelte'
   import NavigationBar from '$lib/components/layout/NavigationBar.svelte'
@@ -51,8 +51,7 @@ NOTE: This is not part of the root layout, because both pages as well as the lay
         handleScroll()
         props.onscroll?.(e)
       }}
-      use:swipe={() => ({ touchAction: 'pan-y' })}
-      {onswipe}
+      {...useSwipe(onswipe, () => ({ touchAction: 'pan-y' }))}
     >
       {@render children!()}
     </main>

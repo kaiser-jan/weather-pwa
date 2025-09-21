@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ConfigItem, SettingsPage } from '../types'
   import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js'
-  import { swipe, type SwipeCustomEvent } from 'svelte-gestures'
+  import { useSwipe, type SwipeCustomEvent } from 'svelte-gestures'
   import { settings } from '../store'
   import { SettingsIcon } from '@lucide/svelte'
   import { onMount } from 'svelte'
@@ -143,8 +143,7 @@
 
   <div
     class="relative grow"
-    use:swipe={() => ({ timeframe: 300, minSwipeDistance: 30, touchAction: 'pan-y' })}
-    onswipe={handleSwipe}
+    {...useSwipe(handleSwipe, () => ({ timeframe: 300, minSwipeDistance: 30, touchAction: 'pan-y' }))}
   >
     <div
       class="absolute flex h-full w-full flex-row gap-6 transition-all duration-300 ease-in-out"

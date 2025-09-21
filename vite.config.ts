@@ -66,11 +66,4 @@ export default defineConfig({
   preview: {
     allowedHosts: ['weather.kjan.dev', 'weather-beta.kjan.dev', 'weather-live.kjan.dev', 'weather-debug.kjan.dev'],
   },
-  optimizeDeps: {
-    exclude: ['bits-ui'],
-    include: ['svelte-sonner', 'style-to-object'],
-  },
-  ssr: {
-    noExternal: true,
-  },
 })

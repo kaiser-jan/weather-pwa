@@ -103,13 +103,14 @@
             </span>
           </button>
 
-          <div class="gap-4overflow-y-auto flex grow flex-col">
+          <div class="flex grow flex-col gap-4 overflow-y-auto">
+            <!-- TODO: onresults -->
+            <!-- onresults={() => cachedResults.refresh()} -->
             <ApiSearchResult
               bind:liveQuery={currentQuery}
               bind:searchNow
               cacheKey={SEARCH_CACHE_KEY}
               load={nominatimQuery}
-              onresults={() => cachedResults.refresh()}
             >
               {#snippet children({ isLoading, result })}
                 <LocationList

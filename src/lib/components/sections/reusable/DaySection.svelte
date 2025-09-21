@@ -3,7 +3,7 @@
   import { NOW, NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
-  import { swipe } from 'svelte-gestures'
+  import { useSwipe } from 'svelte-gestures'
   import { settings } from '$lib/settings/store'
   import { dayView } from '$lib/stores/ui'
   import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
@@ -76,10 +76,12 @@
     <FailSafeContainer name={`Section ${title} Chart`} class="container">
       <div
         class="flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2"
-        use:swipe={() => ({ timeframe: 200, minSwipeDistance: 30, touchAction: 'pan-y' })}
-        onswipe={(e) => {
-          if (e.detail.direction === 'left') openNextDay()
-        }}
+        {...useSwipe(
+          (e) => {
+            if (e.detail.direction === 'left') openNextDay()
+          },
+          () => ({ touchAction: 'pan-y' }),
+        )}
       >
         <WeatherChart
           multiseries={timebucket.multiseries}
