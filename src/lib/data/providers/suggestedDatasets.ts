@@ -36,13 +36,14 @@ function matchesCriterion(dataset: Dataset, criteria: Criterion): boolean {
 }
 
 const criteria: Criterion[] = [
+  // a short-term forecast with high temporal resolution
   { interval: { lt: Duration.fromObject({ hours: 1 }) } },
-  {
-    interval: { lt: Duration.fromObject({ hours: 6 }) },
-    timespan: { gt: Duration.fromObject({ days: 1 }) },
-  },
+  // a medium-term forecast with less than 3 hours temporal resolutions and multiple days length
+  { interval: { lt: Duration.fromObject({ hours: 6 }) }, timespan: { gt: Duration.fromObject({ days: 1 }) } },
+  // a long-term forecast
   { timespan: { gte: Duration.fromObject({ days: 3 }) } },
   { timespan: { gte: Duration.fromObject({ days: 5 }) } },
+  // historic data for a few passed hours
   { offset: { gte: Duration.fromObject({ hours: 6 }) } },
   { parameters: ['o3'] },
 ]

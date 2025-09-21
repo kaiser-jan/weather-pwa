@@ -38,6 +38,7 @@ export function createTimeseriesForecastLoader({
       const response = await fetch(url.toString())
       const json = (await response.json()) as TimeseriesForecastGeoJsonSerializer
 
+      // 503 { "message":"failure to get a peer from the ring-balancer" }
       if (!response.ok) throw (json as any).message ?? 'Fetch failed'
 
       const expiresAt =
