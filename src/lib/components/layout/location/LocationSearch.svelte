@@ -4,7 +4,7 @@
   import { Input } from '$lib/components/ui/input'
   import { cn } from '$lib/utils'
   import { ChevronLeftIcon, HistoryIcon, MapPinnedIcon, PencilIcon, SearchIcon, XIcon } from '@lucide/svelte'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { iconMap } from '$lib/utils/icons'
   import { geolocationStore } from '$lib/stores/geolocation'
   import LocationList from './LocationList.svelte'

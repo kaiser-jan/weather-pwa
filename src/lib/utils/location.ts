@@ -1,4 +1,4 @@
-import { settings } from '$lib/settings/store'
+import { settings } from '$lib/stores/settings'
 import { geolocationStore } from '$lib/stores/geolocation'
 import { selectedLocation } from '$lib/stores/location'
 import type { Coordinates } from '$lib/types/data'

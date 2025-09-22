@@ -2,21 +2,24 @@
   import type { ConfigItem, SettingsPage } from '../types'
   import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js'
   import { useSwipe, type SwipeCustomEvent } from 'svelte-gestures'
-  import { settings } from '../store'
   import { SettingsIcon } from '@lucide/svelte'
-  import { onMount } from 'svelte'
+  import { onMount, setContext } from 'svelte'
   import { pushState, replaceState } from '$app/navigation'
   import { page } from '$app/state'
   import { getPageComponent, isWrapper } from '../registry'
   import { debounce, throttle } from '$lib/utils/common'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import ItemPageRenderer from './pages/ItemPageRenderer.svelte'
+  import type { InitializedSettings } from '..'
+  import { setSettingsContext } from '../context'
 
   interface Props {
-    config: ConfigItem[]
+    settings: InitializedSettings
   }
 
-  let { config }: Props = $props()
+  let { settings }: Props = $props()
+
+  setSettingsContext(settings)
 
   type Page = SettingsPage & { path: readonly string[] }
 
@@ -25,7 +28,7 @@
     type: 'page',
     label: 'Settings',
     icon: SettingsIcon,
-    children: config,
+    children: settings.blueprint,
     path: [],
   } as const
 

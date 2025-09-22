@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { forecastStore } from '$lib/stores/data'
   import TimelineBar from '$lib/components/visualization/TimelineBar.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'

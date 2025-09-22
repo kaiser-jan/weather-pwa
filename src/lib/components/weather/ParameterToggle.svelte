@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import type { ColorStop, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
   import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { cn, toggle } from '$lib/utils'

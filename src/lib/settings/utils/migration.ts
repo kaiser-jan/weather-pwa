@@ -1,6 +1,13 @@
 import { setDeep } from '../deep'
 
-export type Settings = Record<string, unknown>
+type Settings = Record<string, unknown>
+
+interface SettingsMigrationStep {
+  description: string
+  callback: (settings: Settings) => Settings
+}
+
+export type SettingsMigrations = SettingsMigrationStep[][]
 
 export function get(settings: Settings, path: string[]) {
   let part: unknown = settings

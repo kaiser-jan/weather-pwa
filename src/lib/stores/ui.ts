@@ -5,7 +5,7 @@ import { forecastStore } from './data'
 import { get, writable } from 'svelte/store'
 import { popUntil } from '$lib/utils'
 import type { ForecastMetric } from '$lib/config/metrics'
-import { settings } from '$lib/settings/store'
+import { settings } from '$lib/stores/settings'
 
 export const locationSearch = {
   hide: () => popUntil((s) => !s.showLocationSearch),

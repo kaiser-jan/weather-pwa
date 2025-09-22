@@ -1,6 +1,6 @@
 import type { Component } from 'svelte'
 
-import type { ConfigItem, SettingsInput, SettingsItem, SettingsPage, SettingsWrapper } from './types'
+import type { SettingsBlueprintItem, SettingsInput, SettingsItem, SettingsPage, SettingsWrapper } from './types'
 
 import BasicPageRenderer from './components/pages/BasicPageRenderer.svelte'
 import ChangelogPage from './components/pages/ChangelogPage.svelte'
@@ -59,7 +59,7 @@ const inputs: Record<SettingsInput['type'], SettingComponent> = {
 export function getInputComponent(type: SettingsInput['type']): SettingComponentInput {
   return inputs[type]
 }
-export function isInput(item: ConfigItem): item is SettingsInput {
+export function isInput(item: SettingsBlueprintItem): item is SettingsInput {
   return item.type in inputs
 }
 
@@ -71,7 +71,7 @@ const pages: Record<SettingsPage['type'], SettingComponent> = {
 export function getPageComponent(type: SettingsPage['type']): SettingComponentInput {
   return pages[type]
 }
-export function isPage(item: ConfigItem): item is SettingsPage {
+export function isPage(item: SettingsBlueprintItem): item is SettingsPage {
   return item.type in pages
 }
 
@@ -81,7 +81,7 @@ const items: Record<SettingsItem['type'], SettingComponent> = {
   value: ValueDisplayItem,
   'not-implemented': NotImplementedItem,
 }
-export function getItemComponent(item: ConfigItem): SettingComponent {
+export function getItemComponent(item: SettingsBlueprintItem): SettingComponent {
   if (isPage(item)) return PageItem
   if (isInput(item)) return BasicItemRenderer
   if (isItem(item)) return items[item.type]
@@ -90,13 +90,13 @@ export function getItemComponent(item: ConfigItem): SettingComponent {
   console.error('Settings item with unknown type: ', item)
   return NotImplementedItem
 }
-export function isItem(item: ConfigItem): item is SettingsItem {
+export function isItem(item: SettingsBlueprintItem): item is SettingsItem {
   return item.type in items
 }
 
 const wrappers: Record<SettingsWrapper['type'], SettingComponent> = {
   group: GroupWrapper,
 }
-export function isWrapper(item: ConfigItem): item is SettingsWrapper {
+export function isWrapper(item: SettingsBlueprintItem): item is SettingsWrapper {
   return item.type in wrappers
 }

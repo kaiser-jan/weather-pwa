@@ -4,7 +4,7 @@ import type { MultivariateTimeSeries, TimeSeries } from '$lib/types/data'
 import type { MetricDetails } from '$lib/types/ui'
 import { get } from 'svelte/store'
 import { autoFormatMetric, getPreferredUnit } from '../units'
-import { settings } from '$lib/settings/store'
+import { settings } from '$lib/stores/settings'
 import type { Dimensions } from './types'
 import * as d3 from 'd3'
 

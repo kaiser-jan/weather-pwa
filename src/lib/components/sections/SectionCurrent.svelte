@@ -8,7 +8,7 @@
   import { forecastStore, loaderStates } from '$lib/stores/data'
   import type { ForecastParameter } from '$lib/types/data'
   import { autoFormatMetric } from '$lib/utils/units'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { reverseGeocoding, placeToWeatherLocation } from '$lib/utils/location'
   import { NOW, NOW_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'

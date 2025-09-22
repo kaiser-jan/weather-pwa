@@ -1,6 +1,6 @@
 <script lang="ts">
   import SectionCurrent from '$lib/components/sections/SectionCurrent.svelte'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { geolocationStore } from '$lib/stores/geolocation'
   import { getComponent } from '$lib/components/sections/componentRegistry'
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'

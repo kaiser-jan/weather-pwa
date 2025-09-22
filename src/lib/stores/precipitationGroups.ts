@@ -1,7 +1,7 @@
 import { derived, get } from 'svelte/store'
 import { forecastStore } from './data'
 import { NOW, NOW_MILLIS } from './now'
-import { settings } from '$lib/settings/store'
+import { settings } from '$lib/stores/settings'
 import { Duration } from 'luxon'
 import type { TimeSeries } from '$lib/types/data'
 

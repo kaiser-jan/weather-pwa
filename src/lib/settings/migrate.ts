@@ -1,6 +1,6 @@
-import { SETTINGS_MIGRATIONS } from '$lib/config/settings-migrations'
+import type { SettingsMigrations } from './utils/migration'
 
-export function performMigrations({ remigrate }: { remigrate?: boolean }) {
+export function performMigrations({ migrations, remigrate }: { migrations: SettingsMigrations; remigrate?: boolean }) {
   console.debug('Checking for settings migrations...')
 
   let settings = JSON.parse(localStorage.getItem('settings') ?? '{}')
@@ -8,7 +8,7 @@ export function performMigrations({ remigrate }: { remigrate?: boolean }) {
   if (typeof version !== 'number' || remigrate) version = 0
   const initialVersion = version
 
-  const requiredMigrationSteps = SETTINGS_MIGRATIONS.slice(version + 1)
+  const requiredMigrationSteps = migrations.slice(version + 1)
   if (!requiredMigrationSteps.length) {
     console.debug(`No settings migration required from version ${version}!`)
     return

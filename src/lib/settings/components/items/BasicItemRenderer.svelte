@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getInputComponent } from '../../registry'
-  import { settings } from '../../store'
   import type { SettingsInput } from '../../types'
+  import { getSettingsContext } from '$lib/settings/context'
 
   interface Props {
     path: string[]
@@ -11,6 +11,8 @@
   }
 
   let { path, item, fullscreen, onnavigate }: Props = $props()
+
+  const settings = getSettingsContext()
 
   const Component = getInputComponent(item.type)
 

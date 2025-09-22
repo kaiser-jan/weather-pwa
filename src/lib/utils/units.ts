@@ -1,4 +1,4 @@
-import { type SettingsSchema } from '$lib/settings/store'
+import { type SettingsSchema } from '$lib/stores/settings'
 import type { ForecastParameter } from '$lib/types/data'
 import { CONVERTERS, DECIMAL_RECOMMENDED_FOR, METRIC_DIMENSION, type Unit } from '$lib/config/units'
 import * as d3 from 'd3'

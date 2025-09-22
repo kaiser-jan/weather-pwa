@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as AlertDialog from '$lib/components/ui/alert-dialog/index'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { geolocationStore } from '$lib/stores/geolocation'
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import LocationSearch from './LocationSearch.svelte'

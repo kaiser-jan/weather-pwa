@@ -4,7 +4,7 @@
   import { NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
   import { autoFormatMetric } from '$lib/utils/units'
   import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import type { TimeBucket } from '$lib/types/data'
   import { DateTime } from 'luxon'
   import { FactoryIcon, InfoIcon } from '@lucide/svelte'

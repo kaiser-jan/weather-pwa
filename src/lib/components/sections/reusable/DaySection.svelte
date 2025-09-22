@@ -4,7 +4,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
   import { useSwipe } from 'svelte-gestures'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { dayView } from '$lib/stores/ui'
   import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { ChevronRightIcon, ClockIcon } from '@lucide/svelte'

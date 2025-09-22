@@ -1,7 +1,7 @@
 import { DATASET_IDS_BY_PRIORITY } from '$lib/config/datasets'
 import { type DatasetId } from '$lib/data/providers'
 import { getSuggestedDatasetsForLocation } from '$lib/data/providers/suggestedDatasets'
-import { settings } from '$lib/settings/store'
+import { settings } from '$lib/stores/settings'
 import type { Forecast } from '$lib/types/data'
 import { refreshForecast } from '$lib/utils/forecast/load'
 import { subscribeNonImmediate } from '$lib/utils/stores'

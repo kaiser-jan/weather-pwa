@@ -2,7 +2,7 @@ import { derived, get } from 'svelte/store'
 import type { Location } from '$lib/types/ui'
 import { geolocationStore } from './geolocation'
 import type { Coordinates } from '$lib/types/data'
-import { settings } from '$lib/settings/store'
+import { settings } from '$lib/stores/settings'
 import { persisted } from 'svelte-persisted-store'
 
 export const selectedLocation = persisted<LocationSelection | null>('selected-location', null, {

@@ -3,7 +3,7 @@
   import { BookmarkIcon, ChevronRight, Trash2Icon, type Icon } from '@lucide/svelte'
   import { Button } from '$lib/components/ui/button'
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { getDistanceBetweenCoordinatesMeters } from '$lib/utils/location'
   import { locationSearch } from '$lib/stores/ui'
   import { deleteSavedLocation, saveLocation } from '$lib/utils/location'

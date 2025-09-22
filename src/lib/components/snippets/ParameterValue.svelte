@@ -1,6 +1,6 @@
 <script lang="ts">
   import { METRIC_DETAILS } from '$lib/config/metrics'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import type { ForecastParameter } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { autoFormatMetric } from '$lib/utils/units'

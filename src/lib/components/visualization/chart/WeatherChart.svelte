@@ -10,7 +10,7 @@
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
   import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { handleInteraction } from '$lib/utils/d3/interaction'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import type { ColorStop, CreatedSeriesDetails, MetricDetails } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
   import { createUUID, debounce } from '$lib/utils/common'

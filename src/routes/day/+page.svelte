@@ -7,7 +7,7 @@
   import ParameterDaySummary from '$lib/components/weather/ParameterDaySummary.svelte'
   import { type SwipeCustomEvent } from 'svelte-gestures'
   import TimelineBar from '$lib/components/visualization/TimelineBar.svelte'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { Skeleton } from '$lib/components/ui/skeleton'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
   import { getEndOfDayTimestamp, getStartOfDayTimestamp } from '$lib/utils'

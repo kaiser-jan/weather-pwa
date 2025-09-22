@@ -1,7 +1,7 @@
 <script lang="ts">
   import { generateCssRangeGradient } from '$lib/utils/ui'
   import type { NumberSummary } from '$lib/types/data'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { cn } from '$lib/utils'
   import type { ColorDefinition, ColorStop } from '$lib/types/ui'
 

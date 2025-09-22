@@ -1,6 +1,6 @@
-import type { ConfigItem } from './types'
+import type { SettingsBlueprintItem } from './types'
 
-export function extractDefaults(items: ConfigItem[]): Record<string, unknown> {
+export function extractDefaults(items: SettingsBlueprintItem[]): Record<string, unknown> {
   const result: Record<string, any> = {}
 
   function assign(path: string[], value: unknown) {
@@ -12,7 +12,7 @@ export function extractDefaults(items: ConfigItem[]): Record<string, unknown> {
     obj[path.at(-1)!] = value
   }
 
-  function walk(config: ConfigItem[], path: string[] = []) {
+  function walk(config: SettingsBlueprintItem[], path: string[] = []) {
     for (const item of config) {
       if ('visible' in item && item.visible) continue
       if ('default' in item) {

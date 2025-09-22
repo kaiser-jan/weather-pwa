@@ -7,7 +7,7 @@
   import { Button } from '$lib/components/ui/button'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import ExpandableList from '$lib/components/ExpandableList.svelte'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { openSettingsAt } from '$lib/stores/ui'
   import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
 

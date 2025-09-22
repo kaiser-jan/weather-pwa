@@ -5,7 +5,7 @@ import type { CreatedSeriesDetails } from '$lib/types/ui'
 import { mount } from 'svelte'
 import { autoFormatMetric } from '$lib/utils/units'
 import { get } from 'svelte/store'
-import { settings } from '$lib/settings/store'
+import { settings } from '$lib/stores/settings'
 import type { TimeSeriesNumberEntry, ForecastParameter } from '$lib/types/data'
 import type { Icon } from '@lucide/svelte'
 

@@ -1,6 +1,6 @@
 import { UNIT_OPTIONS, type Unit, type UnitDimension } from '$lib/config/units'
 import { DATASET_IDS, DATASETS, PROVIDERS, type DatasetId } from '$lib/data/providers'
-import type { ConfigItem } from '$lib/settings/types'
+import type { SettingsBlueprint } from '$lib/settings'
 import type { Location } from '$lib/types/ui'
 import type { DateObjectUnits } from 'luxon'
 import {
@@ -78,6 +78,7 @@ import { DATASET_IDS_BY_PRIORITY } from './datasets'
 import { clearCache, resetApp } from '$lib/utils/cache'
 import { SECTIONS, type SectionId } from '$lib/components/sections/registry'
 import { performMigrations } from '$lib/settings/migrate'
+import { SETTINGS_MIGRATIONS } from './settings-migrations'
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   temperature: '°C',
@@ -743,7 +744,7 @@ export const settingsConfig = [
             label: 'Re-Migrate Settings',
             icon: RedoIcon,
             action: () => {
-              performMigrations({ remigrate: true })
+              performMigrations({ migrations: SETTINGS_MIGRATIONS, remigrate: true })
               window.location.reload()
             },
           },
@@ -813,4 +814,4 @@ export const settingsConfig = [
       },
     ],
   },
-] as const satisfies ConfigItem[]
+] as const satisfies SettingsBlueprint

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import type { ForecastParameter } from '$lib/types/data'
   import { cn } from '$lib/utils'
   import { getPreferredUnit, autoFormatMetric } from '$lib/utils/units'

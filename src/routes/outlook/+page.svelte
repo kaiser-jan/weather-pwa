@@ -1,7 +1,7 @@
 <script lang="ts">
   import { forecastStore } from '$lib/stores/data'
   import { TODAY_MILLIS } from '$lib/stores/now'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
   import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { queryParam, ssp } from 'sveltekit-search-params'

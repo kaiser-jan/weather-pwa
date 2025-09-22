@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { getWeatherIcon, type WeatherSituation } from '$lib/utils/symbols'
   import type { Coordinates } from '$lib/types/data'
   import { cn } from '$lib/utils'

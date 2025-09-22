@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import type { Dimensions } from './types'
-import { settings } from '$lib/settings/store'
+import { settings } from '$lib/stores/settings'
 import { get } from 'svelte/store'
 import type { Unit } from '$lib/config/units'
 

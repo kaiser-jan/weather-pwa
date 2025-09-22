@@ -1,4 +1,3 @@
-import type { buttonVariants } from '$lib/components/ui/button'
 import type { Icon } from '@lucide/svelte'
 import type { Readable } from 'svelte/store'
 
@@ -73,17 +72,17 @@ export type NotImplementedSetting = BaseConfigItem & {
 type OptionalProp<T, K extends PropertyKey> = T extends Record<K, unknown> ? Omit<T, K> & Partial<Pick<T, K>> : T
 export type GroupWrapper = BaseConfigItem & {
   type: 'group'
-  children: ConfigItem[]
+  children: SettingsBlueprintItem[]
 }
 export type BasePage = BaseConfigItem & {
   type: 'page'
-  children: ConfigItem[]
+  children: SettingsBlueprintItem[]
 }
 export type ListSettingPage = BaseConfigItem & {
   type: 'list'
   default: Array<unknown>
   nameProperty: string
-  children: OptionalProp<ConfigItem, 'default'>[]
+  children: OptionalProp<SettingsBlueprintItem, 'default'>[]
 }
 export type ChangelogPage = BaseConfigItem & {
   type: 'changelog'
@@ -96,13 +95,14 @@ export type SettingsInput = TextSetting | SelectSetting | MultiSelectSetting | B
 
 export type SettingsNested = BasePage | SettingsWrapper
 
-export type ConfigItem = SettingsPage | SettingsWrapper | SettingsItem | SettingsInput
+export type SettingsBlueprintItem = SettingsPage | SettingsWrapper | SettingsItem | SettingsInput
+export type SettingsBlueprint = SettingsBlueprintItem[]
 
 //
 
-export type ConfigType<T extends readonly ConfigItem[]> = {
+export type SettingsFromBlueprint<T extends readonly SettingsBlueprintItem[]> = {
   [K in T[number] as K['id']]: K extends { type: 'group' | 'page'; children: infer C }
-    ? ConfigType<C & readonly ConfigItem[]>
+    ? SettingsFromBlueprint<C & readonly SettingsBlueprintItem[]>
     : K extends { type: 'select'; options: infer O }
       ? O extends readonly unknown[]
         ? O[number]

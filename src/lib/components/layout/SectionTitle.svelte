@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import type { Icon } from '@lucide/svelte'
   import type { Snippet } from 'svelte'
 

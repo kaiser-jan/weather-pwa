@@ -1,11 +1,14 @@
-import { asBoolean, copy, get, renameArrayEntry, write, writeNew, type Settings } from '$lib/settings/utils/migration'
+import {
+  asBoolean,
+  copy,
+  get,
+  renameArrayEntry,
+  write,
+  writeNew,
+  type SettingsMigrations,
+} from '$lib/settings/utils/migration'
 
-interface SettingsMigrationStep {
-  description: string
-  callback: (settings: Settings) => Settings
-}
-
-export const SETTINGS_MIGRATIONS: SettingsMigrationStep[][] = [
+export const SETTINGS_MIGRATIONS: SettingsMigrations = [
   [],
   [
     {

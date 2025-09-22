@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { settings } from '../../store'
   import type { SettingsNested } from '../../types'
   import { getItemComponent } from '$lib/settings/registry'
+  import { getSettingsContext } from '$lib/settings/context'
 
   interface Props {
     path: string[]
@@ -10,6 +10,8 @@
   }
 
   let { path: parentPath, item, onnavigate }: Props = $props()
+
+  const settings = getSettingsContext()
 </script>
 
 {#each item.children as child (child.id)}

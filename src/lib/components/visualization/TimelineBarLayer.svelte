@@ -1,7 +1,7 @@
 <script lang="ts">
   import { interpolateColor } from '$lib/utils/ui'
   import type { Coordinates, TimeSeries } from '$lib/types/data'
-  import { settings } from '$lib/settings/store'
+  import { settings } from '$lib/stores/settings'
   import { coordinates } from '$lib/stores/location'
   import { DateTime, Duration } from 'luxon'
 
