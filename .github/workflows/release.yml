@@ -42,16 +42,10 @@ jobs:
         id: semantic # Need an `id` for output variables
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # NOTE: this is required as otherwise the changelog has the new entry twice somehow
-      - name: Checkout new tagged release
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: main
-      - name: Reinstall dependencies
-        run: bun install --frozen-lockfile
+      # NOTE: This is required, as otherwise the changelog has the new entry twice,
+      # because the additions have been comitted and are in the working tree.
+      - name: Restore working tree
+        run: git restore .
 
       - name: Repo CI Setup
         if: steps.semantic.outputs.new_release_published == 'true'
