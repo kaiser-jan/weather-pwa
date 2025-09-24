@@ -55,7 +55,10 @@ export const dayView = {
 async function navigateBy(direction: 1 | -1) {
   const currentIndex = parseInt(page.url.searchParams.get('dayIndex')!)
   if (currentIndex === null) return
-  dayView.replace(currentIndex + direction, null)
+  const targetIndex = currentIndex + direction
+  const doesDayExist = get(forecastStore)?.daily?.[targetIndex] !== undefined
+  if (!doesDayExist) return
+  dayView.replace(targetIndex, null)
 }
 
 export function openSettingsAt(path: string[]) {
