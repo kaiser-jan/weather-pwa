@@ -1,6 +1,6 @@
 import { UNIT_OPTIONS, type Unit, type UnitDimension } from '$lib/config/units'
 import { DATASET_IDS, DATASETS, PROVIDERS, type DatasetId } from '$lib/data/providers'
-import type { SettingsBlueprint } from '$lib/settings'
+import type { SettingsBlueprint } from 'svelte-settings'
 import type { Location } from '$lib/types/ui'
 import type { DateObjectUnits } from 'luxon'
 import {
@@ -71,13 +71,12 @@ import {
 import type { ColorStop } from '$lib/types/ui'
 import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
-import type { Changelog } from '$lib/types/changelog'
 import { iconMap } from '$lib/utils/icons'
 import { FORECAST_METRICS, type ForecastMetric } from './metrics'
 import { DATASET_IDS_BY_PRIORITY } from './datasets'
 import { clearCache, resetApp } from '$lib/utils/cache'
 import { SECTIONS, type SectionId } from '$lib/components/sections/registry'
-import { performMigrations } from '$lib/settings/migrate'
+import { performMigrations } from 'svelte-settings'
 import { SETTINGS_MIGRATIONS } from './settings-migrations'
 
 const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
@@ -138,7 +137,7 @@ export const settingsConfig = [
             icon: GitCommitVerticalIcon,
             value: async () => {
               const module = await import('changelog.json')
-              const data = module.default as Changelog
+              const data = module.default
               const latestRelease = data.releases?.[0]
               if (!latestRelease) return 'unversioned'
               return latestRelease.version
@@ -171,6 +170,10 @@ export const settingsConfig = [
             type: 'changelog',
             label: 'Changelog',
             icon: HistoryIcon,
+            changelog: async () => {
+              const module = await import('changelog.json')
+              return module.default
+            },
           },
         ],
       },

@@ -1,4 +1,4 @@
-import { type SettingsSchema } from '$lib/stores/settings'
+import { type Settings } from '$lib/stores/settings'
 import type { ForecastParameter } from '$lib/types/data'
 import { CONVERTERS, DECIMAL_RECOMMENDED_FOR, METRIC_DIMENSION, type Unit } from '$lib/config/units'
 import * as d3 from 'd3'
@@ -41,7 +41,7 @@ export function formatMetric(
 export function autoFormatMetric(
   value: number | undefined | null,
   key: ForecastParameter,
-  settings: SettingsSchema,
+  settings: Settings,
   options?: { hideUnit?: boolean; showDecimal?: boolean },
 ): string {
   if (value === undefined || value === null) return '-'
@@ -54,7 +54,7 @@ export function autoFormatMetric(
  * Retrieves the users preferred unit for the given metric.
  * NOTE: passing in settings allows for deciding on reactivity
  */
-export function getPreferredUnit(key: ForecastParameter, settings: SettingsSchema) {
+export function getPreferredUnit(key: ForecastParameter, settings: Settings) {
   const dimension = METRIC_DIMENSION[key]
   if (!dimension) return null
   return settings.general.units[dimension]

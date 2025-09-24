@@ -86,12 +86,12 @@
   })
 </script>
 
-<FailSafeContainer name="Location Selector" class="bg-midground flex shrink grow flex-row items-center rounded-full">
+<FailSafeContainer name="Location Selector" class="flex shrink grow flex-row items-center rounded-full bg-midground">
   <div class="flex flex-row gap-2 p-2">
     <button
       class={[
         'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
-        $selectedLocation?.type === 'geolocation' ? 'bg-primary' : 'bg-foreground text-text-d',
+        $selectedLocation?.type === 'geolocation' ? 'bg-primary' : 'text-text-d bg-foreground',
       ]}
       onclick={() => {
         if ($selectedLocation?.type === 'geolocation') geolocationStore.refresh()
@@ -108,7 +108,7 @@
       {/if}
     </button>
   </div>
-  <div class="border-background relative w-0 grow border-x-4">
+  <div class="relative w-0 grow border-x-4 border-background">
     {#if $settingLocations.length}
       <div class="flex flex-row gap-2 overflow-x-auto overflow-y-hidden p-2">
         {#each $settingLocations as location, locationIndex (location.id)}
@@ -130,7 +130,8 @@
             <!--   openSettingsAt(['data', 'locations', locationIndex.toString()]) -->
             <!-- }} -->
             {#if location.icon}
-              <svelte:component this={iconMap[location.icon]} />
+              {@const Icon = iconMap[location.icon]}
+              <Icon />
             {:else}
               {location.name}
             {/if}
@@ -139,7 +140,7 @@
       </div>
     {:else}
       <button
-        class="text-text-muted inline-flex h-14 w-fit items-center p-2 px-3 text-sm"
+        class="inline-flex h-14 w-fit items-center p-2 px-3 text-sm text-text-muted"
         onclick={locationSearch.show}
       >
         <span class="line-clamp-2">
@@ -147,7 +148,7 @@
         </span>
       </button>
     {/if}
-    <div class="to-midground absolute top-0 right-0 h-full w-6 bg-linear-to-r from-transparent"></div>
+    <div class="absolute top-0 right-0 h-full w-6 bg-linear-to-r from-transparent to-midground"></div>
   </div>
   <div class="flex flex-row gap-2 p-2">
     <LocationSearch active={$selectedLocation?.type === 'search'} />

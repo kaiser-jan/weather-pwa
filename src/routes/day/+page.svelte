@@ -63,7 +63,7 @@
 
 <PageWrapper onswipe={handleSwipe} class="pt-[5rem]">
   <header
-    class="bg-background border-muted absolute top-0 z-10 flex h-[calc(4.5rem+env(safe-area-inset-top))] w-full justify-between gap-4 border-b-2 p-4 pt-[calc(1rem+env(safe-area-inset-top))] text-xl font-bold"
+    class="absolute top-0 z-10 flex h-[calc(4.5rem+env(safe-area-inset-top))] w-full justify-between gap-4 border-b-2 border-muted bg-background p-4 pt-[calc(1rem+env(safe-area-inset-top))] text-xl font-bold"
   >
     <Button size="icon" variant="midground" onclick={() => dayView.previous()} disabled={currentIndex === 0}>
       <ChevronLeft />

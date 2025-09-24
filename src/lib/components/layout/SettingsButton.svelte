@@ -6,22 +6,23 @@
   import { page } from '$app/state'
   import { pushState, replaceState } from '$app/navigation'
   import { settings } from '$lib/stores/settings'
-  import { SettingsView } from '$lib/settings'
+  import { SettingsView } from 'svelte-settings'
+  import { queryParam, ssp } from 'sveltekit-search-params'
+
+  const settingsPath = queryParam<string[]>('settings-path', ssp.array())
 
   function openSettings() {
-    pushState('', { ...page.state, showSettings: true })
+    settingsPath.set([])
   }
 
   function close() {
-    page.state.showSettings = false
-    page.state.settingsPath = []
-    replaceState('', page.state)
+    settingsPath.set(null)
   }
 </script>
 
 <Drawer.Root
   bind:open={
-    () => page.state.showSettings ?? false,
+    () => $settingsPath !== null,
     (o) => {
       if (o) openSettings()
       else close()
@@ -35,7 +36,9 @@
   </Drawer.Trigger>
   <Drawer.Content class="h-full">
     <div class="flex grow flex-col gap-4 overflow-hidden">
-      <SettingsView {settings} />
+      <div class="flex h-dvh min-h-0 grow flex-col gap-4 overflow-x-visible p-4 pb-0">
+        <SettingsView {settings} />
+      </div>
       <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
     </div>
   </Drawer.Content>

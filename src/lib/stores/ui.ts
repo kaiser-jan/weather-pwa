@@ -6,6 +6,7 @@ import { get, writable } from 'svelte/store'
 import { popUntil } from '$lib/utils'
 import type { ForecastMetric } from '$lib/config/metrics'
 import { settings } from '$lib/stores/settings'
+import { queryParam, ssp } from 'sveltekit-search-params'
 
 export const locationSearch = {
   hide: () => popUntil((s) => !s.showLocationSearch),
@@ -62,10 +63,6 @@ async function navigateBy(direction: 1 | -1) {
 }
 
 export function openSettingsAt(path: string[]) {
-  pushState('', {
-    ...page.state,
-    showLocationSearch: false,
-    showSettings: true,
-    settingsPath: path,
-  })
+  const settingsPath = queryParam<string[]>('settings-path', ssp.array([] as string[]))
+  settingsPath.set(path)
 }

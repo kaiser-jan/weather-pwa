@@ -6,7 +6,7 @@ import {
   write,
   writeNew,
   type SettingsMigrations,
-} from '$lib/settings/utils/migration'
+} from 'svelte-settings/migration'
 
 export const SETTINGS_MIGRATIONS: SettingsMigrations = [
   [],
