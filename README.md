@@ -15,13 +15,14 @@
 
 ## Roadmap
 
-- [ ] Outlook View (with daily averages)
-- [ ] Desktop Support
-- [ ] PWA Install Instructions
+- [ ] Outlook view (with daily averages)
+- [ ] Improved location search layout
+- [ ] Desktop support
+- [ ] PWA install instructions
 - [ ] Warnings (e.g. high temperature, high wind, thunderstorms)
-- [ ] Weather Maps
+- [ ] Weather maps
 - [ ] Stylistic weather simulation for current section
-- [ ] Setup Wizard with suggestions for different layouts
+- [ ] Setup wizard with suggestions for different layouts
 
 ## Known Issues
 
