@@ -2,7 +2,8 @@
 
 [Progressive Web App](https://web.dev/learn/pwa/progressive-web-apps/) providing a good idea of forecasted weather at a glance, while allowing to fully explore the depths of the provided data. All that while giving you full control over what data to use and how to display it.
 
-Currently mobile-only, desktop support is planned.
+> [!WARNING]
+> Currently mobile-only, desktop support is planned.
 
 ## Features
 
@@ -27,7 +28,7 @@ Currently mobile-only, desktop support is planned.
 ##### Altitude missing for searched locations
 
 For some calculations, like converting between sea-level and surface pressure, or even some APIs to a certain extent (met.no) an altitude value is necessary. While geolocation usually provides this, the [nominatim search](https://nominatim.org/release-docs/latest/api/Search/) does not.
-An elevation API, like [from open-meteo](https://open-meteo.com/en/docs/elevation-api) could help with this.
+An elevation API, like [the one from open-meteo](https://open-meteo.com/en/docs/elevation-api) could help with this.
 
 ## Development
 
@@ -42,11 +43,11 @@ Then you can install and run the project:
 
 ```bash
 bun install
-bun run setup:dev
+bun run setup:dev # installs non-npm dependencies like meteocons and api types
 bun run dev
 ```
 
-Please note, that for some features (like geolocation), browsers require the site to be served via https.
+Please note that for some features (like geolocation), browsers require the site to be served via https.
 
 ## Related Projects
 
@@ -66,12 +67,13 @@ Please note, that for some features (like geolocation), browsers require the sit
 There is an abundance of weather apps out there, yet none of those seems to fit my needs:
 
 - Easily digestible overview, while allowing to dive deep into the details
-- Visualizing data in a way that makes sense to **me**
 - Clean and modern look
 - Accurate weather data from local providers
 - Comparing multiple metrics in one chart
+- Visualizing data in a way that makes sense to **me**
 
-Visualizing data simply fascinates me. And weather data offers an interesting challenge, as it is relatable, offers loads of datapoints and has various common ways of visualization to challenge. Therefore, I set out to explore other ways of displaying this well-known type of data (spoiler: in many cases, common forms of visualizing have a reason).
+Visualizing data is simply fascinating to me. And weather data offers an interesting challenge as it is relatable, offers loads of datapoints and has various common ways of visualization to challenge.
+Therefore, I set out to explore other ways of displaying this well-known type of data (spoiler: in many cases, common forms of visualizing have a reason).
 
 ## Laying out the data
 
@@ -98,7 +100,7 @@ Another deliberate difference is opting for a full-day chart over a list of hour
 
 ### Long-Term Outlook
 
-The outlook, as I am calling it, aims to convey the current trend. Is it getting warmer or colder? Will the good/bad weather only last for a day or is it here to stay? It also gives a short summary of each day and serves as an entrypoint into exploring days in more detail.
+The outlook, as I call it, aims to convey the current trend. Is it getting warmer or colder? Will the good/bad weather only last for a day or is it here to stay? It also gives a short summary of each day and serves as an entrypoint into exploring days in more detail.
 
 ## Exploring different forms of visualization
 
