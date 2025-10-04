@@ -29,6 +29,7 @@ import {
   GitCommitVerticalIcon,
   GithubIcon,
   GlobeIcon,
+  GlobeLockIcon,
   HammerIcon,
   HardHatIcon,
   HashIcon,
@@ -435,7 +436,7 @@ export const settingsConfig = [
         icon: ListOrderedIcon,
         options: Object.keys(SECTIONS),
         labels: Object.fromEntries(Object.entries(SECTIONS).map(([k, s]) => [k, s.name])),
-        default: ['today', 'outlook', 'air_pollution'] as SectionId[],
+        default: ['today', 'outlook', 'air_pollution', 'sources'] as SectionId[],
       },
       {
         id: 'current',
@@ -761,6 +762,23 @@ export const settingsConfig = [
           },
         ],
       },
+      {
+        id: 'privacy',
+        type: 'page',
+        label: 'Data Privacy',
+        icon: GlobeLockIcon,
+        children: [
+          {
+            id: 'description',
+            type: 'description',
+            label: 'Description',
+            text: `This app only transmits data necessary to provide its services. No data is stored by us.<br>
+The only data leaving your phone is the location which you are requesting a forecast for. This location needs to be shared with data providers, in order to provide a forecast.<br>
+You can see which providers are used in the Data Sources section.`,
+          },
+        ],
+      },
+
       {
         id: 'author',
         type: 'group',

@@ -6,10 +6,11 @@
 
   interface Props {
     state: State
+    colored?: boolean
     class?: string
   }
 
-  const { state, class: className }: Props = $props()
+  const { state, colored, class: className }: Props = $props()
 </script>
 
 {#if state === 'loading'}
@@ -17,9 +18,9 @@
     <LoaderPulsatingRing className={cn('size-4 shrink-0', className)} />
   </div>
 {:else if state === 'error'}
-  <CircleXIcon class={cn('shrink-0 text-red-500', className)} />
+  <CircleXIcon class={cn('shrink-0', colored && 'text-red-500', className)} />
 {:else if state === 'outdated'}
-  <HourglassIcon class={cn('shrink-0 text-yellow-500', className)} />
+  <HourglassIcon class={cn('shrink-0', colored && 'text-yellow-500', className)} />
 {:else}
-  <CircleCheckBigIcon class={cn('shrink-0 text-green-500', className)} />
+  <CircleCheckBigIcon class={cn('shrink-0', colored && 'text-green-500', className)} />
 {/if}
