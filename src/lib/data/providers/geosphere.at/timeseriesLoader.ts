@@ -10,7 +10,6 @@ type LoaderOptions = {
   mode: 'forecast' | 'historical'
   parameters: string[]
   configs: Parameters<typeof transformTimeSeries>[2]
-  isPressureSurfaceLevel: boolean
 }
 
 export function createTimeseriesForecastLoader({ dataset, mode, parameters, configs }: LoaderOptions) {
