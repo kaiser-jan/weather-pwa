@@ -16,7 +16,7 @@ export const selectedLocation = persisted<LocationSelection | null>('selected-lo
       case 'search':
         return { type: 'search', coordinates: previous.coordinates }
       case 'saved':
-        return getLocationSaved(previous.location.id)
+        return getLocationSaved(previous?.location?.id)
       default:
         return getLocationFallback()
     }

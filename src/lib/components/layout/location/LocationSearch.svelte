@@ -3,7 +3,7 @@
   import * as Drawer from '$lib/components/ui/drawer'
   import { Input } from '$lib/components/ui/input'
   import { cn } from '$lib/utils'
-  import { ChevronLeftIcon, HistoryIcon, MapPinnedIcon, PencilIcon, SearchIcon, XIcon } from '@lucide/svelte'
+  import { ChevronLeftIcon, HistoryIcon, MapPinnedIcon, PencilIcon, PlayIcon, SearchIcon, XIcon } from '@lucide/svelte'
   import { settings } from '$lib/stores/settings'
   import { iconMap } from '$lib/utils/icons'
   import { geolocationStore } from '$lib/stores/geolocation'
@@ -29,10 +29,6 @@
   type LocationResults = { query: string; results: PlaceOutput[] }[]
 
   let { active }: Props = $props()
-
-  $effect(() => {
-    if (page.state.showLocationSearch) geolocationStore.start()
-  })
 
   let currentQuery = $state<string | null>(page.state.locationQuery)
   let searchNow = $state<() => void>(() => {})
@@ -156,6 +152,13 @@
               placeholderEmpty="Here should be your geolocation... :("
               items={[geolocationItem]}
             />
+            <!-- TODO: add start button to geolocation header -->
+            <!-- {#if $geolocationStore.status === 'unstarted'} -->
+            <!--   <Button variant="outline" onclick={geolocationStore.start}> -->
+            <!--     <PlayIcon /> -->
+            <!--     Start Geolocation -->
+            <!--   </Button> -->
+            <!-- {/if} -->
 
             <LocationList
               title="Saved Locations"
@@ -178,8 +181,8 @@
 
           <!-- TODO: only show recent results when search is highlighted? and already show the search view then?-->
           <div class="mt-auto flex flex-col gap-4">
-            {#if !page.state.locationQuery && !currentQuery}
-              <h5 class="text-text-muted -mb-3 inline-flex items-center gap-2 text-sm">
+            {#if !page.state.locationQuery && !currentQuery && $cachedResults?.length}
+              <h5 class="-mb-3 inline-flex items-center gap-2 text-sm text-text-muted">
                 <HistoryIcon />
                 Recent Searches
               </h5>
@@ -212,12 +215,12 @@
           }}
           class="h-12"
         />
-        <SearchIcon class="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2" />
+        <SearchIcon class="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground" />
         {#if currentQuery}
           <Button
             size="icon"
             variant="outline"
-            class="text-muted-foreground absolute top-1/2 right-2 size-8 -translate-y-1/2"
+            class="absolute top-1/2 right-2 size-8 -translate-y-1/2 text-muted-foreground"
             onclick={clearSearch}
           >
             <XIcon />
