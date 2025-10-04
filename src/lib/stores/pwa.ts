@@ -4,12 +4,12 @@ import { useRegisterSW } from 'virtual:pwa-register/svelte'
 import type { Icon } from '@lucide/svelte'
 import {
   LucideBan,
-  LucideCheckCircle,
   LucideCircleArrowDown,
+  LucideCircleCheck,
   LucideCircleChevronDown,
   LucideCircleEllipsis,
-  LucideCircleHelp,
   LucideCirclePlay,
+  LucideCircleQuestionMark,
 } from '@lucide/svelte'
 
 const swStateIconMap: Record<ServiceWorkerState, typeof Icon> = {
@@ -17,7 +17,7 @@ const swStateIconMap: Record<ServiceWorkerState, typeof Icon> = {
   installing: LucideCircleArrowDown,
   installed: LucideCircleChevronDown,
   activating: LucideCirclePlay,
-  activated: LucideCheckCircle,
+  activated: LucideCircleCheck,
   redundant: LucideBan,
 }
 
@@ -29,7 +29,7 @@ function createSWStores() {
   let registration: ServiceWorkerRegistration | undefined
   let swUrl: string | undefined
 
-  const icon = derived(state, ($state) => swStateIconMap[$state as ServiceWorkerState] ?? LucideCircleHelp)
+  const icon = derived(state, ($state) => swStateIconMap[$state as ServiceWorkerState] ?? LucideCircleQuestionMark)
 
   const { updateServiceWorker } = useRegisterSW({
     onRegisteredSW(url, reg) {
