@@ -1,6 +1,25 @@
 {
   "releases": [
     {
+      "version": "1.5.2",
+      "date": "2025-10-04",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "073da944fe6264e7ca0d5d7e6733ccc478ef8fec",
+              "subject": "update svelte-settings",
+              "scope": "deps",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/073da944fe6264e7ca0d5d7e6733ccc478ef8fec"
+            }
+          ]
+        }
+      ],
+      "compareUrl": "https://github.com/kaiser-jan/weather-pwa/compare/v1.5.1...v1.5.2"
+    },
+    {
       "version": "1.5.1",
       "date": "2025-10-04",
       "commitGroups": [
