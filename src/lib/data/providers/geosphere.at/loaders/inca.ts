@@ -12,6 +12,5 @@ export default {
     mode: 'historical',
     parameters: getRequestedParametersFromConfig(configs),
     configs,
-    isPressureSurfaceLevel: false,
   }),
 } as const satisfies Loader<DatasetId>

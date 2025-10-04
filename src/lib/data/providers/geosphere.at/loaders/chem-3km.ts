@@ -12,6 +12,5 @@ export default {
     mode: 'forecast',
     parameters: getRequestedParametersFromConfig(configs),
     configs,
-    isPressureSurfaceLevel: false,
   }),
 } as const satisfies Loader<DatasetId>

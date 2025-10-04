@@ -13,13 +13,7 @@ type LoaderOptions = {
   isPressureSurfaceLevel: boolean
 }
 
-export function createTimeseriesForecastLoader({
-  dataset,
-  mode,
-  parameters,
-  configs,
-  isPressureSurfaceLevel = false,
-}: LoaderOptions) {
+export function createTimeseriesForecastLoader({ dataset, mode, parameters, configs }: LoaderOptions) {
   async function load(coordinates: Coordinates, offset = 0): ReturnType<Loader<string>['load']> {
     const now = DateTime.now()
     const url = new URL(`https://dataset.api.hub.geosphere.at/v1/timeseries/${mode}/${dataset.internalId}`)
@@ -59,21 +53,6 @@ export function createTimeseriesForecastLoader({
       configs,
       dataset.temporalResolution.toMillis(),
     )
-
-    if (isPressureSurfaceLevel) {
-      if (coordinates.altitude != null) {
-        transformed.pressure?.forEach((v, i) => {
-          const p = v.value
-          const t = transformed.temperature?.[i]?.value
-          if (p != null && t != null) {
-            transformed.pressure[i].value = convertSurfacePressureToSeaLevel(p, coordinates.altitude!, t)
-          }
-        })
-      } else {
-        console.warn('No altitude available, cannot convert surface pressure to sea level pressure!')
-        delete transformed.pressure
-      }
-    }
 
     return {
       success: true,
