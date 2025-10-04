@@ -1,5 +1,6 @@
 <script>
   import { goto } from '$app/navigation'
+  import FooterMinimal from '$lib/components/layout/FooterMinimal.svelte'
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
   import { Button } from '$lib/components/ui/button'
   import { geolocationStore } from '$lib/stores/geolocation'
@@ -19,9 +20,9 @@
 </script>
 
 <PageWrapper class="p-4 pb-0">
-  <div class="bg-midground flex size-full justify-center rounded-xl p-4">
+  <div class="flex size-full justify-center rounded-xl bg-midground p-4">
     <section class="flex h-full max-w-prose flex-col items-center justify-center gap-4">
-      <h1 class="text-4xl font-bold">Welcome!</h1>
+      <h1 class="mt-auto text-4xl font-bold">Welcome!</h1>
       <p class="text-center text-lg">Where do you want to check the weather at?</p>
       <Button
         class="text-base"
@@ -38,6 +39,8 @@
       <Button class="text-base" onclick={locationSearch.show}>
         <SearchIcon /> Search a location
       </Button>
+
+      <FooterMinimal class="mt-auto" />
     </section>
   </div>
 </PageWrapper>
