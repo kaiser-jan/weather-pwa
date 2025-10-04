@@ -1,6 +1,48 @@
 {
   "releases": [
     {
+      "version": "1.5.1",
+      "date": "2025-10-04",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "755b910c0926e815c4cae6cfafc8eaafe3eee805",
+              "subject": "add about and privacy policy link to setup pages as well",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/755b910c0926e815c4cae6cfafc8eaafe3eee805"
+            },
+            {
+              "hash": "21b1c6bfe9cbb42c12f6825fd1463e3b550444ab",
+              "subject": "inverted setting sections.components.chart.showValueAxes",
+              "scope": "chart",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/21b1c6bfe9cbb42c12f6825fd1463e3b550444ab"
+            },
+            {
+              "hash": "a832229142755655565aac5ee5e99a876c81206b",
+              "subject": "disable navigation to nonexistant days",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/a832229142755655565aac5ee5e99a876c81206b"
+            },
+            {
+              "hash": "1b18bc857464e7cdf7137f9ac6798cb3707a5ea5",
+              "subject": "remove unnecessary pressure conversion",
+              "scope": "geosphere.at",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/1b18bc857464e7cdf7137f9ac6798cb3707a5ea5"
+            },
+            {
+              "hash": "34d93d6c7a19d143d122a0082e1c03644bf30873",
+              "subject": "do not auto-start location service on search open",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/34d93d6c7a19d143d122a0082e1c03644bf30873"
+            }
+          ]
+        }
+      ],
+      "compareUrl": "https://github.com/kaiser-jan/weather-pwa/compare/v1.5.0...v1.5.1"
+    },
+    {
       "version": "1.5.0",
       "date": "2025-09-19",
       "commitGroups": [

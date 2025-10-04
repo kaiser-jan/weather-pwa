@@ -1,3 +1,14 @@
+## [1.5.1](https://github.com/kaiser-jan/weather-pwa/compare/v1.5.0...v1.5.1) (2025-10-04)
+
+
+### Bug Fixes
+
+* add about and privacy policy link to setup pages as well ([755b910](https://github.com/kaiser-jan/weather-pwa/commit/755b910c0926e815c4cae6cfafc8eaafe3eee805))
+* **chart:** inverted setting sections.components.chart.showValueAxes ([21b1c6b](https://github.com/kaiser-jan/weather-pwa/commit/21b1c6bfe9cbb42c12f6825fd1463e3b550444ab))
+* **day:** disable navigation to nonexistant days ([a832229](https://github.com/kaiser-jan/weather-pwa/commit/a832229142755655565aac5ee5e99a876c81206b))
+* **geosphere.at:** remove unnecessary pressure conversion ([1b18bc8](https://github.com/kaiser-jan/weather-pwa/commit/1b18bc857464e7cdf7137f9ac6798cb3707a5ea5))
+* **location:** do not auto-start location service on search open ([34d93d6](https://github.com/kaiser-jan/weather-pwa/commit/34d93d6c7a19d143d122a0082e1c03644bf30873))
+
 # [1.5.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.4.1...v1.5.0) (2025-09-19)
 
 
