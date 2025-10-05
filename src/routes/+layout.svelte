@@ -6,6 +6,7 @@
   import { goto } from '$app/navigation'
   import { coordinates, selectedLocation } from '$lib/stores/location'
   import { geolocationStore } from '$lib/stores/geolocation'
+  import GeolocationSuggestion from '$lib/components/GeolocationSuggestion.svelte'
 
   let { children } = $props()
 
@@ -34,6 +35,7 @@
 <ErrorBoundary scope="app">
   {@render children()}
 
+  <GeolocationSuggestion />
   <ViewTransitionProvider />
   <NotificationsProvider />
 </ErrorBoundary>

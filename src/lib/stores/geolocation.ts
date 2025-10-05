@@ -5,7 +5,7 @@ import { derived, readable } from 'svelte/store'
 
 type GeolocationStatus = 'unstarted' | 'unsupported' | 'requesting' | 'unpermitted' | 'loading' | 'error' | 'active'
 
-interface GeolocationState {
+export interface GeolocationState {
   status: GeolocationStatus
   position: GeolocationPosition | null
   error: GeolocationPositionError | null
