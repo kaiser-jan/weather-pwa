@@ -382,8 +382,8 @@ export const settingsConfig = [
             default: [
               { value: -80, h: 360, s: 65, l: 35 }, // hsl(360 65% 35%)
               { value: -20, h: 264, s: 60, l: 40 }, // hsl(264 60% 40%)
-              { value: -10, h: 225, s: 55, l: 44 }, // hsl(225 55% 44%)
-              { value: 0, h: 0, s: 0, l: 100 },
+              { value: -10, h: 0, s: 0, l: 100 },
+              { value: 0, h: 225, s: 60, l: 35 }, // hsl(225 60% 35%)
               { value: 10, h: 174, s: 49, l: 64 },
               { value: 15, h: 134, s: 47, l: 70 },
               { value: 20, h: 96, s: 67, l: 60 },
