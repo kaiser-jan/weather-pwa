@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "1.5.3",
+      "date": "2025-10-05",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "184257e6105971ff6ac70609097585decb5bc79d",
+              "subject": "remove unnecessary cache parameters about location origin",
+              "scope": "cache",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/184257e6105971ff6ac70609097585decb5bc79d"
+            },
+            {
+              "hash": "76bcd604b18ff51a07e75554666c9368eab680d0",
+              "subject": "actually suggest saving geolocation only after multi use",
+              "scope": "location",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/76bcd604b18ff51a07e75554666c9368eab680d0"
+            },
+            {
+              "hash": "fb4ba8081936e6f06e2014e9d68e138f2106a07e",
+              "subject": "remove gaps from MiniPrecipitationChart",
+              "scope": "precipitation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/fb4ba8081936e6f06e2014e9d68e138f2106a07e"
+            }
+          ]
+        }
+      ],
+      "compareUrl": "https://github.com/kaiser-jan/weather-pwa/compare/v1.5.2...v1.5.3"
+    },
+    {
       "version": "1.5.2",
       "date": "2025-10-04",
       "commitGroups": [

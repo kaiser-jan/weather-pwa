@@ -1,3 +1,12 @@
+## [1.5.3](https://github.com/kaiser-jan/weather-pwa/compare/v1.5.2...v1.5.3) (2025-10-05)
+
+
+### Bug Fixes
+
+* **cache:** remove unnecessary cache parameters about location origin ([184257e](https://github.com/kaiser-jan/weather-pwa/commit/184257e6105971ff6ac70609097585decb5bc79d))
+* **location:** actually suggest saving geolocation only after multi use ([76bcd60](https://github.com/kaiser-jan/weather-pwa/commit/76bcd604b18ff51a07e75554666c9368eab680d0))
+* **precipitation:** remove gaps from MiniPrecipitationChart ([fb4ba80](https://github.com/kaiser-jan/weather-pwa/commit/fb4ba8081936e6f06e2014e9d68e138f2106a07e))
+
 ## [1.5.2](https://github.com/kaiser-jan/weather-pwa/compare/v1.5.1...v1.5.2) (2025-10-04)
 
 
