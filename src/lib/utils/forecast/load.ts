@@ -52,7 +52,12 @@ export function refreshForecast({
   // handle loading and status updates for each loader
   for (const [loaderIndex, loader] of loaders.entries()) {
     loader
-      .load(inputs.coordinates)
+      // ensure no other props are in here, which are not relevant and break caching
+      .load({
+        longitude: inputs.coordinates.longitude,
+        latitude: inputs.coordinates.latitude,
+        altitude: inputs.coordinates.altitude,
+      })
       .then((result) => {
         states[loaderIndex] = { done: true, ...result, loader }
         loaderStates.set(states)
