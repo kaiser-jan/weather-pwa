@@ -13,7 +13,7 @@
 <SectionTitle title="Data Sources" icon={DatabaseIcon} />
 <Accordion.Root type="single" class="">
   <Accordion.Item class="container-unpadded">
-    <Accordion.Trigger class="-my-4 inline-flex justify-start px-2 py-4 text-text-muted">
+    <Accordion.Trigger class="-my-4 inline-flex justify-start px-0 py-4 text-text-muted">
       <LoaderState state={$loaderSummaryState} />
       {$loaderSummaryLabel}
     </Accordion.Trigger>
@@ -21,7 +21,7 @@
       <Table.Root>
         <Table.Header>
           <Table.Row>
-            <Table.Head class="w-4" />
+            <Table.Head class="w-4 pl-0" />
             <Table.Head class="container-unpadded sticky left-0 z-10 bg-background">Loader</Table.Head>
             <Table.Head>Updated At</Table.Head>
             <Table.Head>Refresh At</Table.Head>
@@ -33,12 +33,12 @@
           {#each $loaderStates as state (state.loader.datasetIds.join(','))}
             {@const provider = PROVIDERS.find((p) => p.loaderIds.includes(state.loader.id))}
             <Table.Row class="group gap-2 opacity-100">
-              <Table.Cell class="w-4">
+              <Table.Cell class="w-4 pl-0">
                 <LoaderState colored state={stateFromLoaderState(state)} />
               </Table.Cell>
               <Table.Cell class="sticky left-0 z-20 max-w-48 p-0">
                 <a
-                  class="container-unpadded flex h-full max-w-36 flex-nowrap items-center gap-1 bg-background px-2 group-hover:bg-muted/50"
+                  class="container-unpadded flex h-full max-w-30 flex-nowrap items-center gap-1 bg-background px-2 group-hover:bg-muted/50"
                   href={state.loader.url}
                   target="_blank"
                 >
