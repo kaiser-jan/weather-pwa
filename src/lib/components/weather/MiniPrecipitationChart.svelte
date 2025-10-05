@@ -66,7 +66,7 @@
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`)
 
-    const bars = createBars({ svg, dimensions, scaleX, scaleY, data: timeseries }) //
+    const bars = createBars({ svg, dimensions, scaleX, scaleY, data: timeseries, padding: 0 }) //
 
     const colorStyle = details.color
     const color = colorStyle && 'css' in colorStyle ? colorStyle.css : undefined

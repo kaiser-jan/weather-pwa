@@ -8,9 +8,9 @@ export function createBars(options: {
   scaleX: d3.ScaleTime<number, number, never>
   scaleY: d3.ScaleLinear<number, number, never>
   data: TimeSeriesNumberEntry[]
+  padding?: number
 }) {
-  const { svg, dimensions, scaleX, scaleY, data } = options
-  const padding = 2
+  const { svg, dimensions, scaleX, scaleY, data, padding = 2 } = options
   const bars = svg
     .append('g')
     .selectAll('rect')
