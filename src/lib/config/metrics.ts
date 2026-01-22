@@ -41,7 +41,7 @@ function createAirPollutantDomainCallback(limits: number[]) {
 const _METRIC_DETAILS = {
   temperature: {
     label: 'Temperature',
-    domain: { min: [-40, -20, 0], max: [20, 40, 60] },
+    domain: { min: [-40, -20, -10, 0], max: [10, 20, 30, 40, 60] },
     domainDefault: { min: 10, max: 35 },
     icon: ThermometerIcon,
     color: { type: 'gradient', categories: TEMPERATURE_CATEGORIES },
@@ -78,7 +78,7 @@ const _METRIC_DETAILS = {
 
   precipitation_amount: {
     label: 'Precipitation Amount',
-    domain: { min: [0], max: [20, 50] },
+    domain: { min: [0], max: [7.2, 20, 50] },
     domainDefault: { min: 0, max: 7.2 },
     icon: UmbrellaIcon,
     iconIfZero: UmbrellaOffIcon,

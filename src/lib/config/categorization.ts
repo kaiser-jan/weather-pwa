@@ -8,8 +8,8 @@ type CategoryWithDescription = ColorStop & { description: string }
 export const TEMPERATURE_CATEGORIES: ColorStop[] = [
   { threshold: -80, ...parseOklch('oklch(44% 0.15 26)') },
   { threshold: -20, ...parseOklch('oklch(38% 0.17 295)') },
-  { threshold: -10, ...parseOklch('oklch(100% 0.00 90)') },
-  { threshold: 0, ...parseOklch('oklch(43% 0.16 266)') },
+  { threshold: -10, ...parseOklch('oklch(43% 0.16 266)') },
+  { threshold: 0, ...parseOklch('oklch(100% 0.00 90)') },
   { threshold: 10, ...parseOklch('oklch(80% 0.09 187)') },
   { threshold: 15, ...parseOklch('oklch(82% 0.11 151)') },
   { threshold: 20, ...parseOklch('oklch(82% 0.19 135)') },
@@ -51,6 +51,8 @@ export const RAIN_CATEGORIES: CategoryWithDescription[] = [
 
 // https://www.researchgate.net/figure/Dew-point-Humidity-and-corresponding-Human-Perception_tbl5_312498146
 export const DEW_POINT_CATEGORIES: CategoryWithDescription[] = [
+  { threshold: -20, ...parseOklch('oklch(46% 0.16 296)'), description: 'Very Dry' },
+  { threshold: -10, ...parseOklch('oklch(47% 0.17 277)'), description: 'Very Dry' },
   { threshold: 0, ...parseOklch('oklch(61% 0.12 252)'), description: 'Dry' },
   { threshold: 6, ...parseOklch('oklch(75% 0.08 225)'), description: 'Dry' },
   { threshold: 10, ...parseOklch('oklch(80% 0.18 136)'), description: 'Great' },

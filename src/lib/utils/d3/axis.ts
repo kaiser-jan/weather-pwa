@@ -75,7 +75,8 @@ export function createYAxis(options: {
     .call(
       axisGenerator(scale)
         .tickFormat(format)
-        .tickSizeOuter(get(settings).sections.components.chart.axisUnits === 'replace' ? 0 : 6),
+        .tickSizeOuter(get(settings).sections.components.chart.axisUnits === 'replace' ? 0 : 6)
+        .ticks(8),
     )
     .classed('text-overlay', true)
     .call((g) => g.selectAll('.tick text').classed('text-text-muted', true))
