@@ -49,6 +49,8 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-100',
       markExtrema: true,
+      // TODO: make unit agnostic
+      markers: [{ value: 0, class: 'stroke-1 stroke-white opacity-50' }],
       include: {
         temperature_max: {
           color: { type: 'gradient', categories: TEMPERATURE_CATEGORIES },

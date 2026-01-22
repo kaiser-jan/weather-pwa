@@ -22,6 +22,7 @@ export interface MetricDetailsChart {
   class: string
   areaSecondParameter?: ForecastParameter
   markExtrema?: boolean
+  markers?: { value: number; class: string }[]
 }
 
 export interface MetricDetails {

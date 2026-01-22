@@ -216,6 +216,19 @@
         const colorStyle = details.color
         const color = colorStyle && 'css' in colorStyle ? colorStyle.css : undefined
 
+        for (const marker of details.chart.markers ?? []) {
+          svg
+            .append('line')
+            .attr('x1', dimensions.margin.left)
+            .attr('x2', dimensions.margin.left + dimensions.width)
+            .attr('y1', scaleY(marker.value))
+            .attr('y2', scaleY(marker.value))
+            .attr('stroke', 'white')
+            .attr('stroke-width', 1)
+            .attr('opacity', 0.5)
+            .classed(marker.class, true)
+        }
+
         switch (details.chart.style) {
           case 'line':
             dataRepresentation = createLine({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
