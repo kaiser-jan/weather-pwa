@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { interpolateColor } from '$lib/utils/ui'
   import type { Coordinates, TimeSeries } from '$lib/types/data'
   import { settings } from '$lib/stores/settings'
   import { coordinates } from '$lib/stores/location'
@@ -42,7 +41,7 @@
 
     switch (parameter) {
       case 'temperature':
-        return { color: interpolateColor(TEMPERATURE_CATEGORIES, value) }
+        return { color: colorToCss(interpolateColor(TEMPERATURE_CATEGORIES, value)) }
       case 'cloud_coverage':
         return { color: `hsla(0, 0%, 70%, ${value}%)` }
       case 'precipitation_amount':
@@ -111,6 +110,7 @@
   }
 
   import SunCalc from 'suncalc'
+  import { colorToCss, interpolateColor } from '$lib/utils/color'
 
   const sunColor = (factor: number) => `hsla(55, 65%, 65%, ${factor * 100}%)`
   const moonColor = (factor: number) => `hsla(260, 90%, 80%, ${factor * 100}%)`

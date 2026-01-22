@@ -10,12 +10,12 @@
   import { FactoryIcon, InfoIcon } from '@lucide/svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import { EAQI } from '$lib/config/categorization'
-  import { hslFromObject } from '$lib/utils/ui'
   import { Button } from '../ui/button'
   import { dayView } from '$lib/stores/ui'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { getEaqiLevels, type ForecastParameterAirPollution } from '$lib/utils/forecast/aqi/eaqi'
+  import { colorToCss } from '$lib/utils/color'
 
   const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS))
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS))
@@ -77,12 +77,9 @@
       onclick={() => dayView.open(type === 'tomorrow' ? tomorrow : today, ['aqi'])}
     >
       <span class="text-text" class:font-bold={type === 'now'}>{label}</span>
-      <div
-        class="ml-auto size-3 rounded-full"
-        style="background-color: {hslFromObject(EAQI.colors[roundedIndex])}"
-      ></div>
+      <div class="ml-auto size-3 rounded-full" style="background-color: {colorToCss(EAQI.colors[roundedIndex])}"></div>
       {#if $settings.data.forecast.aqi.showCategory}
-        <span class="text-text-muted w-[6ch] text-left text-xs">{EAQI.labels[roundedIndex]}</span>
+        <span class="w-[6ch] text-left text-xs text-text-muted">{EAQI.labels[roundedIndex]}</span>
       {:else}
         <span class="text-text-muted">{index.toFixed(1)}</span>
       {/if}
@@ -111,7 +108,7 @@
       })}
     </div>
 
-    <span class="bg-overlay min-h-full w-0.5"></span>
+    <span class="min-h-full w-0.5 bg-overlay"></span>
 
     <Button
       variant="ghost"
@@ -134,7 +131,7 @@
             color={METRIC_DETAILS[pollutant]!.color}
             className="h-2"
           />
-          <div class="text-muted-foreground w-20 text-right text-xs text-nowrap">
+          <div class="w-20 text-right text-xs text-nowrap text-muted-foreground">
             {autoFormatMetric(eaqi.current.values[pollutant], pollutant, $settings) ?? '–'}
           </div>
         </div>

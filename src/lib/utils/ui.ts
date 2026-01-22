@@ -1,5 +1,6 @@
 import type { ColorStop } from '$lib/types/ui'
 import { DateTime } from 'luxon'
+import { colorToCss } from './color'
 
 /**
  * Constructs a linear css gradient from the given stops in the given range.
@@ -20,35 +21,14 @@ export function generateCssRangeGradient(
 
   const gradientStops = includedStops.map((s) => {
     const pos = ((s.threshold - rangeMin) / (rangeMax - rangeMin)) * 100
-    return `${hslFromObject(s)} ${pos}%`
+    return `${colorToCss(s)} ${pos}%`
   })
 
   return `background: linear-gradient(to ${direction}, ${gradientStops.join(', ')});`
 }
 
-export function hslFromObject(color: Omit<ColorStop, 'value'>) {
-  return `hsl(${color.h}, ${color.s}%, ${color.l}%)`
-}
-
 export function interpolate(a: number, b: number, t: number): number {
   return a * (1 - t) + b * t
-}
-
-export function interpolateColor(stops: ColorStop[], value: number): string {
-  for (let i = 0; i < stops.length - 1; i++) {
-    const a = stops[i],
-      b = stops[i + 1]
-    if (value >= a.threshold && value <= b.threshold) {
-      const t = (value - a.threshold) / (b.threshold - a.threshold)
-      const h = interpolate(a.h, b.h, t)
-      const s = interpolate(a.s, b.s, t)
-      const l = interpolate(a.l, b.l, t)
-      const alpha = interpolate(a.a ?? 1, b.a ?? 1, t)
-      return `hsla(${h}, ${s}%, ${l}%, ${alpha})`
-    }
-  }
-  const edge = value <= stops[0].threshold ? stops[0] : stops[stops.length - 1]
-  return `hsl(${edge.h}, ${edge.s}%, ${edge.l}, ${edge.a ?? 1}%)`
 }
 
 /**

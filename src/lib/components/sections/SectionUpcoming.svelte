@@ -3,7 +3,6 @@
   import { forecastStore } from '$lib/stores/data'
   import TimelineBar from '$lib/components/visualization/TimelineBar.svelte'
   import { Skeleton } from '$lib/components/ui/skeleton'
-  import { interpolateColor } from '$lib/utils/ui'
   import { autoFormatMetric } from '$lib/utils/units'
   import { NOW, NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
@@ -17,6 +16,7 @@
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import { TEMPERATURE_CATEGORIES } from '$lib/config/categorization'
+  import { colorToCss, interpolateColor } from '$lib/utils/color'
 
   const SHOW_PAST = false
 
@@ -69,11 +69,11 @@
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.min, 'temperature', $settings)}</span>
           <span
             class={['size-2.5 rounded-full']}
-            style={`background-color: ${interpolateColor(TEMPERATURE_CATEGORIES, day.summary.temperature.min)}`}
+            style={`background-color: ${colorToCss(interpolateColor(TEMPERATURE_CATEGORIES, day.summary.temperature.min))}`}
           ></span>
           <span
             class={['size-2.5 rounded-full']}
-            style={`background-color: ${interpolateColor(TEMPERATURE_CATEGORIES, day.summary.temperature.max)}`}
+            style={`background-color: ${colorToCss(interpolateColor(TEMPERATURE_CATEGORIES, day.summary.temperature.max))}`}
           ></span>
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
         </div>

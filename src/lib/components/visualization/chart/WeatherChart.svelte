@@ -20,6 +20,7 @@
   import { computeAxesFor } from '$lib/utils/d3/autoAxis'
   import ParameterSelect from './ParameterSelect.svelte'
   import { NOW_MILLIS } from '$lib/stores/now'
+  import { colorToCss } from '$lib/utils/color'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -229,7 +230,7 @@
               bars.attr('fill', (d) => {
                 const color = colorStyle.categories.findLast((c) => d.value > c.threshold)
                 if (!color) return 'red'
-                return `hsla(${color.h}, ${color.s}%, ${color.l}%, ${color.a ?? 1})`
+                return colorToCss(color)
               })
             dataRepresentation = bars
             break

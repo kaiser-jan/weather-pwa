@@ -1,6 +1,6 @@
 import type { ColorStop } from '$lib/types/ui'
 import { createUUID } from '$lib/utils/common'
-import { interpolateColor } from '$lib/utils/ui'
+import { colorToCss } from '../color'
 
 export function createGradientDefinition(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
@@ -20,7 +20,7 @@ export function createGradientDefinition(options: {
 
   let gradientStops = stops.map((s) => ({
     offset: `${((s.threshold - min) / (max - min)) * 100}%`,
-    color: `hsla(${s.h}, ${s.s}%, ${s.l}%, ${s.a ?? 1})`,
+    color: colorToCss(s),
   }))
 
   if (abrupt) {

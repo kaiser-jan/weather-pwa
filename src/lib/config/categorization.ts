@@ -1,32 +1,32 @@
 // TODO: create a playground for adapting the colors
 
 import type { ColorStop } from '$lib/types/ui'
-import { parseHex, parseHsl, parseHsla } from '$lib/utils/color'
+import { parseOklch } from '$lib/utils/color'
 
 type CategoryWithDescription = ColorStop & { description: string }
 
 export const TEMPERATURE_CATEGORIES: ColorStop[] = [
-  { threshold: -80, ...parseHsl('hsl(360, 65%, 35%)') },
-  { threshold: -20, ...parseHsl('hsl(264 65% 35%)') },
-  { threshold: -10, ...parseHsl('hsl(0, 0%, 100%)') },
-  { threshold: 0, ...parseHsl('hsl(225 65% 40%)') },
-  { threshold: 10, ...parseHsl('hsl(174, 49%, 64%)') },
-  { threshold: 15, ...parseHsl('hsl(134, 47%, 70%)') },
-  { threshold: 20, ...parseHsl('hsl(96, 67%, 60%)') },
-  { threshold: 25, ...parseHsl('hsl(47, 83%, 63%)') },
-  { threshold: 30, ...parseHsl('hsl(25, 62%, 58%)') },
-  { threshold: 40, ...parseHsl('hsl(12, 66%, 35%)') },
+  { threshold: -80, ...parseOklch('oklch(44% 0.15 26)') },
+  { threshold: -20, ...parseOklch('oklch(38% 0.17 295)') },
+  { threshold: -10, ...parseOklch('oklch(100% 0.00 90)') },
+  { threshold: 0, ...parseOklch('oklch(43% 0.16 266)') },
+  { threshold: 10, ...parseOklch('oklch(80% 0.09 187)') },
+  { threshold: 15, ...parseOklch('oklch(82% 0.11 151)') },
+  { threshold: 20, ...parseOklch('oklch(82% 0.19 135)') },
+  { threshold: 25, ...parseOklch('oklch(86% 0.14 94)') },
+  { threshold: 30, ...parseOklch('oklch(70% 0.12 55)') },
+  { threshold: 40, ...parseOklch('oklch(46% 0.13 35)') },
 ]
 
 // https://airindex.eea.europa.eu/AQI/index.html#
 export const EAQI = {
   colors: [
-    parseHex('#5AAA5F'),
-    parseHex('#A7D25C'),
-    parseHex('#ECD347'),
-    parseHex('#F5BE41'),
-    parseHex('#F09235'),
-    parseHex('#D93322'),
+    parseOklch('oklch(67% 0.13 145)'),
+    parseOklch('oklch(81% 0.15 126)'),
+    parseOklch('oklch(86% 0.16 99)'),
+    parseOklch('oklch(83% 0.15 84)'),
+    parseOklch('oklch(74% 0.15 61)'),
+    parseOklch('oklch(58% 0.20 30)'),
   ],
   labels: ['Good', 'Fair', 'Medium', 'Poor', 'Very Poor', 'Extremely Poor'],
 
@@ -41,25 +41,25 @@ export const EAQI = {
 
 // https://en.wikipedia.org/wiki/Precipitation_types#Intensity
 export const RAIN_CATEGORIES: CategoryWithDescription[] = [
-  { threshold: 0, ...parseHsla('hsla(210, 50%, 62%, 0.4)'), description: 'Drizzle' },
-  { threshold: 0.2, ...parseHsla('hsla(215, 50%, 58%, 0.7)'), description: 'Light Rain' },
-  { threshold: 2.5, ...parseHsla('hsla(225, 50%, 52%, 0.9)'), description: 'Moderate Rain' },
-  { threshold: 7.2, ...parseHsla('hsla(245, 55%, 42%, 1)'), description: 'Heavy Rain' },
-  { threshold: 25, ...parseHsla('hsla(265, 60%, 35%, 1)'), description: 'Extreme Rain' },
-  { threshold: 50, ...parseHsla('hsla(280, 70%, 45%, 1)'), description: 'Violent Rain' },
+  { threshold: 0, ...parseOklch('oklch(68% 0.09 249 / 40%)'), description: 'Drizzle' },
+  { threshold: 0.2, ...parseOklch('oklch(63% 0.11 257 / 70%)'), description: 'Light Rain' },
+  { threshold: 2.5, ...parseOklch('oklch(53% 0.15 267 / 90%)'), description: 'Moderate Rain' },
+  { threshold: 7.2, ...parseOklch('oklch(40% 0.18 278 / 100%)'), description: 'Heavy Rain' },
+  { threshold: 25, ...parseOklch('oklch(39% 0.16 297 / 100%)'), description: 'Extreme Rain' },
+  { threshold: 50, ...parseOklch('oklch(51% 0.23 311 / 100%)'), description: 'Violent Rain' },
 ] as const
 
 // https://www.researchgate.net/figure/Dew-point-Humidity-and-corresponding-Human-Perception_tbl5_312498146
 export const DEW_POINT_CATEGORIES: CategoryWithDescription[] = [
-  { threshold: 0, ...parseHsl('hsl(211 54% 53%)'), description: 'Dry' },
-  { threshold: 6, ...parseHsl('hsl(197 54% 64%)'), description: 'Dry' },
-  { threshold: 10, ...parseHsl('hsl(100 60% 60%)'), description: 'Great' },
-  { threshold: 12, ...parseHsl('hsl(80 75% 66%)'), description: 'Fair' },
-  { threshold: 16, ...parseHsl('hsl(55 78% 63%)'), description: 'Ok' },
-  { threshold: 18, ...parseHsl('hsl(35 79% 62%)'), description: 'Humid' },
-  { threshold: 21, ...parseHsl('hsl(20 78% 68%)'), description: 'Very Humid' },
-  { threshold: 24, ...parseHsl('hsl(10 80% 65%)'), description: 'Extremely Humid' },
-  { threshold: 26, ...parseHsl('hsl(270 70% 62%)'), description: 'Dangerously Humid' },
+  { threshold: 0, ...parseOklch('oklch(61% 0.12 252)'), description: 'Dry' },
+  { threshold: 6, ...parseOklch('oklch(75% 0.08 225)'), description: 'Dry' },
+  { threshold: 10, ...parseOklch('oklch(80% 0.18 136)'), description: 'Great' },
+  { threshold: 12, ...parseOklch('oklch(88% 0.16 125)'), description: 'Fair' },
+  { threshold: 16, ...parseOklch('oklch(89% 0.15 104)'), description: 'Ok' },
+  { threshold: 18, ...parseOklch('oklch(78% 0.13 73)'), description: 'Humid' },
+  { threshold: 21, ...parseOklch('oklch(76% 0.12 47)'), description: 'Very Humid' },
+  { threshold: 24, ...parseOklch('oklch(70% 0.15 33)'), description: 'Extremely Humid' },
+  { threshold: 26, ...parseOklch('oklch(61% 0.20 304)'), description: 'Dangerously Humid' },
 ] as const
 
 export const UVI_COLORS = [

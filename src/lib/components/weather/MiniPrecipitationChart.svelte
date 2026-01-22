@@ -1,6 +1,7 @@
 <script lang="ts">
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import type { TimeSeries } from '$lib/types/data'
+  import { colorToCss } from '$lib/utils/color'
   import { createBars } from '$lib/utils/d3/bars'
   import * as d3 from 'd3'
 
@@ -73,9 +74,9 @@
     if (color) bars.style('fill', color)
     if ('categories' in colorStyle)
       bars.attr('fill', (d) => {
-        const color = colorStyle.categories.findLast((c) => d.value > c.value)
+        const color = colorStyle.categories.findLast((c) => d.value > c.threshold)
         if (!color) return 'red'
-        return `hsla(${color.h}, ${color.s}%, ${color.l}%, ${color.a ?? 1})`
+        return colorToCss(color)
       })
   }
 </script>

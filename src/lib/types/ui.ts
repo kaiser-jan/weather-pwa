@@ -1,15 +1,16 @@
 import type { Icon, ThermometerIcon } from '@lucide/svelte'
 import type { Coordinates, TimeSeries, ForecastParameter, MultivariateTimeSeries } from './data'
 
-export interface ParsedHsla {
-  h: number
-  s: number
+export type WithCss<T> = T & { css: string }
+
+export interface ColorOklch {
   l: number
+  c: number
+  h: number
   a: number
-  css: string
 }
 
-export type ColorStop = { threshold: number } & ParsedHsla
+export type ColorStop = { threshold: number; css: string } & ColorOklch
 
 export type ColorDefinition =
   | { css: string } //
