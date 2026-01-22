@@ -233,28 +233,31 @@ export const settingsConfig = [
           // NOTE: changing any of these will cause cache invalidation
           {
             id: 'latitude',
-            label: 'Latitude (°)',
+            label: 'Latitude',
             type: 'number',
             icon: GlobeIcon,
             min: -90,
             max: 90,
+            unit: '°',
           },
           {
             id: 'longitude',
-            label: 'Longitude (°)',
+            label: 'Longitude',
             type: 'number',
             icon: GlobeIcon,
             min: -180,
             max: 180,
+            unit: '°',
           },
           {
             id: 'altitude',
-            label: 'Altitude (m)',
+            label: 'Altitude',
             type: 'number',
             icon: MoveVerticalIcon,
             step: 1,
             min: 0,
             max: 10000,
+            unit: 'm',
           },
           // name: string
           // icon: string
@@ -367,32 +370,6 @@ export const settingsConfig = [
         icon: ComponentIcon,
         options: ['meteocons-fill-animated', 'meteocons-fill-static'] as const,
         default: 'meteocons-fill-animated',
-      },
-      {
-        id: 'colors',
-        label: 'Colors',
-        type: 'group',
-        icon: PaletteIcon,
-        children: [
-          {
-            id: 'temperatureColorStops',
-            label: 'Temperature Colors',
-            type: 'not-implemented',
-            icon: ThermometerIcon,
-            default: [
-              { value: -80, h: 360, s: 65, l: 35 }, // hsl(360 65% 35%)
-              { value: -20, h: 264, s: 60, l: 40 }, // hsl(264 60% 40%)
-              { value: -10, h: 0, s: 0, l: 100 },
-              { value: 0, h: 225, s: 60, l: 35 }, // hsl(225 60% 35%)
-              { value: 10, h: 174, s: 49, l: 64 },
-              { value: 15, h: 134, s: 47, l: 70 },
-              { value: 20, h: 96, s: 67, l: 60 },
-              { value: 25, h: 47, s: 83, l: 63 },
-              { value: 30, h: 25, s: 62, l: 58 },
-              { value: 40, h: 12, s: 66, l: 35 },
-            ] as ColorStop[],
-          },
-        ],
       },
       {
         id: 'accessibility',

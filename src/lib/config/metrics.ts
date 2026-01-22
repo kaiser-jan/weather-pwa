@@ -16,7 +16,7 @@ import {
 } from '@lucide/svelte'
 import type { ForecastParameter, MultivariateTimeSeries } from '$lib/types/data'
 import type { ColorStop, MetricDetails } from '$lib/types/ui'
-import { DEW_POINT_CATEGORIES, EAQI, RAIN_CATEGORIES } from './categorization'
+import { DEW_POINT_CATEGORIES, EAQI, RAIN_CATEGORIES, TEMPERATURE_CATEGORIES } from './categorization'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 export const PREFER_MERGED_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['dew_point']
@@ -24,8 +24,8 @@ export const PREFER_MERGED_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['dew_poin
 function createLimitsGradient(limits: number[], colors: Omit<ColorStop, 'value'>[], factor = 1) {
   return limits.map(
     (l, i): ColorStop => ({
-      value: l * factor,
       ...colors[i],
+      threshold: l * factor,
     }),
   )
 }
@@ -44,14 +44,14 @@ const _METRIC_DETAILS = {
     domain: { min: [-40, -20, 0], max: [20, 40, 60] },
     domainDefault: { min: 10, max: 35 },
     icon: ThermometerIcon,
-    color: { categoriesSetting: ['appearance', 'colors', 'temperatureColorStops'] },
+    color: { type: 'gradient', categories: TEMPERATURE_CATEGORIES },
     chart: {
       style: 'line',
       class: 'opacity-100',
       markExtrema: true,
       include: {
         temperature_max: {
-          color: { categoriesSetting: ['appearance', 'colors', 'temperatureColorStops'] },
+          color: { type: 'gradient', categories: TEMPERATURE_CATEGORIES },
           chart: {
             style: 'area',
             class: 'opacity-40',
@@ -85,7 +85,7 @@ const _METRIC_DETAILS = {
     // color: { css: 'var(--color-blue-300)' },
     color: {
       type: 'segments',
-      categories: RAIN_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsla(c.color) })),
+      categories: RAIN_CATEGORIES,
     },
     chart: {
       style: 'bars',
@@ -136,7 +136,7 @@ const _METRIC_DETAILS = {
     icon: DropletsIcon,
     color: {
       type: 'gradient',
-      categories: DEW_POINT_CATEGORIES.map((c) => ({ value: c.threshold, ...parseHsl(c.color) })),
+      categories: DEW_POINT_CATEGORIES,
     },
     chart: {
       style: 'line',
@@ -293,24 +293,6 @@ const _METRIC_DETAILS = {
 
   // TODO: make this use ForecastMetrics instead
 } as const satisfies Partial<Record<ForecastParameter, MetricDetails>>
-
-function parseHsl(str: string): { h: number; s: number; l: number } {
-  const match = str.match(/hsl\((\d+)[,\s]+([\d.]{1,3})%[,\s]+([\d.]{1,3})%\)/i)
-  if (!match) {
-    console.warn(`Invalid HSL string ${str}!`)
-    return { h: 0, s: 100, l: 50 }
-  }
-  return { h: parseFloat(match[1]), s: parseFloat(match[2]), l: parseFloat(match[3]) }
-}
-
-function parseHsla(str: string): { h: number; s: number; l: number; a: number } {
-  const match = str.match(/hsla\((\d+)[,\s]+([\d.]{1,3})%[,\s]+([\d.]{1,3})%[,\s]+([\d.]*)\)/i)
-  if (!match) {
-    console.warn(`Invalid HSLA string ${str}!`)
-    return { h: 0, s: 100, l: 50, a: 1 }
-  }
-  return { h: parseFloat(match[1]), s: parseFloat(match[2]), l: parseFloat(match[3]), a: parseFloat(match[4]) }
-}
 
 export type ForecastMetric = keyof typeof _METRIC_DETAILS
 

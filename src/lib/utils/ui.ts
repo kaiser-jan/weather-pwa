@@ -10,16 +10,16 @@ export function generateCssRangeGradient(
   stops: ColorStop[],
   direction: 'left' | 'top' | 'right' | 'bottom' = 'right',
 ): string {
-  const includedStops = stops.filter((s) => s.value >= rangeMin && s.value <= rangeMax)
+  const includedStops = stops.filter((s) => s.threshold >= rangeMin && s.threshold <= rangeMax)
 
-  const before = stops.findLast((s) => s.value < rangeMin)
-  const after = stops.find((s) => s.value > rangeMax)
+  const before = stops.findLast((s) => s.threshold < rangeMin)
+  const after = stops.find((s) => s.threshold > rangeMax)
 
   if (before) includedStops.unshift(before)
   if (after) includedStops.push(after)
 
   const gradientStops = includedStops.map((s) => {
-    const pos = ((s.value - rangeMin) / (rangeMax - rangeMin)) * 100
+    const pos = ((s.threshold - rangeMin) / (rangeMax - rangeMin)) * 100
     return `${hslFromObject(s)} ${pos}%`
   })
 
@@ -38,8 +38,8 @@ export function interpolateColor(stops: ColorStop[], value: number): string {
   for (let i = 0; i < stops.length - 1; i++) {
     const a = stops[i],
       b = stops[i + 1]
-    if (value >= a.value && value <= b.value) {
-      const t = (value - a.value) / (b.value - a.value)
+    if (value >= a.threshold && value <= b.threshold) {
+      const t = (value - a.threshold) / (b.threshold - a.threshold)
       const h = interpolate(a.h, b.h, t)
       const s = interpolate(a.s, b.s, t)
       const l = interpolate(a.l, b.l, t)
@@ -47,7 +47,7 @@ export function interpolateColor(stops: ColorStop[], value: number): string {
       return `hsla(${h}, ${s}%, ${l}%, ${alpha})`
     }
   }
-  const edge = value <= stops[0].value ? stops[0] : stops[stops.length - 1]
+  const edge = value <= stops[0].threshold ? stops[0] : stops[stops.length - 1]
   return `hsl(${edge.h}, ${edge.s}%, ${edge.l}, ${edge.a ?? 1}%)`
 }
 

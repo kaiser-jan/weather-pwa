@@ -4,6 +4,7 @@
   import { settings } from '$lib/stores/settings'
   import { coordinates } from '$lib/stores/location'
   import { DateTime, Duration } from 'luxon'
+  import { RAIN_CATEGORIES, TEMPERATURE_CATEGORIES, UVI_COLORS } from '$lib/config/categorization'
 
   interface Props {
     parameter: string
@@ -41,11 +42,11 @@
 
     switch (parameter) {
       case 'temperature':
-        return { color: interpolateColor($settings.appearance.colors.temperatureColorStops, value) }
+        return { color: interpolateColor(TEMPERATURE_CATEGORIES, value) }
       case 'cloud_coverage':
         return { color: `hsla(0, 0%, 70%, ${value}%)` }
       case 'precipitation_amount':
-        return { color: RAIN_CATEGORIES.findLast((c) => value > c.threshold)?.color ?? COLOR_ERROR }
+        return { color: RAIN_CATEGORIES.findLast((c) => value > c.threshold)?.css ?? COLOR_ERROR }
       case 'wind_speed':
         // TODO: beaufort wind scale
         return { color: 'hsl(0, 0%, 100%)', size: `${Math.pow(value / 32, 0.75) * barHeight}px` }
@@ -110,7 +111,6 @@
   }
 
   import SunCalc from 'suncalc'
-  import { RAIN_CATEGORIES, UVI_COLORS } from '$lib/config/categorization'
 
   const sunColor = (factor: number) => `hsla(55, 65%, 65%, ${factor * 100}%)`
   const moonColor = (factor: number) => `hsla(260, 90%, 80%, ${factor * 100}%)`

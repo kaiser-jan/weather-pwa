@@ -16,6 +16,7 @@
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
+  import { TEMPERATURE_CATEGORIES } from '$lib/config/categorization'
 
   const SHOW_PAST = false
 
@@ -34,7 +35,7 @@
       variant="midground"
       size="fit"
       class={[
-        'border-foreground inline-flex flex-row items-center justify-between gap-4 rounded-none px-3 py-2 text-base not-last:border-b-2',
+        'inline-flex flex-row items-center justify-between gap-4 rounded-none border-foreground px-3 py-2 text-base not-last:border-b-2',
         day.timestamp < $TODAY_MILLIS ? 'opacity-40' : '',
       ]}
       onclick={() => dayView.open(day)}
@@ -68,11 +69,11 @@
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.min, 'temperature', $settings)}</span>
           <span
             class={['size-2.5 rounded-full']}
-            style={`background-color: ${interpolateColor($settings.appearance.colors.temperatureColorStops, day.summary.temperature.min)}`}
+            style={`background-color: ${interpolateColor(TEMPERATURE_CATEGORIES, day.summary.temperature.min)}`}
           ></span>
           <span
             class={['size-2.5 rounded-full']}
-            style={`background-color: ${interpolateColor($settings.appearance.colors.temperatureColorStops, day.summary.temperature.max)}`}
+            style={`background-color: ${interpolateColor(TEMPERATURE_CATEGORIES, day.summary.temperature.max)}`}
           ></span>
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
         </div>

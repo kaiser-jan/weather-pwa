@@ -15,11 +15,11 @@ export function createGradientDefinition(options: {
 
   const id = `gradient-${name}-${uuid}`
 
-  const min = stops[0].value
-  const max = stops[stops.length - 1].value
+  const min = stops[0].threshold
+  const max = stops[stops.length - 1].threshold
 
   let gradientStops = stops.map((s) => ({
-    offset: `${((s.value - min) / (max - min)) * 100}%`,
+    offset: `${((s.threshold - min) / (max - min)) * 100}%`,
     color: `hsla(${s.h}, ${s.s}%, ${s.l}%, ${s.a ?? 1})`,
   }))
 

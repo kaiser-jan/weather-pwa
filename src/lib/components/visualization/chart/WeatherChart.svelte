@@ -227,7 +227,7 @@
             // color each bar based on its value
             if ('categories' in colorStyle)
               bars.attr('fill', (d) => {
-                const color = colorStyle.categories.findLast((c) => d.value > c.value)
+                const color = colorStyle.categories.findLast((c) => d.value > c.threshold)
                 if (!color) return 'red'
                 return `hsla(${color.h}, ${color.s}%, ${color.l}%, ${color.a ?? 1})`
               })
