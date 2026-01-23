@@ -1,6 +1,6 @@
 import type { ColorStop } from '$lib/types/ui'
 import { DateTime } from 'luxon'
-import { colorToCss } from './color'
+import { colorToCss, interpolateColor, withCss } from './color'
 
 /**
  * Constructs a linear css gradient from the given stops in the given range.
@@ -13,11 +13,10 @@ export function generateCssRangeGradient(
 ): string {
   const includedStops = stops.filter((s) => s.threshold >= rangeMin && s.threshold <= rangeMax)
 
-  const before = stops.findLast((s) => s.threshold < rangeMin)
-  const after = stops.find((s) => s.threshold > rangeMax)
-
-  if (before) includedStops.unshift(before)
-  if (after) includedStops.push(after)
+  // NOTE: using the next stops outside the range incorrectly altered the gradient
+  // if one limit was e.g. -80 it would greatly influence the color on the other side of the range
+  includedStops.unshift({ ...withCss(interpolateColor(stops, rangeMin)), threshold: rangeMin })
+  includedStops.push({ ...withCss(interpolateColor(stops, rangeMax)), threshold: rangeMax })
 
   const gradientStops = includedStops.map((s) => {
     const pos = ((s.threshold - rangeMin) / (rangeMax - rangeMin)) * 100

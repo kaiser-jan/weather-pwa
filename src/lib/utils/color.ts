@@ -17,6 +17,13 @@ export function parseOklch(str: string): WithCss<ColorOklch> {
   }
 }
 
+export function withCss(color: ColorOklch): WithCss<ColorOklch> {
+  return {
+    ...color,
+    css: colorToCss(color),
+  }
+}
+
 export function interpolateColor(stops: ColorStop[], value: number): ColorOklch {
   if (stops.length === 0) return { l: 1, c: 1, h: 0, a: 1 }
 
