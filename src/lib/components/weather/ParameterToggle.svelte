@@ -41,7 +41,7 @@
 
 <button
   class={cn(
-    'relative flex h-fit min-w-[calc(50%-0.25rem)] grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 bg-background py-2 pr-2.5 pl-3.5',
+    'relative flex h-fit min-w-[calc(50%-0.25rem)] grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 bg-background py-2 pr-2.5 pl-3.5 text-base',
     isVisible ? 'border-midground bg-midground' : '',
     className,
   )}

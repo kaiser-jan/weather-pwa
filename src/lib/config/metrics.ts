@@ -88,7 +88,7 @@ const _METRIC_DETAILS = {
     iconIfZero: CloudOffIcon,
     preferCategoryLabel: true,
     categories: [
-      { threshold: 0, description: 'Clear' },
+      { threshold: -1, description: 'Clear' },
       { threshold: 12.5, description: 'Few' },
       { threshold: 37.5, description: 'Scattered' },
       { threshold: 62.5, description: 'Broken' },
@@ -99,7 +99,7 @@ const _METRIC_DETAILS = {
       style: 'area',
       class: 'opacity-20',
     },
-    summary: { items: ['icon', 'avg'] },
+    summary: { items: ['range'] },
   },
 
   precipitation_amount: {
@@ -122,7 +122,7 @@ const _METRIC_DETAILS = {
       style: 'bars',
       class: 'opacity-80',
     },
-    summary: { items: ['icon', 'precipitation-groups'] },
+    summary: { items: ['precipitation-groups'] },
   },
 
   wind_speed: {
@@ -145,7 +145,7 @@ const _METRIC_DETAILS = {
         },
       },
     },
-    summary: { items: ['icon', 'avg', 'max'] },
+    summary: { items: ['avg', 'max'] },
   },
 
   relative_humidity: {
@@ -185,7 +185,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['avg', 'max'] },
+    summary: { items: ['range'] },
   },
 
   pressure_surface: {
@@ -198,7 +198,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['icon', 'avg', 'trend'] },
+    summary: { items: ['avg', 'trend'] },
   },
   pressure_sealevel: {
     label: 'Pressure (Sea Level)',
@@ -209,7 +209,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['icon', 'avg', 'trend'] },
+    summary: { items: ['avg', 'trend'] },
   },
 
   // uvi_clear_sky: {
@@ -230,7 +230,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['icon', 'avg', 'max'] },
+    summary: { items: ['avg', 'max'] },
   },
 
   cin: {
@@ -242,7 +242,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['icon', 'max'] },
+    summary: { items: ['max'] },
   },
 
   grad: {
@@ -254,7 +254,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['icon', 'max'] },
+    summary: { items: ['max'] },
   },
 
   aqi: {
@@ -268,7 +268,7 @@ const _METRIC_DETAILS = {
     categories: createLimitsCategories([0, 1, 2, 3, 4, 5], EAQI.colors, EAQI.labels),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-80' },
-    summary: { items: ['icon', 'min', 'max'] },
+    summary: { items: ['range'] },
   },
   // TODO: to be precise, air quality metrics would need a non-linear scale
   // the increments between the limits are not equal, resulting in a distorted chart
@@ -284,7 +284,7 @@ const _METRIC_DETAILS = {
     categories: createLimitsCategories(EAQI.limits.pm25, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['icon', 'min', 'max'] },
+    summary: { items: ['range'] },
   },
   pm10: {
     label: 'PM 10',
@@ -298,7 +298,7 @@ const _METRIC_DETAILS = {
     categories: createLimitsCategories(EAQI.limits.pm10, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['icon', 'min', 'max'] },
+    summary: { items: ['range'] },
   },
   o3: {
     label: 'Ozone',
@@ -312,7 +312,7 @@ const _METRIC_DETAILS = {
     categories: createLimitsCategories(EAQI.limits.o3, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['icon', 'min', 'max'] },
+    summary: { items: ['range'] },
   },
   no2: {
     label: 'Nitrogen Dioxide',
@@ -326,7 +326,7 @@ const _METRIC_DETAILS = {
     categories: createLimitsCategories(EAQI.limits.no2, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['icon', 'min', 'max'] },
+    summary: { items: ['range'] },
   },
 
   // TODO: make this use ForecastMetrics instead

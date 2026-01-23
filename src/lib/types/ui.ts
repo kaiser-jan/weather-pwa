@@ -49,7 +49,7 @@ export interface MetricDetails {
 
   summary: {
     useTotalAsDomain?: boolean
-    items?: ('icon' | 'min' | 'max' | 'avg' | 'sum' | 'range-bar' | 'trend' | 'precipitation-groups')[]
+    items?: ParameterDaySummaryProps['items']
   }
 }
 
@@ -63,7 +63,7 @@ export interface CreatedSeriesDetails {
 export interface ParameterDaySummaryProps {
   icon?: typeof Icon
   useTotalAsDomain?: boolean
-  items?: ('icon' | 'min' | 'max' | 'avg' | 'sum' | 'range-bar' | 'trend' | 'precipitation-groups')[]
+  items?: ('min' | 'max' | 'avg' | 'sum' | 'range' | 'range-bar' | 'trend' | 'precipitation-groups')[]
 }
 export const ITEM_ID_GEOLOCATION = 'geolocation'
 export const ITEM_ID_TEMPORARY = 'search'

@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { categorizeValue, getMetricDetails, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
+  import { categorizeValue, getMetricDetails, useCategoriesForColor, type ForecastMetric } from '$lib/config/metrics'
   import { settings } from '$lib/stores/settings'
+  import type { CategoryColor } from '$lib/types/ui'
   import { cn } from '$lib/utils'
+  import { colorToCss, interpolateColor } from '$lib/utils/color'
   import { getPreferredUnit, autoFormatMetric } from '$lib/utils/units'
   import MathFraction from './MathFraction.svelte'
 
@@ -12,9 +14,10 @@
     detailed?: boolean
     hideUnit?: boolean
     accumulated?: boolean
+    categoryIndicator?: boolean
   }
 
-  let { value, parameter, hideUnit, detailed, accumulated, class: className }: Props = $props()
+  let { value, parameter, hideUnit, detailed, accumulated, categoryIndicator, class: className }: Props = $props()
 
   const unit = $derived(getPreferredUnit(parameter, $settings, accumulated))
 
@@ -29,12 +32,18 @@
 </script>
 
 <span class={cn('inline-flex items-end gap-0.5', className)}>
+  {#if useCategoriesForColor(details) && categoryIndicator}
+    <div
+      class="mr-[0.2em] mb-[0.25em] h-[1em] w-1 rounded-full"
+      style={`background-color: ${colorToCss(interpolateColor(details.categories as CategoryColor[], value))};`}
+    ></div>
+  {/if}
   <span>{formattedValue}</span>
   {#if !useCategoryLabel && !hideUnit}
     {#if unit?.match(/\w\/\w/)}
       <MathFraction numerator={unit.split('/')[0]} denominator={unit.split('/')[1]} />
     {:else}
-      <span class="mb-0.75 text-xs text-text-muted">{unit}</span>
+      <span class="mb-[0.175em] text-xs text-text-muted">{unit}</span>
     {/if}
   {/if}
 </span>
