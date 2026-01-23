@@ -185,7 +185,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { useTotalAsDomain: true },
+    summary: { items: ['avg', 'max'] },
   },
 
   pressure_surface: {
@@ -346,4 +346,8 @@ export function getMetricDetails(metric: ForecastMetric) {
 export function categorizeValue(metricDetails: MetricDetails, value: number) {
   if (!metricDetails.categories) return undefined
   return metricDetails.categories.findLast((c) => c.threshold < value)
+}
+
+export function useCategoriesForColor(metricDetails: MetricDetails) {
+  return metricDetails.categories && 'type' in metricDetails.color
 }

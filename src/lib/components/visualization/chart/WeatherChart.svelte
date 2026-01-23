@@ -8,7 +8,7 @@
   import { createLine } from '$lib/utils/d3/line'
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
-  import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
+  import { METRIC_DETAILS, useCategoriesForColor, type ForecastMetric } from '$lib/config/metrics'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { settings } from '$lib/stores/settings'
   import type { CreatedSeriesDetails, MetricDetails } from '$lib/types/ui'
@@ -239,7 +239,7 @@
             const bars = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
             if (color) bars.style('fill', color)
             // color each bar based on its value
-            if (details.categories && 'type' in details.color)
+            if (useCategoriesForColor(details))
               bars.attr('fill', (d) => {
                 const category = details.categories!.findLast((c) => d.value > c.threshold)
                 if (!category) return 'red'
@@ -259,7 +259,7 @@
         dataRepresentation.attr('clip-path', `url(#${clipId})`)
 
         // TODO: unify with other color usages
-        const gradientColorStops = details.categories && 'type' in details.color ? details.categories : undefined
+        const gradientColorStops = useCategoriesForColor(details) ? details.categories : undefined
 
         // create and apply the gradient color
         const isAbrupt = 'type' in details.color && details.color.type === 'segments'

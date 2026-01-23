@@ -1,7 +1,7 @@
 <script lang="ts">
   import { settings } from '$lib/stores/settings'
   import type { CategoryColor, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
-  import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
+  import { METRIC_DETAILS, useCategoriesForColor, type ForecastMetric } from '$lib/config/metrics'
   import { cn, toggle } from '$lib/utils'
   import { generateCssRangeGradient } from '$lib/utils/ui'
   import type { Snippet } from 'svelte'
@@ -23,7 +23,7 @@
     if (!details?.color) return ''
 
     let categoryColorStops: CategoryColor[] | null = null
-    if (details.categories && 'type' in details.color) {
+    if (useCategoriesForColor(details)) {
       categoryColorStops = details.categories as CategoryColor[]
     } else if ('css' in details.color) {
       return `background-color: ${details.color.css}`

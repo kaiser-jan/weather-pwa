@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { METRIC_DETAILS } from '$lib/config/metrics'
+  import { METRIC_DETAILS, useCategoriesForColor } from '$lib/config/metrics'
   import type { TimeSeries } from '$lib/types/data'
   import { colorToCss } from '$lib/utils/color'
   import { createBars } from '$lib/utils/d3/bars'
@@ -72,7 +72,7 @@
     const colorStyle = details.color
     const color = colorStyle && 'css' in colorStyle ? colorStyle.css : undefined
     if (color) bars.style('fill', color)
-    if (details.categories && 'type' in details.color)
+    if (useCategoriesForColor(details))
       bars.attr('fill', (d) => {
         const category = details.categories!.findLast((c) => d.value > c.threshold)
         if (!category) return 'red'
