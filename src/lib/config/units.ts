@@ -1,16 +1,6 @@
 import type { ForecastParameter } from '$lib/types/data'
 
-export type UnitDimension =
-  | 'temperature'
-  | 'pressure'
-  | 'length'
-  | 'speed'
-  | 'angle'
-  | 'percentage'
-  | 'energy'
-  | 'radiation'
-  | 'precipitation'
-  | 'density'
+export type UnitDimension = keyof typeof UNIT_OPTIONS
 
 export const METRIC_DIMENSION: Record<ForecastParameter, UnitDimension | null> = {
   temperature: 'temperature',
@@ -29,10 +19,12 @@ export const METRIC_DIMENSION: Record<ForecastParameter, UnitDimension | null> =
   wind_speed_gust: 'speed',
   wind_degrees: 'angle',
   wind_degrees_gust: 'angle',
-  precipitation_amount: 'precipitation',
+  // TODO: it should be possible to use different units for rain and snow while both use the same converters
+  // TODO: what about e.g. mm/h vs L/m2/h
+  precipitation_amount: 'intensity',
   precipitation_probability: 'percentage',
   thunder_probability: 'percentage',
-  snow_amount: 'precipitation',
+  snow_amount: 'intensity',
   cape: 'energy',
   cin: 'energy',
   grad: 'radiation',
@@ -53,7 +45,8 @@ export const UNIT_OPTIONS = {
   percentage: ['%', 'fraction'],
   energy: ['J/kg', 'm2/s2'],
   radiation: ['Ws/m2', 'J/m2', 'Wh/m2', 'kWh/m2'],
-  precipitation: ['mm/h'],
+  intensity: ['mm/h'],
+  accumulation: ['mm'],
   density: ['ug/m3'],
 } as const
 
@@ -99,8 +92,11 @@ export const CONVERTERS: Record<UnitDimension, Partial<Record<Unit, (v: number) 
     'Wh/m2': (v) => v / 3600,
     'kWh/m2': (v) => v / 3_600_000,
   },
-  precipitation: {
+  intensity: {
     'mm/h': (v) => v,
+  },
+  accumulation: {
+    mm: (v) => v,
   },
   density: {
     'ug/m3': (v) => v * 1e6,

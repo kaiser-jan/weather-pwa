@@ -79,6 +79,7 @@
             class="text-blue-200"
             parameter={'precipitation_amount'}
             value={day.summary.precipitation_amount.sum}
+            accumulated
           />
         {/if}
       </Button>

@@ -11,11 +11,12 @@
     class?: string
     detailed?: boolean
     hideUnit?: boolean
+    accumulated?: boolean
   }
 
-  let { value, parameter, hideUnit, detailed, class: className }: Props = $props()
+  let { value, parameter, hideUnit, detailed, accumulated, class: className }: Props = $props()
 
-  const unit = $derived(getPreferredUnit(parameter, $settings))
+  const unit = $derived(getPreferredUnit(parameter, $settings, accumulated))
 
   const details = $derived(getMetricDetails(parameter))
 
@@ -23,7 +24,7 @@
 
   const formattedValue = $derived.by(() => {
     if (useCategoryLabel) return categorizeValue(details, value)?.description
-    return autoFormatMetric(value, parameter, $settings, { hideUnit: true })
+    return autoFormatMetric(value, parameter, $settings, { hideUnit: true, accumulated })
   })
 </script>
 
@@ -33,7 +34,7 @@
     {#if unit?.match(/\w\/\w/)}
       <MathFraction numerator={unit.split('/')[0]} denominator={unit.split('/')[1]} />
     {:else}
-      <span class="mb-0.5 text-xs text-text-muted">{unit}</span>
+      <span class="mb-0.75 text-xs text-text-muted">{unit}</span>
     {/if}
   {/if}
 </span>

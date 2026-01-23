@@ -42,10 +42,10 @@ export function autoFormatMetric(
   value: number | undefined | null,
   key: ForecastParameter,
   settings: Settings,
-  options?: { hideUnit?: boolean; showDecimal?: boolean },
+  options?: { hideUnit?: boolean; showDecimal?: boolean; accumulated?: boolean },
 ): string {
   if (value === undefined || value === null) return '-'
-  const unit = getPreferredUnit(key, settings)
+  const unit = getPreferredUnit(key, settings, options?.accumulated)
   const converted = convertToUnit(value, key, unit)
   return formatMetric(converted, unit, options)
 }
@@ -54,8 +54,12 @@ export function autoFormatMetric(
  * Retrieves the users preferred unit for the given metric.
  * NOTE: passing in settings allows for deciding on reactivity
  */
-export function getPreferredUnit(key: ForecastParameter, settings: Settings) {
-  const dimension = METRIC_DIMENSION[key]
+export function getPreferredUnit(key: ForecastParameter, settings: Settings, accumulated?: boolean) {
+  let dimension = METRIC_DIMENSION[key]
   if (!dimension) return null
+
+  // TODO: better handle accumulation
+  if (accumulated && dimension === 'intensity') dimension = 'accumulation'
+
   return settings.general.units[dimension]
 }

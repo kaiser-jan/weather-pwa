@@ -46,5 +46,5 @@
   <!-- {/if} -->
 
   <!-- TODO: color based on intensity -->
-  <FormattedMetric parameter={'precipitation_amount'} value={amount} class="text-blue-200" />
+  <FormattedMetric parameter={'precipitation_amount'} value={amount} class="text-blue-200" accumulated />
 </div>

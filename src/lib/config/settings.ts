@@ -64,7 +64,7 @@ import {
   Trash2Icon,
   UmbrellaIcon,
 } from '@lucide/svelte'
-import type { ColorStop } from '$lib/types/ui'
+import type { Category } from '$lib/types/ui'
 import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import { iconMap } from '$lib/utils/icons'
@@ -84,7 +84,8 @@ const UNIT_DEFAULTS: Record<UnitDimension, Unit> = {
   percentage: '%',
   energy: 'J/kg',
   radiation: 'kWh/m2',
-  precipitation: 'mm/h',
+  intensity: 'mm/h',
+  accumulation: 'mm',
   density: 'ug/m3',
 } as const
 
