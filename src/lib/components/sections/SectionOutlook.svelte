@@ -14,6 +14,7 @@
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import WeatherChart from '../visualization/chart/WeatherChart.svelte'
   import { goto } from '$app/navigation'
+  import FormattedMetric from '../snippets/FormattedMetric.svelte'
 
   let container = $state<HTMLDivElement>()
 
@@ -62,7 +63,7 @@
       >
         <span>{DateTime.fromMillis(day.timestamp).toFormat('ccc')}</span>
 
-        <span class="text-text-muted">{Math.round(day.summary.temperature.max)}</span>
+        <FormattedMetric parameter="temperature" value={day.summary.temperature.max} class="text-text-muted" hideUnit />
         <NumberRangeBar
           total={$forecastStore?.total?.summary.temperature}
           instance={day.summary.temperature}
@@ -70,18 +71,15 @@
           className="w-2 h-20"
           vertical
         />
-        <span class="text-text-muted">{Math.round(day.summary.temperature.min)}</span>
+        <FormattedMetric parameter="temperature" value={day.summary.temperature.min} class="text-text-muted" hideUnit />
 
         <!-- TODO: small bar to display intensity: for each category, color it and set the size to the percentage of time where preciptiation is in that range -->
-        {#if $settings.sections.outlook.showPrecipitation && day.summary.precipitation_amount.sum > $settings.data.forecast.precipitation.threshold}
-          <span class="inline-flex items-baseline text-blue-200">
-            {#if day.summary.precipitation_amount}
-              <span>{day.summary.precipitation_amount?.sum.toFixed(1)}</span>
-              <span class="text-xs text-text-disabled">mm</span>
-            {:else}
-              <span>-</span>
-            {/if}
-          </span>
+        {#if $settings.sections.outlook.showPrecipitation && day.summary.precipitation_amount?.sum > $settings.data.forecast.precipitation.threshold}
+          <FormattedMetric
+            class="text-blue-200"
+            parameter={'precipitation_amount'}
+            value={day.summary.precipitation_amount.sum}
+          />
         {/if}
       </Button>
     {:else}

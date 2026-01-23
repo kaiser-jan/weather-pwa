@@ -6,6 +6,7 @@
   import { DateTime } from 'luxon'
   import MiniPrecipitationChart from './MiniPrecipitationChart.svelte'
   import { cn } from '$lib/utils'
+  import FormattedMetric from '../snippets/FormattedMetric.svelte'
 
   interface Props {
     precipitationGroup: PrecipitationGroup
@@ -43,7 +44,7 @@
   <!-- {#if precipitationGroup.hasBreaks} -->
   <!--   <span class="text-text-muted text-sm italic">sporadic</span> -->
   <!-- {/if} -->
+
   <!-- TODO: color based on intensity -->
-  <!-- TODO: units -->
-  <span class="w-[6ch] text-right text-blue-200">{amount.toFixed(precipitationGroup.amount < 0.1 ? 2 : 1)}mm</span>
+  <FormattedMetric parameter={'precipitation_amount'} value={amount} class="text-blue-200" />
 </div>

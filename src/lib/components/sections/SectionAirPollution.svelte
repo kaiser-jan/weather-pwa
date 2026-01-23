@@ -16,6 +16,7 @@
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { getEaqiLevels, type ForecastParameterAirPollution } from '$lib/utils/forecast/aqi/eaqi'
   import { colorToCss } from '$lib/utils/color'
+  import FormattedMetric from '../snippets/FormattedMetric.svelte'
 
   const today = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TODAY_MILLIS))
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS))
@@ -131,9 +132,12 @@
             details={METRIC_DETAILS[pollutant]!}
             className="h-2"
           />
-          <div class="w-20 text-right text-xs text-nowrap text-muted-foreground">
-            {autoFormatMetric(eaqi.current.values[pollutant], pollutant, $settings) ?? '–'}
-          </div>
+          <FormattedMetric
+            parameter={pollutant}
+            value={eaqi.current.values[pollutant]}
+            detailed
+            class="w-20 text-right text-xs text-nowrap text-text-muted"
+          />
         </div>
       {/each}
     </Button>

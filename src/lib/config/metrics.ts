@@ -100,15 +100,14 @@ const _METRIC_DETAILS = {
     domainDefault: { min: 0, max: 7.2 },
     icon: UmbrellaIcon,
     iconIfZero: UmbrellaOffIcon,
-    preferCategoryLabel: true,
     // https://en.wikipedia.org/wiki/Precipitation_types#Intensity
     categories: [
       { threshold: 0, ...parseOklch('oklch(68% 0.09 249 / 40%)'), description: 'Drizzle' },
-      { threshold: 0.2, ...parseOklch('oklch(63% 0.11 257 / 70%)'), description: 'Light Rain' },
-      { threshold: 2.5, ...parseOklch('oklch(53% 0.15 267 / 90%)'), description: 'Moderate Rain' },
-      { threshold: 7.2, ...parseOklch('oklch(40% 0.18 278 / 100%)'), description: 'Heavy Rain' },
-      { threshold: 25, ...parseOklch('oklch(39% 0.16 297 / 100%)'), description: 'Extreme Rain' },
-      { threshold: 50, ...parseOklch('oklch(51% 0.23 311 / 100%)'), description: 'Violent Rain' },
+      { threshold: 0.2, ...parseOklch('oklch(63% 0.11 257 / 70%)'), description: 'Light' },
+      { threshold: 2.5, ...parseOklch('oklch(53% 0.15 267 / 90%)'), description: 'Moderate' },
+      { threshold: 7.2, ...parseOklch('oklch(40% 0.18 278 / 100%)'), description: 'Heavy' },
+      { threshold: 25, ...parseOklch('oklch(39% 0.16 297 / 100%)'), description: 'Extreme' },
+      { threshold: 50, ...parseOklch('oklch(51% 0.23 311 / 100%)'), description: 'Violent' },
     ],
     color: { type: 'segments' },
     chart: {

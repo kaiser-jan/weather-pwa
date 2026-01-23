@@ -16,6 +16,7 @@
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import { colorToCss, interpolateColor } from '$lib/utils/color'
+  import FormattedMetric from '../snippets/FormattedMetric.svelte'
 
   const SHOW_PAST = false
 
@@ -51,17 +52,15 @@
       </div>
 
       {#if $settings.sections.upcoming.temperature === 'range-bar' && day.summary.temperature}
-        <div class="flex items-center gap-1">
-          <span class="text-text-muted">
-            {autoFormatMetric(day.summary.temperature.min, 'temperature', $settings, { hideUnit: true })}
-          </span>
+        <div class="flex w-32 items-center gap-1">
+          <FormattedMetric parameter="temperature" value={day.summary.temperature.min} hideUnit />
           <NumberRangeBar
             total={$forecastStore?.total?.summary.temperature}
             instance={day.summary.temperature}
             details={METRIC_DETAILS.temperature}
             className="h-2 w-16"
           />
-          <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
+          <FormattedMetric parameter="temperature" value={day.summary.temperature.max} />
         </div>
       {:else if $settings.sections.upcoming.temperature === 'dots' && day.summary.temperature}
         <div class="flex items-center gap-2">

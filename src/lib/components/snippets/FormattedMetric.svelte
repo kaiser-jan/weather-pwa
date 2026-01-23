@@ -9,22 +9,27 @@
     value: number
     parameter: ForecastMetric
     class?: string
+    detailed?: boolean
+    hideUnit?: boolean
   }
 
-  let { value, parameter, class: className }: Props = $props()
+  let { value, parameter, hideUnit, detailed, class: className }: Props = $props()
 
   const unit = $derived(getPreferredUnit(parameter, $settings))
 
+  const details = $derived(getMetricDetails(parameter))
+
+  const useCategoryLabel = $derived(details.preferCategoryLabel && !detailed)
+
   const formattedValue = $derived.by(() => {
-    const details = getMetricDetails(parameter)
-    if (details.preferCategoryLabel) return categorizeValue(details, value)?.description
+    if (useCategoryLabel) return categorizeValue(details, value)?.description
     return autoFormatMetric(value, parameter, $settings, { hideUnit: true })
   })
 </script>
 
 <span class={cn('inline-flex items-end gap-0.5', className)}>
   <span>{formattedValue}</span>
-  {#if !getMetricDetails(parameter).preferCategoryLabel}
+  {#if !useCategoryLabel && !hideUnit}
     {#if unit?.match(/\w\/\w/)}
       <MathFraction numerator={unit.split('/')[0]} denominator={unit.split('/')[1]} />
     {:else}
