@@ -1,33 +1,28 @@
 <script lang="ts">
   import { generateCssRangeGradient } from '$lib/utils/ui'
   import type { NumberSummary } from '$lib/types/data'
-  import { settings } from '$lib/stores/settings'
   import { cn } from '$lib/utils'
-  import type { ColorDefinition, ColorStop } from '$lib/types/ui'
+  import type { MetricDetails } from '$lib/types/ui'
 
   interface Props {
     total: Pick<NumberSummary, 'min' | 'max'> | undefined
     instance: NumberSummary
-    color: ColorDefinition
+    details: MetricDetails
     className: string
     vertical?: boolean
   }
 
-  const { total = { min: 0, max: 1 }, instance, color, className, vertical }: Props = $props()
+  const { total = { min: 0, max: 1 }, instance, details, className, vertical }: Props = $props()
 
   const start = $derived(scale(instance.min))
   const end = $derived(100 - scale(instance.max))
   const startAverage = $derived(scale(instance.avg))
 
   const colorCss = $derived.by(() => {
-    if ('css' in color) return `background-color: ${color.css}`
-
-    const categoriesColorStops =
-      color && 'categories' in color
-        ? color.categories
-        : (settings.readSetting(color.categoriesSetting).value as ColorStop[])
-
-    return generateCssRangeGradient(instance.min, instance.max, categoriesColorStops, vertical ? 'top' : 'right')
+    if ('css' in details.color) return `background-color: ${details.color.css}`
+    else if (details.categories)
+      return generateCssRangeGradient(instance.min, instance.max, details.categories, vertical ? 'top' : 'right')
+    else return 'background-color: red;'
   })
 
   function scale(temperature: number) {
@@ -37,11 +32,11 @@
   const insetStyle = $derived(vertical ? `top: ${end}%; bottom: ${start}%;` : `left: ${start}%; right: ${end}%;`)
 </script>
 
-<div class={cn('bg-foreground relative h-full w-full overflow-hidden rounded-full', className)}>
+<div class={cn('relative h-full w-full overflow-hidden rounded-full bg-foreground', className)}>
   <span class="absolute inset-0 rounded-full" style={[insetStyle, colorCss].join('')}></span>
   <span
     class={[
-      'bg-background absolute h-1 w-1 rounded-full opacity-50',
+      'absolute h-1 w-1 rounded-full bg-background opacity-50',
       vertical ? `left-1/2 -translate-1/2` : 'top-1/2 -translate-1/2',
     ]}
     style={vertical ? `bottom: ${startAverage}%;` : `left: ${startAverage}%;`}

@@ -66,7 +66,7 @@
         <NumberRangeBar
           total={$forecastStore?.total?.summary.temperature}
           instance={day.summary.temperature}
-          color={METRIC_DETAILS.temperature!.color}
+          details={METRIC_DETAILS.temperature}
           className="w-2 h-20"
           vertical
         />

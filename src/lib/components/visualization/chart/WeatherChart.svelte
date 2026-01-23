@@ -239,9 +239,9 @@
             const bars = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
             if (color) bars.style('fill', color)
             // color each bar based on its value
-            if ('categories' in colorStyle)
+            if (details.categories)
               bars.attr('fill', (d) => {
-                const color = colorStyle.categories.findLast((c) => d.value > c.threshold)
+                const color = details.categories!.findLast((c) => d.value > c.threshold)
                 if (!color) return 'red'
                 return colorToCss(color)
               })
@@ -259,15 +259,10 @@
         dataRepresentation.attr('clip-path', `url(#${clipId})`)
 
         // TODO: unify with other color usages
-        const gradientColorStops =
-          details.color && 'categories' in details.color
-            ? details.color.categories
-            : details.color && 'categoriesSetting' in details.color
-              ? (settings.readSetting(details.color.categoriesSetting).value as ColorStop[])
-              : undefined
+        const gradientColorStops = details.categories && 'type' in details.color ? details.categories : undefined
 
         // create and apply the gradient color
-        const isAbrupt = 'categories' in details.color && details.color.type === 'segments'
+        const isAbrupt = 'type' in details.color && details.color.type === 'segments'
         // segmented color for bars colors them by height instead of applying an abrupt gradient
         const isSegmentedBars = details.chart.style === 'bars' && isAbrupt
 

@@ -3,7 +3,7 @@
   import { ArrowDownIcon, ArrowUpIcon } from '@lucide/svelte'
   import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
-  import type { ColorStop, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
+  import type { MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
   import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import FormattedMetric from '$lib/components/snippets/FormattedMetric.svelte'
   import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
@@ -42,12 +42,12 @@
       class={items.includes('range-bar') ? 'w-16' : ''}
     />
     {#if !items.includes('range-bar')}
-      <div class="text-text-muted mt-1 text-xs leading-none">
+      <div class="mt-1 text-xs leading-none text-text-muted">
         {item}
       </div>
     {/if}
   {:else if item === 'range-bar' && day.summary[metric]}
-    <NumberRangeBar total={domain} instance={day.summary[metric]} color={details.color} className="h-2" />
+    <NumberRangeBar total={domain} instance={day.summary[metric]} {details} className="h-2" />
   {:else if item === 'trend'}
     {@const values = day.multiseries[metric]}
     {#if values && values[0].value < values[values.length - 1].value}

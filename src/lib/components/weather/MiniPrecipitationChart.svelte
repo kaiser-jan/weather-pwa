@@ -72,9 +72,9 @@
     const colorStyle = details.color
     const color = colorStyle && 'css' in colorStyle ? colorStyle.css : undefined
     if (color) bars.style('fill', color)
-    if ('categories' in colorStyle)
+    if (details.categories)
       bars.attr('fill', (d) => {
-        const color = colorStyle.categories.findLast((c) => d.value > c.threshold)
+        const color = details.categories!.findLast((c) => d.value > c.threshold)
         if (!color) return 'red'
         return colorToCss(color)
       })

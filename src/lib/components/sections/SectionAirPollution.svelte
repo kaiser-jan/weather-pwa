@@ -128,7 +128,7 @@
               max: eaqi.today.maxValues[pollutant],
               sum: 0,
             }}
-            color={METRIC_DETAILS[pollutant]!.color}
+            details={METRIC_DETAILS[pollutant]!}
             className="h-2"
           />
           <div class="w-20 text-right text-xs text-nowrap text-muted-foreground">

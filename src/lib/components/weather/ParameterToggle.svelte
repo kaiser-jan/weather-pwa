@@ -23,10 +23,8 @@
     if (!details?.color) return ''
 
     let categoryColorStops: ColorStop[] | null = null
-    if ('categoriesSetting' in details.color) {
-      categoryColorStops = settings.readSetting(details.color.categoriesSetting).value as ColorStop[]
-    } else if ('categories' in details.color) {
-      categoryColorStops = details.color.categories
+    if (details.categories) {
+      categoryColorStops = details.categories
     } else if ('css' in details.color) {
       return `background-color: ${details.color.css}`
     }
@@ -43,8 +41,8 @@
 
 <button
   class={cn(
-    'bg-background relative flex h-fit min-w-[calc(50%-0.25rem)] grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 py-2 pr-2.5 pl-3.5',
-    isVisible ? 'bg-midground border-midground' : '',
+    'relative flex h-fit min-w-[calc(50%-0.25rem)] grow flex-row items-center gap-2 overflow-hidden rounded-lg border-2 bg-background py-2 pr-2.5 pl-3.5',
+    isVisible ? 'border-midground bg-midground' : '',
     className,
   )}
   onclick={() => {

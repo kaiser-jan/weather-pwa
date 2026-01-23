@@ -15,17 +15,19 @@ import {
   ZapIcon,
 } from '@lucide/svelte'
 import type { ForecastParameter, MultivariateTimeSeries } from '$lib/types/data'
-import type { ColorStop, MetricDetails } from '$lib/types/ui'
-import { DEW_POINT_CATEGORIES, EAQI, RAIN_CATEGORIES, TEMPERATURE_CATEGORIES } from './categorization'
+import type { ColorOklch, Category, MetricDetails, WithCss } from '$lib/types/ui'
+import { EAQI } from './categorization'
+import { parseOklch } from '$lib/utils/color'
 
 export const HIDE_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['cloud_coverage', 'relative_humidity']
 export const PREFER_MERGED_AXIS_FOR_PARAMETERS: ForecastParameter[] = ['dew_point']
 
-function createLimitsGradient(limits: number[], colors: Omit<ColorStop, 'value'>[], factor = 1) {
+function createLimitsCategories(limits: number[], colors: WithCss<ColorOklch>[], labels: string[], factor = 1) {
   return limits.map(
-    (l, i): ColorStop => ({
+    (l, i): Category => ({
       ...colors[i],
       threshold: l * factor,
+      description: labels[i],
     }),
   )
 }
@@ -44,7 +46,21 @@ const _METRIC_DETAILS = {
     domain: { min: [-40, -20, -10, 0], max: [10, 20, 30, 40, 60] },
     domainDefault: { min: 10, max: 35 },
     icon: ThermometerIcon,
-    color: { type: 'gradient', categories: TEMPERATURE_CATEGORIES },
+    categories: [
+      { threshold: -80, ...parseOklch('oklch(44% 0.15 26)') },
+      { threshold: -20, ...parseOklch('oklch(38% 0.17 295)') },
+      { threshold: -10, ...parseOklch('oklch(43% 0.16 266)') },
+      { threshold: -5, ...parseOklch('oklch(60% 0.14 258)') },
+      { threshold: 0, ...parseOklch('oklch(100% 0.00 220)') },
+      { threshold: 5, ...parseOklch('oklch(80% 0.10 225)') },
+      { threshold: 10, ...parseOklch('oklch(80% 0.09 187)') },
+      { threshold: 15, ...parseOklch('oklch(82% 0.11 151)') },
+      { threshold: 20, ...parseOklch('oklch(82% 0.19 135)') },
+      { threshold: 25, ...parseOklch('oklch(86% 0.14 94)') },
+      { threshold: 30, ...parseOklch('oklch(70% 0.12 55)') },
+      { threshold: 40, ...parseOklch('oklch(46% 0.13 35)') },
+    ],
+    color: { type: 'gradient' },
     chart: {
       style: 'line',
       class: 'opacity-100',
@@ -53,7 +69,7 @@ const _METRIC_DETAILS = {
       markers: [{ value: 0, class: 'stroke-1 stroke-white opacity-50' }],
       include: {
         temperature_max: {
-          color: { type: 'gradient', categories: TEMPERATURE_CATEGORIES },
+          color: { type: 'gradient', inherit: 'temperature' },
           chart: {
             style: 'area',
             class: 'opacity-40',
@@ -84,11 +100,17 @@ const _METRIC_DETAILS = {
     domainDefault: { min: 0, max: 7.2 },
     icon: UmbrellaIcon,
     iconIfZero: UmbrellaOffIcon,
-    // color: { css: 'var(--color-blue-300)' },
-    color: {
-      type: 'segments',
-      categories: RAIN_CATEGORIES,
-    },
+    preferCategoryLabel: true,
+    // https://en.wikipedia.org/wiki/Precipitation_types#Intensity
+    categories: [
+      { threshold: 0, ...parseOklch('oklch(68% 0.09 249 / 40%)'), description: 'Drizzle' },
+      { threshold: 0.2, ...parseOklch('oklch(63% 0.11 257 / 70%)'), description: 'Light Rain' },
+      { threshold: 2.5, ...parseOklch('oklch(53% 0.15 267 / 90%)'), description: 'Moderate Rain' },
+      { threshold: 7.2, ...parseOklch('oklch(40% 0.18 278 / 100%)'), description: 'Heavy Rain' },
+      { threshold: 25, ...parseOklch('oklch(39% 0.16 297 / 100%)'), description: 'Extreme Rain' },
+      { threshold: 50, ...parseOklch('oklch(51% 0.23 311 / 100%)'), description: 'Violent Rain' },
+    ],
+    color: { type: 'segments' },
     chart: {
       style: 'bars',
       class: 'opacity-80',
@@ -133,13 +155,25 @@ const _METRIC_DETAILS = {
 
   dew_point: {
     label: 'Dew Point',
-    domain: { min: [0], max: [30] },
+    domain: { min: [-10, 0], max: [0, 10, 20, 30] },
     domainDefault: { min: 8, max: 24 },
     icon: DropletsIcon,
-    color: {
-      type: 'gradient',
-      categories: DEW_POINT_CATEGORIES,
-    },
+    preferCategoryLabel: true,
+    // https://www.researchgate.net/figure/Dew-point-Humidity-and-corresponding-Human-Perception_tbl5_312498146
+    categories: [
+      { threshold: -20, ...parseOklch('oklch(46% 0.16 296)'), description: 'Very Dry' },
+      { threshold: -10, ...parseOklch('oklch(47% 0.17 277)'), description: 'Very Dry' },
+      { threshold: 0, ...parseOklch('oklch(61% 0.12 252)'), description: 'Dry' },
+      { threshold: 6, ...parseOklch('oklch(75% 0.08 225)'), description: 'Dry' },
+      { threshold: 10, ...parseOklch('oklch(80% 0.18 136)'), description: 'Great' },
+      { threshold: 12, ...parseOklch('oklch(88% 0.16 125)'), description: 'Fair' },
+      { threshold: 16, ...parseOklch('oklch(89% 0.15 104)'), description: 'Ok' },
+      { threshold: 18, ...parseOklch('oklch(78% 0.13 73)'), description: 'Humid' },
+      { threshold: 21, ...parseOklch('oklch(76% 0.12 47)'), description: 'Very Humid' },
+      { threshold: 24, ...parseOklch('oklch(70% 0.15 33)'), description: 'Extremely Humid' },
+      { threshold: 26, ...parseOklch('oklch(61% 0.20 304)'), description: 'Dangerously Humid' },
+    ],
+    color: { type: 'gradient' },
     chart: {
       style: 'line',
       class: 'opacity-80',
@@ -221,14 +255,13 @@ const _METRIC_DETAILS = {
     icon: FactoryIcon,
     domain: {
       min: [0],
-      max: [0, 5],
+      max: [5],
     },
-    color: {
-      type: 'segments',
-      categories: createLimitsGradient([0, 1, 2, 3, 4, 5], EAQI.colors),
-    },
+    preferCategoryLabel: true,
+    categories: createLimitsCategories([0, 1, 2, 3, 4, 5], EAQI.colors, EAQI.labels),
+    color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-80' },
-    summary: { items: ['icon', 'avg', 'max'] },
+    summary: { items: ['icon', 'min', 'max'] },
   },
   // TODO: to be precise, air quality metrics would need a non-linear scale
   // the increments between the limits are not equal, resulting in a distorted chart
@@ -240,12 +273,11 @@ const _METRIC_DETAILS = {
       max: [EAQI.limits.pm25[3] * 1e-6, EAQI.limits.pm25[5] * 1e-6],
     },
     domainCallback: createAirPollutantDomainCallback(EAQI.limits.pm25),
-    color: {
-      type: 'segments',
-      categories: createLimitsGradient(EAQI.limits.pm25, EAQI.colors, 1e-6),
-    },
+    preferCategoryLabel: true,
+    categories: createLimitsCategories(EAQI.limits.pm25, EAQI.colors, EAQI.labels, 1e-6),
+    color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['icon', 'avg', 'max'] },
+    summary: { items: ['icon', 'min', 'max'] },
   },
   pm10: {
     label: 'PM 10',
@@ -255,12 +287,11 @@ const _METRIC_DETAILS = {
       max: [EAQI.limits.pm10[3] * 1e-6, EAQI.limits.pm10[5] * 1e-6],
     },
     domainCallback: createAirPollutantDomainCallback(EAQI.limits.pm10),
-    color: {
-      type: 'segments',
-      categories: createLimitsGradient(EAQI.limits.pm10, EAQI.colors, 1e-6),
-    },
+    preferCategoryLabel: true,
+    categories: createLimitsCategories(EAQI.limits.pm10, EAQI.colors, EAQI.labels, 1e-6),
+    color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['icon', 'avg', 'max'] },
+    summary: { items: ['icon', 'min', 'max'] },
   },
   o3: {
     label: 'Ozone',
@@ -270,12 +301,11 @@ const _METRIC_DETAILS = {
       max: [EAQI.limits.o3[3] * 1e-6, EAQI.limits.o3[5] * 1e-6],
     },
     domainCallback: createAirPollutantDomainCallback(EAQI.limits.o3),
-    color: {
-      type: 'segments',
-      categories: createLimitsGradient(EAQI.limits.o3, EAQI.colors, 1e-6),
-    },
+    preferCategoryLabel: true,
+    categories: createLimitsCategories(EAQI.limits.o3, EAQI.colors, EAQI.labels, 1e-6),
+    color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['icon', 'avg', 'max'] },
+    summary: { items: ['icon', 'min', 'max'] },
   },
   no2: {
     label: 'Nitrogen Dioxide',
@@ -285,12 +315,11 @@ const _METRIC_DETAILS = {
       max: [EAQI.limits.no2[3] * 1e-6, EAQI.limits.no2[5] * 1e-6],
     },
     domainCallback: createAirPollutantDomainCallback(EAQI.limits.no2),
-    color: {
-      type: 'segments',
-      categories: createLimitsGradient(EAQI.limits.no2, EAQI.colors, 1e-6),
-    },
+    preferCategoryLabel: true,
+    categories: createLimitsCategories(EAQI.limits.no2, EAQI.colors, EAQI.labels, 1e-6),
+    color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['icon', 'avg', 'max'] },
+    summary: { items: ['icon', 'min', 'max'] },
   },
 
   // TODO: make this use ForecastMetrics instead
@@ -302,3 +331,12 @@ export type ForecastMetric = keyof typeof _METRIC_DETAILS
 export const METRIC_DETAILS = _METRIC_DETAILS as Record<ForecastMetric, MetricDetails>
 
 export const FORECAST_METRICS = Object.keys(METRIC_DETAILS) as ForecastMetric[]
+
+export function getMetricDetails(metric: ForecastMetric) {
+  return METRIC_DETAILS[metric]
+}
+
+export function categorizeValue(metricDetails: MetricDetails, value: number) {
+  if (!metricDetails.categories) return undefined
+  return metricDetails.categories.findLast((c) => c.threshold < value)
+}

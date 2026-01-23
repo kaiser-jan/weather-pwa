@@ -15,7 +15,6 @@
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import { METRIC_DETAILS } from '$lib/config/metrics'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
-  import { TEMPERATURE_CATEGORIES } from '$lib/config/categorization'
   import { colorToCss, interpolateColor } from '$lib/utils/color'
 
   const SHOW_PAST = false
@@ -59,7 +58,7 @@
           <NumberRangeBar
             total={$forecastStore?.total?.summary.temperature}
             instance={day.summary.temperature}
-            color={METRIC_DETAILS.temperature!.color}
+            details={METRIC_DETAILS.temperature}
             className="h-2 w-16"
           />
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
@@ -69,11 +68,11 @@
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.min, 'temperature', $settings)}</span>
           <span
             class={['size-2.5 rounded-full']}
-            style={`background-color: ${colorToCss(interpolateColor(TEMPERATURE_CATEGORIES, day.summary.temperature.min))}`}
+            style={`background-color: ${colorToCss(interpolateColor(METRIC_DETAILS.temperature.categories!, day.summary.temperature.min))}`}
           ></span>
           <span
             class={['size-2.5 rounded-full']}
-            style={`background-color: ${colorToCss(interpolateColor(TEMPERATURE_CATEGORIES, day.summary.temperature.max))}`}
+            style={`background-color: ${colorToCss(interpolateColor(METRIC_DETAILS.temperature.categories!, day.summary.temperature.max))}`}
           ></span>
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
         </div>

@@ -10,12 +10,11 @@ export interface ColorOklch {
   a: number
 }
 
-export type ColorStop = { threshold: number; css: string } & ColorOklch
+export type Category = { threshold: number; css: string; description?: string } & ColorOklch
 
 export type ColorDefinition =
   | { css: string } //
-  | { categories: ColorStop[]; type: 'gradient' | 'segments' }
-  | { categoriesSetting: string[] }
+  | { type: 'gradient' | 'segments'; inherit?: string }
 
 export interface MetricDetailsChart {
   style: 'line' | 'bars' | 'area'
@@ -32,6 +31,8 @@ export interface MetricDetails {
   domainCallback?: (multiseries: MultivariateTimeSeries) => readonly [number, number] | null
   icon?: typeof ThermometerIcon
   abbreviation?: string
+  preferCategoryLabel?: boolean
+  categories?: Category[]
   color: ColorDefinition
   iconIfZero?: typeof ThermometerIcon
 
