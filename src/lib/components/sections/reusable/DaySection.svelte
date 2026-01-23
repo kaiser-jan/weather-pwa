@@ -58,7 +58,7 @@
   {#if showSummary}
     <FailSafeContainer
       name={`Section ${title}`}
-      class="container flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg border-2 p-2"
+      class="container flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg"
       onclick={openThisDay}
     >
       <div class="flex flex-row flex-wrap gap-2">

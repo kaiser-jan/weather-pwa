@@ -55,7 +55,7 @@
         variant="ghost"
         size="fit"
         class={[
-          'border-foreground flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-between gap-1 rounded-none text-base not-last:border-r-2',
+          'flex w-[calc(100%/7)] shrink-0 flex-col items-center justify-start gap-1 rounded-none border-foreground text-base not-last:border-r-2',
           day.timestamp < $TODAY_MILLIS ? 'opacity-40' : '',
         ]}
         onclick={() => dayView.open(day)}
@@ -73,11 +73,11 @@
         <span class="text-text-muted">{Math.round(day.summary.temperature.min)}</span>
 
         <!-- TODO: small bar to display intensity: for each category, color it and set the size to the percentage of time where preciptiation is in that range -->
-        {#if $settings.sections.outlook.showPrecipitation}
+        {#if $settings.sections.outlook.showPrecipitation && day.summary.precipitation_amount.sum > $settings.data.forecast.precipitation.threshold}
           <span class="inline-flex items-baseline text-blue-200">
             {#if day.summary.precipitation_amount}
-              <span>{Math.round(day.summary.precipitation_amount?.sum)}</span>
-              <span class="text-text-disabled text-xs">mm</span>
+              <span>{day.summary.precipitation_amount?.sum.toFixed(1)}</span>
+              <span class="text-xs text-text-disabled">mm</span>
             {:else}
               <span>-</span>
             {/if}
