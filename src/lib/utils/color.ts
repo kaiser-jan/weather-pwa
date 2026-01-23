@@ -1,4 +1,4 @@
-import type { ColorOklch, ColorStop, WithCss } from '$lib/types/ui'
+import type { ColorOklch, WithCss, CategoryColor } from '$lib/types/ui'
 
 export function parseOklch(str: string): WithCss<ColorOklch> {
   const match = str.match(/oklch\(\s*([\d.]+)%\s+([\d.]+)\s+([\d.]+)(deg)?(?:\s*\/\s*([\d.]+)%)?\s*\)/i)
@@ -24,11 +24,11 @@ export function withCss(color: ColorOklch): WithCss<ColorOklch> {
   }
 }
 
-export function interpolateColor(stops: ColorStop[], value: number): ColorOklch {
+export function interpolateColor(stops: CategoryColor[], value: number): ColorOklch {
   if (stops.length === 0) return { l: 1, c: 1, h: 0, a: 1 }
 
-  if (value <= stops[0].threshold) return stops[0]
-  if (value >= stops[stops.length - 1].threshold) return stops[stops.length - 1]
+  if (value <= stops[0].threshold) return stops[0].color
+  if (value >= stops[stops.length - 1].threshold) return stops[stops.length - 1].color
 
   let left = stops[0]
   let right = stops[stops.length - 1]
@@ -43,13 +43,13 @@ export function interpolateColor(stops: ColorStop[], value: number): ColorOklch 
 
   const t = (value - left.threshold) / (right.threshold - left.threshold)
 
-  const dh = ((right.h - left.h + 540) % 360) - 180
+  const dh = ((right.color.h - left.color.h + 540) % 360) - 180
 
   return {
-    l: left.l + (right.l - left.l) * t,
-    c: left.c + (right.c - left.c) * t,
-    h: (left.h + dh * t + 360) % 360,
-    a: left.a + (right.a - left.a) * t,
+    l: left.color.l + (right.color.l - left.color.l) * t,
+    c: left.color.c + (right.color.c - left.color.c) * t,
+    h: (left.color.h + dh * t + 360) % 360,
+    a: left.color.a + (right.color.a - left.color.a) * t,
   }
 }
 

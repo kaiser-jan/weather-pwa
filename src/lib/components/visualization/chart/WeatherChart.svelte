@@ -11,7 +11,7 @@
   import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import { handleInteraction } from '$lib/utils/d3/interaction'
   import { settings } from '$lib/stores/settings'
-  import type { ColorStop, CreatedSeriesDetails, MetricDetails } from '$lib/types/ui'
+  import type { CreatedSeriesDetails, MetricDetails } from '$lib/types/ui'
   import { createArea } from '$lib/utils/d3/area'
   import { createUUID, debounce } from '$lib/utils/common'
   import { Skeleton } from '$lib/components/ui/skeleton'
@@ -239,11 +239,11 @@
             const bars = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
             if (color) bars.style('fill', color)
             // color each bar based on its value
-            if (details.categories)
+            if (details.categories && 'type' in details.color)
               bars.attr('fill', (d) => {
-                const color = details.categories!.findLast((c) => d.value > c.threshold)
-                if (!color) return 'red'
-                return colorToCss(color)
+                const category = details.categories!.findLast((c) => d.value > c.threshold)
+                if (!category) return 'red'
+                return colorToCss(category.color!)
               })
             dataRepresentation = bars
             break

@@ -41,11 +41,11 @@
 
     switch (parameter) {
       case 'temperature':
-        return { color: colorToCss(interpolateColor(METRIC_DETAILS.temperature.categories!, value)) }
+        return { color: colorToCss(interpolateColor(METRIC_DETAILS.temperature.categories as CategoryColor[], value)) }
       case 'cloud_coverage':
         return { color: `hsla(0, 0%, 70%, ${value}%)` }
       case 'precipitation_amount':
-        return { color: categorizeValue(METRIC_DETAILS.precipitation_amount, value)?.css ?? 'transparent' }
+        return { color: categorizeValue(METRIC_DETAILS.precipitation_amount, value)?.color?.css ?? 'transparent' }
       case 'wind_speed':
         // TODO: beaufort wind scale
         return { color: 'hsl(0, 0%, 100%)', size: `${Math.pow(value / 32, 0.75) * barHeight}px` }
@@ -112,6 +112,7 @@
   import SunCalc from 'suncalc'
   import { colorToCss, interpolateColor } from '$lib/utils/color'
   import { categorizeValue, METRIC_DETAILS } from '$lib/config/metrics'
+  import type { CategoryColor } from '$lib/types/ui'
 
   const sunColor = (factor: number) => `hsla(55, 65%, 65%, ${factor * 100}%)`
   const moonColor = (factor: number) => `hsla(260, 90%, 80%, ${factor * 100}%)`

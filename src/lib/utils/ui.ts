@@ -1,4 +1,4 @@
-import type { ColorStop } from '$lib/types/ui'
+import type { Category, CategoryColor } from '$lib/types/ui'
 import { DateTime } from 'luxon'
 import { colorToCss, interpolateColor, withCss } from './color'
 
@@ -8,19 +8,19 @@ import { colorToCss, interpolateColor, withCss } from './color'
 export function generateCssRangeGradient(
   rangeMin: number,
   rangeMax: number,
-  stops: ColorStop[],
+  stops: CategoryColor[],
   direction: 'left' | 'top' | 'right' | 'bottom' = 'right',
 ): string {
   const includedStops = stops.filter((s) => s.threshold >= rangeMin && s.threshold <= rangeMax)
 
   // NOTE: using the next stops outside the range incorrectly altered the gradient
   // if one limit was e.g. -80 it would greatly influence the color on the other side of the range
-  includedStops.unshift({ ...withCss(interpolateColor(stops, rangeMin)), threshold: rangeMin })
-  includedStops.push({ ...withCss(interpolateColor(stops, rangeMax)), threshold: rangeMax })
+  includedStops.unshift({ color: withCss(interpolateColor(stops, rangeMin)), threshold: rangeMin })
+  includedStops.push({ color: withCss(interpolateColor(stops, rangeMax)), threshold: rangeMax })
 
   const gradientStops = includedStops.map((s) => {
     const pos = ((s.threshold - rangeMin) / (rangeMax - rangeMin)) * 100
-    return `${colorToCss(s)} ${pos}%`
+    return `${colorToCss(s.color!)} ${pos}%`
   })
 
   return `background: linear-gradient(to ${direction}, ${gradientStops.join(', ')});`

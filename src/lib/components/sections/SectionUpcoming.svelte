@@ -17,6 +17,7 @@
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import { colorToCss, interpolateColor } from '$lib/utils/color'
   import FormattedMetric from '../snippets/FormattedMetric.svelte'
+  import type { CategoryColor } from '$lib/types/ui'
 
   const SHOW_PAST = false
 
@@ -67,11 +68,11 @@
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.min, 'temperature', $settings)}</span>
           <span
             class={['size-2.5 rounded-full']}
-            style={`background-color: ${colorToCss(interpolateColor(METRIC_DETAILS.temperature.categories!, day.summary.temperature.min))}`}
+            style={`background-color: ${colorToCss(interpolateColor(METRIC_DETAILS.temperature.categories as CategoryColor[], day.summary.temperature.min))}`}
           ></span>
           <span
             class={['size-2.5 rounded-full']}
-            style={`background-color: ${colorToCss(interpolateColor(METRIC_DETAILS.temperature.categories!, day.summary.temperature.max))}`}
+            style={`background-color: ${colorToCss(interpolateColor(METRIC_DETAILS.temperature.categories as CategoryColor[], day.summary.temperature.max))}`}
           ></span>
           <span class="text-text-muted">{autoFormatMetric(day.summary.temperature.max, 'temperature', $settings)}</span>
         </div>

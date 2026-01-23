@@ -10,7 +10,9 @@ export interface ColorOklch {
   a: number
 }
 
-export type Category = { threshold: number; css: string; description?: string } & ColorOklch
+export type Category = { threshold: number; color?: WithCss<ColorOklch>; description?: string }
+type WithRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
+export type CategoryColor = WithRequired<Category, 'color'>
 
 export type ColorDefinition =
   | { css: string } //

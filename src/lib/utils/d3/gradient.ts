@@ -1,11 +1,11 @@
-import type { ColorStop } from '$lib/types/ui'
+import type { Category } from '$lib/types/ui'
 import { createUUID } from '$lib/utils/common'
 import { colorToCss } from '../color'
 
 export function createGradientDefinition(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
   scaleY: d3.ScaleLinear<number, number, never>
-  stops: ColorStop[]
+  stops: Category[]
   name: string
   abrupt?: boolean
 }) {
@@ -20,7 +20,7 @@ export function createGradientDefinition(options: {
 
   let gradientStops = stops.map((s) => ({
     offset: `${((s.threshold - min) / (max - min)) * 100}%`,
-    color: colorToCss(s),
+    color: colorToCss(s.color!),
   }))
 
   if (abrupt) {

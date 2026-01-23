@@ -1,6 +1,6 @@
 // TODO: create a playground for adapting the colors
 
-import type { ColorStop } from '$lib/types/ui'
+import type { Category } from '$lib/types/ui'
 import { parseOklch } from '$lib/utils/color'
 
 // https://airindex.eea.europa.eu/AQI/index.html#

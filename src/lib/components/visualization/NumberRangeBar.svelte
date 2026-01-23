@@ -2,7 +2,7 @@
   import { generateCssRangeGradient } from '$lib/utils/ui'
   import type { NumberSummary } from '$lib/types/data'
   import { cn } from '$lib/utils'
-  import type { MetricDetails } from '$lib/types/ui'
+  import type { CategoryColor, MetricDetails } from '$lib/types/ui'
 
   interface Props {
     total: Pick<NumberSummary, 'min' | 'max'> | undefined
@@ -20,8 +20,13 @@
 
   const colorCss = $derived.by(() => {
     if ('css' in details.color) return `background-color: ${details.color.css}`
-    else if (details.categories)
-      return generateCssRangeGradient(instance.min, instance.max, details.categories, vertical ? 'top' : 'right')
+    else if (details.categories && details.color.type)
+      return generateCssRangeGradient(
+        instance.min,
+        instance.max,
+        details.categories as CategoryColor[],
+        vertical ? 'top' : 'right',
+      )
     else return 'background-color: red;'
   })
 
