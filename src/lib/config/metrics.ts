@@ -78,7 +78,7 @@ const _METRIC_DETAILS = {
         },
       },
     },
-    summary: { useTotalAsDomain: true },
+    summary: { useTotalAsDomain: true, items: ['range'] },
   },
 
   cloud_coverage: {
@@ -145,7 +145,7 @@ const _METRIC_DETAILS = {
         },
       },
     },
-    summary: { items: ['avg', 'max'] },
+    summary: { useTotalAsDomain: true, items: ['range'] },
   },
 
   relative_humidity: {
@@ -157,7 +157,7 @@ const _METRIC_DETAILS = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: {},
+    summary: { useTotalAsDomain: false, items: ['range'] },
   },
 
   dew_point: {
@@ -168,9 +168,7 @@ const _METRIC_DETAILS = {
     preferCategoryLabel: true,
     // https://www.researchgate.net/figure/Dew-point-Humidity-and-corresponding-Human-Perception_tbl5_312498146
     categories: [
-      { threshold: -20, color: parseOklch('oklch(46% 0.16 296)'), description: 'Very Dry' },
-      { threshold: -10, color: parseOklch('oklch(47% 0.17 277)'), description: 'Very Dry' },
-      { threshold: 0, color: parseOklch('oklch(61% 0.12 252)'), description: 'Dry' },
+      { threshold: -20, color: parseOklch('oklch(47% 0.17 277)'), description: 'Very Dry' },
       { threshold: 6, color: parseOklch('oklch(75% 0.08 225)'), description: 'Dry' },
       { threshold: 10, color: parseOklch('oklch(80% 0.18 136)'), description: 'Great' },
       { threshold: 12, color: parseOklch('oklch(88% 0.16 125)'), description: 'Fair' },
@@ -272,6 +270,7 @@ const _METRIC_DETAILS = {
   },
   // TODO: to be precise, air quality metrics would need a non-linear scale
   // the increments between the limits are not equal, resulting in a distorted chart
+  // TODO: something is off with the air quality domains (individual pollutants vs aqi, check extreme pollution)
   pm25: {
     label: 'PM 2.5',
     abbreviation: 'PM2.5',

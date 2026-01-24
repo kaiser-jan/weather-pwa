@@ -3,7 +3,7 @@
   import { TODAY_MILLIS } from '$lib/stores/now'
   import { DateTime } from 'luxon'
   import { Button } from '$lib/components/ui/button'
-  import { ChevronLeft, ChevronRight } from '@lucide/svelte'
+  import { ChevronLeft, ChevronRight, ScaleIcon } from '@lucide/svelte'
   import ParameterDaySummary from '$lib/components/weather/ParameterDaySummary.svelte'
   import { type SwipeCustomEvent } from 'svelte-gestures'
   import TimelineBar from '$lib/components/visualization/TimelineBar.svelte'
@@ -19,11 +19,15 @@
   import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
   import { queryParam, ssp } from 'sveltekit-search-params'
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
+  import { Switch } from '$lib/components/ui/switch'
+  import { persisted } from 'svelte-persisted-store'
 
   // TODO: 0 should be today
   const dayIndex = $derived(parseInt(page.url.searchParams.get('dayIndex') ?? '0'))
 
   const selectedDay = $derived($forecastStore?.daily?.[dayIndex])
+
+  const compare = persisted('day-view-compare', false)
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !selectedDay) return false
@@ -105,6 +109,12 @@
         {/if}
       </div>
 
+      <div class="flex flex-row items-center gap-2">
+        <Switch bind:checked={$compare} />
+        <ScaleIcon class="ml-2" />
+        Compare
+      </div>
+
       <div class="-mt-2 min-h-0 grow overflow-y-auto pt-2">
         <ExpandableList
           items={FORECAST_METRICS}
@@ -122,7 +132,7 @@
                 {@const config = METRIC_DETAILS[metric].summary}
 
                 <ParameterToggle {metric} bind:visibleList={$visibleMetrics}>
-                  <ParameterDaySummary {...config} {metric} day={selectedDay} fullDay />
+                  <ParameterDaySummary {...config} {metric} day={selectedDay} fullDay compare={$compare} />
                 </ParameterToggle>
               {/each}
             </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { TimeBucket, ForecastParameter } from '$lib/types/data'
-  import { ArrowDownIcon, ArrowUpIcon } from '@lucide/svelte'
+  import { ArrowDownIcon, ArrowRightIcon, ArrowUpIcon } from '@lucide/svelte'
   import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
   import type { CategoryColor, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
@@ -15,9 +15,10 @@
     metric: ForecastMetric
     day: TimeBucket
     fullDay?: boolean
+    compare?: boolean
   }
 
-  let { metric, items = ['min', 'range-bar', 'max'], day, useTotalAsDomain, fullDay }: Props = $props()
+  let { metric, items = ['min', 'range-bar', 'max'], day, useTotalAsDomain, fullDay, compare }: Props = $props()
 
   const details = $derived<MetricDetails>(METRIC_DETAILS[metric])
 
@@ -32,7 +33,7 @@
   })
 
   const doMinMaxMatch = $derived.by(() => {
-    if (!details.categories && details.preferCategoryLabel) return
+    if (!details.categories || !details.preferCategoryLabel) return
     return (
       categorizeValue(details, day.summary[metric].min)?.threshold ===
       categorizeValue(details, day.summary[metric].max)?.threshold
@@ -46,32 +47,36 @@
 
 {#if day.summary[metric]}
   {#each items as item (item)}
-    {#if item === 'min' || item === 'max' || item === 'avg' || item === 'sum'}
-      <FormattedMetric
-        value={day?.summary[metric]?.[item]}
-        parameter={metric}
-        class={items.includes('range-bar') ? 'w-16' : ''}
-        categoryIndicator={!items.includes('range-bar')}
-      />
-      {#if !items.includes('range-bar')}
-        <div class="mt-1 text-xs leading-none text-text-muted">
-          {item}
-        </div>
-      {/if}
+    {#if item === 'min' || (item === 'max' && (!items.includes('min') || !doMinMaxMatch)) || item === 'avg' || item === 'sum'}
+      <FormattedMetric value={day?.summary[metric]?.[item]} parameter={metric} categoryIndicator={!compare} />
+      <div class="mt-1 text-xs leading-none text-text-muted">
+        {item}
+      </div>
     {:else if item === 'range'}
-      <FormattedMetric value={day.summary[metric]?.min} parameter={metric} categoryIndicator />
+      <FormattedMetric
+        value={day.summary[metric]?.min}
+        parameter={metric}
+        categoryIndicator={!compare}
+        class="min-w-12"
+      />
+      {#if compare}
+        <NumberRangeBar total={domain} instance={day.summary[metric]} {details} className="h-2 shrink min-w-16" />
+      {/if}
+      {#if !doMinMaxMatch && !compare}
+        <!-- <ArrowRightIcon class="text-muted-foreground" /> -->
+        <span class="mr-2 text-muted-foreground">to</span>
+      {/if}
       {#if !doMinMaxMatch}
-        -
-        <FormattedMetric value={day.summary[metric]?.max} parameter={metric} categoryIndicator />
+        <FormattedMetric value={day.summary[metric]?.max} parameter={metric} categoryIndicator={!compare} />
       {/if}
     {:else if item === 'range-bar'}
-      <NumberRangeBar total={domain} instance={day.summary[metric]} {details} className="h-2" />
+      <NumberRangeBar total={domain} instance={day.summary[metric]} {details} className="h-2 shrink" />
     {:else if item === 'trend'}
       {@const values = day.multiseries[metric]}
       {#if values && values[0].value < values[values.length - 1].value}
-        <ArrowUpIcon />
+        <ArrowUpIcon class="shrink-0" />
       {:else if values}
-        <ArrowDownIcon />
+        <ArrowDownIcon class="shrink-0" />
       {/if}
     {:else if item === 'precipitation-groups'}
       {@const precipitationGroups = $precipitationGroupsStore.filter(
@@ -89,8 +94,6 @@
           <span class="text-text-muted mr-auto">No rain on this day!</span>
         {/each}
       </div>
-    {:else}
-      ...
     {/if}
     <!-- TODO: summary, e.g. Overcast avg, 17:00 Clear -->
     <!-- TODO: introduce "focus" to min/max -> will prefer indicating time ranges with minmal/maximal value -->

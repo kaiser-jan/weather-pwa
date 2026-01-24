@@ -15,9 +15,19 @@
     hideUnit?: boolean
     accumulated?: boolean
     categoryIndicator?: boolean
+    categoryIndicatorAfter?: boolean
   }
 
-  let { value, parameter, hideUnit, detailed, accumulated, categoryIndicator, class: className }: Props = $props()
+  let {
+    value,
+    parameter,
+    hideUnit,
+    detailed,
+    accumulated,
+    categoryIndicator,
+    categoryIndicatorAfter,
+    class: className,
+  }: Props = $props()
 
   const unit = $derived(getPreferredUnit(parameter, $settings, accumulated))
 
@@ -31,19 +41,26 @@
   })
 </script>
 
-<span class={cn('inline-flex items-end gap-0.5', className)}>
-  {#if useCategoriesForColor(details) && categoryIndicator}
-    <div
-      class="mr-[0.2em] mb-[0.25em] h-[1em] w-1 rounded-full"
-      style={`background-color: ${colorToCss(interpolateColor(details.categories as CategoryColor[], value))};`}
-    ></div>
+{#snippet categoryIndicatorDot()}
+  <div
+    class="mr-[0.2em] mb-[0.25em] h-[1em] w-1 rounded-full"
+    style={`background-color: ${colorToCss(interpolateColor(details.categories as CategoryColor[], value))};`}
+  ></div>
+{/snippet}
+
+<span class={cn('inline-flex w-fit shrink-0 items-end gap-0.5', className)}>
+  {#if useCategoriesForColor(details) && categoryIndicator && !categoryIndicatorAfter}
+    {@render categoryIndicatorDot()}
   {/if}
-  <span>{formattedValue}</span>
+  <span class="text-nowrap">{formattedValue}</span>
   {#if !useCategoryLabel && !hideUnit}
     {#if unit?.match(/\w\/\w/)}
       <MathFraction numerator={unit.split('/')[0]} denominator={unit.split('/')[1]} />
     {:else}
       <span class="mb-[0.175em] text-xs text-text-muted">{unit}</span>
     {/if}
+  {/if}
+  {#if useCategoriesForColor(details) && categoryIndicator && categoryIndicatorAfter}
+    {@render categoryIndicatorDot()}
   {/if}
 </span>
