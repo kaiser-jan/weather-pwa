@@ -48,7 +48,7 @@
           multiseries={day.multiseries}
           startTimestamp={getStartOfDayTimestamp(day.timestamp)}
           endTimestamp={getEndOfDayTimestamp(day.timestamp)}
-          parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
+          parameters={['sun', 'cloud_coverage', 'rain_amount', 'snow_amount']}
         />
       </div>
 

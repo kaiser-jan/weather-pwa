@@ -39,6 +39,9 @@ export interface MetricDetails {
   iconIfZero?: typeof ThermometerIcon
 
   chart: MetricDetailsChart & {
+    // ForecastMetric
+    // can include the current metric to specify the order
+    stacksWith?: string[]
     include?: Partial<
       Record<
         ForecastParameter,

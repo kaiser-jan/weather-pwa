@@ -4,7 +4,7 @@
   import * as d3 from 'd3'
   import { createXAxis, createYAxis } from '$lib/utils/d3/axis'
   import type { Dimensions } from '$lib/utils/d3/types'
-  import { createBars } from '$lib/utils/d3/bars'
+  import { createBars, createBarsStacked } from '$lib/utils/d3/bars'
   import { createLine } from '$lib/utils/d3/line'
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
@@ -21,6 +21,8 @@
   import ParameterSelect from './ParameterSelect.svelte'
   import { NOW_MILLIS } from '$lib/stores/now'
   import { colorToCss } from '$lib/utils/color'
+  import type { Forecast } from '$lib/types/metno'
+  import { removeDuplicates } from '$lib/utils'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -207,6 +209,7 @@
         parameter: string,
         seriesA: TimeSeries<number> | undefined,
         details: MetricDetails,
+        isIndirect?: boolean,
         seriesB?: TimeSeries<number> | undefined,
       ) {
         if (!seriesA || !details) return
@@ -236,20 +239,48 @@
             break
 
           case 'bars':
-            const bars = createBars({ svg, dimensions, scaleX, scaleY, data: seriesA }) //
-            if (color) bars.style('fill', color)
+            // HACK: do not stack with others when indirect (included by another metric)
+            let stackKeys =
+              details.chart.stacksWith && !isIndirect ? [...details.chart.stacksWith, parameter] : [parameter]
+            stackKeys = stackKeys.filter((k) => parameters.includes(k as ForecastMetric))
+            // NOTE: parameters might be added indirectly via include
+            stackKeys.push(parameter)
+            stackKeys = removeDuplicates(stackKeys)
+
+            // TODO: consider filtering/combining in advance
+            // HACK: skip drawing if it was included in the stacked bars of another metric
+            const hasBeenStackedAlready = parameters
+              .slice(0, parameters.indexOf(parameter as ForecastMetric))
+              .some((p) => METRIC_DETAILS[p].chart.stacksWith?.includes(parameter))
+
+            if (hasBeenStackedAlready) return
+
             // color each bar based on its value
-            if (useCategoriesForColor(details))
-              bars.attr('fill', (d) => {
-                const category = details.categories!.findLast((c) => d.value > c.threshold)
-                if (!category) return 'red'
-                return colorToCss(category.color!)
-              })
+            const fillCallback: Parameters<typeof createBarsStacked>[0]['fillCallback'] = (series, point) => {
+              const details = METRIC_DETAILS[series.key as ForecastMetric]
+              if ('css' in details.color) return details.color.css
+              const category = details?.categories?.findLast((c) => point.data.value[series.key] > c.threshold)
+              if (!category) return 'red'
+              return colorToCss(category.color!)
+            }
+
+            const bars = createBarsStacked({
+              svg,
+              dimensions,
+              scaleX,
+              scaleY,
+              data,
+              keys: stackKeys,
+              fillCallback,
+            }) //
+
+            if (color) bars.style('fill', color)
+
             dataRepresentation = bars
             break
 
           case 'area':
-            dataRepresentation = createArea({ svg, dimensions, scaleX, scaleY, dataA: seriesA, dataB: seriesB }) //
+            dataRepresentation = createArea({ svg, dimensions, scaleX, scaleY, dataA: seriesA, dataB: seriesB! }) //
             if (color) dataRepresentation.style('fill', color)
             break
         }
@@ -285,6 +316,9 @@
 
       createdSeriesDetails.push({ details, parameter, scale: scaleY, data: series })
 
+      // finally add the data representation for the current metric
+      addDataRepresentation(parameter, series, details)
+
       // add the additional series a metric requires (e.g. wind gust speed)
       if (details.chart.include) {
         for (const [includeParameter, includeDetails] of Object.entries(details.chart.include)) {
@@ -303,12 +337,9 @@
               data: includeSeriesA,
             })
           }
-          addDataRepresentation(includeParameter, includeSeriesA, mergedDetails, includeSeriesB)
+          addDataRepresentation(includeParameter, includeSeriesA, mergedDetails, true, includeSeriesB)
         }
       }
-
-      // finally add the data representation for the current metric
-      addDataRepresentation(parameter, series, details)
     }
 
     // add a transparent rect to darken passed time

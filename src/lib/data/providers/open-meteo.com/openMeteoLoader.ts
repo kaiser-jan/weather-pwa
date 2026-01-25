@@ -133,6 +133,7 @@ export const parameterMapToOpenMeteo = {
   precipitation_amount: 'precipitation',
   precipitation_probability: 'precipitation_probability',
   thunder_probability: 'thunderstorm_probability',
+  rain_amount: 'rain',
   snow_amount: 'snowfall',
   cape: 'cape_mean',
   cin: 'cin',

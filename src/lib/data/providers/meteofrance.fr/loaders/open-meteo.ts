@@ -12,6 +12,7 @@ const parameters: ForecastParameter[] = [
   'temperature',
   'relative_humidity',
   'precipitation_amount',
+  'rain_amount',
   'snow_amount',
   'wind_speed',
   'wind_degrees',

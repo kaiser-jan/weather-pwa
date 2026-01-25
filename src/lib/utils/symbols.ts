@@ -1,3 +1,4 @@
+import { METRIC_DETAILS } from '$lib/config/metrics'
 import type { TimeBucketSummary, WeatherInstant } from '$lib/types/data'
 
 export type WeatherSituation = {
@@ -65,13 +66,21 @@ export function deriveWeatherSituationFromInstant(data: Partial<WeatherInstant>)
   if (data.thunder_probability && data.thunder_probability > 20) situation.thunder = true
 
   if (data.precipitation_amount) {
-    // TODO: rain vs. snow
     situation.precipitation = 'rain'
 
-    // TODO: unite with rain categories
-    if (data.precipitation_amount > 5) situation.intensity = 'heavy'
-    else if (data.precipitation_amount > 2.5) situation.intensity = 'moderate'
-    else if (data.precipitation_amount > 0.2) situation.intensity = 'light'
+    if (data.rain_amount && data.snow_amount) {
+      situation.precipitation = 'sleet'
+      if (data.rain_amount > data.snow_amount * 1.25) situation.precipitation = 'rain'
+      if (data.snow_amount > data.rain_amount * 1.25) situation.precipitation = 'snow'
+    } else {
+      if (data.snow_amount && data.snow_amount > 0) situation.precipitation = 'snow'
+    }
+
+    const rainCategories = METRIC_DETAILS.rain_amount.categories!
+
+    if (data.precipitation_amount > rainCategories[3].threshold) situation.intensity = 'heavy'
+    else if (data.precipitation_amount > rainCategories[2].threshold) situation.intensity = 'moderate'
+    else if (data.precipitation_amount > rainCategories[1].threshold) situation.intensity = 'light'
     else situation.intensity = 'drizzle'
   }
 

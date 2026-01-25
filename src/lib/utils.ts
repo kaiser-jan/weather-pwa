@@ -143,3 +143,21 @@ export function sum(numbers: (number | undefined)[]): number {
     .filter((num): num is number => num !== undefined)
     .reduce((accumulator, current) => accumulator + current, 0)
 }
+
+export function mapValues<T, U>(obj: Record<string, T>, fn: (value: T, key: string) => U): Record<string, U> {
+  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, fn(v, k)]))
+}
+
+export function pick<T extends object, K extends readonly (keyof T)[]>(obj: T, keys: K): Pick<T, K[number]> {
+  return Object.fromEntries(keys.filter((k) => k in obj).map((k) => [k, obj[k]])) as Pick<T, K[number]>
+}
+
+export function filter<T extends object>(obj: T, predicate: (value: T[keyof T], key: keyof T) => boolean): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([k, v]) => predicate(v as T[keyof T], k as keyof T)),
+  ) as Partial<T>
+}
+
+export function removeDuplicates<T>(array: T[]): T[] {
+  return [...new Set(array)]
+}

@@ -61,6 +61,7 @@ export const FORECAST_PARAMETERS = [
   'precipitation_amount',
   'precipitation_probability',
   'thunder_probability',
+  'rain_amount',
   'snow_amount',
   'cape',
   'cin',

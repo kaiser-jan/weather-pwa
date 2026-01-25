@@ -1,15 +1,17 @@
 <script lang="ts">
   import { METRIC_DETAILS, useCategoriesForColor } from '$lib/config/metrics'
   import type { TimeSeries } from '$lib/types/data'
+  import type { MetricDetails } from '$lib/types/ui'
   import { colorToCss } from '$lib/utils/color'
   import { createBars } from '$lib/utils/d3/bars'
   import * as d3 from 'd3'
 
   interface Props {
     timeseries: TimeSeries<number>
+    details: MetricDetails
   }
 
-  const { timeseries }: Props = $props()
+  const { timeseries, details }: Props = $props()
 
   let svgEl: SVGSVGElement
 
@@ -31,8 +33,6 @@
   })
 
   function update() {
-    const details = METRIC_DETAILS.precipitation_amount!
-
     const dimensions = {
       width: widthFull - margin.left - margin.right,
       height: heightFull - margin.top - margin.bottom,
@@ -55,7 +55,7 @@
     const scaleX = d3.scaleTime().domain([start, end]).range([0, dimensions.width])
     const scaleY = d3
       .scaleSqrt()
-      .exponent(1 / 4)
+      .exponent(1 / 2)
       .domain(domain)
       .range([dimensions.height, 0])
 

@@ -24,6 +24,7 @@ export const METRIC_DIMENSION: Record<ForecastParameter, UnitDimension | null> =
   precipitation_amount: 'intensity',
   precipitation_probability: 'percentage',
   thunder_probability: 'percentage',
+  rain_amount: 'intensity',
   snow_amount: 'intensity',
   cape: 'energy',
   cin: 'energy',

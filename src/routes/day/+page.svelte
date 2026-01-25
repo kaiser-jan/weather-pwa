@@ -65,9 +65,9 @@
   const visibleMetrics = queryParam<ForecastMetric[]>('metrics', ssp.array([] as ForecastMetric[]))
 </script>
 
-<PageWrapper onswipe={handleSwipe} class="pt-[5rem]">
+<PageWrapper onswipe={handleSwipe} class="pt-[4rem]">
   <header
-    class="absolute top-0 z-10 flex h-[calc(4.5rem+env(safe-area-inset-top))] w-full justify-between gap-4 border-b-2 border-muted bg-background p-4 pt-[calc(1rem+env(safe-area-inset-top))] text-xl font-bold"
+    class="absolute top-0 z-10 flex h-[calc(4.5rem+env(safe-area-inset-top))] w-full justify-between gap-4 border-muted bg-background p-4 pt-[calc(1rem+env(safe-area-inset-top))] text-xl font-bold"
   >
     <Button size="icon" variant="midground" onclick={() => dayView.previous()} disabled={currentIndex === 0}>
       <ChevronLeft />
@@ -91,7 +91,7 @@
         multiseries={selectedDay.multiseries}
         startTimestamp={getStartOfDayTimestamp(selectedDay.timestamp)}
         endTimestamp={getEndOfDayTimestamp(selectedDay.timestamp)}
-        parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
+        parameters={['sun', 'cloud_coverage', 'rain_amount', 'snow_amount']}
       />
 
       <div class="container flex h-fit flex-col gap-2" data-vaul-no-drag>

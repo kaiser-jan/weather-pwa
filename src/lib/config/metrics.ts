@@ -1,11 +1,13 @@
 import {
   CloudOffIcon,
+  CloudRainIcon,
   CloudyIcon,
   DropletIcon,
   DropletsIcon,
   FactoryIcon,
   GaugeIcon,
   ShieldIcon,
+  SnowflakeIcon,
   SunIcon,
   ThermometerIcon,
   TornadoIcon,
@@ -40,7 +42,7 @@ function createAirPollutantDomainCallback(limits: number[]) {
   }
 }
 
-const _METRIC_DETAILS = {
+const _METRIC_DETAILS_BASE = {
   temperature: {
     label: 'Temperature',
     domain: { min: [-40, -20, -10, 0], max: [10, 20, 30, 40, 60] },
@@ -86,7 +88,7 @@ const _METRIC_DETAILS = {
     domain: { min: [0], max: [100] },
     icon: CloudyIcon,
     iconIfZero: CloudOffIcon,
-    preferCategoryLabel: true,
+    preferCategoryLabel: false,
     categories: [
       { threshold: -1, description: 'Clear' },
       { threshold: 12.5, description: 'Few' },
@@ -102,12 +104,18 @@ const _METRIC_DETAILS = {
     summary: { items: ['range'] },
   },
 
-  precipitation_amount: {
-    label: 'Precipitation Amount',
+  // TODO: It is possible that a dataset provides snow + rain bun is overriden by a more granular one that only provides precipitation.
+  // This causes a mismatch: precipitation_amount != rain_amount + snow_amount
+  // a) Adapt rain / precipitation_amount to keep the equality and assume snow amount is constant?
+  //    But then if more precipitation is forecasted, it might show up as rain when it should be snow.
+  // b) Scale rain + snow to match precipitation
+  // c) Ignore the mismatch
+  // Not an option: Ignoring precipitation overrides would ignore more granular precipitation forecasts.
+  rain_amount: {
+    label: 'Rain Amount',
     domain: { min: [0], max: [7.2, 20, 50] },
     domainDefault: { min: 0, max: 7.2 },
-    icon: UmbrellaIcon,
-    iconIfZero: UmbrellaOffIcon,
+    icon: CloudRainIcon,
     // https://en.wikipedia.org/wiki/Precipitation_types#Intensity
     categories: [
       { threshold: 0, color: parseOklch('oklch(68% 0.09 249 / 40%)'), description: 'Drizzle' },
@@ -120,6 +128,21 @@ const _METRIC_DETAILS = {
     color: { type: 'segments' },
     chart: {
       style: 'bars',
+      stacksWith: ['snow_amount', 'rain_amount'],
+      class: 'opacity-80',
+    },
+    summary: { items: ['precipitation-groups'] },
+  },
+  snow_amount: {
+    label: 'Snow Amount',
+    domain: { min: [0], max: [7.2, 20, 50] },
+    domainDefault: { min: 0, max: 7.2 },
+    icon: SnowflakeIcon,
+    // https://en.wikipedia.org/wiki/Precipitation_types#Intensity
+    color: { css: 'var(--color-white)' },
+    chart: {
+      style: 'bars',
+      stacksWith: ['snow_amount', 'rain_amount'],
       class: 'opacity-80',
     },
     summary: { items: ['precipitation-groups'] },
@@ -329,6 +352,27 @@ const _METRIC_DETAILS = {
   },
 
   // TODO: make this use ForecastMetrics instead
+} as const satisfies Partial<Record<ForecastParameter, MetricDetails>>
+
+// HACK: add precipitation_amount as a combination of rain and snow
+// Adding options in the initial config to do this seems like premature abstraction,
+// as this is currently the only metric where this makes sense.
+const _METRIC_DETAILS = {
+  ..._METRIC_DETAILS_BASE,
+  precipitation_amount: {
+    ..._METRIC_DETAILS_BASE.rain_amount,
+    icon: UmbrellaIcon,
+    iconIfZero: UmbrellaOffIcon,
+    label: 'Precipitation Amount',
+    chart: {
+      ..._METRIC_DETAILS_BASE.rain_amount.chart,
+      // HACK: overlay (not stack) snow amount
+      stacksWith: [],
+      include: {
+        snow_amount: _METRIC_DETAILS_BASE.snow_amount,
+      },
+    },
+  },
 } as const satisfies Partial<Record<ForecastParameter, MetricDetails>>
 
 export type ForecastMetric = keyof typeof _METRIC_DETAILS

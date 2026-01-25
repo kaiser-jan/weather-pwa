@@ -9,7 +9,7 @@
   type Parameter =
     | Extract<
         ForecastParameter,
-        'temperature' | 'cloud_coverage' | 'precipitation_amount' | 'wind_speed' | 'uvi_clear_sky'
+        'temperature' | 'cloud_coverage' | 'rain_amount' | 'snow_amount' | 'wind_speed' | 'uvi_clear_sky'
       >
     | 'sun'
     | 'moon'
@@ -27,10 +27,12 @@
 
   let barHeight = $state<number>(0)
 
-  // TODO: consider making this configurable by the user
+  // TODO: move to metrics config
   const parameterStyleMap: Record<Parameter, 'gradient' | 'blocks'> = {
     cloud_coverage: 'gradient',
     precipitation_amount: 'blocks',
+    rain_amount: 'blocks',
+    snow_amount: 'blocks',
     temperature: 'gradient',
     sun: 'gradient',
     moon: 'gradient',
@@ -65,18 +67,18 @@
 </script>
 
 <div
-  class={cn('bg-foreground relative h-2 w-full shrink-0 overflow-hidden rounded-full', className)}
+  class={cn('relative h-2 w-full shrink-0 overflow-hidden rounded-full bg-foreground', className)}
   bind:clientHeight={barHeight}
 >
   <!-- mark passed time -->
   <div
-    class="stripe-pattern border-foreground absolute top-0 bottom-0 z-2 border-r-[1px]"
+    class="stripe-pattern absolute top-0 bottom-0 z-2 border-r-[1px] border-foreground"
     style={`width: ${distanceFromTimestamps($NOW_MILLIS, startTimestamp)}%; left: 0;`}
   ></div>
 
   {#each marks as mark, i (i)}
     <div
-      class="bg-foreground absolute -top-1 -bottom-1 z-2 w-[0.1rem]"
+      class="absolute -top-1 -bottom-1 z-2 w-[0.1rem] bg-foreground"
       style={`left: ${distanceFromTimestamps(mark.getTime(), startTimestamp)}%;`}
     ></div>
   {/each}

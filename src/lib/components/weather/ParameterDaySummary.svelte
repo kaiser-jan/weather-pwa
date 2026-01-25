@@ -6,10 +6,10 @@
   import type { CategoryColor, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
   import { categorizeValue, METRIC_DETAILS, useCategoriesForColor, type ForecastMetric } from '$lib/config/metrics'
   import FormattedMetric from '$lib/components/snippets/FormattedMetric.svelte'
-  import { precipitationGroupsStore } from '$lib/stores/precipitationGroups'
-  import PrecipitationGroup from '$lib/components/weather/PrecipitationGroup.svelte'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import { NOW_MILLIS } from '$lib/stores/now'
+  import { aggregableMetricGroupsStore } from '$lib/stores/aggregableMetricGroups'
+  import AggregableMetricGroup from './AggregableMetricGroup.svelte'
 
   type Props = ParameterDaySummaryProps & {
     metric: ForecastMetric
@@ -93,17 +93,19 @@
       {:else if values}
         <ArrowDownIcon class="shrink-0" />
       {/if}
-    {:else if item === 'precipitation-groups'}
-      {@const precipitationGroups = $precipitationGroupsStore.filter(
+    {:else if item === 'precipitation-groups' && metric in $aggregableMetricGroupsStore}
+      {@const groups = $aggregableMetricGroupsStore[metric as keyof typeof $aggregableMetricGroupsStore].filter(
         (g) => g.end > day.timestamp && g.start < day.timestamp + day.duration && (fullDay || g.end > $NOW_MILLIS),
       )}
       <div class="flex grow flex-col gap-1">
-        {#each precipitationGroups as precipitationGroup (precipitationGroup.start)}
-          <PrecipitationGroup
-            {precipitationGroup}
+        {#each groups as group (group.start)}
+          <AggregableMetricGroup
+            {metric}
+            {details}
+            {group}
             startTimestamp={day.timestamp}
             endTimestamp={day.timestamp + day.duration}
-            class={precipitationGroup.end < $NOW_MILLIS ? 'opacity-60' : ''}
+            class={group.end < $NOW_MILLIS ? 'opacity-60' : ''}
           />
         {:else}
           <span class="text-text-muted mr-auto">No rain on this day!</span>

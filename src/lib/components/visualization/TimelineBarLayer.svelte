@@ -44,8 +44,10 @@
         return { color: colorToCss(interpolateColor(METRIC_DETAILS.temperature.categories as CategoryColor[], value)) }
       case 'cloud_coverage':
         return { color: `hsla(0, 0%, 70%, ${value}%)` }
+      case 'rain_amount':
+      case 'snow_amount':
       case 'precipitation_amount':
-        return { color: categorizeValue(METRIC_DETAILS.precipitation_amount, value)?.color?.css ?? 'transparent' }
+        return { color: categorizeValue(METRIC_DETAILS[parameter], value)?.color?.css ?? 'transparent' }
       case 'wind_speed':
         // TODO: beaufort wind scale
         return { color: 'hsl(0, 0%, 100%)', size: `${Math.pow(value / 32, 0.75) * barHeight}px` }
