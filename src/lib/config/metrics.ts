@@ -145,7 +145,7 @@ const _METRIC_DETAILS = {
         },
       },
     },
-    summary: { useTotalAsDomain: true, items: ['range'] },
+    summary: { items: ['range'] },
   },
 
   relative_humidity: {

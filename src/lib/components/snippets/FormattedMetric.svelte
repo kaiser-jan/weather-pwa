@@ -8,7 +8,7 @@
   import MathFraction from './MathFraction.svelte'
 
   interface Props {
-    value: number
+    value?: number
     parameter: ForecastMetric
     class?: string
     detailed?: boolean
@@ -36,16 +36,18 @@
   const useCategoryLabel = $derived(details.preferCategoryLabel && !detailed)
 
   const formattedValue = $derived.by(() => {
+    if (value === undefined) return undefined
     if (useCategoryLabel) return categorizeValue(details, value)?.description
     return autoFormatMetric(value, parameter, $settings, { hideUnit: true, accumulated })
   })
+
+  const categoryColor = $derived(
+    value ? colorToCss(interpolateColor(details.categories as CategoryColor[], value)) : 'transparent',
+  )
 </script>
 
 {#snippet categoryIndicatorDot()}
-  <div
-    class="mr-[0.2em] mb-[0.25em] h-[1em] w-1 rounded-full"
-    style={`background-color: ${colorToCss(interpolateColor(details.categories as CategoryColor[], value))};`}
-  ></div>
+  <div class="mr-[0.2em] mb-[0.25em] h-[1em] w-1 rounded-full" style={`background-color: ${categoryColor};`}></div>
 {/snippet}
 
 <span class={cn('inline-flex w-fit shrink-0 items-end gap-0.5', className)}>

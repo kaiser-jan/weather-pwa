@@ -60,17 +60,32 @@
         class="min-w-12"
       />
       {#if compare}
-        <NumberRangeBar total={domain} instance={day.summary[metric]} {details} className="h-2 shrink min-w-16" />
+        <NumberRangeBar
+          {domain}
+          total={$forecastStore?.total.summary[metric]}
+          instance={day.summary[metric]}
+          {details}
+          className="h-2 shrink min-w-16"
+        />
       {/if}
-      {#if !doMinMaxMatch && !compare}
+      {#if !compare}
         <!-- <ArrowRightIcon class="text-muted-foreground" /> -->
         <span class="mr-2 text-muted-foreground">to</span>
       {/if}
-      {#if !doMinMaxMatch}
-        <FormattedMetric value={day.summary[metric]?.max} parameter={metric} categoryIndicator={!compare} />
-      {/if}
+      <FormattedMetric
+        value={day.summary[metric]?.max}
+        parameter={metric}
+        categoryIndicator={!compare}
+        class="min-w-12"
+      />
     {:else if item === 'range-bar'}
-      <NumberRangeBar total={domain} instance={day.summary[metric]} {details} className="h-2 shrink" />
+      <NumberRangeBar
+        {domain}
+        total={$forecastStore?.total.summary[metric]}
+        instance={day.summary[metric]}
+        {details}
+        className="h-2 shrink"
+      />
     {:else if item === 'trend'}
       {@const values = day.multiseries[metric]}
       {#if values && values[0].value < values[values.length - 1].value}

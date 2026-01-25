@@ -122,7 +122,7 @@
         <div class="flex w-full flex-row flex-nowrap items-center gap-2">
           <span class="w-22 text-sm font-medium">{METRIC_DETAILS[pollutant]?.abbreviation}</span>
           <NumberRangeBar
-            total={{ min: 0, max: EAQI.limits[pollutant][Math.ceil(eaqi.today.maxIndex)] * 1e-6 }}
+            domain={{ min: 0, max: EAQI.limits[pollutant][Math.ceil(eaqi.today.maxIndex)] * 1e-6 }}
             instance={{
               min: eaqi.today.minValues[pollutant],
               avg: eaqi.current.values[pollutant]!,
