@@ -27,7 +27,7 @@
 
   const selectedDay = $derived($forecastStore?.daily?.[dayIndex])
 
-  const compare = persisted('day-view-compare', false)
+  const compare = persisted('day-view-compare', true)
 
   const isToday = $derived.by(() => {
     if (!$forecastStore || !selectedDay) return false
@@ -123,7 +123,7 @@
           contentClass="gap-2"
         >
           {#snippet itemSnippet(metric)}
-            <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
+            <IconOrAbbreviation details={METRIC_DETAILS[metric]!} iconClass="top-[0.2em] relative" />
           {/snippet}
 
           {#snippet children(metrics: ForecastMetric[])}

@@ -30,7 +30,7 @@
         <Accordion.Trigger class={cn('p-auto flex flex-row flex-wrap', triggerClass)}>
           <span>{hiddenItems.length} Hidden Metrics</span>
           {#if markedHiddenItems.length}
-            <span class="text-text-muted mr-auto inline-flex items-baseline space-x-1">
+            <span class="mr-auto inline-flex items-baseline text-text-muted">
               (
               {#each markedHiddenItems as item, i (item)}
                 {#if i !== 0}
