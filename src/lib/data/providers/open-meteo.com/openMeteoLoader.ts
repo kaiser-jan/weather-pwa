@@ -18,7 +18,7 @@ export function createOpenMeteoLoader({ dataset, parameters, interval }: LoaderO
       // why, open-meteo, why?...
       [interval === 'minutely15' ? 'minutely_15' : interval]: mapParametersToOpenMeteo(parameters),
       models: dataset.internalId,
-      // TODO: extract to settings or forecast loader
+      // TODO: refactor: extract to settings or forecast loader
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       past_days: 1,
     }

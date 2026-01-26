@@ -93,7 +93,7 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
     }
   }
 
-  // TODO: mark the incomplete items instead of removing them
+  // TODO: refactor: mark the incomplete items instead of removing them
   // Completeness doesn't matter e.g. for a chart, but does matter for a daily summary.
   const groupedCompleteOnly = grouped.filter((g) => {
     if (!g.series.temperature?.length) return true

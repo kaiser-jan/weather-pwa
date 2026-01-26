@@ -28,7 +28,7 @@ function matchDuration(value: Duration | null, filter?: DurationFilter): boolean
 function matchesCriterion(dataset: Dataset, criteria: Criterion): boolean {
   return (
     matchDuration(dataset.temporalResolution, criteria.interval) &&
-    // TODO: add a pastTimespan which replaces this
+    // TODO: refactor: add a pastTimespan which replaces this
     matchDuration(dataset.baseForecastAge, criteria.offset) &&
     matchDuration(dataset.timespan, criteria.timespan) &&
     (!criteria.parameters || criteria.parameters.every((p) => dataset.parameters.includes(p)))

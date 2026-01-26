@@ -58,7 +58,7 @@ export function getPreferredUnit(key: ForecastParameter, settings: Settings, acc
   let dimension = METRIC_DIMENSION[key]
   if (!dimension) return null
 
-  // TODO: better handle accumulation
+  // TODO: refactor: better handle accumulation
   if (accumulated && dimension === 'intensity') dimension = 'accumulation'
 
   return settings.general.units[dimension]

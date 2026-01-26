@@ -112,7 +112,7 @@ export function getDistanceBetweenCoordinatesMeters(a: Coordinates | null, b: Co
 }
 
 // -----------------------------------------------------
-// ------------ TODO: refactor and decouple ------------
+// ------------ TODO: refactor: refactor and decouple ------------
 // -----------------------------------------------------
 
 export type Item = {

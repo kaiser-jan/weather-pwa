@@ -23,7 +23,7 @@
 
   function formatDistance(meters: number | null) {
     if (meters === null) return null
-    // TODO: respect unit setting
+    // TODO: bugfix: respect unit setting
     if (meters > 1000) {
       return (meters / 1000).toFixed(meters > 10_000 ? 0 : 1) + 'km'
     }
@@ -38,30 +38,30 @@
 </script>
 
 {#if title}
-  <h5 class="text-text-muted -mb-3 text-sm">{title}</h5>
+  <h5 class="-mb-3 text-sm text-text-muted">{title}</h5>
 {/if}
 <div
   class={[
-    'bg-midground flex min-h-10 shrink-0 flex-col justify-center gap-0 rounded-md',
+    'flex min-h-10 shrink-0 flex-col justify-center gap-0 rounded-md bg-midground',
     disabled ? 'bg-disabled!' : '',
   ]}
 >
   {#if loading}
-    <span class="text-muted-foreground flex flex-row items-center gap-2 px-2 py-1">
+    <span class="flex flex-row items-center gap-2 px-2 py-1 text-muted-foreground">
       <LoaderPulsatingRing className="size-5" />
       {placeholderLoading}
     </span>
   {:else if items === null}
-    <span class="text-muted-foreground px-2 py-1">{placeholderNull}</span>
+    <span class="px-2 py-1 text-muted-foreground">{placeholderNull}</span>
   {:else if items.length === 0}
-    <span class="text-text px-2 py-1">{placeholderEmpty}</span>
+    <span class="px-2 py-1 text-text">{placeholderEmpty}</span>
   {/if}
 
   {#each items ?? [] as item, index (index)}
     {@const asSaved = getSavedLocationFor(item)}
 
     {#if index !== 0}
-      <span class=" bg-background mx-auto h-0.5 w-full"></span>
+      <span class=" mx-auto h-0.5 w-full bg-background"></span>
     {/if}
 
     <Button
@@ -80,7 +80,7 @@
           {/if}
           <span class="overflow-hidden text-ellipsis">{item.label}</span>
         </div>
-        <span class="text-text-disabled min-w-0 overflow-hidden text-left text-xs text-wrap text-ellipsis">
+        <span class="min-w-0 overflow-hidden text-left text-xs text-wrap text-ellipsis text-text-disabled">
           {item.sublabel}
         </span>
       </div>

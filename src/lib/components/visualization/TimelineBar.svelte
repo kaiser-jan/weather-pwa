@@ -16,7 +16,7 @@
 
   interface Props {
     multiseries: MultivariateTimeSeries | null
-    // TODO: make this dependent on whats displayed e.g. in today?
+    // TODO: make this dependent on whats displayed e.g. in today? or configurable?
     parameters: Parameter[]
     startTimestamp: number
     endTimestamp: number
@@ -27,7 +27,7 @@
 
   let barHeight = $state<number>(0)
 
-  // TODO: move to metrics config
+  // TODO: refactor: move to metrics config
   const parameterStyleMap: Record<Parameter, 'gradient' | 'blocks'> = {
     cloud_coverage: 'gradient',
     precipitation_amount: 'blocks',
@@ -84,7 +84,6 @@
   {/each}
 
   {#each parameters as parameter (parameter)}
-    <!-- TODO: properly handle sun and moon -->
     {#if multiseries?.[parameter as keyof typeof multiseries]?.length || ['sun', 'moon'].includes(parameter)}
       <TimelineBarLayer
         {parameter}

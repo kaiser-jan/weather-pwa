@@ -22,7 +22,7 @@
   import { Switch } from '$lib/components/ui/switch'
   import { persisted } from 'svelte-persisted-store'
 
-  // TODO: 0 should be today
+  // TODO: refactor: 0 should be today
   const dayIndex = $derived(parseInt(page.url.searchParams.get('dayIndex') ?? '0'))
 
   const selectedDay = $derived($forecastStore?.daily?.[dayIndex])

@@ -19,7 +19,7 @@ export const METRIC_DIMENSION: Record<ForecastParameter, UnitDimension | null> =
   wind_speed_gust: 'speed',
   wind_degrees: 'angle',
   wind_degrees_gust: 'angle',
-  // TODO: it should be possible to use different units for rain and snow while both use the same converters
+  // TODO: refactor: it should be possible to use different units for rain and snow while both use the same converters
   // TODO: what about e.g. mm/h vs L/m2/h
   precipitation_amount: 'intensity',
   precipitation_probability: 'percentage',
@@ -104,7 +104,7 @@ export const CONVERTERS: Record<UnitDimension, Partial<Record<Unit, (v: number) 
   },
 } as const
 
-// TODO: this breaks as soon as a unit is used for metrics in a different range: e.g. short vs long distances
+// TODO: refactor: this breaks as soon as a unit is used for metrics in a different range: e.g. short vs long distances
 //
 // we could group units (mm, m, km) and have have values/a function to decide the unit for the value per group
 // this would break when having multiple values to compare which cross this boundary

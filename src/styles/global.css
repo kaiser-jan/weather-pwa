@@ -31,7 +31,7 @@ body {
   /* Disables pull-to-refresh but allows overscroll glow effects. */
   /* https://developer.chrome.com/blog/overscroll-behavior */
   /* NOTE: pull to refresh causes the app to exceed the available height on mobile chrome */
-  /* TODO: add custom pull to refresh */
+  /* TODO: feature: add custom pull to refresh */
   overscroll-behavior-y: none;
 }
 

@@ -65,7 +65,7 @@ export interface CreatedSeriesDetails {
 
 export interface ParameterDaySummaryProps {
   icon?: typeof Icon
-  // TODO: consider removing or making this the default
+  // TODO: refactor: consider removing or making this the default
   useTotalAsDomain?: boolean
   items?: ('min' | 'max' | 'avg' | 'sum' | 'range' | 'range-bar' | 'trend' | 'precipitation-groups')[]
 }

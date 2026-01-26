@@ -5,7 +5,8 @@
   import NoticePrecipitation from './notices/NoticePrecipitation.svelte'
 </script>
 
-<!-- TODO: we need a way to only show this section and title when there are notices -->
+<!-- TODO: bugfix: we need a way to only show this section and title when there are notices -->
+<!-- otherwise this causes empty space for no apparent reason -->
 <!-- <SectionTitle title="Notices" icon={InfoIcon} /> -->
 <FailSafeContainer name="Section Notices" class="flex flex-row overflow-y-auto rounded-md">
   <NoticePrecipitation />

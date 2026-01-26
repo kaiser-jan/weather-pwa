@@ -52,7 +52,7 @@ const _METRIC_DETAILS_BASE = {
       { threshold: -80, color: parseOklch('oklch(44% 0.15 26)') },
       { threshold: -20, color: parseOklch('oklch(38% 0.17 295)') },
       { threshold: -10, color: parseOklch('oklch(43% 0.16 266)') },
-      { threshold: -5, color: parseOklch('oklch(70% 0.14 258)') },
+      { threshold: -5, color: parseOklch('oklch(71% 0.14 260)') },
       { threshold: 0, color: parseOklch('oklch(100% 0.00 220)') },
       { threshold: 5, color: parseOklch('oklch(80% 0.10 225)') },
       { threshold: 10, color: parseOklch('oklch(80% 0.09 187)') },
@@ -67,7 +67,7 @@ const _METRIC_DETAILS_BASE = {
       style: 'line',
       class: 'opacity-100',
       markExtrema: true,
-      // TODO: make unit agnostic
+      // TODO: bugfix: make unit agnostic
       markers: [{ value: 0, class: 'stroke-1 stroke-white opacity-50' }],
       include: {
         temperature_max: {
@@ -293,7 +293,7 @@ const _METRIC_DETAILS_BASE = {
   },
   // TODO: to be precise, air quality metrics would need a non-linear scale
   // the increments between the limits are not equal, resulting in a distorted chart
-  // TODO: something is off with the air quality domains (individual pollutants vs aqi, check extreme pollution)
+  // TODO: bugfix: something is off with the air quality domains (individual pollutants vs aqi, check extreme pollution)
   pm25: {
     label: 'PM 2.5',
     abbreviation: 'PM2.5',
@@ -351,7 +351,7 @@ const _METRIC_DETAILS_BASE = {
     summary: { items: ['range'] },
   },
 
-  // TODO: make this use ForecastMetrics instead
+  // TODO: refactor: make this use ForecastMetrics instead
 } as const satisfies Partial<Record<ForecastParameter, MetricDetails>>
 
 // HACK: add precipitation_amount as a combination of rain and snow

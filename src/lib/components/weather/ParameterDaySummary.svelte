@@ -112,7 +112,7 @@
         {/each}
       </div>
     {/if}
-    <!-- TODO: summary, e.g. Overcast avg, 17:00 Clear -->
+    <!-- TODO: feature: summary, e.g. Overcast avg, 17:00 Clear -->
     <!-- TODO: introduce "focus" to min/max -> will prefer indicating time ranges with minmal/maximal value -->
   {/each}
 {:else}

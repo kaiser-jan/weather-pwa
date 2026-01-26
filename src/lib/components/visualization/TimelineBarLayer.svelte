@@ -32,7 +32,7 @@
 
   const COLOR_ERROR = 'hsla(0, 100%, 50%, 0%)'
 
-  // TODO: use METRICS_DETAILS for this
+  // TODO: refactor: use METRICS_DETAILS for this
   function getDetailsForValue(value: number): { color: string; size?: string } {
     if (value === undefined) {
       if (parameter === 'uvi_clear_sky') return { color: 'hsl(55, 65%, 65%)' }
