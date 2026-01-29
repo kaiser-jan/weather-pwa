@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - beta
+      - dev
 
   workflow_dispatch:
 
@@ -40,25 +40,28 @@ jobs:
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         id: semantic # Need an `id` for output variables
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # NOTE: This is required, as otherwise the changelog has the new entry twice,
       # because the additions have been comitted and are in the working tree.
       - name: Restore working tree
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: git restore .
 
       - name: Repo CI Setup
-        if: steps.semantic.outputs.new_release_published == 'true'
+        if: ${{ github.ref != 'refs/heads/main' || steps.semantic.outputs.new_release_published }}
         run: bun run setup:ci
       - name: Build
-        if: steps.semantic.outputs.new_release_published == 'true'
+        if: ${{ github.ref != 'refs/heads/main' || steps.semantic.outputs.new_release_published }}
         run: bun run build
 
       - name: Deploy
-        if: steps.semantic.outputs.new_release_published == 'true'
+        if: ${{ github.ref != 'refs/heads/main' || steps.semantic.outputs.new_release_published }}
         uses: cloudflare/wrangler-action@v3
         with:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: pages deploy build
+          command: pages deploy build --branch ${{ github.ref_name }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
