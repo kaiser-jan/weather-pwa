@@ -88,7 +88,7 @@ const _METRIC_DETAILS_BASE = {
     domain: { min: [0], max: [100] },
     icon: CloudyIcon,
     iconIfZero: CloudOffIcon,
-    preferCategoryLabel: false,
+    preferCategoryLabel: true,
     categories: [
       { threshold: -1, description: 'Clear' },
       { threshold: 12.5, description: 'Few' },
@@ -101,7 +101,7 @@ const _METRIC_DETAILS_BASE = {
       style: 'area',
       class: 'opacity-20',
     },
-    summary: { items: ['range'] },
+    summary: { items: ['avg'] },
   },
 
   // TODO: It is possible that a dataset provides snow + rain bun is overriden by a more granular one that only provides precipitation.
@@ -131,7 +131,7 @@ const _METRIC_DETAILS_BASE = {
       stacksWith: ['snow_amount', 'rain_amount'],
       class: 'opacity-80',
     },
-    summary: { items: ['precipitation-groups'] },
+    summary: { items: ['aggregated-groups'] },
   },
   snow_amount: {
     label: 'Snow Amount',
@@ -145,7 +145,7 @@ const _METRIC_DETAILS_BASE = {
       stacksWith: ['snow_amount', 'rain_amount'],
       class: 'opacity-80',
     },
-    summary: { items: ['precipitation-groups'] },
+    summary: { items: ['aggregated-groups'] },
   },
 
   wind_speed: {

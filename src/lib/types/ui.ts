@@ -67,7 +67,7 @@ export interface ParameterDaySummaryProps {
   icon?: typeof Icon
   // TODO: refactor: consider removing or making this the default
   useTotalAsDomain?: boolean
-  items?: ('min' | 'max' | 'avg' | 'sum' | 'range' | 'range-bar' | 'trend' | 'precipitation-groups')[]
+  items?: ('min' | 'max' | 'avg' | 'sum' | 'range' | 'range-bar' | 'trend' | 'groups' | 'aggregated-groups')[]
 }
 export const ITEM_ID_GEOLOCATION = 'geolocation'
 export const ITEM_ID_TEMPORARY = 'search'

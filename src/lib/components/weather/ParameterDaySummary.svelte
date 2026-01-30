@@ -9,7 +9,11 @@
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import { NOW_MILLIS } from '$lib/stores/now'
   import { aggregableMetricGroupsStore } from '$lib/stores/aggregableMetricGroups'
+  import { metricGroupsStore, type MetricGroup } from '$lib/stores/metricGroups'
   import AggregableMetricGroup from './AggregableMetricGroup.svelte'
+  import { DateTime } from 'luxon'
+  import { autoFormatMetric } from '$lib/utils/units'
+  import { settings } from '$lib/stores/settings'
 
   type Props = ParameterDaySummaryProps & {
     metric: ForecastMetric
@@ -39,6 +43,33 @@
       categorizeValue(details, day.summary[metric].max)?.threshold
     )
   })
+
+  // TODO: optionally ignore cloud groups when there is no sun
+  function formatGroups() {
+    const groups = $metricGroupsStore[metric as keyof typeof $metricGroupsStore].filter(
+      (g) => g.end > day.timestamp && g.start < day.timestamp + day.duration,
+    )
+
+    const formatValue = (v: number) =>
+      details.categories && details.preferCategoryLabel
+        ? categorizeValue(details, v)?.description
+        : autoFormatMetric(v, metric, $settings)
+    const formatTime = (t: number) => DateTime.fromMillis(t).toFormat('HH:mm')
+
+    if (!groups.length) return formatValue(day.summary[metric].avg)
+
+    if (groups.length === 3 && Math.abs(groups[0].avg - groups[2].avg) < 10)
+      return `${formatValue(groups[0].avg)}, ${formatValue(groups[1].avg)} ${formatTime(groups[1].start)} - ${formatTime(groups[2].start)}`
+
+    let pieces = [`${formatValue(groups[0].avg)}`]
+
+    for (let i = 1; i < groups.length; i++) {
+      const group = groups[i]
+      pieces.push(`${formatValue(group.avg)} ${formatTime(group.start)}`)
+    }
+
+    return pieces.join(', ')
+  }
 </script>
 
 {#if details}
@@ -83,7 +114,9 @@
       {:else if values}
         <ArrowDownIcon class="shrink-0" />
       {/if}
-    {:else if item === 'precipitation-groups' && metric in $aggregableMetricGroupsStore}
+    {:else if item === 'groups' && metric in $metricGroupsStore}
+      {formatGroups()}
+    {:else if item === 'aggregated-groups' && metric in $aggregableMetricGroupsStore}
       {@const groups = $aggregableMetricGroupsStore[metric as keyof typeof $aggregableMetricGroupsStore].filter(
         (g) => g.end > day.timestamp && g.start < day.timestamp + day.duration && (fullDay || g.end > $NOW_MILLIS),
       )}
