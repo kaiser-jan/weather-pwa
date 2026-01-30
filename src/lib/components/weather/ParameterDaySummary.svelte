@@ -52,32 +52,22 @@
       <div class="mt-1 text-xs leading-none text-text-muted">
         {item}
       </div>
-    {:else if item === 'range'}
-      <FormattedMetric
-        value={day.summary[metric]?.min}
-        parameter={metric}
-        categoryIndicator={!compare}
-        class="min-w-12"
+    {:else if item === 'range' && compare}
+      <FormattedMetric value={day.summary[metric]?.min} parameter={metric} class="min-w-12" />
+      <NumberRangeBar
+        {domain}
+        total={$forecastStore?.total.summary[metric]}
+        instance={day.summary[metric]}
+        {details}
+        className="h-2 shrink min-w-16"
       />
-      {#if compare}
-        <NumberRangeBar
-          {domain}
-          total={$forecastStore?.total.summary[metric]}
-          instance={day.summary[metric]}
-          {details}
-          className="h-2 shrink min-w-16"
-        />
-      {/if}
-      {#if !compare}
-        <!-- <ArrowRightIcon class="text-muted-foreground" /> -->
+      <FormattedMetric value={day.summary[metric]?.max} parameter={metric} class="min-w-12" />
+    {:else if item === 'range' && !compare}
+      <FormattedMetric value={day.summary[metric]?.min} parameter={metric} categoryIndicator class="min-w-12" />
+      {#if !doMinMaxMatch}
         <span class="mr-2 text-muted-foreground">to</span>
+        <FormattedMetric value={day.summary[metric]?.max} parameter={metric} categoryIndicator class="min-w-12" />
       {/if}
-      <FormattedMetric
-        value={day.summary[metric]?.max}
-        parameter={metric}
-        categoryIndicator={!compare}
-        class="min-w-12"
-      />
     {:else if item === 'range-bar'}
       <NumberRangeBar
         {domain}
