@@ -59,7 +59,7 @@
             total={$forecastStore?.total?.summary.temperature}
             instance={day.summary.temperature}
             details={METRIC_DETAILS.temperature}
-            className="h-2 w-16"
+            class="h-2 w-16"
           />
           <FormattedMetric parameter="temperature" value={day.summary.temperature.max} />
         </div>

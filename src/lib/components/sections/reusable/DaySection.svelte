@@ -52,7 +52,7 @@
     multiseries={timebucket.multiseries}
     startTimestamp={timebucket.timestamp}
     endTimestamp={timebucket.timestamp + timebucket.duration}
-    parameters={['sun', 'cloud_coverage', 'precipitation_amount']}
+    parameters={['sun', 'cloud_coverage', 'rain_amount', 'snow_amount']}
   />
 
   {#if showSummary}
@@ -61,10 +61,10 @@
       class="container flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg"
       onclick={openThisDay}
     >
-      <div class="flex flex-row flex-wrap gap-2">
+      <div class="flex flex-row flex-wrap justify-between gap-4">
         {#each $settings.sections.today.metrics as metric (metric)}
           {@const config = METRIC_DETAILS[metric].summary}
-          <div class="flex w-full flex-row flex-nowrap items-center gap-2">
+          <div class="flex flex-row flex-nowrap items-center gap-2">
             <ParameterDaySummary {...config} {metric} day={timebucket} />
           </div>
         {/each}

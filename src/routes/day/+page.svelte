@@ -132,7 +132,7 @@
                 {@const config = METRIC_DETAILS[metric].summary}
 
                 <ParameterToggle {metric} bind:visibleList={$visibleMetrics}>
-                  <ParameterDaySummary {...config} {metric} day={selectedDay} fullDay compare={$compare} />
+                  <ParameterDaySummary {...config} {metric} day={selectedDay} fullDay compare={$compare} align />
                 </ParameterToggle>
               {/each}
             </div>

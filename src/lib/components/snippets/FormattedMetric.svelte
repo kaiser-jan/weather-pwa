@@ -10,7 +10,7 @@
   interface Props {
     value?: number
     parameter: ForecastMetric
-    class?: string
+    class?: string | (string | undefined | false)[]
     detailed?: boolean
     hideUnit?: boolean
     accumulated?: boolean

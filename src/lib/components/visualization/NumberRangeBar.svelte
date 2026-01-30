@@ -9,11 +9,11 @@
     total?: NumberSummary
     instance: NumberSummary
     details: MetricDetails
-    className: string
+    class: string | (string | undefined | false)[]
     vertical?: boolean
   }
 
-  const { domain: _domain, total, instance, details, className, vertical }: Props = $props()
+  const { domain: _domain, total, instance, details, class: className, vertical }: Props = $props()
 
   const startAverage = $derived(scale(instance.avg))
 

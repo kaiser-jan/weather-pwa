@@ -20,9 +20,10 @@
     day: TimeBucket
     fullDay?: boolean
     compare?: boolean
+    align?: boolean
   }
 
-  let { metric, items = ['min', 'range-bar', 'max'], day, useTotalAsDomain, fullDay, compare }: Props = $props()
+  let { metric, items = ['min', 'range-bar', 'max'], day, useTotalAsDomain, fullDay, compare, align }: Props = $props()
 
   const details = $derived<MetricDetails>(METRIC_DETAILS[metric])
 
@@ -90,14 +91,24 @@
         total={$forecastStore?.total.summary[metric]}
         instance={day.summary[metric]}
         {details}
-        className="h-2 shrink min-w-16"
+        class="h-2 min-w-16 shrink"
       />
       <FormattedMetric value={day.summary[metric]?.max} parameter={metric} class="min-w-12" />
     {:else if item === 'range' && !compare}
-      <FormattedMetric value={day.summary[metric]?.min} parameter={metric} categoryIndicator class="min-w-12" />
+      <FormattedMetric
+        value={day.summary[metric]?.min}
+        parameter={metric}
+        categoryIndicator
+        class={[align && 'min-w-12']}
+      />
       {#if !doMinMaxMatch}
-        <span class="mr-2 text-muted-foreground">to</span>
-        <FormattedMetric value={day.summary[metric]?.max} parameter={metric} categoryIndicator class="min-w-12" />
+        <span class="text-muted-foreground">to</span>
+        <FormattedMetric
+          value={day.summary[metric]?.max}
+          parameter={metric}
+          categoryIndicator
+          class={[align && 'min-w-12']}
+        />
       {/if}
     {:else if item === 'range-bar'}
       <NumberRangeBar
@@ -105,7 +116,7 @@
         total={$forecastStore?.total.summary[metric]}
         instance={day.summary[metric]}
         {details}
-        className="h-2 shrink"
+        class="h-2 shrink"
       />
     {:else if item === 'trend'}
       {@const values = day.multiseries[metric]}
@@ -131,7 +142,7 @@
             class={group.end < $NOW_MILLIS ? 'opacity-60' : ''}
           />
         {:else}
-          <span class="text-text-muted mr-auto">No rain on this day!</span>
+          <span class="text-text-muted mr-auto">None</span>
         {/each}
       </div>
     {/if}

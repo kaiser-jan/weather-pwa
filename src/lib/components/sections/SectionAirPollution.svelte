@@ -130,7 +130,7 @@
               sum: 0,
             }}
             details={METRIC_DETAILS[pollutant]!}
-            className="h-2"
+            class="h-2"
           />
           <FormattedMetric
             parameter={pollutant}
