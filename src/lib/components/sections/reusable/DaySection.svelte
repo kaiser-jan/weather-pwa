@@ -61,7 +61,7 @@
       class="container flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2 rounded-lg"
       onclick={openThisDay}
     >
-      <div class="flex flex-row flex-wrap justify-between gap-4">
+      <div class="flex flex-row flex-wrap justify-between gap-x-4 gap-y-2">
         {#each $settings.sections.today.metrics as metric (metric)}
           {@const config = METRIC_DETAILS[metric].summary}
           <div class="flex flex-row flex-nowrap items-center gap-2">

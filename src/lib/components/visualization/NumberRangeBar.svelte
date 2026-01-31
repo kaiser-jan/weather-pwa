@@ -11,11 +11,12 @@
     domain?: { min: number; max: number }
     total?: NumberSummary
     instance: NumberSummary
-    class?: string
+    class?: string | string[]
     vertical?: boolean
+    current?: number
   }
 
-  const { metric, domain: _domain, total, instance, class: className, vertical }: Props = $props()
+  const { metric, domain: _domain, total, instance, class: className, vertical, current }: Props = $props()
 
   const details = $derived(METRIC_DETAILS[metric])
 
@@ -44,6 +45,7 @@
         direction: vertical ? 'y' : 'x',
         stops: details.categories,
         name: metric,
+        abrupt: 'type' in details.color && details.color.type === 'segments',
       })
 
       color = `url(#${gradientId})`
@@ -71,22 +73,27 @@
 
     drawRange(instance, 1)
 
-    // average marker
-    const avgPos = scale(instance.avg)
+    const markerPos = scale(current ?? instance.avg)
 
     svg
       .append('circle')
-      .attr('r', 2)
-      .attr('cx', vertical ? width / 2 : avgPos)
-      .attr('cy', vertical ? avgPos : height / 2)
+      .attr('r', vertical ? width / 4 : height / 4)
+      .attr('cx', vertical ? width / 2 : markerPos)
+      .attr('cy', vertical ? markerPos : height / 2)
       .attr('fill', 'background')
-      .attr('opacity', 0.5)
+      .attr('opacity', current !== undefined ? 0.8 : 0.5)
   }
 
   let svg: SVGSVGElement
 
   $effect(() => {
     if (domain || total || instance) renderBar(svg)
+
+    svg.onresize = () => {
+      const width = svg.getBoundingClientRect().width
+      const height = svg.getBoundingClientRect().height
+      d3.select(svg).attr('viewBox', `0 0 ${width} ${height}`)
+    }
   })
 
   onMount(() => {

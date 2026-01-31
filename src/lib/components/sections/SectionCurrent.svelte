@@ -10,12 +10,14 @@
   import { autoFormatMetric } from '$lib/utils/units'
   import { settings } from '$lib/stores/settings'
   import { reverseGeocoding, placeToWeatherLocation } from '$lib/utils/location'
-  import { NOW, NOW_MILLIS } from '$lib/stores/now'
+  import { NOW, NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
   import { coordinates } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import { currentFromMultiseries } from '$lib/utils/forecast/current'
   import LoaderState from '../snippets/LoaderState.svelte'
   import { loaderSummaryState } from '$lib/utils/loaderState'
+  import NumberRangeBar from '../visualization/NumberRangeBar.svelte'
+  import { METRIC_DETAILS } from '$lib/config/metrics'
 
   interface Props {
     shrink: boolean
@@ -24,6 +26,8 @@
   let { shrink }: Props = $props()
 
   const settingCurrentSticky = settings.select((s) => s.sections.current.sticky)
+
+  const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS))
 
   let locationNamePromise = $derived.by(async () => {
     if (!$coordinates) return null
@@ -45,22 +49,22 @@
 
 <div
   class={[
-    'bg-midground top-0 z-50 flex min-h-20 w-full flex-col overflow-hidden rounded-b-2xl p-2 transition-all',
+    'top-0 z-50 flex min-h-20 w-full flex-col overflow-hidden rounded-b-2xl bg-midground p-2 transition-all',
     $settingCurrentSticky ? 'absolute' : 'relative',
   ]}
-  style={`height: calc(min(2rem, env(safe-area-inset-top)) + ${shrink ? '10vh' : '25vh'})`}
+  style={`height: calc(min(2rem, env(safe-area-inset-top)) + ${shrink ? '12vh' : '25vh'})`}
 >
-  <SkySimulation class="absolute inset-0 z-0" coordinates={$coordinates} turbidity={4} datetime={$NOW} />
+  <SkySimulation class="absolute inset-0 z-0" coordinates={$coordinates} turbidity={3} datetime={$NOW} />
   <div class="shrink-0" style="height: min(2rem,env(safe-area-inset-top))"></div>
 
   <FailSafeContainer name="Section Current" class="relative shrink grow">
-    <div class="text-text absolute inset-0 bottom-auto inline-flex w-full items-center justify-between text-xs">
+    <div class="absolute inset-0 bottom-auto inline-flex w-full items-center justify-between text-xs text-text">
       {#await locationNamePromise then locationName}
-        <span class="drop-shadow-c-md ml-1 line-clamp-1">{locationName}</span>
+        <span class="ml-1 line-clamp-1 drop-shadow-c-md">{locationName}</span>
       {/await}
       <button
         onclick={() => forecastStore.update('manual')}
-        class={['p-2', $loaderStates.every((r) => r === null) ? 'animate-spin ' : '']}
+        class={['p-1', $loaderStates.every((r) => r === null) ? 'animate-spin ' : '']}
       >
         <LoaderState state={$loaderSummaryState} class="text-text" />
       </button>
@@ -68,14 +72,14 @@
 
     <div
       class="inset-0 flex h-full w-full flex-row items-center justify-center gap-4 transition-all"
-      class:mt-2.5={shrink}
+      class:mt-3={shrink}
       class:-mt-1.5={!shrink}
     >
       <div
-        class={[shrink ? 'size-12' : 'size-24', 'relative shrink-0 grow-0 overflow-visible transition-all'].join(' ')}
+        class={[shrink ? 'size-16' : 'size-24', 'relative shrink-0 grow-0 overflow-visible transition-all'].join(' ')}
       >
         <div
-          class="from-background/20 absolute top-1/2 left-1/2 size-[150%] -translate-1/2 bg-radial to-transparent to-70%"
+          class="absolute top-1/2 left-1/2 size-[150%] -translate-1/2 bg-radial from-background/20 to-transparent to-70%"
         ></div>
         <WeatherSymbol
           derived={forecastCurrent ? deriveWeatherSituationFromInstant(forecastCurrent) : null}
@@ -92,10 +96,19 @@
         placeholder="20°C"
         loaded={forecastCurrent !== null}
       />
+      {#if today}
+        <NumberRangeBar
+          metric="temperature"
+          instance={today.summary.temperature}
+          class={['ml-2 w-2 transition-all', shrink ? 'h-8 w-1' : 'h-16']}
+          vertical
+          current={forecastCurrent?.temperature}
+        />
+      {/if}
     </div>
 
     <div
-      class="bg-background/70 absolute inset-0 top-auto flex h-10 w-full shrink-0 flex-row justify-between gap-4 overflow-hidden rounded-lg px-3 py-2 transition-all"
+      class="absolute inset-0 top-auto flex h-10 w-full shrink-0 flex-row justify-between gap-4 overflow-hidden rounded-lg bg-background/60 px-3 py-2 transition-all"
       class:opacity-0={shrink}
       class:h-0!={shrink}
       class:p-0!={shrink}
