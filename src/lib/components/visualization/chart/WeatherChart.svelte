@@ -22,7 +22,8 @@
   import { NOW_MILLIS } from '$lib/stores/now'
   import { colorToCss } from '$lib/utils/color'
   import type { Forecast } from '$lib/types/metno'
-  import { removeDuplicates } from '$lib/utils'
+  import { mapRecord, removeDuplicates } from '$lib/utils'
+  import { DateTime, Duration } from 'luxon'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -32,16 +33,18 @@
     className: string
     location: 'overview' | 'day' | 'outlook'
     onclick?: () => void
+    rollup?: boolean
   }
 
   let {
-    multiseries: data,
+    multiseries,
     parameters = $bindable(),
     startTimestamp,
     endTimestamp,
     className,
     location,
     onclick,
+    rollup,
   }: Props = $props()
 
   const parameterSelect = $derived.by(() => {
@@ -100,9 +103,29 @@
     d3.select(container).selectAll('*').remove()
   }
 
+  function rollupMultiseries() {
+    return mapRecord(multiseries, (series) =>
+      d3
+        .rollups(
+          series,
+          (v) => ({
+            value: d3.median(v, (d) => d.value)!,
+            min: d3.min(v, (d) => d.value)!,
+            max: d3.max(v, (d) => d.value)!,
+            timestamp: v[0].timestamp + Duration.fromObject({ hours: 12 }).toMillis(),
+            duration: v[v.length - 1].timestamp + v[v.length - 1].duration - v[0].timestamp,
+          }),
+          (d) => DateTime.fromMillis(d.timestamp).startOf('day').plus({ hours: 12 }).toMillis(),
+        )
+        .map((r) => r[1]),
+    )
+  }
+
   // TODO: only update whats necessary
   function updateChart() {
     clearChart()
+
+    const data = rollup ? rollupMultiseries() : multiseries
 
     margin = { ...getInitialMargin() }
 
@@ -432,12 +455,12 @@
   })
 
   $effect(() => {
-    if (data && parameters) updateChart()
+    if (multiseries && parameters) updateChart()
   })
 </script>
 
 {#if parameterSelect}
-  <ParameterSelect bind:visible={parameters} multiseries={data} />
+  <ParameterSelect bind:visible={parameters} {multiseries} />
 {/if}
 
 {#if $settingsChart.indicator !== 'tooltip'}

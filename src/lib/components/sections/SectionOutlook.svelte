@@ -66,7 +66,7 @@
         <FormattedMetric parameter="temperature" value={day.summary.temperature.max} class="text-text-muted" hideUnit />
         <NumberRangeBar
           metric="temperature"
-          total={$forecastStore?.total?.summary.temperature}
+          domain={$forecastStore?.total?.summary.temperature}
           instance={day.summary.temperature}
           class="h-20 w-2"
           vertical
