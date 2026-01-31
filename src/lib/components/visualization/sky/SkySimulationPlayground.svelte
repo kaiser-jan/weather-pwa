@@ -15,15 +15,15 @@
     longitude: 24.945831,
     altitude: null,
   }
-  const turbidity = 4
+  const turbidity = 3
 
   let interval: ReturnType<typeof setInterval>
   let datetime = $state(DateTime.now())
 
   onMount(() => {
     interval = setInterval(() => {
-      datetime = datetime.plus({ minutes: 30 })
-    }, 500)
+      datetime = datetime.plus({ minutes: 10 })
+    }, 100)
   })
 
   onDestroy(() => {

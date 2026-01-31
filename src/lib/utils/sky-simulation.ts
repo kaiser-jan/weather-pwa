@@ -122,8 +122,8 @@ export function calculateZenitalValues(turbidity: number, solarZenith: number): 
 
   return {
     Y: Yz / Y0,
-    x: zenithX[0][0],
-    y: zenithY[0][0],
+    x: zenithX[0][0] - 0.02,
+    y: zenithY[0][0] - 0.02,
   }
 }
 

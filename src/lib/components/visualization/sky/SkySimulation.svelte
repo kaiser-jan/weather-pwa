@@ -31,9 +31,18 @@
   const fovY = 80
   const fovYOffset = 90 - fovY
 
+  // TODO: night
+  function drawNight(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, opacity = 1) {
+    ctx.fillStyle = `oklch(15% 0.05 263 / ${opacity})`
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+  }
+
   // TODO: consider using a glsl shader (which renders only on request) for performance
   function updateCanvas() {
     if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
     resolutionX = Math.ceil(canvas.clientWidth / 4)
     resolutionY = Math.ceil(canvas.clientHeight / 4)
@@ -44,11 +53,16 @@
     const solarZenith = Math.PI / 2 - sun.altitude
     const solarAzimuth = sun.azimuth
 
+    const AZIMUTH_NIGHT_START = 2.4
+    const AZIMUTH_NIGHT_END = 2.8
+
+    if (Math.abs(sun.azimuth) > AZIMUTH_NIGHT_END) {
+      drawNight(ctx, canvas)
+      return
+    }
+
     const zenitialValues = calculateZenitalValues(turbidity, solarZenith)
     const coefficients = calculateSkylightDistributionCoefficients(turbidity)
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
 
     const width = canvas.width
     const height = canvas.height
@@ -69,6 +83,10 @@
         const y = row * height
         ctx.fillRect(x, y, tileW, tileH)
       }
+    }
+
+    if (Math.abs(sun.azimuth) > AZIMUTH_NIGHT_START) {
+      drawNight(ctx, canvas, (Math.abs(sun.azimuth) - AZIMUTH_NIGHT_START) / (AZIMUTH_NIGHT_END - AZIMUTH_NIGHT_START))
     }
   }
 
