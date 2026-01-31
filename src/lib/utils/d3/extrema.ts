@@ -12,16 +12,22 @@ export function createExtremaMarkers(options: {
 }) {
   const { svg, dimensions, scaleX, scaleY, data, format } = options
 
-  const values = data.map((d) => d.value)
-  const maxIndex = values.indexOf(Math.max(...values))
+  console.log(scaleX.domain())
 
-  const morningLow = data.slice(0, maxIndex + 1).reduce((min, d) => (d.value < min.value ? d : min), data[0])
-  const eveningLow = data.slice(maxIndex).reduce((min, d) => (d.value < min.value ? d : min), data[maxIndex])
-  const max = data[maxIndex]
+  const startIndex = data.findIndex((b) => b.timestamp > scaleX.domain()[0].getTime())
+  const endIndex = data.findLastIndex((b) => b.timestamp < scaleX.domain()[1].getTime())
+  const relevantData = data.slice(startIndex, endIndex)
+
+  const maxIndex = d3.maxIndex(relevantData, (d) => d.value)
+
+  const morningMin = d3.least(relevantData.slice(0, maxIndex + 1), (d) => d.value)
+  const eveningMin = d3.least(relevantData.slice(maxIndex), (d) => d.value)
+
+  const max = relevantData[maxIndex]
 
   svg
     .selectAll('.highlight')
-    .data([morningLow, max, eveningLow])
+    .data([morningMin, max, eveningMin].filter((e) => e !== undefined))
     .enter()
     .append('g')
     .attr('transform', (d) => `translate(${scaleX(d.timestamp)}, ${scaleY(d.value)})`)
