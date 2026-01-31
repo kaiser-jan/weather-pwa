@@ -1,21 +1,23 @@
 <script lang="ts">
-  import { generateCssRangeGradient } from '$lib/utils/ui'
+  import * as d3 from 'd3'
   import type { NumberSummary } from '$lib/types/data'
+  import { createGradientDefinition } from '$lib/utils/d3/gradient'
+  import { onMount } from 'svelte'
   import { cn } from '$lib/utils'
-  import type { CategoryColor, MetricDetails } from '$lib/types/ui'
+  import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
 
   interface Props {
+    metric: ForecastMetric
     domain?: { min: number; max: number }
     total?: NumberSummary
     instance: NumberSummary
-    details: MetricDetails
-    class: string | (string | undefined | false)[]
+    class?: string
     vertical?: boolean
   }
 
-  const { domain: _domain, total, instance, details, class: className, vertical }: Props = $props()
+  const { metric, domain: _domain, total, instance, class: className, vertical }: Props = $props()
 
-  const startAverage = $derived(scale(instance.avg))
+  const details = $derived(METRIC_DETAILS[metric])
 
   const domain = $derived(
     _domain ?? {
@@ -24,45 +26,74 @@
     },
   )
 
-  function scale(temperature: number) {
-    return ((temperature - domain.min) / (domain.max - domain.min)) * 100
+  function renderBar(el: SVGSVGElement) {
+    const width = el.getBoundingClientRect().width
+    const height = el.getBoundingClientRect().height
+    const svg = d3.select(el).attr('preserveAspectRatio', 'xMinYMin meet').attr('viewBox', `0 0 ${width} ${height}`)
+
+    svg.selectAll('*').remove()
+
+    const scale = d3.scaleLinear([domain.min, domain.max], vertical ? [height, 0] : [0, width])
+
+    let color = 'css' in details.color ? details.color.css : 'red'
+
+    if (details.categories) {
+      const gradientId = createGradientDefinition({
+        svg,
+        scale,
+        direction: vertical ? 'y' : 'x',
+        stops: details.categories,
+        name: metric,
+      })
+
+      color = `url(#${gradientId})`
+    }
+
+    function drawRange({ min, max }: { min: number; max: number }, opacity = 1) {
+      const start = scale(min)
+      const end = scale(max)
+
+      svg
+        .append('rect')
+        .attr('rx', Math.min(width, height) / 2)
+        .attr('ry', Math.min(width, height) / 2)
+        .attr('x', vertical ? 0 : start)
+        .attr('y', vertical ? end : 0)
+        .attr('width', vertical ? width : end - start)
+        .attr('height', vertical ? start - end : height)
+        .attr('fill', color)
+        .attr('opacity', opacity)
+    }
+
+    drawRange(domain, 0.1)
+
+    if (total) drawRange(total, 0.3)
+
+    drawRange(instance, 1)
+
+    // average marker
+    const avgPos = scale(instance.avg)
+
+    svg
+      .append('circle')
+      .attr('r', 2)
+      .attr('cx', vertical ? width / 2 : avgPos)
+      .attr('cy', vertical ? avgPos : height / 2)
+      .attr('fill', 'background')
+      .attr('opacity', 0.5)
   }
 
-  function getColorCssFor({ min, max }: { min: number; max: number }) {
-    if ('css' in details.color) return `background-color: ${details.color.css};`
-    else if (details.categories && details.color.type)
-      return generateCssRangeGradient(min, max, details.categories as CategoryColor[], vertical ? 'top' : 'right')
-    else return 'background-color: red;'
-  }
+  let svg: SVGSVGElement
 
-  function getInsetCssFor({ min, max }: { min: number; max: number }) {
-    const startScaled = scale(min)
-    const endScaled = 100 - scale(max)
+  $effect(() => {
+    if (domain || total || instance) renderBar(svg)
+  })
 
-    return vertical ? `top: ${endScaled}%; bottom: ${startScaled}%;` : `left: ${startScaled}%; right: ${endScaled}%;`
-  }
+  onMount(() => {
+    renderBar(svg)
+  })
 </script>
 
 <div class={cn('relative h-full w-full overflow-hidden rounded-full bg-foreground', className)}>
-  <div
-    class="absolute inset-0 rounded-full opacity-10 mix-blend-color"
-    style={[getInsetCssFor(domain), getColorCssFor(domain)].join(' ')}
-  ></div>
-  {#if total}
-    <div
-      class="absolute inset-0 rounded-full opacity-30"
-      style={[getInsetCssFor(total), getColorCssFor(total)].join(' ')}
-    ></div>
-  {/if}
-  <div
-    class="absolute inset-0 rounded-full"
-    style={[getColorCssFor(instance), getInsetCssFor(instance)].join(' ')}
-  ></div>
-  <span
-    class={[
-      'absolute h-1 w-1 rounded-full bg-background opacity-50',
-      vertical ? `left-1/2 -translate-1/2` : 'top-1/2 -translate-1/2',
-    ]}
-    style={vertical ? `bottom: ${startAverage}%;` : `left: ${startAverage}%;`}
-  ></span>
+  <svg bind:this={svg} class="h-full w-full grow" />
 </div>

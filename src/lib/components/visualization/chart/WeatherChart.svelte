@@ -300,7 +300,8 @@
         if (gradientColorStops && !isSegmentedBars) {
           const gradientId = createGradientDefinition({
             svg,
-            scaleY,
+            scale: scaleY,
+            direction: 'y',
             stops: gradientColorStops,
             name: parameter,
             abrupt: isAbrupt,

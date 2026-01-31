@@ -87,6 +87,7 @@
     {:else if item === 'range' && compare}
       <FormattedMetric value={day.summary[metric]?.min} parameter={metric} class="min-w-12" />
       <NumberRangeBar
+        {metric}
         {domain}
         total={$forecastStore?.total.summary[metric]}
         instance={day.summary[metric]}
@@ -112,10 +113,10 @@
       {/if}
     {:else if item === 'range-bar'}
       <NumberRangeBar
+        {metric}
         {domain}
         total={$forecastStore?.total.summary[metric]}
         instance={day.summary[metric]}
-        {details}
         class="h-2 shrink"
       />
     {:else if item === 'trend'}

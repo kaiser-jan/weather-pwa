@@ -4,12 +4,13 @@ import { colorToCss } from '../color'
 
 export function createGradientDefinition(options: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
-  scaleY: d3.ScaleLinear<number, number, never>
+  scale: d3.ScaleLinear<number, number, never>
+  direction: 'x' | 'y'
   stops: Category[]
   name: string
   abrupt?: boolean
 }) {
-  const { svg, scaleY, stops, name, abrupt } = options
+  const { svg, scale, direction, stops, name, abrupt } = options
 
   const uuid = createUUID()
 
@@ -43,10 +44,10 @@ export function createGradientDefinition(options: {
     .append('linearGradient')
     .attr('id', id)
     .attr('gradientUnits', 'userSpaceOnUse')
-    .attr('x1', 0)
-    .attr('y1', scaleY(min))
-    .attr('x2', 0)
-    .attr('y2', scaleY(max))
+    .attr('x1', direction == 'x' ? scale(min) : 0)
+    .attr('y1', direction == 'y' ? scale(min) : 0)
+    .attr('x2', direction == 'x' ? scale(max) : 0)
+    .attr('y2', direction == 'y' ? scale(max) : 0)
 
   gradient
     .selectAll('stop')
