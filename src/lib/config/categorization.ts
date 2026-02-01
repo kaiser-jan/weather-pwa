@@ -13,7 +13,7 @@ export const EAQI = {
     parseOklch('oklch(74% 0.15 61)'),
     parseOklch('oklch(58% 0.20 30)'),
   ],
-  labels: ['Good', 'Fair', 'Medium', 'Poor', 'Very Poor', 'Extremely Poor'],
+  labels: ['Good', 'Fair', 'Moderate', 'Poor', 'Very Poor', 'Extremely Poor'],
 
   limits: {
     pm25: [0, 6, 16, 51, 91, 141],

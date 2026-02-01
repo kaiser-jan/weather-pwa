@@ -34,14 +34,6 @@ function createLimitsCategories(limits: number[], colors: WithCss<ColorOklch>[],
   )
 }
 
-function createAirPollutantDomainCallback(limits: number[]) {
-  return (multiseries: MultivariateTimeSeries) => {
-    if (!multiseries.aqi) return null
-    const index = Math.ceil(Math.max(...multiseries.aqi.map((d) => d.value)))
-    return [0, limits[index] * 1e-6] as const
-  }
-}
-
 const _METRIC_DETAILS_BASE = {
   temperature: {
     label: 'Temperature',
@@ -283,7 +275,7 @@ const _METRIC_DETAILS_BASE = {
     icon: FactoryIcon,
     domain: {
       min: [0],
-      max: [5],
+      max: [6],
     },
     preferCategoryLabel: true,
     categories: createLimitsCategories([0, 1, 2, 3, 4, 5], EAQI.colors, EAQI.labels),
@@ -299,9 +291,8 @@ const _METRIC_DETAILS_BASE = {
     abbreviation: 'PM2.5',
     domain: {
       min: [0],
-      max: [EAQI.limits.pm25[3] * 1e-6, EAQI.limits.pm25[5] * 1e-6],
+      max: [EAQI.limits.pm25[5] * 1e-6, EAQI.limits.pm25[5] * 1e-6 * 2],
     },
-    domainCallback: createAirPollutantDomainCallback(EAQI.limits.pm25),
     preferCategoryLabel: true,
     categories: createLimitsCategories(EAQI.limits.pm25, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
@@ -313,9 +304,8 @@ const _METRIC_DETAILS_BASE = {
     abbreviation: 'PM10',
     domain: {
       min: [0],
-      max: [EAQI.limits.pm10[3] * 1e-6, EAQI.limits.pm10[5] * 1e-6],
+      max: [EAQI.limits.pm10[5] * 1e-6, EAQI.limits.pm10[5] * 1e-6 * 2],
     },
-    domainCallback: createAirPollutantDomainCallback(EAQI.limits.pm10),
     preferCategoryLabel: true,
     categories: createLimitsCategories(EAQI.limits.pm10, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
@@ -327,9 +317,8 @@ const _METRIC_DETAILS_BASE = {
     abbreviation: 'O3',
     domain: {
       min: [0],
-      max: [EAQI.limits.o3[3] * 1e-6, EAQI.limits.o3[5] * 1e-6],
+      max: [EAQI.limits.o3[5] * 1e-6, EAQI.limits.o3[5] * 1e-6 * 2],
     },
-    domainCallback: createAirPollutantDomainCallback(EAQI.limits.o3),
     preferCategoryLabel: true,
     categories: createLimitsCategories(EAQI.limits.o3, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
@@ -341,9 +330,8 @@ const _METRIC_DETAILS_BASE = {
     abbreviation: 'NO2',
     domain: {
       min: [0],
-      max: [EAQI.limits.no2[3] * 1e-6, EAQI.limits.no2[5] * 1e-6],
+      max: [EAQI.limits.no2[5] * 1e-6, EAQI.limits.no2[5] * 1e-6 * 2],
     },
-    domainCallback: createAirPollutantDomainCallback(EAQI.limits.no2),
     preferCategoryLabel: true,
     categories: createLimitsCategories(EAQI.limits.no2, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
