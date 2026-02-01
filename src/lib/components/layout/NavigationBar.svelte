@@ -8,14 +8,12 @@
   const isSubView = $derived(page.route.id !== '/' && !page.route.id?.startsWith('/setup'))
 </script>
 
-<div class="bg-background flex h-22 shrink-0 flex-row items-center gap-2 p-4">
+<div class="flex h-22 shrink-0 flex-row items-center gap-2 bg-background p-4">
   {#if isSubView}
     <Button class="size-14! grow-0 rounded-full text-lg!" variant="midground" size="icon" onclick={() => goto('/')}>
       <ChevronLeftIcon />
     </Button>
   {/if}
   <LocationSelector />
-  {#if !isSubView}
-    <SettingsButton />
-  {/if}
+  <SettingsButton />
 </div>
