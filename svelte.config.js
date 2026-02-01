@@ -27,9 +27,6 @@ const config = {
       // you don't need to do this if you're using generateSW strategy in your app
       // serviceWorker: generateSW ? undefined : 'src/prompt-sw.ts',
     },
-    experimental: {
-      async: true
-    }
   },
 }
 
