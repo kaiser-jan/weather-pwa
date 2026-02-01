@@ -2,7 +2,7 @@
   import { settings } from '$lib/stores/settings'
   import { geolocationStore } from '$lib/stores/geolocation'
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
-  import LocationSearch from './LocationSearch.svelte'
+  import LocationMenu from './LocationMenu.svelte'
   import { iconMap } from '$lib/utils/icons'
   import { SearchIcon } from '@lucide/svelte'
   import { locationSearch } from '$lib/stores/ui'
@@ -80,6 +80,6 @@
     <div class="absolute top-0 right-0 h-full w-6 bg-linear-to-r from-transparent to-midground"></div>
   </div>
   <div class="flex flex-row gap-2 p-2">
-    <LocationSearch active={$selectedLocation?.type === 'search'} />
+    <LocationMenu active={$selectedLocation?.type === 'search'} />
   </div>
 </FailSafeContainer>
