@@ -31,7 +31,7 @@
 
     if (categoryColorStops) {
       const min = details.domainDefault?.min ?? details.domain.min[0]
-      const max = details.domainDefault?.max ?? details.domain.max[details.domain.max.length - 1]
+      const max = details.domainDefault?.max ?? details.domain.max[0]
       return generateCssRangeGradient(min, max, categoryColorStops, 'top')
     }
 

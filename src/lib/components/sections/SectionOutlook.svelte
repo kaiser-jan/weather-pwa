@@ -101,6 +101,7 @@
         className="h-[max(20vh,12rem)]"
         location="overview"
         onclick={() => goto('/outlook')}
+        rollup
       />
     {/if}
   </FailSafeContainer>

@@ -2,12 +2,14 @@
   import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Table from '$lib/components/ui/table/index.js'
   import { loaderStates } from '$lib/stores/data'
-  import { DatabaseIcon } from '@lucide/svelte'
+  import { DatabaseIcon, PencilIcon } from '@lucide/svelte'
   import { DATASETS, PROVIDERS } from '$lib/data/providers'
   import { formatRelativeDatetime } from '$lib/utils/ui'
   import SectionTitle from '$lib/components/layout/SectionTitle.svelte'
   import LoaderState from '../snippets/LoaderState.svelte'
   import { loaderSummaryLabel, loaderSummaryState, stateFromLoaderState } from '$lib/utils/loaderState'
+  import Button from '../ui/button/button.svelte'
+  import { openSettingsAt } from '$lib/stores/ui'
 </script>
 
 <SectionTitle title="Data Sources" icon={DatabaseIcon} />
@@ -17,7 +19,7 @@
       <LoaderState state={$loaderSummaryState} />
       {$loaderSummaryLabel}
     </Accordion.Trigger>
-    <Accordion.Content class="container-unpadded py-0">
+    <Accordion.Content class="container-unpadded flex flex-col gap-2 py-0">
       <Table.Root>
         <Table.Header>
           <Table.Row>
@@ -66,6 +68,9 @@
           {/each}
         </Table.Body>
       </Table.Root>
+      <Button variant="outline" onclick={() => openSettingsAt(['data', 'datasets'])}>
+        <PencilIcon /> Edit data sources
+      </Button>
     </Accordion.Content>
   </Accordion.Item>
 </Accordion.Root>
