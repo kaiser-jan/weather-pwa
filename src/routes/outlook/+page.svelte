@@ -11,33 +11,52 @@
   import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
   import { persisted } from 'svelte-persisted-store'
-  import { Switch } from '$lib/components/ui/switch'
-  import { ScaleIcon, SquareSplitHorizontalIcon } from '@lucide/svelte'
+  import { CircleSlash2Icon, ScaleIcon, SquareSplitHorizontalIcon } from '@lucide/svelte'
+  import { DateTime, Settings } from 'luxon'
+  import { Toggle } from '$lib/components/ui/toggle'
+  import { fromAbsolute } from '@internationalized/date'
+  import DateRangePicker from '$lib/components/DateRangePicker.svelte'
 
   const visibleMetrics = queryParam<ForecastMetric[]>(
     'metrics',
     ssp.array(get(settings).sections.components.chart.plottedMetrics as ForecastMetric[]),
   )
 
-  const rollup = persisted('outlook-view-rollup', false)
+  let rollup = $state(true)
+
+  let startTimestamp = $state(get(TODAY_MILLIS))
+  let endTimestamp = $state($TODAY_MILLIS + 1000 * 3600 * 24 * 7)
 </script>
 
 <PageWrapper class="gap-4 p-4">
+  <header class="flex flex-row items-center justify-between gap-2">
+    <DateRangePicker
+      class="grow"
+      bind:start={startTimestamp}
+      bind:end={endTimestamp}
+      calendarProps={{
+        minValue: fromAbsolute($forecastStore?.daily[0].timestamp ?? $TODAY_MILLIS, Settings.defaultZone.name),
+        maxValue: fromAbsolute(
+          $forecastStore?.daily[$forecastStore.daily.length - 1].timestamp ?? $TODAY_MILLIS,
+          Settings.defaultZone.name,
+        ),
+      }}
+    />
+
+    <Toggle bind:pressed={rollup}>
+      <CircleSlash2Icon />
+    </Toggle>
+  </header>
+
   <WeatherChart
     multiseries={$forecastStore!.multiseries}
     bind:parameters={$visibleMetrics}
-    startTimestamp={$TODAY_MILLIS}
-    endTimestamp={$TODAY_MILLIS + 1000 * 3600 * 24 * 7}
+    {startTimestamp}
+    {endTimestamp}
     className="h-[max(25vh,12rem)]"
     location="outlook"
-    rollup={$rollup}
+    {rollup}
   />
-
-  <div class="flex flex-row items-center gap-2">
-    <Switch bind:checked={$rollup} />
-    <SquareSplitHorizontalIcon class="ml-2" />
-    Daily Average
-  </div>
 
   <ExpandableList
     items={FORECAST_METRICS}

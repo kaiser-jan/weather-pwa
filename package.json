@@ -69,9 +69,9 @@
     "wrangler": "^4.42.0"
   },
   "dependencies": {
-    "@lucide/svelte": "^0.544.0",
+    "@lucide/svelte": "^0.561.0",
     "@turf/boolean-point-in-polygon": "^7.2.0",
-    "bits-ui": "^2.11.4",
+    "bits-ui": "^2.14.4",
     "clsx": "^2.1.1",
     "d3": "^7.9.0",
     "geojson": "^0.5.0",

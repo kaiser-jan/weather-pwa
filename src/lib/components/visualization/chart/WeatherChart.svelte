@@ -155,6 +155,7 @@
       availableMetrics.push(parameter)
     }
 
+    // TODO: for rollup this needs to consider extremas
     const computedAxisList = computeAxesFor(axesToCompute, dimensions, data, !showYAxes)
 
     // compute new dimensions with margin changed by axes
@@ -230,7 +231,6 @@
 
       if (rollup) {
         if (details.chart.style === 'line') {
-          console.info('rollup line', parameter, data[parameter])
           addDataRepresentation(
             parameter,
             data[parameter]!.map((v) => ({ ...v, value: v.min })),
