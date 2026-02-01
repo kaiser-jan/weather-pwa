@@ -56,7 +56,8 @@ export async function reverseGeocoding(coordinates: Coordinates) {
 /**
  * Tries to convert a PlaceOutput to a human readable string containing up to three area names in decreasing specificity
  */
-export function placeToWeatherLocation(place: PlaceOutput) {
+export function placeToWeatherLocation(place: PlaceOutput | undefined) {
+  if (place === undefined) return undefined
   const { road, house_number, hamlet, neighbourhood, suburb, town, county, city, village } = place.address!
   const name = place.name !== '' ? place.name : undefined
   let roadName = road

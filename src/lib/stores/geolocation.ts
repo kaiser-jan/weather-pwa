@@ -1,7 +1,9 @@
 // Based on [svelte-legos](https://github.com/ankurrsinghal/svelte-legos)
 
+import type { PlaceOutput } from '$lib/types/nominatim'
+import { reverseGeocoding } from '$lib/utils/location'
 import { NavigationIcon, NavigationOffIcon, type Icon as IconType } from '@lucide/svelte'
-import { derived, readable } from 'svelte/store'
+import { derived, get, readable, type Readable } from 'svelte/store'
 
 type GeolocationStatus = 'unstarted' | 'unsupported' | 'requesting' | 'unpermitted' | 'loading' | 'error' | 'active'
 
@@ -78,7 +80,19 @@ export function createGeolocationStore(
     }
   })
 
-  const details = derived(geolocation, getDetailsForState)
+  const details = derived<
+    Readable<GeolocationState>,
+    GeolocationStateDetails & { geocoding: PlaceOutput | undefined; _id: object }
+  >(geolocation, (s, set) => {
+    const _id = {}
+    const stateDetails = getDetailsForState(s)
+    set({ ...stateDetails, geocoding: undefined, _id })
+    if (!s.position) return
+    reverseGeocoding(s.position.coords).then((geocoding) => {
+      if (get(details)._id !== _id) return
+      set({ ...stateDetails, geocoding, _id })
+    })
+  })
 
   return {
     subscribe: geolocation.subscribe,
