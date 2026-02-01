@@ -3,8 +3,8 @@ import SectionUpcoming from './SectionUpcoming.svelte'
 import SectionToday from './SectionToday.svelte'
 import SectionTomorrow from './SectionTomorrow.svelte'
 import SectionOutlook from './SectionOutlook.svelte'
-import SectionAirPollution from './SectionAirPollution.svelte'
-import SectionSources from './SectionSources.svelte'
+import SectionAirQuality from './SectionAirQuality.svelte'
+import SectionDataSources from './SectionDataSources.svelte'
 import SectionNotices from './SectionNotices.svelte'
 import type { SectionId } from './registry'
 
@@ -15,8 +15,8 @@ const components: Record<SectionId, Component<{}, {}, ''>> = {
   tomorrow: SectionTomorrow,
   upcoming: SectionUpcoming,
   outlook: SectionOutlook,
-  air_pollution: SectionAirPollution,
-  sources: SectionSources,
+  air_pollution: SectionAirQuality,
+  sources: SectionDataSources,
 }
 export function getComponent(id: SectionId) {
   return components[id]
