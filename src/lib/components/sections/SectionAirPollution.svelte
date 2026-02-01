@@ -136,7 +136,7 @@
             parameter={pollutant}
             value={eaqi.current.values[pollutant]}
             detailed
-            class="w-20 text-right text-xs text-nowrap text-text-muted"
+            class="w-8 text-right text-xs text-nowrap text-text-muted"
           />
         </div>
       {/each}

@@ -53,8 +53,8 @@
     const solarZenith = Math.PI / 2 - sun.altitude
     const solarAzimuth = sun.azimuth
 
-    const AZIMUTH_NIGHT_START = 2.4
-    const AZIMUTH_NIGHT_END = 2.8
+    const AZIMUTH_NIGHT_START = 1.35
+    const AZIMUTH_NIGHT_END = 1.65
 
     if (Math.abs(sun.azimuth) > AZIMUTH_NIGHT_END) {
       drawNight(ctx, canvas)

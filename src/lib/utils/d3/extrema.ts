@@ -8,26 +8,36 @@ export function createExtremaMarkers(options: {
   scaleX: d3.ScaleTime<number, number, never>
   scaleY: d3.ScaleLinear<number, number, never>
   data: TimeSeriesNumberEntry[]
+  dataB?: TimeSeriesNumberEntry[]
   format: (d: number) => string
 }) {
-  const { svg, dimensions, scaleX, scaleY, data, format } = options
+  const { svg, dimensions, scaleX, scaleY, data, dataB, format } = options
 
-  console.log(scaleX.domain())
+  const extremaEntries: (TimeSeriesNumberEntry | undefined)[] = []
 
-  const startIndex = data.findIndex((b) => b.timestamp > scaleX.domain()[0].getTime())
-  const endIndex = data.findLastIndex((b) => b.timestamp < scaleX.domain()[1].getTime())
+  const startIndex = data.findIndex((b) => b.timestamp >= scaleX.domain()[0].getTime())
+  const endIndex = data.findLastIndex((b) => b.timestamp < scaleX.domain()[1].getTime()) + 1
   const relevantData = data.slice(startIndex, endIndex)
 
-  const maxIndex = d3.maxIndex(relevantData, (d) => d.value)
+  if (dataB) {
+    const relevantDataB = dataB.slice(startIndex, endIndex)
+    const min = d3.least(relevantData, (d) => d.value)
+    const max = d3.least(relevantDataB, (a, b) => b.value - a.value)
+    extremaEntries.push(min, max)
+  } else {
+    const maxIndex = d3.maxIndex(relevantData, (d) => d.value)
 
-  const morningMin = d3.least(relevantData.slice(0, maxIndex + 1), (d) => d.value)
-  const eveningMin = d3.least(relevantData.slice(maxIndex), (d) => d.value)
+    const morningMin = d3.least(relevantData.slice(0, maxIndex + 1), (d) => d.value)
+    const eveningMin = d3.least(relevantData.slice(maxIndex), (d) => d.value)
 
-  const max = relevantData[maxIndex]
+    const max = relevantData[maxIndex]
+
+    extremaEntries.push(morningMin, max, eveningMin)
+  }
 
   svg
     .selectAll('.highlight')
-    .data([morningMin, max, eveningMin].filter((e) => e !== undefined))
+    .data(extremaEntries.filter((e) => e !== undefined))
     .enter()
     .append('g')
     .attr('transform', (d) => `translate(${scaleX(d.timestamp)}, ${scaleY(d.value)})`)

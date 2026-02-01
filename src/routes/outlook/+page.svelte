@@ -54,7 +54,7 @@
         {#each metrics as metric (metric)}
           {@const details = METRIC_DETAILS[metric]}
 
-          <ParameterToggle {metric} bind:visibleList={$visibleMetrics} class="w-full">
+          <ParameterToggle {metric} bind:visibleList={$visibleMetrics} class="flex-1">
             <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
             <span class="overflow-hidden text-ellipsis whitespace-nowrap"> {details.label} </span>
           </ParameterToggle>

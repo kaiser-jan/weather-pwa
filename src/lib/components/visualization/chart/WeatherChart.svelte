@@ -228,6 +228,26 @@
         .attr('width', dimensions.width)
         .attr('height', dimensions.height)
 
+      if (rollup) {
+        if (details.chart.style === 'line') {
+          console.info('rollup line', parameter, data[parameter])
+          addDataRepresentation(
+            parameter,
+            data[parameter]!.map((v) => ({ ...v, value: v.min })),
+            {
+              ...details,
+              chart: {
+                class: 'opacity-40',
+                style: 'area',
+                markExtrema: details.chart.markExtrema,
+              },
+            },
+            true,
+            data[parameter]!.map((v) => ({ ...v, value: v.max })),
+          )
+        }
+      }
+
       function addDataRepresentation(
         parameter: string,
         seriesA: TimeSeries<number> | undefined,
@@ -334,7 +354,7 @@
         }
 
         if (details.chart.markExtrema && $settingsChart.highlightExtrema) {
-          createExtremaMarkers({ svg, dimensions, scaleX, scaleY, data: seriesA, format })
+          createExtremaMarkers({ svg, dimensions, scaleX, scaleY, data: seriesA, dataB: seriesB, format })
         }
       }
 
