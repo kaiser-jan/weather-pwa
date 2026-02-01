@@ -7,7 +7,6 @@
   import { settings } from '$lib/stores/settings'
   import { iconMap } from '$lib/utils/icons'
   import { geolocationStore } from '$lib/stores/geolocation'
-  import LocationList from './LocationList.svelte'
   import { classIconMap, reverseGeocoding, typeToString, type Item } from '$lib/utils/location'
   import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
   import { selectedLocation } from '$lib/stores/location'
@@ -17,6 +16,8 @@
   import type { PlaceOutput } from '$lib/types/nominatim'
   import ApiSearchResult from '$lib/components/ApiSearchResult.svelte'
   import { persisted } from 'svelte-persisted-store'
+  import LocationItem from './LocationItem.svelte'
+  import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
 
   const geolocationDetails = geolocationStore.details
 
@@ -36,18 +37,6 @@
   const savedLocations = settings.select((s) => s.data.locations)
 
   const cachedResults = persisted<LocationResults>($state.snapshot(SEARCH_CACHE_KEY), [])
-
-  const geolocationItem = $derived<Item>({
-    id: ITEM_ID_GEOLOCATION,
-    icon: $geolocationDetails.icon,
-    label: $geolocationDetails.label ?? '',
-    sublabel: $geolocationDetails.geocoding?.display_name,
-    coordinates: undefined,
-    select: () => {
-      selectedLocation.set({ type: 'geolocation' })
-      locationSearch.hide()
-    },
-  })
 
   async function nominatimQuery(query: string) {
     const url = new URL('https://nominatim.openstreetmap.org/search')
@@ -71,6 +60,20 @@
   $effect(() => {
     currentQuery = page.state.locationQuery
   })
+
+  function locationItemFromSearchResult(r: PlaceOutput): Omit<Item, 'select'> {
+    return {
+      id: ITEM_ID_TEMPORARY,
+      icon: classIconMap[r.category ?? r.class ?? ''],
+      label: r.name !== '' ? r.name : typeToString(r.type),
+      sublabel: r.display_name,
+      coordinates: {
+        latitude: parseFloat(r?.lat),
+        longitude: parseFloat(r?.lon),
+        altitude: null,
+      },
+    }
+  }
 </script>
 
 <Drawer.Root
@@ -110,71 +113,100 @@
               load={nominatimQuery}
             >
               {#snippet children({ isLoading, result })}
-                <LocationList
-                  placeholderEmpty={`No results for "${page.state.locationQuery}".\nTry rephrasing your search!`}
-                  placeholderNull="Search will start when you finish typing."
-                  placeholderLoading={`Looking up "${page.state.locationQuery}"...`}
-                  loading={isLoading}
-                  items={result?.map((r) => ({
-                    id: ITEM_ID_TEMPORARY,
-                    icon: classIconMap[r.category ?? r.class ?? ''],
-                    label: r.name !== '' ? r.name : typeToString(r.type),
-                    sublabel: r.display_name,
-                    coordinates: {
-                      latitude: parseFloat(r?.lat),
-                      longitude: parseFloat(r?.lon),
-                      altitude: null,
-                    },
-                    select: () => {
-                      selectedLocation.set({
-                        type: 'search',
-                        coordinates: {
-                          latitude: parseFloat(r?.lat),
-                          longitude: parseFloat(r?.lon),
-                          altitude: null,
+                {#if isLoading}
+                  <span class="flex flex-row items-center gap-2 px-2 py-1 text-muted-foreground">
+                    <LoaderPulsatingRing className="size-5" />
+                    Looking up "{page.state.locationQuery}"...
+                  </span>
+                {:else}
+                  {#each result ?? [] as r}
+                    <LocationItem
+                      type="search"
+                      item={{
+                        ...locationItemFromSearchResult(r),
+                        select: () => {
+                          selectedLocation.set({
+                            type: 'search',
+                            ...(locationItemFromSearchResult(r) as Required<Item>),
+                          })
+                          locationSearch.hide()
                         },
-                      })
-                      locationSearch.hide()
-                    },
-                  })) ?? null}
-                />
+                      }}
+                    />
+                  {:else}
+                    <span class="px-2 py-1 text-text">
+                      No results for "{page.state.locationQuery}".<br />
+                      Try rephrasing your search!
+                    </span>
+                  {/each}
+                {/if}
               {/snippet}
             </ApiSearchResult>
           </div>
         {:else}
           <h1 class="text-bold flex flex-row items-center gap-2 text-xl">
             <MapPinnedIcon class="shrink-0" />
-            Your Locations
+            Locations
           </h1>
           <div class="flex grow flex-col gap-4">
-            <LocationList
-              title="Geolocation"
-              placeholderLoading="Loading your geolocation..."
-              placeholderEmpty="Here should be your geolocation... :("
-              items={[geolocationItem]}
-            />
-            <!-- TODO: add start button to geolocation header -->
-            <!-- {#if $geolocationStore.status === 'unstarted'} -->
-            <!--   <Button variant="outline" onclick={geolocationStore.start}> -->
-            <!--     <PlayIcon /> -->
-            <!--     Start Geolocation -->
-            <!--   </Button> -->
-            <!-- {/if} -->
-
-            <LocationList
-              title="Saved Locations"
-              placeholderEmpty="Save a searched location or your current geolocation for it to show up here."
-              items={$savedLocations.map((location) => ({
-                id: location.id,
-                icon: iconMap[location.icon],
-                label: location.name,
-                coordinates: location,
+            <LocationItem
+              type="geolocation"
+              item={{
+                id: ITEM_ID_GEOLOCATION,
+                icon: $geolocationDetails.icon,
+                label: 'Geolocation',
+                sublabel: $geolocationDetails.geocoding?.display_name,
+                coordinates: undefined,
                 select: () => {
-                  selectedLocation.set({ type: 'saved', location })
+                  selectedLocation.set({ type: 'geolocation' })
                   locationSearch.hide()
                 },
-              }))}
+              }}
+              disabled={$geolocationDetails.stateCategory === 'failed'}
             />
+
+            <h5 class="-mb-3 text-sm text-text-muted">Saved Locations</h5>
+            <div class={['flex min-h-10 shrink-0 flex-col justify-center gap-0 rounded-md bg-midground']}>
+              {#each $savedLocations as location, index (location.id)}
+                {#if index !== 0}
+                  <span class=" mx-auto h-0.5 w-full bg-background"></span>
+                {/if}
+                <LocationItem
+                  type="saved"
+                  item={{
+                    id: location.id,
+                    icon: iconMap[location.icon],
+                    label: location.name,
+                    coordinates: location,
+                    select: () => {
+                      selectedLocation.set({ type: 'saved', location })
+                      locationSearch.hide()
+                    },
+                  }}
+                />
+              {:else}
+                <span class="px-2 py-1 text-text">
+                  Save a searched location or your current geolocation for it to show up here.
+                </span>
+              {/each}
+            </div>
+
+            {#if $selectedLocation?.type === 'search'}
+              <h5 class="-mb-3 text-sm text-text-muted">From Search</h5>
+              <LocationItem
+                type="search"
+                item={{
+                  id: ITEM_ID_TEMPORARY,
+                  icon: $selectedLocation.icon,
+                  label: $selectedLocation.label,
+                  sublabel: $selectedLocation.sublabel,
+                  coordinates: undefined,
+                  select: locationSearch.hide,
+                }}
+                disabled={$geolocationDetails.stateCategory === 'failed'}
+              />
+            {/if}
+
             <Button variant="outline" onclick={() => openSettingsAt(['data', 'locations'])}>
               <PencilIcon /> Edit saved locations
             </Button>

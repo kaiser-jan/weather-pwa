@@ -4,6 +4,7 @@ import { geolocationStore } from './geolocation'
 import type { Coordinates } from '$lib/types/data'
 import { settings } from '$lib/stores/settings'
 import { persisted } from 'svelte-persisted-store'
+import type { Item } from '$lib/utils/location'
 
 export const selectedLocation = persisted<LocationSelection | null>('selected-location', null, {
   // some safety for parsing - maybe consider zod
@@ -14,7 +15,7 @@ export const selectedLocation = persisted<LocationSelection | null>('selected-lo
       case 'geolocation':
         return { type: 'geolocation' }
       case 'search':
-        return { type: 'search', coordinates: previous.coordinates }
+        return { ...previous, type: 'search' }
       case 'saved':
         return getLocationSaved(previous?.location?.id)
       default:
@@ -56,7 +57,7 @@ function getLocationFallback(): LocationSelection {
   }
 }
 
-type LocationSelection =
+export type LocationSelection =
   | { type: 'saved'; location: Location }
   | { type: 'geolocation' }
-  | { type: 'search'; coordinates: Coordinates }
+  | ({ type: 'search'; coordinates: Coordinates } & Pick<Item, 'icon' | 'label' | 'sublabel'>)
