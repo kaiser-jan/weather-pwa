@@ -5,8 +5,8 @@
   import { persisted } from 'svelte-persisted-store'
   import { get } from 'svelte/store'
   import { settings } from '$lib/stores/settings'
-  import { selectedLocation } from '$lib/stores/location'
-  import { ITEM_ID_GEOLOCATION, type Location } from '$lib/types/ui'
+  import { locationGeolocation, selectedLocation, selectSavedLocation } from '$lib/stores/location'
+  import { type LocationItemDetails } from '$lib/types/ui'
   import { getDistanceBetweenCoordinatesMeters } from '$lib/utils/location'
   import { onMount } from 'svelte'
   import { openSettingsAt } from '$lib/stores/ui'
@@ -20,17 +20,19 @@
     const geoposition = geolocation.position?.coords
     if (!geoposition) return []
 
-    const locationsWithProximity: (Location & { proximityMeters: number })[] = $settings.data.locations.map((l) => ({
-      ...l,
-      proximityMeters: getDistanceBetweenCoordinatesMeters(geoposition, l)!,
-    }))
+    const locationsWithProximity: (LocationItemDetails & { proximityMeters: number })[] = $settings.data.locations.map(
+      (l) => ({
+        ...l,
+        proximityMeters: getDistanceBetweenCoordinatesMeters(geoposition, l)!,
+      }),
+    )
     const locationsByProximity = locationsWithProximity.sort((a, b) => a.proximityMeters - b.proximityMeters)
 
     const closestLocation = locationsByProximity[0]
     if (!locationsByProximity.length) return []
     const distance = getDistanceBetweenCoordinatesMeters(geoposition, closestLocation)!
     if (distance > $settings.data.locationSnapDistance) return []
-    selectedLocation.set({ type: 'saved', location: closestLocation })
+    selectSavedLocation(closestLocation.id)
     return locationsByProximity
   }
 
@@ -109,7 +111,7 @@
       <AlertDialog.Action
         onclick={() => {
           suggestCurrentGeolocation = false
-          saveLocation({ id: ITEM_ID_GEOLOCATION, label: 'Saved Geolocation', icon: MapPinIcon, select: () => {} })
+          saveLocation($locationGeolocation)
         }}>Continue</AlertDialog.Action
       >
     </AlertDialog.Footer>

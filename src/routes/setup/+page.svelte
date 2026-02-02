@@ -4,7 +4,7 @@
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
   import { Button } from '$lib/components/ui/button'
   import { geolocationStore } from '$lib/stores/geolocation'
-  import { coordinates, selectedLocation } from '$lib/stores/location'
+  import { coordinates, selectGeolocation } from '$lib/stores/location'
   import { locationSearch } from '$lib/stores/ui'
   import { NavigationIcon, SearchIcon } from '@lucide/svelte'
   import { onMount } from 'svelte'
@@ -29,7 +29,7 @@
         disabled={$geolocationDetails.stateCategory === 'failed'}
         onclick={() => {
           geolocationStore.refresh()
-          selectedLocation.set({ type: 'geolocation' })
+          selectGeolocation()
           goto('/')
         }}
       >

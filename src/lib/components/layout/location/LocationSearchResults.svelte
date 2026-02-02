@@ -1,8 +1,8 @@
 <script lang="ts">
   import { ChevronLeftIcon } from '@lucide/svelte'
   import { classIconMap, typeToString } from '$lib/utils/location'
-  import { ITEM_ID_TEMPORARY, type LocationItemDetails } from '$lib/types/ui'
-  import { selectedLocation } from '$lib/stores/location'
+  import { type LocationItemDetails } from '$lib/types/ui'
+  import { selectedLocation, selectSearchedLocation } from '$lib/stores/location'
   import { page } from '$app/state'
   import { locationSearch } from '$lib/stores/ui'
   import type { PlaceOutput } from '$lib/types/nominatim'
@@ -20,15 +20,13 @@
 
   function locationItemFromSearchResult(r: PlaceOutput): Omit<LocationItemDetails, 'select'> {
     return {
-      id: ITEM_ID_TEMPORARY,
-      icon: classIconMap[r.category ?? r.class ?? ''],
-      label: r.name !== '' ? r.name : typeToString(r.type),
-      sublabel: r.display_name,
-      coordinates: {
-        latitude: parseFloat(r?.lat),
-        longitude: parseFloat(r?.lon),
-        altitude: null,
-      },
+      id: '',
+      icon: r.category ?? r.class ?? '',
+      name: r.name !== '' ? r.name : typeToString(r.type),
+      latitude: parseFloat(r?.lat),
+      longitude: parseFloat(r?.lon),
+      altitude: null,
+      geocoding: r,
     }
   }
 </script>
@@ -54,16 +52,12 @@
       {@const item = locationItemFromSearchResult(r)}
       <LocationItem
         type="search"
-        item={{
-          ...item,
-          select: () => {
-            selectedLocation.set({
-              type: 'search',
-              ...(item as Required<LocationItemDetails>),
-            })
-            locationSearch.hide()
-          },
+        icon={item.icon ? classIconMap[item.icon] : undefined}
+        select={() => {
+          selectSearchedLocation(item)
+          locationSearch.hide()
         }}
+        {item}
       />
     {:else}
       <span class="px-2 py-1 text-text">

@@ -1,63 +1,56 @@
 import { derived, get } from 'svelte/store'
-import type { Location } from '$lib/types/ui'
+import { type LocationItemDetails } from '$lib/types/ui'
 import { geolocationStore } from './geolocation'
 import type { Coordinates } from '$lib/types/data'
 import { settings } from '$lib/stores/settings'
 import { persisted } from 'svelte-persisted-store'
-import type { Item } from '$lib/utils/location'
-
-export const selectedLocation = persisted<LocationSelection | null>('selected-location', null, {
-  // some safety for parsing - maybe consider zod
-  beforeRead: (previous) => {
-    if (!previous) return null
-
-    switch (previous.type) {
-      case 'geolocation':
-        return { type: 'geolocation' }
-      case 'search':
-        return { ...previous, type: 'search' }
-      case 'saved':
-        return getLocationSaved(previous?.location?.id)
-      default:
-        return getLocationFallback()
-    }
-  },
-})
-
-export const coordinates = derived([selectedLocation, geolocationStore], ([l, g]): Coordinates | null => {
-  switch (l?.type) {
-    case 'saved':
-      return l.location
-    case 'search':
-      return l.coordinates
-    case 'geolocation':
-      return g.position?.coords ?? null
-    default:
-      return null
-  }
-})
-
-function getLocationSaved(id: string): LocationSelection {
-  const settingLocations = get(settings).data.locations
-  const location = settingLocations.find((l) => l.id === id)
-  if (location) {
-    return { type: 'saved', location }
-  }
-
-  return getLocationFallback()
-}
-
-function getLocationFallback(): LocationSelection {
-  const settingLocations = get(settings).data.locations
-  const firstLocation = settingLocations[0]
-  if (firstLocation) {
-    return { type: 'saved', location: firstLocation }
-  } else {
-    return { type: 'geolocation' }
-  }
-}
 
 export type LocationSelection =
-  | { type: 'saved'; location: Location }
+  | { type: 'saved'; id: string }
   | { type: 'geolocation' }
-  | ({ type: 'search'; coordinates: Coordinates } & Pick<Item, 'icon' | 'label' | 'sublabel'>)
+  | { type: 'search'; item: LocationItemDetails }
+
+export const selectedLocation = persisted<LocationSelection | null>('selected-location', null)
+
+export function selectGeolocation() {
+  selectedLocation.set({ type: 'geolocation' })
+}
+export function selectSavedLocation(id: string) {
+  selectedLocation.set({ type: 'saved', id })
+}
+export function selectSearchedLocation(item: LocationItemDetails) {
+  selectedLocation.set({ type: 'search', item })
+}
+
+export const locationGeolocation = derived(
+  [geolocationStore, geolocationStore.details],
+  ([g, d]) =>
+    ({
+      id: '',
+      icon: undefined,
+      name: d.label ?? 'Geolocation',
+      ...g.position?.coords,
+    }) as LocationItemDetails,
+)
+
+export const selectedLocationDetails = derived(
+  [selectedLocation, locationGeolocation],
+  ([location, geolocation]): LocationItemDetails | null => {
+    if (!location) return null
+
+    const savedLocations = get(settings).data.locations
+
+    switch (location.type) {
+      case 'saved':
+        return savedLocations.find((l) => l.id === location.id) ?? savedLocations[0] ?? geolocation
+      case 'geolocation':
+        return geolocation
+      case 'search':
+        return location.item
+      default:
+        return savedLocations[0] ?? geolocation
+    }
+  },
+)
+
+export const coordinates = derived([selectedLocationDetails], ([l]): Coordinates | null => l ?? null)

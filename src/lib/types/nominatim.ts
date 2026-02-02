@@ -1,4 +1,4 @@
-interface Address {
+export interface Address {
   leisure?: string
   house_number?: string
   neighbourhood?: string

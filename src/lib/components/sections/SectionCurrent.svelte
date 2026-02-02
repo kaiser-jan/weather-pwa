@@ -11,13 +11,12 @@
   import { settings } from '$lib/stores/settings'
   import { reverseGeocoding, placeToWeatherLocation } from '$lib/utils/location'
   import { NOW, NOW_MILLIS, TODAY_MILLIS } from '$lib/stores/now'
-  import { coordinates } from '$lib/stores/location'
+  import { coordinates, selectedLocation, selectedLocationDetails } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
   import { currentFromMultiseries } from '$lib/utils/forecast/current'
   import LoaderState from '../snippets/LoaderState.svelte'
   import { loaderSummaryState } from '$lib/utils/loaderState'
   import NumberRangeBar from '../visualization/NumberRangeBar.svelte'
-  import { METRIC_DETAILS } from '$lib/config/metrics'
 
   interface Props {
     shrink: boolean
@@ -28,13 +27,6 @@
   const settingCurrentSticky = settings.select((s) => s.sections.current.sticky)
 
   const today = $derived($forecastStore?.daily.find((d) => d.timestamp === $TODAY_MILLIS))
-
-  let locationNamePromise = $derived.by(async () => {
-    if (!$coordinates) return null
-    const result = await reverseGeocoding($coordinates)
-    const string = placeToWeatherLocation(result)
-    return string
-  })
 
   const forecastCurrent = $derived.by(() => {
     if (!$forecastStore) return null
@@ -59,9 +51,11 @@
 
   <FailSafeContainer name="Section Current" class="relative shrink grow">
     <div class="absolute inset-0 bottom-auto inline-flex w-full items-center justify-between text-xs text-text">
-      {#await locationNamePromise then locationName}
-        <span class="ml-1 line-clamp-1 drop-shadow-c-md">{locationName}</span>
-      {/await}
+      {#if $selectedLocationDetails?.geocoding}
+        <span class="ml-1 line-clamp-1 drop-shadow-c-md"
+          >{placeToWeatherLocation($selectedLocationDetails.geocoding)}</span
+        >
+      {/if}
       <button
         onclick={() => forecastStore.update('manual')}
         class={['p-1', $loaderStates.every((r) => r === null) ? 'animate-spin ' : '']}

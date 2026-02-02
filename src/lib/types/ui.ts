@@ -1,5 +1,6 @@
 import type { Icon, ThermometerIcon } from '@lucide/svelte'
 import type { Coordinates, TimeSeries, ForecastParameter, MultivariateTimeSeries } from './data'
+import type { PlaceOutput } from './nominatim'
 
 export type WithCss<T> = T & { css: string }
 
@@ -69,20 +70,10 @@ export interface ParameterDaySummaryProps {
   useTotalAsDomain?: boolean
   items?: ('min' | 'max' | 'avg' | 'sum' | 'range' | 'range-bar' | 'trend' | 'groups' | 'aggregated-groups')[]
 }
-export const ITEM_ID_GEOLOCATION = 'geolocation'
-export const ITEM_ID_TEMPORARY = 'search'
 
-export type Location = Coordinates & {
+export type LocationItemDetails = WithRequired<Coordinates, 'longitude' | 'latitude'> & {
   id: string
+  icon?: string
   name: string
-  icon: string
-}
-
-export type LocationItemDetails = {
-  id: string
-  icon: typeof Icon | null
-  label: string
-  sublabel?: string
-  coordinates?: Coordinates
-  select: () => void
+  geocoding?: PlaceOutput
 }

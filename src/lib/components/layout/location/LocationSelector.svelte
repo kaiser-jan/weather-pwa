@@ -4,9 +4,9 @@
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import LocationMenu from './LocationMenu.svelte'
   import { iconMap } from '$lib/utils/icons'
-  import { SearchIcon } from '@lucide/svelte'
+  import { CircleHelpIcon, CircleQuestionMarkIcon, SearchIcon } from '@lucide/svelte'
   import { locationSearch } from '$lib/stores/ui'
-  import { selectedLocation } from '$lib/stores/location'
+  import { selectedLocation, selectSavedLocation } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
 
   import { usePress } from 'svelte-gestures'
@@ -44,11 +44,11 @@
           <button
             class={[
               'flex size-10 min-w-fit items-center justify-center rounded-full px-3',
-              $selectedLocation?.type === 'saved' && $selectedLocation.location.id === location.id
+              $selectedLocation?.type === 'saved' && $selectedLocation.id === location.id
                 ? 'bg-primary'
                 : 'bg-foreground text-text-muted',
             ]}
-            onclick={() => selectedLocation.set({ type: 'saved', location })}
+            onclick={() => selectSavedLocation(location.id)}
             {...usePress(
               () => {},
               () => ({ timeframe: 500, triggerBeforeFinished: true }),
@@ -59,7 +59,7 @@
             <!--   openSettingsAt(['data', 'locations', locationIndex.toString()]) -->
             <!-- }} -->
             {#if location.icon}
-              {@const Icon = iconMap[location.icon]}
+              {@const Icon = iconMap[location.icon] ?? CircleQuestionMarkIcon}
               <Icon />
             {:else}
               {location.name}
@@ -79,7 +79,7 @@
     {/if}
     <div class="absolute top-0 right-0 h-full w-6 bg-linear-to-r from-transparent to-midground"></div>
   </div>
-  <div class="flex flex-row gap-2 p-2">
+  <FailSafeContainer name="Location Menu" class="flex flex-row gap-2 p-2">
     <LocationMenu active={$selectedLocation?.type === 'search'} />
-  </div>
+  </FailSafeContainer>
 </FailSafeContainer>

@@ -50,7 +50,7 @@ export async function reverseGeocoding(coordinates: Coordinates) {
  * Tries to convert a PlaceOutput to a human readable string containing up to three area names in decreasing specificity
  */
 export function placeToWeatherLocation(place: PlaceOutput | undefined) {
-  if (place === undefined) return undefined
+  if (place === undefined || !place.address) return undefined
   const { road, house_number, hamlet, neighbourhood, suburb, town, county, city, village } = place.address!
   const name = place.name !== '' ? place.name : undefined
   let roadName = road
@@ -93,7 +93,10 @@ export const classIconMap: Record<string, typeof IconType> = {
 /**
  * Calculates the great circle distance between two coordinates on earth and converts it to meters
  */
-export function getDistanceBetweenCoordinatesMeters(a: Coordinates | null, b: Coordinates | null): number | null {
+export function getDistanceBetweenCoordinatesMeters(
+  a: Coordinates | null | undefined,
+  b: Coordinates | null | undefined,
+): number | null {
   if (!a || !b) return null
   const R = 6371000 // Earth radius in meters
   const toRad = (deg: number) => (deg * Math.PI) / 180

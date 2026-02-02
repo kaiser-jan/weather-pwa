@@ -3,7 +3,7 @@
   import { goto } from '$app/navigation'
   import { Button } from '$lib/components/ui/button'
   import { geolocationStore } from '$lib/stores/geolocation'
-  import { coordinates, selectedLocation } from '$lib/stores/location'
+  import { coordinates, selectedLocation, selectGeolocation } from '$lib/stores/location'
   import { NavigationIcon, SearchIcon } from '@lucide/svelte'
   import { onMount } from 'svelte'
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
@@ -26,7 +26,7 @@
         class="text-base"
         onclick={() => {
           geolocationStore.refresh()
-          selectedLocation.set({ type: 'geolocation' })
+          selectGeolocation()
           goto('/')
         }}
       >

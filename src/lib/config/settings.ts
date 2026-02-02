@@ -1,7 +1,6 @@
 import { UNIT_OPTIONS, type Unit, type UnitDimension } from '$lib/config/units'
 import { DATASETS, PROVIDERS, type DatasetId } from '$lib/data/providers'
 import type { SettingsBlueprint } from 'svelte-settings'
-import type { Location } from '$lib/types/ui'
 import {
   ArrowUpAZ,
   BadgeInfoIcon,
@@ -64,7 +63,7 @@ import {
   Trash2Icon,
   UmbrellaIcon,
 } from '@lucide/svelte'
-import type { Category } from '$lib/types/ui'
+import type { Category, LocationItemDetails } from '$lib/types/ui'
 import { pwa } from '$lib/stores/pwa'
 import { derived } from 'svelte/store'
 import { iconMap } from '$lib/utils/icons'
@@ -214,7 +213,7 @@ export const settingsConfig = [
         type: 'list',
         icon: MapPinIcon,
         nameProperty: 'name',
-        default: [] as Location[],
+        default: [] as LocationItemDetails[],
         children: [
           {
             id: 'name',

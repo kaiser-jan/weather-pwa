@@ -1,46 +1,44 @@
-import { geolocationStore } from '$lib/stores/geolocation'
-import { selectedLocation } from '$lib/stores/location'
 import { settings } from '$lib/stores/settings'
-import { ITEM_ID_GEOLOCATION, type Location, type LocationItemDetails } from '$lib/types/ui'
+import { type LocationItemDetails } from '$lib/types/ui'
 import { createUUID } from '$lib/utils/common'
 import { get } from 'svelte/store'
+import { reverseGeocoding } from './location'
+import { selectSavedLocation } from '$lib/stores/location'
 
 export function deleteSavedLocation(item: LocationItemDetails) {
   // TODO: this is made to be forgotten when changing this setting
   const savedLocations = get(settings).data.locations
 
-  const index = savedLocations.findIndex(
-    (l) => l.latitude === item.coordinates?.latitude && l.longitude === item.coordinates?.longitude,
-  )
+  const index = savedLocations.findIndex((l) => l.id === item.id)
   if (index === -1) return
 
   savedLocations.splice(index, 1)
   settings.writeSetting(['data', 'locations'], savedLocations)
 }
 
-export function saveLocation(item: LocationItemDetails) {
-  console.log('save', item)
-  if (item.id === ITEM_ID_GEOLOCATION) {
-    item.coordinates = get(geolocationStore).position?.coords
-  }
+export async function saveLocation(item: LocationItemDetails) {
+  if (item.longitude === undefined || item.latitude === undefined) return
 
-  if (!item.coordinates) return
   // TODO: this is made to be forgotten when changing this setting
   const savedLocations = get(settings).data.locations
 
-  const newLocation: Location = {
-    id: createUUID(),
-    name: item.label,
-    latitude: item.coordinates.latitude,
-    longitude: item.coordinates.longitude,
+  const locationToSave: LocationItemDetails = {
     icon: 'map-pin',
-    altitude: null,
+    ...item,
+    id: createUUID(),
   }
-  if (item.coordinates.altitude) newLocation.altitude = item.coordinates.altitude
-  savedLocations.push(newLocation)
 
+  savedLocations.push(locationToSave)
   settings.writeSetting(['data', 'locations'], savedLocations)
+  selectSavedLocation(locationToSave.id)
 
-  // select it
-  selectedLocation.set({ type: 'saved', location: { ...newLocation } })
+  // TODO: allow items to be reverse-geocoded earlier
+  // -> reuse item.geocoding
+  const geocoding = await reverseGeocoding(item)
+  locationToSave.geocoding = geocoding
+
+  savedLocations.pop()
+  savedLocations.push(locationToSave)
+  settings.writeSetting(['data', 'locations'], savedLocations)
+  selectSavedLocation(locationToSave.id)
 }

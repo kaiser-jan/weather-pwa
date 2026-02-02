@@ -88,7 +88,7 @@
   {/if}
 {/snippet}
 
-<SectionTitle title="Air Pollution" icon={FactoryIcon}>
+<SectionTitle title="Air Quality" icon={FactoryIcon}>
   <a
     class="ml-auto inline-flex items-center gap-1 text-sm"
     href="https://airindex.eea.europa.eu/AQI/index.html#"

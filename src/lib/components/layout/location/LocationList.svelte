@@ -4,8 +4,7 @@
   import { settings } from '$lib/stores/settings'
   import { iconMap } from '$lib/utils/icons'
   import { geolocationStore } from '$lib/stores/geolocation'
-  import { ITEM_ID_GEOLOCATION, ITEM_ID_TEMPORARY } from '$lib/types/ui'
-  import { selectedLocation } from '$lib/stores/location'
+  import { locationGeolocation, selectedLocation, selectGeolocation, selectSavedLocation } from '$lib/stores/location'
   import { locationSearch, openSettingsAt } from '$lib/stores/ui'
   import LocationItem from './LocationItem.svelte'
 
@@ -35,17 +34,13 @@
   </h5>
   <LocationItem
     type="geolocation"
-    item={{
-      id: ITEM_ID_GEOLOCATION,
-      icon: $geolocationDetails.icon,
-      label: $geolocationDetails.label ?? 'Unknown',
-      sublabel: $geolocationDetails.geocoding?.display_name,
-      coordinates: undefined,
-      select: () => {
-        selectedLocation.set({ type: 'geolocation' })
-        locationSearch.hide()
-      },
+    icon={$geolocationDetails.icon}
+    item={$locationGeolocation}
+    select={() => {
+      selectGeolocation()
+      locationSearch.hide()
     }}
+    loading={$geolocationDetails.stateCategory === 'loading'}
     disabled={$geolocationDetails.stateCategory === 'failed' || $geolocationDetails.stateCategory === 'loading'}
   />
 
@@ -66,15 +61,11 @@
       {/if}
       <LocationItem
         type="saved"
-        item={{
-          id: location.id,
-          icon: iconMap[location.icon],
-          label: location.name,
-          coordinates: location,
-          select: () => {
-            selectedLocation.set({ type: 'saved', location })
-            locationSearch.hide()
-          },
+        item={location}
+        icon={location.icon ? iconMap[location.icon] : undefined}
+        select={() => {
+          selectSavedLocation(location.id)
+          locationSearch.hide()
         }}
       />
     {:else}
@@ -90,14 +81,8 @@
     <h5 class="-mb-3 text-sm text-text-muted">From Search</h5>
     <LocationItem
       type="search"
-      item={{
-        id: ITEM_ID_TEMPORARY,
-        icon: $selectedLocation.icon,
-        label: $selectedLocation.label,
-        sublabel: $selectedLocation.sublabel,
-        coordinates: $selectedLocation.coordinates,
-        select: locationSearch.hide,
-      }}
+      item={$selectedLocation.item}
+      select={locationSearch.hide}
       disabled={$geolocationDetails.stateCategory === 'failed'}
     />
   {/if}
