@@ -96,7 +96,7 @@
         placeholder="20°C"
         loaded={forecastCurrent !== null}
       />
-      {#if today}
+      {#if today && today.summary.temperature}
         <NumberRangeBar
           metric="temperature"
           instance={today.summary.temperature}
