@@ -14,12 +14,12 @@
 </script>
 
 {#if $settings.sections.components.showSectionTitles}
-  <button class="text-text-muted -mb-3 flex items-center gap-2 text-base font-semibold" {onclick}>
+  <button class="-mb-3 flex items-center gap-2 text-base font-semibold text-text-muted" {onclick}>
     <SectionIcon class="stroke-[2.5]" />
     {title}
     {#if children}
       {@render children()}
     {/if}
   </button>
+  <div class="h-0.5 w-full bg-foreground"></div>
 {/if}
-<div class="bg-foreground h-0.5 w-full"></div>

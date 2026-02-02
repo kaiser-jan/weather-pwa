@@ -5,7 +5,6 @@
   import { cn } from '$lib/utils'
   import { SearchIcon, XIcon } from '@lucide/svelte'
   import { page } from '$app/state'
-  import { popUntil } from '$lib/utils'
   import LocationSearchResults from './LocationSearchResults.svelte'
   import LocationList from './LocationList.svelte'
   import LocationRecentSearchResults from './LocationRecentSearchResults.svelte'

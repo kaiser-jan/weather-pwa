@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ChevronLeftIcon } from '@lucide/svelte'
-  import { classIconMap, typeToString, type Item } from '$lib/utils/location'
-  import { ITEM_ID_TEMPORARY } from '$lib/types/ui'
+  import { classIconMap, typeToString } from '$lib/utils/location'
+  import { ITEM_ID_TEMPORARY, type LocationItemDetails } from '$lib/types/ui'
   import { selectedLocation } from '$lib/stores/location'
   import { page } from '$app/state'
   import { locationSearch } from '$lib/stores/ui'
@@ -18,7 +18,7 @@
 
   let { loading, result, query, clear }: Props = $props()
 
-  function locationItemFromSearchResult(r: PlaceOutput): Omit<Item, 'select'> {
+  function locationItemFromSearchResult(r: PlaceOutput): Omit<LocationItemDetails, 'select'> {
     return {
       id: ITEM_ID_TEMPORARY,
       icon: classIconMap[r.category ?? r.class ?? ''],
@@ -49,26 +49,27 @@
       <LoaderPulsatingRing className="size-5" />
       Looking up "{page.state.locationQuery}"...
     </span>
-  {:else if !result || result.length === 0}
-    <span class="px-2 py-1 text-text">
-      No results for "{page.state.locationQuery}".<br />
-      Try rephrasing your search!
-    </span>
   {:else if query && query.length}
     {#each result ?? [] as r}
+      {@const item = locationItemFromSearchResult(r)}
       <LocationItem
         type="search"
         item={{
-          ...locationItemFromSearchResult(r),
+          ...item,
           select: () => {
             selectedLocation.set({
               type: 'search',
-              ...(locationItemFromSearchResult(r) as Required<Item>),
+              ...(item as Required<LocationItemDetails>),
             })
             locationSearch.hide()
           },
         }}
       />
+    {:else}
+      <span class="px-2 py-1 text-text">
+        No results for "{query}".<br />
+        Try rephrasing your search!
+      </span>
     {/each}
   {/if}
 </div>

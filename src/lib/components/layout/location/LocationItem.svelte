@@ -4,13 +4,14 @@
   import { Button } from '$lib/components/ui/button'
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import { settings } from '$lib/stores/settings'
-  import { getDistanceBetweenCoordinatesMeters, type Item } from '$lib/utils/location'
+  import { getDistanceBetweenCoordinatesMeters } from '$lib/utils/location'
   import { locationSearch } from '$lib/stores/ui'
-  import { deleteSavedLocation, saveLocation } from '$lib/utils/location'
   import { selectedLocation, type LocationSelection } from '$lib/stores/location'
+  import { type LocationItem } from '$lib/types/ui'
+  import { deleteSavedLocation, saveLocation } from '$lib/utils/savedLocations'
 
   interface Props {
-    item: Item
+    item: LocationItem
     type: LocationSelection['type']
     disabled?: boolean
   }
@@ -40,7 +41,7 @@
 
 <Button
   variant={active ? 'default' : 'midground'}
-  class="flex h-fit! flex-row items-center justify-between gap-2 p-2 text-base"
+  class="flex h-12 flex-row items-center justify-between gap-2 p-2 text-base"
   onclick={item.select}
   {disabled}
 >

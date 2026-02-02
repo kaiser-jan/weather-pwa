@@ -7,10 +7,11 @@
   import { settings } from '$lib/stores/settings'
   import { selectedLocation } from '$lib/stores/location'
   import { ITEM_ID_GEOLOCATION, type Location } from '$lib/types/ui'
-  import { getDistanceBetweenCoordinatesMeters, saveLocation } from '$lib/utils/location'
+  import { getDistanceBetweenCoordinatesMeters } from '$lib/utils/location'
   import { onMount } from 'svelte'
   import { openSettingsAt } from '$lib/stores/ui'
   import { MapPinIcon } from '@lucide/svelte'
+  import { saveLocation } from '$lib/utils/savedLocations'
 
   let suggestCurrentGeolocation = $state(false)
   const recentGeolocations = persisted<GeolocationPosition[]>('recent-geolocations', [])

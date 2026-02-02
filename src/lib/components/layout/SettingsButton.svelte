@@ -3,8 +3,6 @@
   import * as Drawer from '$lib/components/ui/drawer/index.js'
   import { cn } from '$lib/utils'
   import { LucideSettings } from '@lucide/svelte'
-  import { page } from '$app/state'
-  import { pushState, replaceState } from '$app/navigation'
   import { settings } from '$lib/stores/settings'
   import { SettingsView } from 'svelte-settings'
   import { queryParam, ssp } from 'sveltekit-search-params'

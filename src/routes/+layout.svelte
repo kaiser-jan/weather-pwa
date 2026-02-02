@@ -4,8 +4,8 @@
   import PwaHead from '$lib/components/layout/providers/PwaHeadProvider.svelte'
   import NotificationsProvider from '$lib/components/layout/providers/NotificationsProvider.svelte'
   import { goto } from '$app/navigation'
-  import { coordinates, selectedLocation } from '$lib/stores/location'
   import { geolocationStore } from '$lib/stores/geolocation'
+  import { coordinates, selectedLocation } from '$lib/stores/location'
   import GeolocationSuggestion from '$lib/components/GeolocationSuggestion.svelte'
 
   let { children } = $props()

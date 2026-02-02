@@ -77,3 +77,12 @@ export type Location = Coordinates & {
   name: string
   icon: string
 }
+
+export type LocationItemDetails = {
+  id: string
+  icon: typeof Icon | null
+  label: string
+  sublabel?: string
+  coordinates?: Coordinates
+  select: () => void
+}
