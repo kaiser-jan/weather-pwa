@@ -24,6 +24,8 @@
   import type { Forecast } from '$lib/types/metno'
   import { mapRecord, removeDuplicates } from '$lib/utils'
   import { DateTime, Duration } from 'luxon'
+  import { convertToUnit, getPreferredUnit } from '$lib/utils/units'
+  import { get } from 'svelte/store'
 
   interface Props {
     multiseries: MultivariateTimeSeries
@@ -249,7 +251,7 @@
       }
 
       function addDataRepresentation(
-        parameter: string,
+        parameter: ForecastParameter,
         seriesA: TimeSeries<number> | undefined,
         details: MetricDetails,
         isIndirect?: boolean,
@@ -263,12 +265,13 @@
         const color = colorStyle && 'css' in colorStyle ? colorStyle.css : undefined
 
         for (const marker of details.chart.markers ?? []) {
+          const value = convertToUnit(marker.value, parameter, getPreferredUnit(parameter, get(settings)))
           svg
             .append('line')
             .attr('x1', dimensions.margin.left)
             .attr('x2', dimensions.margin.left + dimensions.width)
-            .attr('y1', scaleY(marker.value))
-            .attr('y2', scaleY(marker.value))
+            .attr('y1', scaleY(value))
+            .attr('y2', scaleY(value))
             .attr('stroke', 'white')
             .attr('stroke-width', 1)
             .attr('opacity', 0.5)
