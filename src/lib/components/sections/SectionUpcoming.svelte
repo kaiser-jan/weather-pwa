@@ -30,13 +30,13 @@
 </script>
 
 <SectionTitle title="Upcoming" icon={CalendarDaysIcon} />
-<FailSafeContainer name="Section Upcoming" class="flex flex-col overflow-hidden rounded-md">
+<FailSafeContainer name="Section Upcoming" class="-mt-2 flex flex-col overflow-hidden">
   {#each days as day (day.timestamp)}
     <Button
-      variant="midground"
+      variant="ghost"
       size="fit"
       class={[
-        'inline-flex flex-row items-center justify-between gap-4 rounded-none border-foreground px-3 py-2 text-base not-last:border-b-2',
+        'inline-flex flex-row items-center justify-between gap-4 rounded-none border-foreground py-2 text-base not-last:border-b-2',
         day.timestamp < $TODAY_MILLIS ? 'opacity-40' : '',
       ]}
       onclick={() => dayView.open(day)}
@@ -53,15 +53,20 @@
       </div>
 
       {#if $settings.sections.upcoming.temperature === 'range-bar' && day.summary.temperature}
-        <div class="flex w-32 items-center gap-1">
-          <FormattedMetric parameter="temperature" value={day.summary.temperature.min} hideUnit />
+        <div class="flex items-center gap-1">
+          <FormattedMetric
+            parameter="temperature"
+            value={day.summary.temperature.min}
+            hideUnit
+            class="w-[2ch] justify-end"
+          />
           <NumberRangeBar
+            metric="temperature"
             total={$forecastStore?.total?.summary.temperature}
             instance={day.summary.temperature}
-            details={METRIC_DETAILS.temperature}
             class="h-2 w-16"
           />
-          <FormattedMetric parameter="temperature" value={day.summary.temperature.max} />
+          <FormattedMetric parameter="temperature" value={day.summary.temperature.max} class="w-[4ch] justify-end" />
         </div>
       {:else if $settings.sections.upcoming.temperature === 'dots' && day.summary.temperature}
         <div class="flex items-center gap-2">
