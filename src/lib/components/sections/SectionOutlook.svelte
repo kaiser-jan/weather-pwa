@@ -51,7 +51,7 @@
 
 {#if $settings.sections.outlook.showSummary}
   <FailSafeContainer name="Section Outlook" class="container flex flex-row overflow-y-auto " bind:element={container}>
-    {#each $forecastStore?.daily.filter((d) => d.summary !== undefined && d.summary.temperature) ?? [] as day (day.timestamp)}
+    {#each $forecastStore?.daily.filter((d) => d.summary !== undefined && !d.incomplete) ?? [] as day (day.timestamp)}
       <Button
         variant="ghost"
         size="fit"

@@ -93,28 +93,30 @@ export function groupMultiseriesByDay(multiseries: MultivariateTimeSeries): Mult
     }
   }
 
-  // TODO: refactor: mark the incomplete items instead of removing them
-  // Completeness doesn't matter e.g. for a chart, but does matter for a daily summary.
-  const groupedCompleteOnly = grouped.filter((g) => {
-    if (!g.series.temperature?.length) return true
+  for (const g of grouped) {
+    g.incomplete = !isGroupComplete(g)
+  }
 
-    // HACK: how to determine whether a day is complete? currently using temperature
-    const firstTemperatureItem = g.series.temperature[0]
+  return grouped
+}
 
-    // use any past data
-    if (firstTemperatureItem.timestamp <= getStartOfDayTimestamp(get(NOW_MILLIS))) return true
+function isGroupComplete(group: MultivariateTimeSeriesTimeBucket) {
+  if (!group.series.temperature?.length) return true
 
-    const lastTemperatureItem = g.series.temperature[g.series.temperature.length - 1]
-    const temperatureEndTimestamp = lastTemperatureItem.timestamp + lastTemperatureItem.duration
+  // TODO: mark completeness for each metric individually
+  const firstTemperatureItem = group.series.temperature[0]
 
-    const isMissingEnd = temperatureEndTimestamp < getEndOfDayTimestamp(firstTemperatureItem.timestamp)
-    const isMissingStart = firstTemperatureItem.timestamp > getStartOfDayTimestamp(firstTemperatureItem.timestamp)
+  // use any past data
+  if (firstTemperatureItem.timestamp <= getStartOfDayTimestamp(get(NOW_MILLIS))) return true
 
-    if ((isMissingStart && g.timestamp !== get(TODAY_MILLIS)) || isMissingEnd) return false
-    return true
-  })
+  const lastTemperatureItem = group.series.temperature[group.series.temperature.length - 1]
+  const temperatureEndTimestamp = lastTemperatureItem.timestamp + lastTemperatureItem.duration
 
-  return groupedCompleteOnly
+  const isMissingEnd = temperatureEndTimestamp < getEndOfDayTimestamp(firstTemperatureItem.timestamp)
+  const isMissingStart = firstTemperatureItem.timestamp > getStartOfDayTimestamp(firstTemperatureItem.timestamp)
+
+  if ((isMissingStart && group.timestamp !== get(TODAY_MILLIS)) || isMissingEnd) return false
+  return true
 }
 
 /**
@@ -128,5 +130,6 @@ export function combineMultiseriesToDailyForecast(multiseries: MultivariateTimeS
     duration: day.duration,
     summary: mapRecord(day.series, (s) => calculateStatisticalNumberSummary(s.map((tp) => tp.value))),
     multiseries: day.series,
+    incomplete: day.incomplete,
   }))
 }

@@ -12,7 +12,7 @@ export type NumberSummary = { min: number; avg: number; max: number; sum: number
 export interface Forecast {
   current: (WeatherInstant & { symbol?: WeatherSituation }) | null
   multiseries: MultivariateTimeSeries
-  daily: TimeBucket[]
+  daily: (TimeBucket & { incomplete?: boolean })[]
   total: TimeBucketSummary
   inputs: ForecastInputs
 }
@@ -33,7 +33,7 @@ export type WeatherInstant = Partial<Record<ForecastParameter, number>>
 
 export type MultivariateTimeSeries = Partial<Record<ForecastParameter, TimeSeries<number>>>
 // TODO: refactor: rename series to multiseries
-export type MultivariateTimeSeriesTimeBucket = TimePeriod & { series: MultivariateTimeSeries }
+export type MultivariateTimeSeriesTimeBucket = TimePeriod & { series: MultivariateTimeSeries; incomplete?: boolean }
 
 export type TimeSeries<T> = (TimePeriod & { value: T })[]
 export type TimeSeriesNumberEntry = TimeSeries<number>[number]
