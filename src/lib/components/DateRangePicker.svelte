@@ -44,8 +44,6 @@
     {/snippet}
   </Popover.Trigger>
   <Popover.Content class="w-auto p-0">
-    <!-- TODO: close on select -->
-    <!-- NOTE: this is currently glitching, as the onValueChange fires when opening the calendar -->
     <RangeCalendar
       {...calendarProps}
       onValueChange={(v) => {

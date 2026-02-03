@@ -4,23 +4,24 @@
   import { settings } from '$lib/stores/settings'
   import WeatherChart from '$lib/components/visualization/chart/WeatherChart.svelte'
   import { FORECAST_METRICS, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
-  import { queryParam, ssp } from 'sveltekit-search-params'
+  import { queryParameters, ssp } from 'sveltekit-search-params'
   import { get } from 'svelte/store'
   import ExpandableList from '$lib/components/ExpandableList.svelte'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
-  import { persisted } from 'svelte-persisted-store'
   import { CircleSlash2Icon, ScaleIcon, SquareSplitHorizontalIcon } from '@lucide/svelte'
   import { DateTime, Settings } from 'luxon'
   import { Toggle } from '$lib/components/ui/toggle'
   import { fromAbsolute } from '@internationalized/date'
   import DateRangePicker from '$lib/components/DateRangePicker.svelte'
+  import type { EncodeAndDecodeOptions } from 'sveltekit-search-params/sveltekit-search-params'
 
-  const visibleMetrics = queryParam<ForecastMetric[]>(
-    'metrics',
-    ssp.array(get(settings).sections.components.chart.plottedMetrics as ForecastMetric[]),
-  )
+  const params = queryParameters<{
+    metrics: EncodeAndDecodeOptions<ForecastMetric[]>
+  }>({
+    metrics: ssp.array(get(settings).sections.components.chart.plottedMetrics as ForecastMetric[]),
+  })
 
   let rollup = $state(true)
 
@@ -50,7 +51,7 @@
 
   <WeatherChart
     multiseries={$forecastStore!.multiseries}
-    bind:parameters={$visibleMetrics}
+    bind:parameters={params.metrics!}
     {startTimestamp}
     {endTimestamp}
     className="h-[max(25vh,12rem)]"
@@ -61,7 +62,7 @@
   <ExpandableList
     items={FORECAST_METRICS}
     visibleItems={$settings.data.forecast.metrics}
-    markedItems={$visibleMetrics}
+    markedItems={params.metrics!}
     contentClass="gap-2"
   >
     {#snippet itemSnippet(metric)}
@@ -73,7 +74,7 @@
         {#each metrics as metric (metric)}
           {@const details = METRIC_DETAILS[metric]}
 
-          <ParameterToggle {metric} bind:visibleList={$visibleMetrics} class="flex-1">
+          <ParameterToggle {metric} bind:visibleList={params.metrics!} class="flex-1">
             <IconOrAbbreviation details={METRIC_DETAILS[metric]!} />
             <span class="overflow-hidden text-ellipsis whitespace-nowrap"> {details.label} </span>
           </ParameterToggle>

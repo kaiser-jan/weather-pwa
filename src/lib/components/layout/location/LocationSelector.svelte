@@ -4,8 +4,8 @@
   import LoaderPulsatingRing from '$lib/components/snippets/LoaderPulsatingRing.svelte'
   import LocationMenu from './LocationMenu.svelte'
   import { iconMap } from '$lib/utils/icons'
-  import { CircleHelpIcon, CircleQuestionMarkIcon, SearchIcon } from '@lucide/svelte'
-  import { locationSearch } from '$lib/stores/ui'
+  import { CircleHelpIcon, CircleQuestionMarkIcon, MapPinIcon, SearchIcon } from '@lucide/svelte'
+  import { locationSearch, openSettingsAt } from '$lib/stores/ui'
   import { selectedLocation, selectSavedLocation } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
 
@@ -50,16 +50,12 @@
             ]}
             onclick={() => selectSavedLocation(location.id)}
             {...usePress(
-              () => {},
+              () => openSettingsAt(['data', 'locations', locationIndex.toString()]),
               () => ({ timeframe: 500, triggerBeforeFinished: true }),
             )}
           >
-            <!-- use:press={() => ({ timeframe: 500, triggerBeforeFinished: true })} -->
-            <!-- onpress={(_) => { -->
-            <!--   openSettingsAt(['data', 'locations', locationIndex.toString()]) -->
-            <!-- }} -->
             {#if location.icon}
-              {@const Icon = iconMap[location.icon] ?? CircleQuestionMarkIcon}
+              {@const Icon = iconMap[location.icon] ?? MapPinIcon}
               <Icon />
             {:else}
               {location.name}

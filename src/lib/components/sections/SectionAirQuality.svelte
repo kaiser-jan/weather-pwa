@@ -80,7 +80,7 @@
       <span class="text-text" class:font-bold={type === 'now'}>{label}</span>
       <div class="ml-auto size-3 rounded-full" style="background-color: {colorToCss(EAQI.colors[roundedIndex])}"></div>
       {#if $settings.data.forecast.aqi.showCategory}
-        <span class="w-[6ch] text-left text-xs text-text-muted">{EAQI.labels[roundedIndex]}</span>
+        <span class="w-[8ch] text-left text-xs text-text-muted">{EAQI.labels[roundedIndex]}</span>
       {:else}
         <span class="text-text-muted">{index.toFixed(1)}</span>
       {/if}

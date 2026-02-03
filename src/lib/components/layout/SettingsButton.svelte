@@ -5,22 +5,25 @@
   import { LucideSettings } from '@lucide/svelte'
   import { settings } from '$lib/stores/settings'
   import { SettingsView } from 'svelte-settings'
-  import { queryParam, ssp } from 'sveltekit-search-params'
+  import { queryParameters, ssp } from 'sveltekit-search-params'
+  import type { EncodeAndDecodeOptions } from 'sveltekit-search-params/sveltekit-search-params'
 
-  const settingsPath = queryParam<string[]>('settings-path', ssp.array())
+  const params = queryParameters<{ 'settings-path': EncodeAndDecodeOptions<string[]> }>({
+    'settings-path': ssp.array(),
+  })
 
   function openSettings() {
-    settingsPath.set([])
+    params['settings-path'] = []
   }
 
   function close() {
-    settingsPath.set(null)
+    params['settings-path'] = null
   }
 </script>
 
 <Drawer.Root
   bind:open={
-    () => $settingsPath !== null,
+    () => params['settings-path'] !== null,
     (o) => {
       if (o) openSettings()
       else close()

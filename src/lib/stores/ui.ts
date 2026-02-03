@@ -6,7 +6,9 @@ import { get, writable } from 'svelte/store'
 import { popUntil } from '$lib/utils'
 import type { ForecastMetric } from '$lib/config/metrics'
 import { settings } from '$lib/stores/settings'
-import { queryParam, ssp } from 'sveltekit-search-params'
+import { queryParameters, ssp } from 'sveltekit-search-params'
+import { DateTime } from 'luxon'
+import type { EncodeAndDecodeOptions } from 'sveltekit-search-params/sveltekit-search-params'
 
 export const locationSearch = {
   hide: () => popUntil((s) => !s.showLocationSearch),
@@ -14,14 +16,12 @@ export const locationSearch = {
 }
 
 export const dayView = {
-  _initialIndex: null as number | null,
-
   hide: async () => {
     history.go(-1)
   },
   open: (target: TimeBucket | undefined, metrics: ForecastMetric[] = []) => {
     if (!target) return
-    if (page.url.searchParams.get('dayIndex') !== null) return
+    if (page.url.searchParams.get('day') !== null) return
 
     const metricsToDisplay = metrics.length
       ? metrics
@@ -29,40 +29,41 @@ export const dayView = {
 
     const forecast = get(forecastStore)
     if (!forecast) return
-    const targetIndex = forecast.daily.findIndex((d) => d.timestamp === target.timestamp)
 
-    dayView._initialIndex = targetIndex
-    dayView.push(targetIndex, metricsToDisplay, {})
+    dayView.push(DateTime.fromMillis(target.timestamp), metricsToDisplay, {})
   },
-  push: (index: number, newMetrics: ForecastMetric[] | null, opts: Parameters<typeof goto>[1]) => {
+  push: (datetime: DateTime, newMetrics: ForecastMetric[] | null, opts: Parameters<typeof goto>[1]) => {
     let metrics
     if (newMetrics) metrics = JSON.stringify(newMetrics)
     else metrics = page.url.searchParams.get('metrics') ?? []
-    goto(`/day?dayIndex=${index}&metrics=${metrics}`, opts)
+    goto(`/day?day=${datetime.toISODate()}&metrics=${metrics}`, opts)
   },
-  replace: (index: number, newMetrics: ForecastMetric[] | null) => {
-    dayView.push(index, newMetrics, { replaceState: true })
+  replace: (datetime: DateTime, newMetrics: ForecastMetric[] | null) => {
+    dayView.push(datetime, newMetrics, { replaceState: true })
   },
   select: (target: TimeBucket) => {
     const forecast = get(forecastStore)
     if (!forecast) return
-    const targetIndex = forecast.daily.findIndex((d) => d.timestamp === target.timestamp)
-    dayView.replace(targetIndex, null)
+    dayView.replace(DateTime.fromMillis(target.timestamp), null)
   },
   previous: () => navigateBy(-1),
   next: () => navigateBy(1),
 }
 
 async function navigateBy(direction: 1 | -1) {
-  const currentIndex = parseInt(page.url.searchParams.get('dayIndex')!)
-  if (currentIndex === null) return
-  const targetIndex = currentIndex + direction
-  const doesDayExist = get(forecastStore)?.daily?.[targetIndex] !== undefined
+  const currentRaw = page.url.searchParams.get('day')
+  if (currentRaw === null) return
+  const current = DateTime.fromISO(currentRaw)
+  if (!current.isValid) return
+  const target = current.plus({ day: direction })
+  const doesDayExist = get(forecastStore)?.daily?.find((d) => d.timestamp === target.toMillis()) !== undefined
   if (!doesDayExist) return
-  dayView.replace(targetIndex, null)
+  dayView.replace(target, null)
 }
 
 export function openSettingsAt(path: string[]) {
-  const settingsPath = queryParam<string[]>('settings-path', ssp.array([] as string[]))
-  settingsPath.set(path)
+  const params = queryParameters<{ 'settings-path': EncodeAndDecodeOptions<string[]> }>({
+    'settings-path': ssp.array([] as string[]),
+  })
+  params['settings-path']! = path
 }
