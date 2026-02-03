@@ -105,6 +105,7 @@
     d3.select(container).selectAll('*').remove()
   }
 
+  // TODO: consider shifting points to the center of the day -> but not bars!
   function rollupMultiseries() {
     return mapRecord(multiseries, (series) =>
       d3
@@ -114,10 +115,10 @@
             value: d3.median(v, (d) => d.value)!,
             min: d3.min(v, (d) => d.value)!,
             max: d3.max(v, (d) => d.value)!,
-            timestamp: v[0].timestamp + Duration.fromObject({ hours: 12 }).toMillis(),
+            timestamp: v[0].timestamp,
             duration: v[v.length - 1].timestamp + v[v.length - 1].duration - v[0].timestamp,
           }),
-          (d) => DateTime.fromMillis(d.timestamp).startOf('day').plus({ hours: 12 }).toMillis(),
+          (d) => DateTime.fromMillis(d.timestamp).startOf('day').toMillis(),
         )
         .map((r) => r[1]),
     )
@@ -239,7 +240,7 @@
             {
               ...details,
               chart: {
-                class: 'opacity-40',
+                class: 'opacity-60',
                 style: 'area',
                 markExtrema: details.chart.markExtrema,
               },
@@ -356,7 +357,7 @@
           dataRepresentation.attr(details.chart.style === 'line' ? 'stroke' : 'fill', `url(#${gradientId})`)
         }
 
-        if (details.chart.markExtrema && $settingsChart.highlightExtrema) {
+        if (details.chart.markExtrema && $settingsChart.highlightExtrema && (!rollup || isIndirect)) {
           createExtremaMarkers({ svg, dimensions, scaleX, scaleY, data: seriesA, dataB: seriesB, format })
         }
       }
