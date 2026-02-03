@@ -29,7 +29,7 @@
     metrics: EncodeAndDecodeOptions<ForecastMetric[]>
   }>({
     day: ssp.string(),
-    metrics: ssp.array([] as ForecastMetric[]),
+    metrics: ssp.array(),
   })
 
   // const params = queryParameters<{ day: EncodeAndDecodeOptions<DateTime> }>({

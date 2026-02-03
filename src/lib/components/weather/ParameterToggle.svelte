@@ -47,7 +47,8 @@
   )}
   onclick={() => {
     if (!visibleList) return
-    visibleList = toggle(visibleList, metric)
+    // HACK: copy the array to avoid breaking reactivity
+    visibleList = toggle([...visibleList], metric)
   }}
 >
   {#if details?.color}
