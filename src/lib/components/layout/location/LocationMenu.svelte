@@ -18,6 +18,8 @@
 
   let { active }: Props = $props()
 
+  let isInputFocused = $state(false)
+
   const { liveQuery, query, result, loading, cache, search, clear } = useApiSearch({
     key: 'location-search-v2',
     fetch: nominatimQuery,
@@ -55,7 +57,7 @@
       style="padding-bottom: calc(1rem + min(2rem, env(safe-area-inset-top)))"
     >
       <div class="flex h-0 grow flex-col gap-4 overflow-y-auto">
-        {#if $liveQuery || $result}
+        {#if $liveQuery || $result || isInputFocused}
           <LocationSearchResults query={$query} loading={$loading} result={$result} {clear} />
           <LocationRecentSearchResults cache={$cache} {search} />
         {:else}
@@ -71,6 +73,8 @@
             if (e.key === 'Enter') search()
           }}
           class="h-12"
+          onfocus={() => (isInputFocused = true)}
+          onblur={() => (isInputFocused = false)}
         />
         <SearchIcon class="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground" />
         {#if $liveQuery}
