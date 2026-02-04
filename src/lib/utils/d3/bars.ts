@@ -51,7 +51,7 @@ export function createBars(options: {
   data: TimeSeriesNumberEntry[]
   padding?: number
 }) {
-  const { svg, dimensions, scaleX, scaleY, data, padding = 2 } = options
+  const { svg, dimensions, scaleX, scaleY, data, padding = 0 } = options
   const bars = svg
     .append('g')
     .selectAll('rect')
@@ -86,7 +86,7 @@ export function createBarsStacked(options: {
   padding?: number
   fillCallback?: (series: d3.Series<StackedDatum, string>, point: d3.SeriesPoint<StackedDatum>) => string
 }) {
-  const { svg, dimensions, scaleX, scaleY, data, keys, fillCallback, padding = 2 } = options
+  const { svg, dimensions, scaleX, scaleY, data, keys, fillCallback, padding = 0 } = options
 
   console.log(data)
 

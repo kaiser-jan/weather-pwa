@@ -107,18 +107,31 @@
 
   // TODO: consider shifting points to the center of the day -> but not bars!
   function rollupMultiseries() {
-    return mapRecord(multiseries, (series) =>
+    return mapRecord(multiseries, (series, p) =>
       d3
         .rollups(
           series,
-          (v) => ({
-            value: d3.median(v, (d) => d.value)!,
-            min: d3.min(v, (d) => d.value)!,
-            max: d3.max(v, (d) => d.value)!,
-            timestamp: v[0].timestamp,
-            duration: v[v.length - 1].timestamp + v[v.length - 1].duration - v[0].timestamp,
-          }),
+          (v) => {
+            if (!(p in METRIC_DETAILS)) return 'median'
+            const details = METRIC_DETAILS[p as keyof typeof METRIC_DETAILS]
+            // TODO: there should be an extra sum field for aggreageted metrics
+            // => needs to be respected by axis, data representation, axis pointer, etc.
+            const value = details.isAggregated
+              ? d3.mean(v, (d) => d.value * (d.duration / 3_600_000))
+              : d3.median(v, (d) => d.value)
+
+            return {
+              value,
+              // value: d3.median(v, (d) => d.value)!,
+              min: d3.min(v, (d) => d.value)!,
+              max: d3.max(v, (d) => d.value)!,
+              timestamp: v[0].timestamp,
+              // timestamp: v[0].timestamp + Duration.fromObject({ hours: 12 }).toMillis(),
+              duration: v[v.length - 1].timestamp + v[v.length - 1].duration - v[0].timestamp,
+            }
+          },
           (d) => DateTime.fromMillis(d.timestamp).startOf('day').toMillis(),
+          // (d) => DateTime.fromMillis(d.timestamp).startOf('day').plus({ hours: 12 }).toMillis(),
         )
         .map((r) => r[1]),
     )
@@ -406,6 +419,9 @@
       scaleX,
       seriesList: createdSeriesDetails,
       tooltip: $settingsChart.indicator !== 'display',
+      startTimestamp,
+      endTimestamp,
+      isDaily: rollup,
     })
 
     function selectDatetime(timestamp: number | null) {

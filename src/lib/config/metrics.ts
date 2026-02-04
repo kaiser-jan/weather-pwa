@@ -105,6 +105,7 @@ const _METRIC_DETAILS_BASE = {
   // Not an option: Ignoring precipitation overrides would ignore more granular precipitation forecasts.
   rain_amount: {
     label: 'Rain Amount',
+    isAggregated: true,
     domain: { min: [0], max: [7.2, 20, 50] },
     domainDefault: { min: 0, max: 7.2 },
     icon: CloudRainIcon,
@@ -127,6 +128,7 @@ const _METRIC_DETAILS_BASE = {
   },
   snow_amount: {
     label: 'Snow Amount',
+    isAggregated: true,
     domain: { min: [0], max: [7.2, 20, 50] },
     domainDefault: { min: 0, max: 7.2 },
     icon: SnowflakeIcon,

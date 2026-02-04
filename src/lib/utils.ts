@@ -126,12 +126,12 @@ export function getEndOfDayTimestamp(timestamp: number) {
 
 export function mapRecord<KeyT extends string, ItemT, TargetT>(
   input: Partial<Record<KeyT, ItemT[]>>,
-  fn: (arr: ItemT[]) => TargetT,
+  fn: (arr: ItemT[], key: KeyT) => TargetT,
 ): Record<KeyT, TargetT> {
   const result = {} as Record<KeyT, TargetT>
   for (const key in input) {
     if (Object.prototype.hasOwnProperty.call(input, key)) {
-      result[key as KeyT] = fn(input[key]!)
+      result[key as KeyT] = fn(input[key]!, key)
     }
   }
   return result

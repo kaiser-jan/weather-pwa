@@ -32,6 +32,7 @@ export interface MetricDetails {
   domain: { min: number[]; max: number[] }
   domainDefault?: { min: number; max: number }
   domainCallback?: (multiseries: MultivariateTimeSeries) => readonly [number, number] | null
+  isAggregated?: boolean
   icon?: typeof ThermometerIcon
   abbreviation?: string
   preferCategoryLabel?: boolean
