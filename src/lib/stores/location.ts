@@ -45,15 +45,26 @@ export const selectedLocationDetails = derived(
 
     const savedLocations = get(settings).data.locations
 
+    function fallback() {
+      const fallback = savedLocations[0]
+      if (fallback) {
+        selectSavedLocation(fallback.id)
+        return fallback
+      }
+      return geolocation
+    }
+
     switch (location.type) {
       case 'saved':
-        return savedLocations.find((l) => l.id === location.id) ?? savedLocations[0] ?? geolocation
+        const savedLocation = savedLocations.find((l) => l.id === location.id)
+        if (savedLocation) return savedLocation
+        return fallback()
       case 'geolocation':
         return geolocation
       case 'search':
         return location.item
       default:
-        return savedLocations[0] ?? geolocation
+        return fallback()
     }
   },
 )
