@@ -13,6 +13,7 @@ export type LocationSelection =
 export const selectedLocation = persisted<LocationSelection | null>('selected-location', null)
 
 export function selectGeolocation() {
+  geolocationStore.start()
   selectedLocation.set({ type: 'geolocation' })
 }
 export function selectSavedLocation(id: string) {
