@@ -57,12 +57,11 @@
       <div class="flex h-0 grow flex-col gap-4 overflow-y-auto">
         {#if $liveQuery || $result}
           <LocationSearchResults query={$query} loading={$loading} result={$result} {clear} />
+          <LocationRecentSearchResults cache={$cache} {search} />
         {:else}
           <LocationList />
         {/if}
       </div>
-
-      <LocationRecentSearchResults cache={$cache} {search} />
 
       <div class="relative">
         <Input

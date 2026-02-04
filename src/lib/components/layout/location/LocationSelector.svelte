@@ -6,7 +6,7 @@
   import { iconMap } from '$lib/utils/icons'
   import { CircleHelpIcon, CircleQuestionMarkIcon, MapPinIcon, SearchIcon } from '@lucide/svelte'
   import { locationSearch, openSettingsAt } from '$lib/stores/ui'
-  import { selectedLocation, selectSavedLocation } from '$lib/stores/location'
+  import { selectedLocation, selectGeolocation, selectSavedLocation } from '$lib/stores/location'
   import FailSafeContainer from '$lib/components/layout/errors/FailSafeContainer.svelte'
 
   import { usePress } from 'svelte-gestures'
@@ -26,7 +26,7 @@
       onclick={() => {
         geolocationStore.start()
         if ($selectedLocation?.type === 'geolocation') geolocationStore.refresh()
-        else selectedLocation?.set({ type: 'geolocation' })
+        else selectGeolocation()
       }}
     >
       {#if $geolocationDetails.icon}

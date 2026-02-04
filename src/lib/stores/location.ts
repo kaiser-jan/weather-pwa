@@ -27,7 +27,7 @@ export const locationGeolocation = derived(
   ([g, d]) =>
     ({
       id: '',
-      icon: undefined,
+      icon: 'navigation',
       name: d.label ?? 'Geolocation',
       latitude: g.position?.coords.latitude,
       longitude: g.position?.coords.longitude,

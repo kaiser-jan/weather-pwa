@@ -26,9 +26,9 @@
       disabled={$geolocationDetails.stateCategory === 'loading'}
     >
       {#if $geolocationDetails.stateCategory === 'active'}
-        <PlayIcon /> Start
-      {:else}
         <RotateCwIcon /> Refresh
+      {:else}
+        <PlayIcon /> Start
       {/if}
     </Button>
   </h5>
