@@ -27,13 +27,13 @@ export const locationGeolocation = derived(
   [geolocationStore, geolocationStore.details],
   ([g, d]) =>
     ({
+      ...d,
       id: '',
       icon: 'navigation',
       name: d.label ?? 'Geolocation',
       latitude: g.position?.coords.latitude,
       longitude: g.position?.coords.longitude,
       altitude: g.position?.coords.altitude,
-      ...g.position?.coords,
     }) as LocationItemDetails,
 )
 
