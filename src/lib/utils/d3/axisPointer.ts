@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import type { Dimensions } from './types'
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import type { CreatedSeriesDetails } from '$lib/types/ui'
 import { mount } from 'svelte'
 import { autoFormatMetric } from '$lib/utils/units'
@@ -14,9 +14,25 @@ export function createAxisPointer(options: {
   dimensions: Dimensions
   scaleX: d3.ScaleTime<number, number, never>
   seriesList: CreatedSeriesDetails[]
+  startTimestamp: number
+  endTimestamp: number
   tooltip?: boolean
+  isDaily?: boolean
 }) {
-  const { svg, dimensions, scaleX, seriesList } = options
+  const { svg, dimensions, scaleX, seriesList, startTimestamp, endTimestamp, isDaily } = options
+
+  function formatDatetime(datetime: DateTime) {
+    const durationMillis = endTimestamp - startTimestamp
+    if (durationMillis <= Duration.fromObject({ day: 1 }).toMillis()) {
+      return datetime.toLocaleString(DateTime.TIME_SIMPLE)
+    } else if (isDaily) {
+      const weekday = datetime.toFormat('ccc')
+      return `${weekday}, ${datetime.toLocaleString(DateTime.DATE_SHORT)}`
+    } else {
+      const weekday = datetime.toFormat('ccc')
+      return `${weekday}, ${datetime.toLocaleString(DateTime.TIME_SIMPLE)}`
+    }
+  }
 
   function hideXAxisPointer() {
     xAxisPointer.classed('hidden', true)
@@ -45,7 +61,7 @@ export function createAxisPointer(options: {
     )
 
     if (tooltip) {
-      tooltip.updateTooltip(nearest.x, points[0].y, nearest.datum.timestamp, points)
+      tooltip.updateTooltip(nearest.x, points[0].y, nearest.datum.timestamp, points, formatDatetime)
       if (!showTooltip) tooltip.hideTooltip()
     }
 
@@ -152,6 +168,7 @@ export function createTooltip(options: {
     y: number,
     timestamp: number,
     points: NonNullable<ReturnType<typeof getNearestPointAtTimestamp>>[],
+    formatDatetime: (datetime: DateTime) => string,
   ) {
     const alignLeft = x > dimensions.widthFull / 2
     const alignTop = y > dimensions.heightFull / 2
@@ -169,7 +186,7 @@ export function createTooltip(options: {
     }
 
     tooltip.html(
-      `<b>${DateTime.fromMillis(timestamp).toFormat('HH:mm')}</b><br>${points
+      `<b>${formatDatetime(DateTime.fromMillis(timestamp))}</b><br>${points
         .map((p) => {
           const svg = p.details.icon ? renderIcon(p.parameter, p.details.icon) : (p.details.abbreviation ?? p.parameter)
           const metric = autoFormatMetric(p.datum.value, p.parameter as ForecastParameter, get(settings), {
