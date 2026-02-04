@@ -64,6 +64,8 @@
   }
 
   function onGeolocationUse(geolocation: GeolocationState) {
+    if ($selectedLocation?.type !== 'geolocation') return []
+
     const locationsByProximity = checkSnapGeolocationToSaved(geolocation)
     if (
       !locationsByProximity.length ||
