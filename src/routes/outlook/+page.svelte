@@ -26,7 +26,7 @@
   let rollup = $state(true)
 
   let startTimestamp = $state(get(TODAY_MILLIS))
-  let endTimestamp = $state($TODAY_MILLIS + 1000 * 3600 * 24 * 7)
+  let endTimestamp = $state($TODAY_MILLIS + 1000 * 3600 * 24 * 6)
 </script>
 
 <PageWrapper class="gap-4 p-4">
@@ -53,7 +53,7 @@
     multiseries={$forecastStore!.multiseries}
     bind:parameters={params.metrics!}
     {startTimestamp}
-    {endTimestamp}
+    endTimestamp={endTimestamp ? DateTime.fromMillis(endTimestamp).endOf('day').toMillis() : undefined}
     className="h-[max(25vh,12rem)]"
     location="outlook"
     {rollup}
