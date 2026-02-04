@@ -64,8 +64,12 @@ export function computeAxesFor(
 
   function compute({ parameter, series, details }: AxisDetails): ComputedAxis {
     const extent = d3.extent(series, (d) => d.value)
-    const min = extent[0] ?? 0
-    const max = extent[1] ?? 0
+    // TODO: consider using the original data for the axes
+    const rollupMin = d3.min(series, (d) => d.min)
+    const rollupMax = d3.max(series, (d) => d.max)
+
+    const min = rollupMin ?? extent[0] ?? 0
+    const max = rollupMax ?? extent[1] ?? 0
     const safeArea = (max - min) * 0.1
     const domain =
       details.domainCallback?.(multiseries) ??
