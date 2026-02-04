@@ -54,7 +54,7 @@
       <PencilIcon /> Edit
     </Button>
   </h5>
-  <div class="flex min-h-10 shrink-0 flex-col justify-center gap-0">
+  <div class="flex min-h-10 shrink-0 flex-col justify-center gap-0.5">
     {#each $savedLocations as location, index (location.id)}
       {#if index !== 0}
         <span class=" mx-auto h-0.5 w-full bg-background"></span>

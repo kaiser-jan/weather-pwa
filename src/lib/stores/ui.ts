@@ -62,8 +62,7 @@ async function navigateBy(direction: 1 | -1) {
 }
 
 export function openSettingsAt(path: string[]) {
-  const params = queryParameters<{ 'settings-path': EncodeAndDecodeOptions<string[]> }>({
-    'settings-path': ssp.array([] as string[]),
-  })
-  params['settings-path']! = path
+  const url = new URL(window.location.href)
+  url.searchParams.set('settings-path', JSON.stringify(path))
+  goto(url.toString(), { replaceState: false })
 }
