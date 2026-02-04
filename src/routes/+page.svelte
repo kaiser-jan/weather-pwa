@@ -17,7 +17,7 @@
   }
 </script>
 
-<PageWrapper bind:element={scrollContainer} onscroll={onScroll} safeArea={{ top: true, bottom: false }}>
+<PageWrapper bind:element={scrollContainer} onscroll={onScroll} >
   <SectionCurrent shrink={shrinkHeader} />
 
   <div class="flex flex-col gap-8 p-4 pb-0" data-vaul-drawer-wrapper>

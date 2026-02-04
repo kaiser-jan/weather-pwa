@@ -18,7 +18,13 @@
     onswipe?: (e: SwipeCustomEvent) => void
   }
 
-  let { children, safeArea, element = $bindable(), onswipe, ...props }: MainProps & Props = $props()
+  let {
+    children,
+    safeArea = { top: true, bottom: true },
+    element = $bindable(),
+    onswipe,
+    ...props
+  }: MainProps & Props = $props()
 
   let isScrolledToBottom = $state(true)
 
@@ -37,7 +43,7 @@ NOTE: This is not part of the root layout, because both pages as well as the lay
 -->
 
 <div
-  class="bg-background relative flex h-[100dvh] w-full flex-col overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]"
+  class="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-background pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]"
 >
   {#if safeArea?.top !== false}
     <div class="h-[env(safe-area-inset-top)] shrink-0"></div>
@@ -64,17 +70,17 @@ NOTE: This is not part of the root layout, because both pages as well as the lay
   -->
   <ContainerCorners
     left="left-4"
-    bottom="bottom-[calc(5.5rem+min(env(safe-area-inset-bottom),1rem))]"
+    bottom={safeArea.bottom ? 'bottom-[calc(5.5rem+min(env(safe-area-inset-bottom),1rem))]' : 'bottom-[5.5rem]'}
     right="right-4"
   />
   <div
-    class="from-background/80 pointer-events-none absolute right-0 bottom-22 left-0 flex h-16 flex-row gap-2 bg-linear-to-t to-transparent transition-opacity duration-500"
+    class="pointer-events-none absolute right-0 bottom-22 left-0 flex h-16 flex-row gap-2 bg-linear-to-t from-background/80 to-transparent transition-opacity duration-500"
     class:opacity-0={isScrolledToBottom}
   ></div>
 
   <NavigationBar />
 
-  {#if safeArea?.bottom !== false}
+  {#if safeArea.bottom}
     <!-- HACK: the safe area on iOS is quite large -->
     <div class="h-[env(safe-area-inset-bottom)] max-h-4 shrink-0"></div>
   {/if}
