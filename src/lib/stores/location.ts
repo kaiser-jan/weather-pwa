@@ -29,10 +29,14 @@ export const locationGeolocation = derived(
       id: '',
       icon: undefined,
       name: d.label ?? 'Geolocation',
+      latitude: g.position?.coords.latitude,
+      longitude: g.position?.coords.longitude,
+      altitude: g.position?.coords.altitude,
       ...g.position?.coords,
     }) as LocationItemDetails,
 )
 
+// TODO: handle deleting selected saved location
 export const selectedLocationDetails = derived(
   [selectedLocation, locationGeolocation],
   ([location, geolocation]): LocationItemDetails | null => {
@@ -53,4 +57,7 @@ export const selectedLocationDetails = derived(
   },
 )
 
-export const coordinates = derived([selectedLocationDetails], ([l]): Coordinates | null => l ?? null)
+export const coordinates = derived([selectedLocationDetails], ([l]): Coordinates | null => {
+  if (l && l.latitude !== undefined && l.longitude !== undefined) return l
+  return null
+})

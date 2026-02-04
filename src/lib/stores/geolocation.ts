@@ -1,6 +1,7 @@
 // Based on [svelte-legos](https://github.com/ankurrsinghal/svelte-legos)
 
 import type { PlaceOutput } from '$lib/types/nominatim'
+import { createUUID } from '$lib/utils/common'
 import { reverseGeocoding } from '$lib/utils/location'
 import { NavigationIcon, NavigationOffIcon, type Icon as IconType } from '@lucide/svelte'
 import { derived, get, readable, type Readable } from 'svelte/store'
@@ -61,7 +62,12 @@ export function createGeolocationStore(
       started = true
 
       update((state) => ({ ...state, status: 'requesting' }))
-      if (!getPermission()) return update((state) => ({ ...state, status: 'unpermitted' }))
+
+      const permission = await getPermission()
+      if (!permission) {
+        update((state) => ({ ...state, status: 'unpermitted' }))
+        return
+      }
 
       update((state) => ({ ...state, status: 'loading' }))
 

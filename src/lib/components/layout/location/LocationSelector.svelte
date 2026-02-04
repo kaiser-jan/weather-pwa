@@ -24,9 +24,9 @@
         $selectedLocation?.type === 'geolocation' ? 'bg-primary' : 'text-text-d bg-foreground',
       ]}
       onclick={() => {
+        geolocationStore.start()
         if ($selectedLocation?.type === 'geolocation') geolocationStore.refresh()
         else selectedLocation?.set({ type: 'geolocation' })
-        geolocationStore.start()
       }}
     >
       {#if $geolocationDetails.icon}
