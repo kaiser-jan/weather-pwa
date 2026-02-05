@@ -1,13 +1,17 @@
 <script lang="ts">
-  import { ChevronsRightIcon, InfoIcon } from '@lucide/svelte'
   import FailSafeContainer from '../layout/errors/FailSafeContainer.svelte'
-  import SectionTitle from '../layout/SectionTitle.svelte'
   import NoticePrecipitation from './notices/NoticePrecipitation.svelte'
+  import { aggregableMetricGroupsStore } from '$lib/stores/aggregableMetricGroups'
 </script>
 
-<!-- TODO: bugfix: we need a way to only show this section and title when there are notices -->
-<!-- otherwise this causes empty space for no apparent reason -->
+<!-- 
+TODO: create a system for notices:
+- order by priority
+- only show container if there are notices
+- dismissible?
+-->
+
 <!-- <SectionTitle title="Notices" icon={InfoIcon} /> -->
-<FailSafeContainer name="Section Notices" class="flex flex-row overflow-y-auto rounded-md">
-  <NoticePrecipitation />
-</FailSafeContainer>
+<!-- <FailSafeContainer name="Section Notices" class="flex flex-row overflow-y-auto rounded-md"> -->
+<NoticePrecipitation />
+<!-- </FailSafeContainer> -->

@@ -4,6 +4,7 @@ import { NOW, NOW_MILLIS } from './now'
 import { settings } from '$lib/stores/settings'
 import { DateTime, Duration, type DurationLike } from 'luxon'
 import type { Forecast, ForecastParameter, TimeSeries } from '$lib/types/data'
+import { mapRecord } from '$lib/utils'
 
 const settingDataForecastPrecipitation = settings.select((s) => s.data.forecast.precipitation)
 
@@ -87,3 +88,13 @@ function groupAggregatableMetric(
 
   return groups
 }
+
+export const aggregableMetricGroupsUpcomingStore = derived([aggregableMetricGroupsStore, NOW], ([groupsRecord, now]) =>
+  mapRecord(groupsRecord, (groups) => {
+    // show at least the next x hours
+    const minHours = 8
+    const relevantEndDatetime =
+      now.hour <= 24 - minHours ? now.endOf('day') : now.plus(Duration.fromObject({ hours: minHours }))
+    return groups.filter((g) => g.end > now.toMillis() && g.start <= relevantEndDatetime.toMillis())
+  }),
+)
