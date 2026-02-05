@@ -1,3 +1,56 @@
+# [1.6.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.5.3...v1.6.0) (2026-02-05)
+
+
+### Bug Fixes
+
+* **aqi:** fix pollutant domains ([56bfe63](https://github.com/kaiser-jan/weather-pwa/commit/56bfe631a2acf1a721e25529cbda4a8eb40f3ad7))
+* **build:** remove svelte experimental.async option ([9ee4cc7](https://github.com/kaiser-jan/weather-pwa/commit/9ee4cc7fb4a5253eb99847483514cefdce1ba2bf))
+* **chart:** consistent domain even with rollup ([fa6c04f](https://github.com/kaiser-jan/weather-pwa/commit/fa6c04f66601838d8e5be3c0ff5fd385768c0d2d))
+* **chart:** make extrema only consider relevant time domain ([d5d4dbb](https://github.com/kaiser-jan/weather-pwa/commit/d5d4dbbabb098ce1cc3fb5d1d48b584034cf120d))
+* **colors:** gradient colors slightly off at ends ([2cf8b12](https://github.com/kaiser-jan/weather-pwa/commit/2cf8b12857c1feffad90a14b5ac26885a1c327e7))
+* **day:** hide max from range if it equals min ([0b27b4e](https://github.com/kaiser-jan/weather-pwa/commit/0b27b4ee173602730396c85b152fc0d91a5d7db7))
+* **geolocation:** display reverse geocoded location ([a00a52a](https://github.com/kaiser-jan/weather-pwa/commit/a00a52a288cb0f3c66becdbd00c490721c909c99))
+* **geolocation:** freeze due to empty coordinates while loading geolocation ([14a8434](https://github.com/kaiser-jan/weather-pwa/commit/14a843411cd722ec5dccc0ec8dafd9f08ef6c04b))
+* **geolocation:** only suggest and snap if geolocation is selected ([bb49a79](https://github.com/kaiser-jan/weather-pwa/commit/bb49a79dac984be0364d6c49acc146e6e6bd3e72))
+* **geolocation:** start when selecting geolocation ([583eedd](https://github.com/kaiser-jan/weather-pwa/commit/583eeddeed0e5bfd2a0159f9798036d105bba682))
+* **location:** select first saved location when current is deleted ([ffbaea8](https://github.com/kaiser-jan/weather-pwa/commit/ffbaea83f364c43522b4898f743f4e0dd8e19c32))
+* **location:** smaller menu fixes and improvements ([8215a45](https://github.com/kaiser-jan/weather-pwa/commit/8215a453e5b66768d6e5f69e7af2ec1ed9df2387))
+* minor improvements ([717d142](https://github.com/kaiser-jan/weather-pwa/commit/717d1429d9da4547d305403db74e97324f203334))
+* **outlook:** do not mark mean extrema when using rollup ([fbcb09c](https://github.com/kaiser-jan/weather-pwa/commit/fbcb09c5e45df52988e974e6afe789df714ee184))
+* **outlook:** show until end of selected day ([01eb95b](https://github.com/kaiser-jan/weather-pwa/commit/01eb95b52f70a1107d419a73cac2895a569603ca))
+* ParameterToggle reactivity broken ([cf2bb87](https://github.com/kaiser-jan/weather-pwa/commit/cf2bb8781caf943aaa255e532b2602d7b4ee2880))
+* **settings:** links to settings broken due to url encoding ([9ff0def](https://github.com/kaiser-jan/weather-pwa/commit/9ff0defdd61a8f0c001e9000cdd6c086590b99e6))
+* **units:** handle differentiating between intensity and accumulation ([c0537e7](https://github.com/kaiser-jan/weather-pwa/commit/c0537e72e1f366865c304faa13449165b9f67e04))
+* **upcoming:** temperature range bar ([56f8de3](https://github.com/kaiser-jan/weather-pwa/commit/56f8de3397a5b5931ad0709092dafef1ba0cf418))
+
+
+### Features
+
+* **categorization:** support categorization without colors ([4700b8f](https://github.com/kaiser-jan/weather-pwa/commit/4700b8f2908761b4443850e54af36db56225ac77))
+* **categorization:** switch colors to oklch ([cbddf5a](https://github.com/kaiser-jan/weather-pwa/commit/cbddf5a11e01a34ca2b4ef11505c19711475c786))
+* **chart:** format tooltip datetime based on plotted interval ([a821509](https://github.com/kaiser-jan/weather-pwa/commit/a8215098682411daf33681c9583ee886e17acc67))
+* **chart:** make value markers unit agnostic ([8507311](https://github.com/kaiser-jan/weather-pwa/commit/85073118fbe7cbcc7a9b771f3d84a7c76d425866))
+* **chart:** temperature 0° marker line ([a856cd6](https://github.com/kaiser-jan/weather-pwa/commit/a856cd67d87653f31018494df13c45e1d6833511))
+* **current:** add temperature number range bar ([dc40294](https://github.com/kaiser-jan/weather-pwa/commit/dc402944daa97e3e579d664f763433487983de6e))
+* **day:** compare mode for metric summaries ([15790d7](https://github.com/kaiser-jan/weather-pwa/commit/15790d762763662ad39cafe5ac79c457a10f423b))
+* **day:** date selection calendar ([79d2da4](https://github.com/kaiser-jan/weather-pwa/commit/79d2da4fb26f914a7339ea140b9c17cbfa8888a2))
+* **day:** experimental cloud group summary text ([7d38c21](https://github.com/kaiser-jan/weather-pwa/commit/7d38c2170387b6fff55c1cac69537facbe35795c))
+* **day:** total range shadow and constant domain for relative comparison ([8eb9660](https://github.com/kaiser-jan/weather-pwa/commit/8eb9660015904564f9d3339b692bc9cb419d0f6a))
+* **location:** restructure location list, refactor ([051dc28](https://github.com/kaiser-jan/weather-pwa/commit/051dc287f0ca4af30cbe91e175de0c6693c448f0))
+* **locations:** add geocoding to geolocation item ([f84bd05](https://github.com/kaiser-jan/weather-pwa/commit/f84bd0546faf3f9dd87e32e176085883397579ab))
+* **location:** show search when focusing search input ([149926b](https://github.com/kaiser-jan/weather-pwa/commit/149926bc1921462b38628a9666d7b036b01522ea))
+* **metrics:** add range summary item ([11188fb](https://github.com/kaiser-jan/weather-pwa/commit/11188fbb97a044c3d11bf28df71d246f84705b8f))
+* **metrics:** consistently use FormattedMetric ([03a519d](https://github.com/kaiser-jan/weather-pwa/commit/03a519d261393c6441e3dca05898c9f2ed4da7a5))
+* **metrics:** improve colors and domains ([b0deb05](https://github.com/kaiser-jan/weather-pwa/commit/b0deb052f89c295cfdbe79418cde3a95a082fa6c))
+* **notices:** only show section if there is a precipitation notice ([0100129](https://github.com/kaiser-jan/weather-pwa/commit/010012937518ec6b1f10e78016877a4383ed4124))
+* **outlook:** basic daily average rollup ([f8ca8d1](https://github.com/kaiser-jan/weather-pwa/commit/f8ca8d1e72ef88d057f192de4307e3a8f0af8992))
+* **outlook:** date range picker ([fda6f78](https://github.com/kaiser-jan/weather-pwa/commit/fda6f78e5ce62de7d6911e59ceeb3b95c968feef))
+* **outlook:** translucent area to indicate range for rollup data ([8dc9a7b](https://github.com/kaiser-jan/weather-pwa/commit/8dc9a7b4a11ab5106dc85207a78360fcd649af8b))
+* **outlook:** use mean in rollup for aggregated metrics ([5aeb606](https://github.com/kaiser-jan/weather-pwa/commit/5aeb60659ccd20a592ffa6fa9892184f6f906960))
+* **precipitation:** differentiate snow and rain ([db43b66](https://github.com/kaiser-jan/weather-pwa/commit/db43b6637f517f514ccf22ff0a6884fd372889e9))
+* **precipitation:** scale rain + snow to match newer precipitation ([ca9d12f](https://github.com/kaiser-jan/weather-pwa/commit/ca9d12f64b4082bff6b3ff9e4ae9016c0fe9f2d9))
+* various minor improvements ([240fd66](https://github.com/kaiser-jan/weather-pwa/commit/240fd66bafda05e9c50ef26772fa8d21a26d00a3))
+
 ## [1.5.3](https://github.com/kaiser-jan/weather-pwa/compare/v1.5.2...v1.5.3) (2025-10-05)
 
 
