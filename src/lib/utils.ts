@@ -10,6 +10,8 @@ export type DeepPartial<T> = T extends object
     }
   : T
 
+export type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -145,6 +147,10 @@ export function sum(numbers: (number | undefined)[]): number {
 
 export function mapValues<T, U>(obj: Record<string, T>, fn: (value: T, key: string) => U): Record<string, U> {
   return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, fn(v, k)]))
+}
+
+export function mapKeys<T extends readonly string[], V>(keys: T, cb: (key: T[number]) => V): Record<T[number], V> {
+  return Object.fromEntries(keys.map((k) => [k, cb(k)])) as Record<T[number], V>
 }
 
 export function pick<T extends object, K extends readonly (keyof T)[]>(obj: T, keys: K): Pick<T, K[number]> {
