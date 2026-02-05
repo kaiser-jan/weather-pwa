@@ -58,7 +58,7 @@
       {/if}
       <button
         onclick={() => forecastStore.update('manual')}
-        class={['p-1', $loaderStates.every((r) => r === null) ? 'animate-spin ' : '']}
+        class={['ml-auto p-1', $loaderSummaryState === 'loading' ? 'animate-spin ' : '']}
       >
         <LoaderState state={$loaderSummaryState} class="text-text" />
       </button>

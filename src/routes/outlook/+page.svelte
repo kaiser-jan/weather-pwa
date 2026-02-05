@@ -16,6 +16,7 @@
   import { fromAbsolute } from '@internationalized/date'
   import DateRangePicker from '$lib/components/DateRangePicker.svelte'
   import type { EncodeAndDecodeOptions } from 'sveltekit-search-params/sveltekit-search-params'
+  import { persisted } from 'svelte-persisted-store'
 
   const params = queryParameters<{
     metrics: EncodeAndDecodeOptions<ForecastMetric[]>
@@ -23,7 +24,7 @@
     metrics: ssp.array(get(settings).sections.components.chart.plottedMetrics as ForecastMetric[]),
   })
 
-  let rollup = $state(true)
+  let rollup = persisted('outlook-chart-rollup', true)
 
   let startTimestamp = $state(get(TODAY_MILLIS))
   let endTimestamp = $state($TODAY_MILLIS + 1000 * 3600 * 24 * 6)
@@ -44,7 +45,7 @@
       }}
     />
 
-    <Toggle bind:pressed={rollup}>
+    <Toggle bind:pressed={() => $rollup, (v) => rollup.set(v)}>
       <CircleSlash2Icon />
     </Toggle>
   </header>
@@ -56,7 +57,7 @@
     endTimestamp={endTimestamp ? DateTime.fromMillis(endTimestamp).endOf('day').toMillis() : undefined}
     className="h-[max(25vh,12rem)]"
     location="outlook"
-    {rollup}
+    rollup={$rollup}
   />
 
   <ExpandableList

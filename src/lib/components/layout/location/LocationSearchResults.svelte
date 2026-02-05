@@ -41,11 +41,11 @@
   </span>
 </button>
 
-<div class="flex grow flex-col gap-4 overflow-y-auto">
+<div class="flex grow flex-col gap-2 overflow-y-auto">
   {#if loading}
     <span class="flex flex-row items-center gap-2 px-2 py-1 text-muted-foreground">
       <LoaderPulsatingRing className="size-5" />
-      Looking up "{page.state.locationQuery}"...
+      Looking up "{query}"...
     </span>
   {:else if query && query.length}
     {#each result ?? [] as r}
