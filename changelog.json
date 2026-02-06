@@ -1,6 +1,31 @@
 {
   "releases": [
     {
+      "version": "1.6.1",
+      "date": "2026-02-06",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "0908271bbf7c2a48ed1aa8b24fedca2e2e3df45d",
+              "subject": "not rendering when starting hidden (e.g. day view)",
+              "scope": "NumberRangeBar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/0908271bbf7c2a48ed1aa8b24fedca2e2e3df45d"
+            },
+            {
+              "hash": "e1f3cec7caf44b2f774966ff292a3c29b95362d1",
+              "subject": "back nav crash due to not replacing /outlook history entry",
+              "scope": "outlook",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/e1f3cec7caf44b2f774966ff292a3c29b95362d1"
+            }
+          ]
+        }
+      ],
+      "compareUrl": "https://github.com/kaiser-jan/weather-pwa/compare/v1.6.0...v1.6.1"
+    },
+    {
       "version": "1.6.0",
       "date": "2026-02-05",
       "commitGroups": [

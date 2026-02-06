@@ -1,3 +1,11 @@
+## [1.6.1](https://github.com/kaiser-jan/weather-pwa/compare/v1.6.0...v1.6.1) (2026-02-06)
+
+
+### Bug Fixes
+
+* **NumberRangeBar:** not rendering when starting hidden (e.g. day view) ([0908271](https://github.com/kaiser-jan/weather-pwa/commit/0908271bbf7c2a48ed1aa8b24fedca2e2e3df45d))
+* **outlook:** back nav crash due to not replacing /outlook history entry ([e1f3cec](https://github.com/kaiser-jan/weather-pwa/commit/e1f3cec7caf44b2f774966ff292a3c29b95362d1))
+
 # [1.6.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.5.3...v1.6.0) (2026-02-05)
 
 
