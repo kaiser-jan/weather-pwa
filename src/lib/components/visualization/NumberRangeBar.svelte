@@ -30,6 +30,8 @@
   function renderBar(el: SVGSVGElement) {
     const width = el.getBoundingClientRect().width
     const height = el.getBoundingClientRect().height
+    if (width === 0 || height === 0) return
+
     const svg = d3.select(el).attr('preserveAspectRatio', 'xMinYMin meet').attr('viewBox', `0 0 ${width} ${height}`)
 
     svg.selectAll('*').remove()
@@ -86,14 +88,24 @@
 
   let svg: SVGSVGElement
 
+  function resize() {
+    if (!svg) return
+
+    const width = svg.getBoundingClientRect().width
+    const height = svg.getBoundingClientRect().height
+
+    // if the element is hidden, the first render renders with size 0, we need to rerender
+    if (svg.viewBox.baseVal?.width === 0) renderBar(svg)
+    // otherwise the content is already there and needs to be resized only (what about aspect ratio?)
+    else d3.select(svg).attr('viewBox', `0 0 ${width} ${height}`)
+  }
+
   $effect(() => {
     if (domain || total || instance) renderBar(svg)
 
-    svg.onresize = () => {
-      const width = svg.getBoundingClientRect().width
-      const height = svg.getBoundingClientRect().height
-      d3.select(svg).attr('viewBox', `0 0 ${width} ${height}`)
-    }
+    // .onresize does not fire when unhiding
+    const observer = new ResizeObserver(resize)
+    observer.observe(svg)
   })
 
   onMount(() => {
