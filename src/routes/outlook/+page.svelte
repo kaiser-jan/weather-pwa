@@ -20,9 +20,12 @@
 
   const params = queryParameters<{
     metrics: EncodeAndDecodeOptions<ForecastMetric[]>
-  }>({
-    metrics: ssp.array(get(settings).sections.components.chart.plottedMetrics as ForecastMetric[]),
-  })
+  }>(
+    {
+      metrics: ssp.array(get(settings).sections.components.chart.plottedMetrics as ForecastMetric[]),
+    },
+    { pushHistory: false },
+  )
 
   let rollup = persisted('outlook-chart-rollup', true)
 
@@ -63,7 +66,7 @@
   <ExpandableList
     items={FORECAST_METRICS}
     visibleItems={$settings.data.forecast.metrics}
-    markedItems={params.metrics!}
+    markedItems={params.metrics ?? []}
     contentClass="gap-2"
   >
     {#snippet itemSnippet(metric)}
