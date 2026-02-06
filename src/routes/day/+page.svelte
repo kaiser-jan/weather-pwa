@@ -44,8 +44,6 @@
 
   const selectedDay = $derived($forecastStore?.daily?.find((d) => d.timestamp === dayReadonly?.toMillis?.()))
 
-  const compare = persisted('day-view-compare', true)
-
   const isToday = $derived.by(() => {
     if (!$forecastStore || !selectedDay) return false
     return getStartOfDayTimestamp(selectedDay.timestamp) === $TODAY_MILLIS
@@ -138,12 +136,6 @@
         {/if}
       </div>
 
-      <div class="flex flex-row items-center gap-2">
-        <Switch bind:checked={$compare} />
-        <ScaleIcon class="ml-2" />
-        Compare
-      </div>
-
       <div class="-mt-2 min-h-0 grow overflow-y-auto pt-2">
         <ExpandableList
           items={FORECAST_METRICS}
@@ -161,7 +153,7 @@
                 {@const config = METRIC_DETAILS[metric].summary}
 
                 <ParameterToggle {metric} bind:visibleList={params.metrics!}>
-                  <ParameterDaySummary {...config} {metric} day={selectedDay} fullDay compare={$compare} align />
+                  <ParameterDaySummary {...config} {metric} day={selectedDay} fullDay compare align />
                 </ParameterToggle>
               {/each}
             </div>
