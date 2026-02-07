@@ -301,8 +301,8 @@ export const settingsConfig = [
             icon: TextInitialIcon,
             options: FORECAST_METRICS,
             default: [
-              'temperature',
               'precipitation_amount',
+              'temperature',
               'wind_speed',
               'cloud_coverage',
               'dew_point',
@@ -408,7 +408,7 @@ export const settingsConfig = [
         icon: ListOrderedIcon,
         options: Object.keys(SECTIONS),
         labels: Object.fromEntries(Object.entries(SECTIONS).map(([k, s]) => [k, s.name])),
-        default: ['today', 'upcoming', 'outlook', 'air_pollution', 'sources'] as SectionId[],
+        default: ['notices', 'today', 'upcoming', 'outlook', 'air_pollution', 'sources'] as SectionId[],
       },
       {
         id: 'current',
@@ -448,7 +448,7 @@ export const settingsConfig = [
             type: 'multiselect-reorder',
             icon: TextInitialIcon,
             options: FORECAST_METRICS,
-            default: ['temperature', 'precipitation_amount'] as ForecastMetric[],
+            default: ['temperature', 'wind_speed', 'aqi', 'dew_point'] as ForecastMetric[],
           },
           {
             id: 'showChart',
@@ -472,6 +472,13 @@ export const settingsConfig = [
             icon: CalendarClockIcon,
             options: ['always', 'when-available', 'never'],
             default: 'always',
+          },
+          {
+            id: 'swipeTomorrow',
+            label: 'Swipe for Tomorrow',
+            type: 'boolean',
+            icon: SECTIONS.tomorrow.icon,
+            default: true,
           },
         ],
       },

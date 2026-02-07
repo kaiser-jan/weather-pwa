@@ -33,14 +33,6 @@
     if (!thisDay) return
     dayView.open(thisDay)
   }
-  function openNextDay() {
-    if (!timebucket) return
-    const nextDay = $forecastStore?.daily.find(
-      (d) => d.timestamp === getStartOfDayTimestamp(timebucket.timestamp + 24 * 3600 * 1000),
-    )
-    if (!nextDay) return
-    dayView.open(nextDay)
-  }
 </script>
 
 <SectionTitle {title} {icon} onclick={openThisDay}>
@@ -74,15 +66,7 @@
 
   {#if showChart}
     <FailSafeContainer name={`Section ${title} Chart`} class="container">
-      <div
-        class="flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2"
-        {...useSwipe(
-          (e) => {
-            if (e.detail.direction === 'left') openNextDay()
-          },
-          () => ({ touchAction: 'pan-y' }),
-        )}
-      >
+      <div class="flex w-full flex-col flex-wrap justify-between gap-x-4 gap-y-2">
         <WeatherChart
           multiseries={timebucket.multiseries}
           parameters={metrics}
