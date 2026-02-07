@@ -5,6 +5,7 @@
   import { onMount } from 'svelte'
   import { cn } from '$lib/utils'
   import { METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
+  import { debounce } from '$lib/utils/common'
 
   interface Props {
     metric: ForecastMetric
@@ -88,23 +89,13 @@
 
   let svg: SVGSVGElement
 
-  function resize() {
-    if (!svg) return
-
-    const width = svg.getBoundingClientRect().width
-    const height = svg.getBoundingClientRect().height
-
-    // if the element is hidden, the first render renders with size 0, we need to rerender
-    if (svg.viewBox.baseVal?.width === 0) renderBar(svg)
-    // otherwise the content is already there and needs to be resized only (what about aspect ratio?)
-    else d3.select(svg).attr('viewBox', `0 0 ${width} ${height}`)
-  }
-
   $effect(() => {
     if (domain || total || instance) renderBar(svg)
 
-    // .onresize does not fire when unhiding
-    const observer = new ResizeObserver(resize)
+    // TODO: is there a cleaner approach to resizing?
+    // this leads to jumps when finally resizing
+    // or is this just the advantage the css approach with percentages had?
+    const observer = new ResizeObserver(debounce(() => svg && renderBar(svg), 100))
     observer.observe(svg)
   })
 
