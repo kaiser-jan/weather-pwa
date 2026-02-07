@@ -55,6 +55,7 @@ export interface MetricDetails {
   summary: {
     useTotalAsDomain?: boolean
     items?: ParameterDaySummaryProps['items']
+    itemsCompare?: ParameterDaySummaryProps['items']
   }
 }
 
@@ -69,7 +70,7 @@ export interface ParameterDaySummaryProps {
   icon?: typeof Icon
   // TODO: refactor: consider removing or making this the default
   useTotalAsDomain?: boolean
-  items?: ('min' | 'max' | 'avg' | 'sum' | 'range' | 'range-bar' | 'trend' | 'groups' | 'aggregated-groups')[]
+  items?: ('min' | 'max' | 'avg' | 'sum' | 'range' | 'trend' | 'groups' | 'aggregated-groups')[]
 }
 
 export type LocationItemDetails = WithRequired<Coordinates, 'longitude' | 'latitude'> & {

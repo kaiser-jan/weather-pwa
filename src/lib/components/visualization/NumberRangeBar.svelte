@@ -41,14 +41,14 @@
 
     let color = 'css' in details.color ? details.color.css : 'red'
 
-    if (details.categories) {
+    if (details.categories && 'type' in details.color) {
       const gradientId = createGradientDefinition({
         svg,
         scale,
         direction: vertical ? 'y' : 'x',
         stops: details.categories,
         name: metric,
-        abrupt: 'type' in details.color && details.color.type === 'segments',
+        abrupt: details.color.type === 'segments',
       })
 
       color = `url(#${gradientId})`

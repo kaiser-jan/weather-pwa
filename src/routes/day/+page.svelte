@@ -153,7 +153,15 @@
                 {@const config = METRIC_DETAILS[metric].summary}
 
                 <ParameterToggle {metric} bind:visibleList={params.metrics!}>
-                  <ParameterDaySummary {...config} {metric} day={selectedDay} fullDay compare align />
+                  <ParameterDaySummary
+                    {metric}
+                    day={selectedDay}
+                    items={config.itemsCompare}
+                    useTotalAsDomain={config.useTotalAsDomain}
+                    fullDay
+                    compare
+                    align
+                  />
                 </ParameterToggle>
               {/each}
             </div>

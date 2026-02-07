@@ -72,7 +72,7 @@ const _METRIC_DETAILS_BASE = {
         },
       },
     },
-    summary: { useTotalAsDomain: true, items: ['range'] },
+    summary: { useTotalAsDomain: true },
   },
 
   cloud_coverage: {
@@ -124,7 +124,7 @@ const _METRIC_DETAILS_BASE = {
       stacksWith: ['snow_amount', 'rain_amount'],
       class: 'opacity-80',
     },
-    summary: { items: ['aggregated-groups'] },
+    summary: { items: ['aggregated-groups'], itemsCompare: ['aggregated-groups'] },
   },
   snow_amount: {
     label: 'Snow Amount',
@@ -139,7 +139,7 @@ const _METRIC_DETAILS_BASE = {
       stacksWith: ['snow_amount', 'rain_amount'],
       class: 'opacity-80',
     },
-    summary: { items: ['aggregated-groups'] },
+    summary: { items: ['aggregated-groups'], itemsCompare: ['aggregated-groups'] },
   },
 
   wind_speed: {
@@ -162,7 +162,7 @@ const _METRIC_DETAILS_BASE = {
         },
       },
     },
-    summary: { items: ['range'] },
+    summary: { items: ['avg', 'max'] },
   },
 
   relative_humidity: {
@@ -174,7 +174,7 @@ const _METRIC_DETAILS_BASE = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { useTotalAsDomain: false, items: ['range'] },
+    summary: { useTotalAsDomain: false, items: ['avg', 'max'] },
   },
 
   dew_point: {
@@ -200,7 +200,7 @@ const _METRIC_DETAILS_BASE = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['range'] },
+    summary: { items: ['max'] },
   },
 
   pressure_surface: {
@@ -213,7 +213,7 @@ const _METRIC_DETAILS_BASE = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['avg', 'trend'] },
+    summary: { items: ['avg', 'trend'], itemsCompare: ['avg', 'trend'] },
   },
   pressure_sealevel: {
     label: 'Pressure (Sea Level)',
@@ -224,7 +224,7 @@ const _METRIC_DETAILS_BASE = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['avg', 'trend'] },
+    summary: { items: ['avg', 'trend'], itemsCompare: ['avg', 'trend'] },
   },
 
   // uvi_clear_sky: {
@@ -245,7 +245,7 @@ const _METRIC_DETAILS_BASE = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['avg', 'max'] },
+    summary: { items: ['avg', 'max'], itemsCompare: ['avg', 'max'] },
   },
 
   cin: {
@@ -257,7 +257,7 @@ const _METRIC_DETAILS_BASE = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['max'] },
+    summary: { items: ['max'], itemsCompare: ['max'] },
   },
 
   grad: {
@@ -269,7 +269,7 @@ const _METRIC_DETAILS_BASE = {
       style: 'line',
       class: 'opacity-80',
     },
-    summary: { items: ['max'] },
+    summary: { items: ['max'], itemsCompare: ['max'] },
   },
 
   aqi: {
@@ -283,7 +283,7 @@ const _METRIC_DETAILS_BASE = {
     categories: createLimitsCategories([0, 1, 2, 3, 4, 5], EAQI.colors, EAQI.labels),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-80' },
-    summary: { items: ['range'] },
+    summary: { items: ['max'], itemsCompare: ['range'] },
   },
   // TODO: to be precise, air quality metrics would need a non-linear scale
   // the increments between the limits are not equal, resulting in a distorted chart
@@ -299,7 +299,7 @@ const _METRIC_DETAILS_BASE = {
     categories: createLimitsCategories(EAQI.limits.pm25, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['range'] },
+    summary: { items: ['max'], itemsCompare: ['range'] },
   },
   pm10: {
     label: 'PM 10',
@@ -312,7 +312,7 @@ const _METRIC_DETAILS_BASE = {
     categories: createLimitsCategories(EAQI.limits.pm10, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['range'] },
+    summary: { items: ['max'], itemsCompare: ['range'] },
   },
   o3: {
     label: 'Ozone',
@@ -325,7 +325,7 @@ const _METRIC_DETAILS_BASE = {
     categories: createLimitsCategories(EAQI.limits.o3, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['range'] },
+    summary: { items: ['max'], itemsCompare: ['range'] },
   },
   no2: {
     label: 'Nitrogen Dioxide',
@@ -338,7 +338,7 @@ const _METRIC_DETAILS_BASE = {
     categories: createLimitsCategories(EAQI.limits.no2, EAQI.colors, EAQI.labels, 1e-6),
     color: { type: 'segments' },
     chart: { style: 'line', class: 'opacity-50 stroke-3' },
-    summary: { items: ['range'] },
+    summary: { items: ['max'], itemsCompare: ['range'] },
   },
 
   // TODO: refactor: make this use ForecastMetrics instead

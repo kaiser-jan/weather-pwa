@@ -23,7 +23,7 @@
     align?: boolean
   }
 
-  let { metric, items = ['min', 'range-bar', 'max'], day, useTotalAsDomain, fullDay, compare, align }: Props = $props()
+  let { metric, items = ['range'], day, useTotalAsDomain, fullDay, compare, align }: Props = $props()
 
   const details = $derived<MetricDetails>(METRIC_DETAILS[metric])
 
@@ -91,7 +91,6 @@
         {domain}
         total={$forecastStore?.total.summary[metric]}
         instance={day.summary[metric]}
-        {details}
         class="h-2 min-w-16 shrink"
       />
       <FormattedMetric value={day.summary[metric]?.max} parameter={metric} class="min-w-12" />
@@ -111,14 +110,6 @@
           class={[align && 'min-w-12']}
         />
       {/if}
-    {:else if item === 'range-bar'}
-      <NumberRangeBar
-        {metric}
-        {domain}
-        total={$forecastStore?.total.summary[metric]}
-        instance={day.summary[metric]}
-        class="h-2 shrink"
-      />
     {:else if item === 'trend'}
       {@const values = day.multiseries[metric]}
       {#if values && values[0].value < values[values.length - 1].value}
