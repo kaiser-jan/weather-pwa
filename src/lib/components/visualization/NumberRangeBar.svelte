@@ -104,6 +104,6 @@
   })
 </script>
 
-<div class={cn('relative h-full w-full overflow-hidden rounded-full bg-foreground', className)}>
+<div class={cn('relative h-full w-full overflow-hidden rounded-full', className)}>
   <svg bind:this={svg} class="h-full w-full grow" />
 </div>
