@@ -76,8 +76,10 @@ function groupAggregatableMetric(
 
     const currentGroup = groups[groups.length - 1]
     currentGroup.timeseries.push(timeBucket)
-    currentGroup.amount += timeBucket.value
-    if (timeBucket.timestamp + timeBucket.duration > get(NOW_MILLIS)) currentGroup.amountAfterNow += timeBucket.value
+    // TODO: properly handle summing aggregated metrics
+    const scaledAmount = timeBucket.value * (timeBucket.duration / 3_600_000)
+    currentGroup.amount += scaledAmount
+    if (timeBucket.timestamp + timeBucket.duration > get(NOW_MILLIS)) currentGroup.amountAfterNow += scaledAmount
   }
 
   if (groups.length && !groups[groups.length - 1].end) {
