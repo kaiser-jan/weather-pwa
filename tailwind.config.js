@@ -12,25 +12,24 @@ const config = {
       colors: {
         background: colors.background,
         primary: {
-          DEFAULT: colors.primary
-        }
-
+          DEFAULT: colors.primary,
+        },
       },
-    }
+    },
   },
   plugins: [
-    plugin(function({ addBase }) {
+    plugin(function ({ addBase }) {
       addBase({
         ':root': {
           '--color-background': colors.background,
           '--color-primary': colors.primary,
         },
-      });
+      })
     }),
-    plugin(function({ addVariant }) {
+    plugin(function ({ addVariant }) {
       addVariant('supports-hover', '@media (hover: hover)')
-    })
-  ]
+    }),
+  ],
 }
 
 export default config

@@ -62,7 +62,7 @@
                 <Button variant="secondary" onclick={() => window.location.reload()}>
                   <RefreshCcwIcon /> Reload App
                 </Button>
-                <p class="text-text-muted text-sm">This is similar to closing and opening the app.</p>
+                <p class="text-sm text-text-muted">This is similar to closing and opening the app.</p>
               </li>
 
               <li class="space-y-1">
@@ -75,7 +75,7 @@
                 >
                   <EraserIcon /> Clear Cache
                 </Button>
-                <p class="text-text-muted text-sm">This will clean semi-permanent data. You won't lose anything.</p>
+                <p class="text-sm text-text-muted">This will clean semi-permanent data. You won't lose anything.</p>
               </li>
             </ul>
           </div>

@@ -26,12 +26,12 @@
 
 {#if timeBucket !== null}
   <div class="flex w-full gap-2 text-sm" transition:slide>
-    <div class="border-foreground flex min-h-9 w-fit items-center rounded-lg border p-2">
+    <div class="flex min-h-9 w-fit items-center rounded-lg border border-foreground p-2">
       <span class="font-bold"
         >{values && values[0] ? DateTime.fromMillis(values[0]!.timestamp).toFormat('HH:mm') : '--:--'}</span
       >
     </div>
-    <div class="text-text border-foreground flex min-h-9 grow flex-row flex-wrap gap-4 rounded-lg border px-2 py-1.5">
+    <div class="flex min-h-9 grow flex-row flex-wrap gap-4 rounded-lg border border-foreground px-2 py-1.5 text-text">
       {#each parameters as parameter (parameter)}
         <ParameterValue
           parameter={parameter as ForecastParameter}

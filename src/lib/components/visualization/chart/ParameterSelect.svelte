@@ -60,7 +60,7 @@
         <Button
           variant="ghost"
           size="icon"
-          class="text-text-muted ml-auto p-0 text-sm"
+          class="ml-auto p-0 text-sm text-text-muted"
           onclick={() => {
             isOpen = false
             openSettingsAt(['sections', 'components', 'chart'])

@@ -14,7 +14,7 @@
 <span class={[className, 'relative']}>
   {#if !text || loaded === false}
     {placeholder}
-    <Skeleton class="bg-midground absolute inset-0" />
+    <Skeleton class="absolute inset-0 bg-midground" />
   {:else}
     {text}
   {/if}
