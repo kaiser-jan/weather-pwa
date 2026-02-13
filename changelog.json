@@ -1,6 +1,67 @@
 {
   "releases": [
     {
+      "version": "1.7.0",
+      "date": "2026-02-13",
+      "commitGroups": [
+        {
+          "title": "Bug Fixes",
+          "type": "fix",
+          "commits": [
+            {
+              "hash": "ea86913d0acad25576385387c889a9c346596c29",
+              "subject": "show selected weekday again",
+              "scope": "day",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ea86913d0acad25576385387c889a9c346596c29"
+            },
+            {
+              "hash": "5d0a86fc2f75dd833b7d303cca805b5b83f259d4",
+              "subject": "resizing broken",
+              "scope": "NumberRangeBar",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5d0a86fc2f75dd833b7d303cca805b5b83f259d4"
+            },
+            {
+              "hash": "ffad5549ad2581f6d2dec3c4d026736712c0ba16",
+              "subject": "incorrectly scaling mean for aggregated metrics",
+              "scope": "outlook",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/ffad5549ad2581f6d2dec3c4d026736712c0ba16"
+            },
+            {
+              "hash": "eefdbe59faf7cb618e65ea7bbada2d07b826ffe5",
+              "subject": "summary crashing when a forecast does not have temperature",
+              "scope": "outlook",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/eefdbe59faf7cb618e65ea7bbada2d07b826ffe5"
+            },
+            {
+              "hash": "3e41bd8a14ed0b22247efcd393e41de79ba69934",
+              "subject": "scale amount with duration for PrecipitationGroup",
+              "scope": "precipitation",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/3e41bd8a14ed0b22247efcd393e41de79ba69934"
+            }
+          ]
+        },
+        {
+          "title": "Features",
+          "type": "feat",
+          "commits": [
+            {
+              "hash": "5b5ead77e4cae280fc3b87f0a75b8a9cadbe18ca",
+              "subject": "more sensible summaries with overview vs compare",
+              "scope": "metrics",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/5b5ead77e4cae280fc3b87f0a75b8a9cadbe18ca"
+            },
+            {
+              "hash": "433f9a4d2c9bcb6d2c4a889fc222c93296ef5269",
+              "subject": "swipe to replace with tomorrow",
+              "scope": "today",
+              "commitUrl": "https://github.com/kaiser-jan/weather-pwa/commit/433f9a4d2c9bcb6d2c4a889fc222c93296ef5269"
+            }
+          ]
+        }
+      ],
+      "compareUrl": "https://github.com/kaiser-jan/weather-pwa/compare/v1.6.1...v1.7.0"
+    },
+    {
       "version": "1.6.1",
       "date": "2026-02-06",
       "commitGroups": [

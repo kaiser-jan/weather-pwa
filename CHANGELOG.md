@@ -1,3 +1,20 @@
+# [1.7.0](https://github.com/kaiser-jan/weather-pwa/compare/v1.6.1...v1.7.0) (2026-02-13)
+
+
+### Bug Fixes
+
+* **day:** show selected weekday again ([ea86913](https://github.com/kaiser-jan/weather-pwa/commit/ea86913d0acad25576385387c889a9c346596c29))
+* **NumberRangeBar:** resizing broken ([5d0a86f](https://github.com/kaiser-jan/weather-pwa/commit/5d0a86fc2f75dd833b7d303cca805b5b83f259d4))
+* **outlook:** incorrectly scaling mean for aggregated metrics ([ffad554](https://github.com/kaiser-jan/weather-pwa/commit/ffad5549ad2581f6d2dec3c4d026736712c0ba16))
+* **outlook:** summary crashing when a forecast does not have temperature ([eefdbe5](https://github.com/kaiser-jan/weather-pwa/commit/eefdbe59faf7cb618e65ea7bbada2d07b826ffe5))
+* **precipitation:** scale amount with duration for PrecipitationGroup ([3e41bd8](https://github.com/kaiser-jan/weather-pwa/commit/3e41bd8a14ed0b22247efcd393e41de79ba69934))
+
+
+### Features
+
+* **metrics:** more sensible summaries with overview vs compare ([5b5ead7](https://github.com/kaiser-jan/weather-pwa/commit/5b5ead77e4cae280fc3b87f0a75b8a9cadbe18ca))
+* **today:** swipe to replace with tomorrow ([433f9a4](https://github.com/kaiser-jan/weather-pwa/commit/433f9a4d2c9bcb6d2c4a889fc222c93296ef5269))
+
 ## [1.6.1](https://github.com/kaiser-jan/weather-pwa/compare/v1.6.0...v1.6.1) (2026-02-06)
 
 
