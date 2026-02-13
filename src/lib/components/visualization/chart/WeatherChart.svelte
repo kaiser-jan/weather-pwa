@@ -116,8 +116,8 @@
             const details = METRIC_DETAILS[p as keyof typeof METRIC_DETAILS]
             // TODO: there should be an extra sum field for aggreageted metrics
             // => needs to be respected by axis, data representation, axis pointer, etc.
-            const value = details.isAggregated
-              ? d3.mean(v, (d) => d.value * (d.duration / 3_600_000))
+            const value = details.isAggregated //
+              ? d3.mean(v, (d) => d.value)
               : d3.median(v, (d) => d.value)
 
             return {
