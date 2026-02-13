@@ -38,7 +38,7 @@ export type MultivariateTimeSeriesTimeBucket = TimePeriod & { series: Multivaria
 export type TimeSeries<T> = (TimePeriod & { value: T })[]
 export type TimeSeriesNumberEntry = TimeSeries<number>[number]
 
-export type TimeBucketSummary = TimePeriod & { summary: Record<ForecastParameter, NumberSummary> }
+export type TimeBucketSummary = TimePeriod & { summary: Partial<Record<ForecastParameter, NumberSummary>> }
 export type TimeBucket = TimeBucketSummary & { multiseries: MultivariateTimeSeries }
 
 export const FORECAST_PARAMETERS = [

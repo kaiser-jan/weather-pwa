@@ -63,18 +63,30 @@
       >
         <span>{DateTime.fromMillis(day.timestamp).toFormat('ccc')}</span>
 
-        <FormattedMetric parameter="temperature" value={day.summary.temperature.max} class="text-text-muted" hideUnit />
-        <NumberRangeBar
-          metric="temperature"
-          domain={$forecastStore?.total?.summary.temperature}
-          instance={day.summary.temperature}
-          class="h-20 w-2"
-          vertical
-        />
-        <FormattedMetric parameter="temperature" value={day.summary.temperature.min} class="text-text-muted" hideUnit />
+        {#if day.summary.temperature}
+          <FormattedMetric
+            parameter="temperature"
+            value={day.summary.temperature.max}
+            class="text-text-muted"
+            hideUnit
+          />
+          <NumberRangeBar
+            metric="temperature"
+            domain={$forecastStore?.total?.summary.temperature}
+            instance={day.summary.temperature}
+            class="h-20 w-2"
+            vertical
+          />
+          <FormattedMetric
+            parameter="temperature"
+            value={day.summary.temperature.min}
+            class="text-text-muted"
+            hideUnit
+          />
+        {/if}
 
         <!-- TODO: small bar to display intensity: for each category, color it and set the size to the percentage of time where preciptiation is in that range -->
-        {#if $settings.sections.outlook.showPrecipitation && day.summary.precipitation_amount?.sum > $settings.data.forecast.precipitation.threshold}
+        {#if $settings.sections.outlook.showPrecipitation && day.summary.precipitation_amount && day.summary.precipitation_amount.sum > $settings.data.forecast.precipitation.threshold}
           <FormattedMetric
             class="text-blue-200"
             parameter={'precipitation_amount'}
