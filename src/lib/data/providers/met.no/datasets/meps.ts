@@ -3,6 +3,7 @@ import { Duration } from 'luxon'
 
 export default {
   id: 'met.no_meps',
+  internalId: 'meps',
   model: 'MEPS',
   name: 'Nordic area',
   url: 'https://doi.org/10.1002/qj.3525',

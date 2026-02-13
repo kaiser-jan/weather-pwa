@@ -113,6 +113,7 @@ function createForecastFromResults(results: LoaderState[], inputs: ForecastInput
   const daily = combineMultiseriesToDailyForecast(merged)
   const total = forecastTotalFromDailyForecast(daily)
 
+  // TODO: properly handle and type incomplete/empty forecasts
   const forecast: Forecast = {
     current: null,
     multiseries: merged,

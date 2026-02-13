@@ -57,7 +57,7 @@ NOTE: This is not part of the root layout, because both pages as well as the lay
         handleScroll()
         props.onscroll?.(e)
       }}
-      {...useSwipe(onswipe, () => ({ touchAction: 'pan-y' }))}
+      {...useSwipe(onswipe ?? (() => {}), () => ({ touchAction: 'pan-y' }))}
     >
       {@render children!()}
     </main>

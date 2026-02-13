@@ -3,6 +3,7 @@ import { Duration } from 'luxon'
 
 export default {
   id: 'met.no_ecmwf',
+  internalId: 'ecmwf',
   model: 'ECMWF',
   name: 'Global',
   url: 'https://www.ecmwf.int/en/forecasts/datasets/set-i',

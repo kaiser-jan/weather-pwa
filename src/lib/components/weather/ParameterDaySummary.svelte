@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { TimeBucket, ForecastParameter } from '$lib/types/data'
-  import { ArrowDownIcon, ArrowRightIcon, ArrowUpIcon } from '@lucide/svelte'
+  import type { TimeBucket } from '$lib/types/data'
+  import { ArrowDownIcon, ArrowUpIcon } from '@lucide/svelte'
   import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
   import { forecastStore } from '$lib/stores/data'
-  import type { CategoryColor, MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
-  import { categorizeValue, METRIC_DETAILS, useCategoriesForColor, type ForecastMetric } from '$lib/config/metrics'
+  import type { MetricDetails, ParameterDaySummaryProps } from '$lib/types/ui'
+  import { categorizeValue, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
   import FormattedMetric from '$lib/components/snippets/FormattedMetric.svelte'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import { NOW_MILLIS } from '$lib/stores/now'
   import { aggregableMetricGroupsStore } from '$lib/stores/aggregableMetricGroups'
-  import { metricGroupsStore, type MetricGroup } from '$lib/stores/metricGroups'
+  import { metricGroupsStore } from '$lib/stores/metricGroups'
   import AggregableMetricGroup from './AggregableMetricGroup.svelte'
   import { DateTime } from 'luxon'
   import { autoFormatMetric } from '$lib/utils/units'
@@ -38,7 +38,7 @@
   })
 
   const doMinMaxMatch = $derived.by(() => {
-    if (!details.categories || !details.preferCategoryLabel) return
+    if (!details.categories || !details.preferCategoryLabel || !day.summary[metric]) return
     return (
       categorizeValue(details, day.summary[metric].min)?.threshold ===
       categorizeValue(details, day.summary[metric].max)?.threshold
@@ -57,7 +57,10 @@
         : autoFormatMetric(v, metric, $settings)
     const formatTime = (t: number) => DateTime.fromMillis(t).toFormat('HH:mm')
 
-    if (!groups.length) return formatValue(day.summary[metric].avg)
+    if (!groups.length) {
+      if (day.summary[metric]) return formatValue(day.summary[metric].avg)
+      else return undefined
+    }
 
     if (groups.length === 3 && Math.abs(groups[0].avg - groups[2].avg) < 10)
       return `${formatValue(groups[0].avg)}, ${formatValue(groups[1].avg)} ${formatTime(groups[1].start)} - ${formatTime(groups[2].start)}`

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { Forecast, ForecastParameter } from '$lib/types/data'
+  import type { Forecast } from '$lib/types/data'
   import { Navigation2Icon } from '@lucide/svelte'
   import FormattedMetric from '$lib/components/snippets/FormattedMetric.svelte'
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
-  import { categorizeValue, METRIC_DETAILS } from '$lib/config/metrics'
+  import { categorizeValue, METRIC_DETAILS, type ForecastMetric } from '$lib/config/metrics'
 
   interface Props {
-    item: ForecastParameter
+    item: ForecastMetric
     current: Forecast['current'] | null
   }
 

@@ -10,7 +10,7 @@
   import IconOrAbbreviation from '$lib/components/snippets/IconOrAbbreviation.svelte'
   import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
-  import { CircleSlash2Icon, ScaleIcon, SquareSplitHorizontalIcon } from '@lucide/svelte'
+  import { CircleSlash2Icon } from '@lucide/svelte'
   import { DateTime, Settings } from 'luxon'
   import { Toggle } from '$lib/components/ui/toggle'
   import { fromAbsolute } from '@internationalized/date'

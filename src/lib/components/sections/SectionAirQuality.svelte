@@ -2,7 +2,6 @@
   import { currentFromMultiseries } from '$lib/utils/forecast/current'
   import { forecastStore } from '$lib/stores/data'
   import { NOW_MILLIS, TODAY_MILLIS, TOMORROW_MILLIS } from '$lib/stores/now'
-  import { autoFormatMetric } from '$lib/utils/units'
   import NumberRangeBar from '$lib/components/visualization/NumberRangeBar.svelte'
   import { settings } from '$lib/stores/settings'
   import type { TimeBucket } from '$lib/types/data'
@@ -22,11 +21,12 @@
   const tomorrow = $derived($forecastStore?.daily?.find((d) => d.timestamp === $TOMORROW_MILLIS))
 
   function getEaqiDetailsForTimeBucket(day: TimeBucket) {
+    if (!day.summary.aqi) return undefined
     const minValues = day ? Object.fromEntries(Object.entries(day.summary).map(([p, s]) => [p, s.min])) : {}
     const maxValues = day ? Object.fromEntries(Object.entries(day.summary).map(([p, s]) => [p, s.max])) : {}
 
     const maxLevels = getEaqiLevels(maxValues)
-    const maxIndex = day.summary.aqi?.max
+    const maxIndex = day.summary.aqi.max
 
     return {
       minValues,

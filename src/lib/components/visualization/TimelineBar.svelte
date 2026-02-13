@@ -9,7 +9,13 @@
   type Parameter =
     | Extract<
         ForecastParameter,
-        'temperature' | 'cloud_coverage' | 'rain_amount' | 'snow_amount' | 'wind_speed' | 'uvi_clear_sky'
+        | 'temperature'
+        | 'cloud_coverage'
+        | 'precipitation_amount'
+        | 'rain_amount'
+        | 'snow_amount'
+        | 'wind_speed'
+        | 'uvi_clear_sky'
       >
     | 'sun'
     | 'moon'
@@ -50,11 +56,13 @@
     return ((t - t1) / (end - start)) * 100
   }
 
-  const marks = timeHour.every(6)!.range(
-    // start at 0:00 of the start timestamp
-    timeDay.floor(new Date(getStartOfDayTimestamp(startTimestamp))),
-    // end at the endTimestamp
-    timeDay.ceil(new Date(endTimestamp)),
+  const marks = $derived(
+    timeHour.every(6)!.range(
+      // start at 0:00 of the start timestamp
+      timeDay.floor(new Date(getStartOfDayTimestamp(startTimestamp))),
+      // end at the endTimestamp
+      timeDay.ceil(new Date(endTimestamp)),
+    ),
   )
 
   function limitStartTimestamp(parameter: (typeof parameters)[number]) {

@@ -4,7 +4,7 @@
   import * as d3 from 'd3'
   import { createXAxis, createYAxis } from '$lib/utils/d3/axis'
   import type { Dimensions } from '$lib/utils/d3/types'
-  import { createBars, createBarsStacked } from '$lib/utils/d3/bars'
+  import { createBarsStacked } from '$lib/utils/d3/bars'
   import { createLine } from '$lib/utils/d3/line'
   import { createGradientDefinition } from '$lib/utils/d3/gradient'
   import { createAxisPointer } from '$lib/utils/d3/axisPointer'
@@ -21,9 +21,8 @@
   import ParameterSelect from './ParameterSelect.svelte'
   import { NOW_MILLIS } from '$lib/stores/now'
   import { colorToCss } from '$lib/utils/color'
-  import type { Forecast } from '$lib/types/metno'
   import { mapRecord, removeDuplicates } from '$lib/utils'
-  import { DateTime, Duration } from 'luxon'
+  import { DateTime } from 'luxon'
   import { convertToUnit, getPreferredUnit } from '$lib/utils/units'
   import { get } from 'svelte/store'
 
@@ -31,7 +30,7 @@
     multiseries: MultivariateTimeSeries
     parameters: ForecastMetric[]
     startTimestamp: number
-    endTimestamp: number
+    endTimestamp?: number
     className: string
     location: 'overview' | 'day' | 'outlook'
     onclick?: () => void
@@ -112,16 +111,17 @@
         .rollups(
           series,
           (v) => {
-            if (!(p in METRIC_DETAILS)) return 'median'
+            // TODO: there are parameters in the multiseries which do not have an entry in METRIC_DETAILS
+            // e.g. temperature_min
             const details = METRIC_DETAILS[p as keyof typeof METRIC_DETAILS]
             // TODO: there should be an extra sum field for aggreageted metrics
             // => needs to be respected by axis, data representation, axis pointer, etc.
-            const value = details.isAggregated //
+            const value = details?.isAggregated //
               ? d3.mean(v, (d) => d.value)
               : d3.median(v, (d) => d.value)
 
             return {
-              value,
+              value: value as number,
               // value: d3.median(v, (d) => d.value)!,
               min: d3.min(v, (d) => d.value)!,
               max: d3.max(v, (d) => d.value)!,
@@ -184,7 +184,8 @@
       .attr('viewBox', `0 0 ${dimensions.widthFull} ${dimensions.heightFull}`)
 
     // add a placeholder if no metric is available
-    if (!availableMetrics.length) {
+    // TODO: better differentiate errors
+    if (!availableMetrics.length || endTimestamp === undefined) {
       svg
         .append('foreignObject')
         .attr('x', 0)
@@ -398,7 +399,13 @@
               data: includeSeriesA,
             })
           }
-          addDataRepresentation(includeParameter, includeSeriesA, mergedDetails, true, includeSeriesB)
+          addDataRepresentation(
+            includeParameter as ForecastParameter,
+            includeSeriesA,
+            mergedDetails,
+            true,
+            includeSeriesB,
+          )
         }
       }
     }

@@ -1,12 +1,13 @@
 <script lang="ts">
-  import type { TimeSeriesNumberEntry, ForecastParameter } from '$lib/types/data'
+  import type { TimeSeriesNumberEntry } from '$lib/types/data'
   import { slide } from 'svelte/transition'
   import ParameterValue from '$lib/components/snippets/ParameterValue.svelte'
   import { DateTime } from 'luxon'
+  import { type ForecastMetric } from '$lib/config/metrics'
 
   interface Props {
-    parameters: ForecastParameter[]
-    highlightedTimeBucket: Record<ForecastParameter, TimeSeriesNumberEntry> | undefined
+    parameters: ForecastMetric[]
+    highlightedTimeBucket: Record<ForecastMetric, TimeSeriesNumberEntry> | undefined
   }
 
   const { parameters, highlightedTimeBucket }: Props = $props()
@@ -14,7 +15,7 @@
   let timeBucket = $derived(highlightedTimeBucket ?? createEmptyTimeBucket())
 
   function createEmptyTimeBucket() {
-    let emptyTimeBucket: Record<ForecastParameter, undefined> = {} as any
+    let emptyTimeBucket: Record<ForecastMetric, undefined> = {} as any
     for (const key of parameters) {
       emptyTimeBucket[key] = undefined
     }
@@ -34,7 +35,7 @@
     <div class="flex min-h-9 grow flex-row flex-wrap gap-4 rounded-lg border border-foreground px-2 py-1.5 text-text">
       {#each parameters as parameter (parameter)}
         <ParameterValue
-          parameter={parameter as ForecastParameter}
+          parameter={parameter as ForecastMetric}
           value={timeBucket?.[parameter]?.value}
           class="min-w-16"
         />

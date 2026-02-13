@@ -65,6 +65,7 @@ export function computeAxesFor(
   function compute({ parameter, series, details }: AxisDetails): ComputedAxis {
     const extent = d3.extent(series, (d) => d.value)
     // TODO: consider using the original data for the axes
+    // TODO: properly type rollup-ed data so min and max exist
     const rollupMin = d3.min(series, (d) => d.min)
     const rollupMax = d3.max(series, (d) => d.max)
 
