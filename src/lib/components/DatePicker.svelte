@@ -14,9 +14,18 @@
     disabled?: boolean
     change?: (value: DateTime | undefined) => void
     calendarProps?: Partial<ComponentProps<typeof Calendar>>
+    format?: (datetime: DateTime) => string
   }
 
-  let { value = $bindable(), required = false, class: className, disabled, change, calendarProps }: Props = $props()
+  let {
+    value = $bindable(),
+    required = false,
+    class: className,
+    disabled,
+    change,
+    calendarProps,
+    format = (d) => d.toLocaleString(DateTime.DATE_FULL),
+  }: Props = $props()
 
   let open = $state(false)
 </script>
@@ -26,7 +35,9 @@
     {#snippet child({ props })}
       <Button {...props} variant="outline" class={['justify-start gap-1 pl-3 text-left font-normal', className]}>
         <CalendarIcon class="mr-2 mb-0.5 h-4 w-4" />
-        {value ? value.toLocaleString(DateTime.DATE_FULL) : 'Select a date'}
+        <span class="overflow-hidden text-ellipsis">
+          {value ? format(value) : 'Select a date'}
+        </span>
       </Button>
     {/snippet}
   </Popover.Trigger>

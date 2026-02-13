@@ -18,8 +18,6 @@
   import ParameterToggle from '$lib/components/weather/ParameterToggle.svelte'
   import { queryParameters, ssp } from 'sveltekit-search-params'
   import PageWrapper from '$lib/components/layout/PageWrapper.svelte'
-  import { Switch } from '$lib/components/ui/switch'
-  import { persisted } from 'svelte-persisted-store'
   import DatePicker from '$lib/components/DatePicker.svelte'
   import { fromAbsolute } from '@internationalized/date'
   import type { EncodeAndDecodeOptions } from 'sveltekit-search-params/sveltekit-search-params'
@@ -86,11 +84,12 @@
       <ChevronLeft />
     </Button>
     <DatePicker
-      class="w-full"
+      class="w-0 grow"
       bind:value={
         () => dayReadonly ?? undefined,
         (v) => (params.day = v?.toISODate() ?? DateTime.now().startOf('day').toISODate())
       }
+      format={(d) => d.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY).replace(` ${d.year}`, '')}
       calendarProps={{
         minValue: fromAbsolute($forecastStore?.daily[0].timestamp ?? $TODAY_MILLIS, Settings.defaultZone.name),
         maxValue: fromAbsolute(
